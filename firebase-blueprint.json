@@ -1,0 +1,699 @@
+{
+  "entities": {
+    "User": {
+      "title": "User Profile",
+      "description": "Professional profile for industry members",
+      "type": "object",
+      "properties": {
+        "uid": { "type": "string" },
+        "displayName": { "type": "string" },
+        "email": { "type": "string" },
+        "photoURL": { "type": "string" },
+        "industrySegment": { "type": "string" },
+        "bio": { "type": "string" },
+        "company": { "type": "string" },
+        "companyId": { "type": "string" },
+        "jobTitle": { "type": "string" },
+        "isAdmin": { "type": "boolean" },
+        "isPro": { "type": "boolean" },
+        "isPublic": { "type": "boolean" },
+        "skills": { "type": "array", "items": { "type": "string" } },
+        "profileLabels": {
+          "type": "object",
+          "properties": {
+            "summaryHeading": { "type": "string" },
+            "experienceHeading": { "type": "string" },
+            "skillsHeading": { "type": "string" },
+            "recommendationsHeading": { "type": "string" },
+            "badgesHeading": { "type": "string" },
+            "activityHeading": { "type": "string" },
+            "technicalScheduleHeading": { "type": "string" }
+          }
+        },
+        "socialLinks": {
+          "type": "object",
+          "properties": {
+            "linkedin": { "type": "string" },
+            "twitter": { "type": "string" },
+            "facebook": { "type": "string" },
+            "instagram": { "type": "string" },
+            "website": { "type": "string" }
+          }
+        },
+        "savedJobs": { "type": "array", "items": { "type": "string" } },
+        "badges": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "title": { "type": "string" },
+              "subtitle": { "type": "string" }
+            }
+          }
+        },
+        "aiUsage": {
+          "type": "object",
+          "properties": {
+            "month": { "type": "string" },
+            "count": { "type": "integer" }
+          }
+        },
+        "createdAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["uid", "email", "displayName"]
+    },
+    "NewsItem": {
+      "title": "News Feed Item",
+      "description": "Industry news aggregated from URLs",
+      "type": "object",
+      "properties": {
+        "url": { "type": "string" },
+        "title": { "type": "string" },
+        "description": { "type": "string" },
+        "image": { "type": "string" },
+        "source": { "type": "string" },
+        "authorUid": { "type": "string" },
+        "createdAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["url", "title", "createdAt"]
+    },
+    "Post": {
+      "title": "Community Post",
+      "description": "Shared content from users",
+      "type": "object",
+      "properties": {
+        "content": { "type": "string" },
+        "image": { "type": "string" },
+        "authorUid": { "type": "string" },
+        "authorName": { "type": "string" },
+        "authorEmail": { "type": "string" },
+        "authorPhoto": { "type": "string" },
+        "authorJobTitle": { "type": "string" },
+        "companyId": { "type": "string" },
+        "companyName": { "type": "string" },
+        "companyLogo": { "type": "string" },
+        "likesCount": { "type": "number" },
+        "video": {
+          "type": "object",
+          "properties": {
+            "type": { "type": "string" },
+            "id": { "type": "string" }
+          }
+        },
+        "reactions": {
+          "type": "object",
+          "properties": {
+            "like": { "type": "number" },
+            "celebrate": { "type": "number" },
+            "insightful": { "type": "number" }
+          }
+        },
+        "createdAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["content", "authorUid", "createdAt"]
+    },
+    "Event": {
+      "title": "Industry Event",
+      "description": "Events and conferences",
+      "type": "object",
+      "properties": {
+        "title": { "type": "string" },
+        "description": { "type": "string" },
+        "date": { "type": "string", "format": "date" },
+        "location": { "type": "string" },
+        "imageUrl": { "type": "string" },
+        "categoryIds": { "type": "array", "items": { "type": "string" } },
+        "organizerUid": { "type": "string" },
+        "createdAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["title", "date", "organizerUid"]
+    },
+    "EventReminder": {
+      "title": "Event Reminder",
+      "description": "A reminder for an event set by a user.",
+      "type": "object",
+      "properties": {
+        "eventId": { "type": "string" },
+        "userUid": { "type": "string" },
+        "eventName": { "type": "string" },
+        "eventDate": { "type": "string", "format": "date-time" },
+        "reminderSent": { "type": "boolean" },
+        "createdAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["eventId", "userUid", "eventName", "eventDate"]
+    },
+    "ForumTopic": {
+      "title": "Forum Topic",
+      "description": "Discussion threads",
+      "type": "object",
+      "properties": {
+        "title": { "type": "string" },
+        "categoryIds": { "type": "array", "items": { "type": "string" } },
+        "authorUid": { "type": "string" },
+        "authorName": { "type": "string" },
+        "createdAt": { "type": "string", "format": "date-time" },
+        "replyCount": { "type": "number" }
+      },
+      "required": ["title", "authorUid", "createdAt"]
+    },
+    "ForumPost": {
+      "title": "Forum Post",
+      "description": "Replies to forum topics",
+      "type": "object",
+      "properties": {
+        "topicId": { "type": "string" },
+        "content": { "type": "string" },
+        "authorUid": { "type": "string" },
+        "authorName": { "type": "string" },
+        "authorPhoto": { "type": "string" },
+        "createdAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["topicId", "content", "authorUid", "createdAt"]
+    },
+    "Survey": {
+      "title": "Industry Survey",
+      "description": "Polls and surveys",
+      "type": "object",
+      "properties": {
+        "question": { "type": "string" },
+        "options": { "type": "array" },
+        "creatorUid": { "type": "string" },
+        "totalVotes": { "type": "number" },
+        "createdAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["question", "options", "creatorUid"]
+    },
+    "Comment": {
+      "title": "Post Comment",
+      "description": "User comments on community posts",
+      "type": "object",
+      "properties": {
+        "content": { "type": "string" },
+        "authorUid": { "type": "string" },
+        "authorName": { "type": "string" },
+        "authorPhoto": { "type": "string" },
+        "authorJobTitle": { "type": "string" },
+        "quote": {
+          "type": "object",
+          "properties": {
+            "authorName": { "type": "string" },
+            "content": { "type": "string" }
+          }
+        },
+        "createdAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["content", "authorUid", "createdAt"]
+    },
+    "AppSettings": {
+      "title": "Application Settings",
+      "description": "Global settings for theme and branding",
+      "type": "object",
+      "properties": {
+        "primaryColor": { "type": "string" },
+        "secondaryColor": { "type": "string" },
+        "accentColor": { "type": "string" },
+        "logoUrl": { "type": "string" },
+        "siteName": { "type": "string" },
+        "siteTagline": { "type": "string" },
+        "displayMode": { 
+          "type": "string", 
+          "enum": ["image_only", "text_only", "both"] 
+        },
+        "updatedAt": { "type": "string", "format": "date-time" }
+      }
+    },
+    "DynamicPage": {
+      "title": "Dynamic Page",
+      "description": "Custom pages built by admins",
+      "type": "object",
+      "properties": {
+        "slug": { "type": "string" },
+        "title": { "type": "string" },
+        "content": { "type": "string" },
+        "sections": { "type": "array" },
+        "published": { "type": "boolean" },
+        "authorUid": { "type": "string" },
+        "createdAt": { "type": "string", "format": "date-time" },
+        "updatedAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["slug", "title"]
+    },
+    "Report": {
+      "title": "Content Report",
+      "description": "Data for reported content (posts, comments, topics)",
+      "type": "object",
+      "properties": {
+        "targetId": { "type": "string" },
+        "targetType": { "type": "string", "enum": ["post", "comment", "topic"] },
+        "targetPath": { "type": "string" },
+        "reason": { "type": "string" },
+        "reporterUid": { "type": "string" },
+        "reporterName": { "type": "string" },
+        "status": { "type": "string", "enum": ["pending", "resolved", "dismissed"] },
+        "createdAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["targetId", "targetType", "targetPath", "reporterUid"]
+    },
+    "Company": {
+      "title": "Business Profile",
+      "description": "Information about a registered company",
+      "type": "object",
+      "properties": {
+        "name": { "type": "string" },
+        "description": { "type": "string" },
+        "aboutUs": { "type": "string" },
+        "address": { "type": "string" },
+        "logo": { "type": "string" },
+        "heroImage": { "type": "string" },
+        "website": { "type": "string" },
+        "socialLinks": {
+          "type": "object",
+          "properties": {
+            "linkedin": { "type": "string" },
+            "twitter": { "type": "string" },
+            "facebook": { "type": "string" },
+            "instagram": { "type": "string" }
+          }
+        },
+        "categoryId": { "type": "string" },
+        "subCategoryId": { "type": "string" },
+        "tier3CategoryId": { "type": "string" },
+        "categoryIds": { "type": "array", "items": { "type": "string" } },
+        "ownerUid": { "type": "string" },
+        "isClaimed": { "type": "boolean" },
+        "products": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "name": { "type": "string" },
+              "description": { "type": "string" },
+              "image": { "type": "string" }
+            }
+          }
+        },
+        "createdAt": { "type": "string", "format": "date-time" },
+        "updatedAt": { "type": "string", "format": "date-time" },
+        "isFeatured": { "type": "boolean" }
+      },
+      "required": ["name", "categoryId"]
+    },
+    "CompanyCategory": {
+      "title": "Company Category",
+      "description": "Hierarchical classification for companies",
+      "type": "object",
+      "properties": {
+        "name": { "type": "string" },
+        "parentId": { "type": "string" },
+        "level": { "type": "number" },
+        "order": { "type": "number" }
+      },
+      "required": ["name", "level"]
+    },
+    "CompanyClaim": {
+      "title": "Company Claim Request",
+      "description": "User requests to claim a business profile",
+      "type": "object",
+      "properties": {
+        "companyId": { "type": "string" },
+        "userUid": { "type": "string" },
+        "userName": { "type": "string" },
+        "userEmail": { "type": "string" },
+        "justification": { "type": "string" },
+        "status": { "type": "string", "enum": ["pending", "approved", "rejected"] },
+        "createdAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["companyId", "userUid"]
+    },
+    "Endorsement": {
+      "title": "Skill Endorsement",
+      "description": "User endorsement for another member's skill",
+      "type": "object",
+      "properties": {
+        "targetUid": { "type": "string" },
+        "endorserUid": { "type": "string" },
+        "endorserName": { "type": "string" },
+        "skill": { "type": "string" },
+        "createdAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["targetUid", "endorserUid", "skill", "createdAt"]
+    },
+    "Recommendation": {
+      "title": "Member Recommendation",
+      "description": "Professional recommendation and traits assessment",
+      "type": "object",
+      "properties": {
+        "targetUid": { "type": "string" },
+        "recommenderUid": { "type": "string" },
+        "recommenderName": { "type": "string" },
+        "recommenderPhoto": { "type": "string" },
+        "traits": { "type": "array", "items": { "type": "string" } },
+        "comment": { "type": "string" },
+        "createdAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["targetUid", "recommenderUid", "traits", "createdAt"]
+    },
+    "ProductRecommendation": {
+      "title": "Product Recommendation",
+      "description": "Member endorsement for a specific company product",
+      "type": "object",
+      "properties": {
+        "companyId": { "type": "string" },
+        "productName": { "type": "string" },
+        "userUid": { "type": "string" },
+        "userName": { "type": "string" },
+        "userPhoto": { "type": "string" },
+        "createdAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["companyId", "productName", "userUid", "createdAt"]
+    },
+    "resumes": {
+      "title": "Resume",
+      "description": "Professional resume for Pro users",
+      "type": "object",
+      "properties": {
+        "uid": { "type": "string" },
+        "userUid": { "type": "string" },
+        "fullName": { "type": "string" },
+        "photoUrl": { "type": "string" },
+        "address": { "type": "string" },
+        "dateOfBirth": { "type": "string", "format": "date" },
+        "age": { "type": "integer" },
+        "mobile": { "type": "string" },
+        "maritalStatus": { "type": "string" },
+        "dependents": { "type": "string" },
+        "aboutMe": { "type": "string" },
+        "currentJob": { 
+          "type": "object",
+          "properties": {
+            "title": { "type": "string" },
+            "company": { "type": "string" },
+            "duration": { "type": "string" }
+          }
+        },
+        "pastJobs": { "type": "array", "items": { "type": "object" } },
+        "qualifications": { "type": "array", "items": { "type": "string" } },
+        "certifications": { "type": "array", "items": { "type": "string" } },
+        "additionalCourses": { "type": "array", "items": { "type": "string" } },
+        "additionalSkills": { "type": "array", "items": { "type": "string" } },
+        "aiSkillLevel": { "type": "integer" },
+        "categoryId": { "type": "string" },
+        "categoryName": { "type": "string" },
+        "subCategoryId": { "type": "string" },
+        "subCategoryName": { "type": "string" },
+        "countriesTravelled": { "type": "array", "items": { "type": "string" } },
+        "hobbies": { "type": "array", "items": { "type": "string" } },
+        "isLocked": { "type": "boolean" },
+        "updatedAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["userUid", "fullName"]
+    },
+    "Job": {
+      "title": "Job Posting",
+      "description": "Professional job opportunities",
+      "type": "object",
+      "properties": {
+        "title": { "type": "string" },
+        "description": { "type": "string" },
+        "categoryIds": { "type": "array", "items": { "type": "string" } },
+        "companyId": { "type": "string" },
+        "companyName": { "type": "string" },
+        "companyLogo": { "type": "string" },
+        "location": { "type": "string" },
+        "type": { "type": "string", "enum": ["Full-time", "Part-time", "Contract", "Freelance", "Internship"] },
+        "salary": { "type": "string" },
+        "creatorUid": { "type": "string" },
+        "creatorEmail": { "type": "string" },
+        "createdAt": { "type": "string", "format": "date-time" },
+        "status": { "type": "string", "enum": ["open", "closed"] }
+      },
+      "required": ["title", "description", "companyName", "creatorUid", "creatorEmail"]
+    },
+    "Notification": {
+      "title": "User Notification",
+      "description": "System or user-triggered alerts",
+      "type": "object",
+      "properties": {
+        "recipientUid": { "type": "string" },
+        "title": { "type": "string" },
+        "message": { "type": "string" },
+        "type": { "type": "string" },
+        "link": { "type": "string" },
+        "read": { "type": "boolean" },
+        "createdAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["recipientUid", "title", "message", "read"]
+    },
+    "Connection": {
+      "title": "User Connection",
+      "description": "Relationship between two users",
+      "type": "object",
+      "properties": {
+        "userIds": { "type": "array", "items": { "type": "string" } },
+        "status": { "type": "string", "enum": ["pending", "accepted"] },
+        "requesterId": { "type": "string" },
+        "createdAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["userIds", "status", "requesterId", "createdAt"]
+    },
+    "Chat": {
+      "title": "Chat Room",
+      "description": "A conversation between two or more users",
+      "type": "object",
+      "properties": {
+        "participants": { "type": "array", "items": { "type": "string" } },
+        "lastMessage": { "type": "string" },
+        "lastMessageAt": { "type": "string", "format": "date-time" },
+        "createdAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["participants", "createdAt"]
+    },
+    "Message": {
+      "title": "Chat Message",
+      "description": "An individual message within a chat",
+      "type": "object",
+      "properties": {
+        "senderId": { "type": "string" },
+        "senderName": { "type": "string" },
+        "content": { "type": "string" },
+        "type": { "type": "string", "enum": ["text", "image"] },
+        "createdAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["senderId", "content", "createdAt"]
+    },
+    "Group": {
+      "title": "Community Group",
+      "description": "A group for members connected to companies to collaborate",
+      "type": "object",
+      "properties": {
+        "name": { "type": "string" },
+        "description": { "type": "string" },
+        "iconUrl": { "type": "string" },
+        "coverUrl": { "type": "string" },
+        "creatorUid": { "type": "string" },
+        "admins": { "type": "array", "items": { "type": "string" } },
+        "memberCount": { "type": "number" },
+        "isPrivate": { "type": "boolean" },
+        "createdAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["name", "creatorUid", "createdAt"]
+    },
+    "GroupMember": {
+      "title": "Group Member",
+      "description": "Relationship between a user and a group",
+      "type": "object",
+      "properties": {
+        "groupId": { "type": "string" },
+        "userUid": { "type": "string" },
+        "role": { "type": "string", "enum": ["member", "admin", "creator"] },
+        "joinedAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["groupId", "userUid", "role", "joinedAt"]
+    },
+    "EventAttendee": {
+      "title": "Event Attendee",
+      "description": "Information about a user attending an event",
+      "type": "object",
+      "properties": {
+        "eventId": { "type": "string" },
+        "userUid": { "type": "string" },
+        "userName": { "type": "string" },
+        "userPhoto": { "type": "string" },
+        "companyName": { "type": "string" },
+        "status": { "type": "string", "enum": ["confirmed", "interested"] },
+        "timestamp": { "type": "string", "format": "date-time" }
+      },
+      "required": ["eventId", "userUid"]
+    },
+    "GroupPost": {
+      "title": "Group Post",
+      "description": "Post shared within a group feed",
+      "type": "object",
+      "properties": {
+        "groupId": { "type": "string" },
+        "content": { "type": "string" },
+        "image": { "type": "string" },
+        "authorUid": { "type": "string" },
+        "authorName": { "type": "string" },
+        "authorPhoto": { "type": "string" },
+        "likesCount": { "type": "number" },
+        "createdAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["groupId", "content", "authorUid", "createdAt"]
+    },
+    "GroupComment": {
+      "title": "Group Post Comment",
+      "description": "Comments on posts within a group",
+      "type": "object",
+      "properties": {
+        "postId": { "type": "string" },
+        "content": { "type": "string" },
+        "authorUid": { "type": "string" },
+        "authorName": { "type": "string" },
+        "authorPhoto": { "type": "string" },
+        "createdAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["postId", "content", "authorUid", "createdAt"]
+    },
+    "Report": {
+      "title": "Content Report",
+      "description": "Reports of inappropriate content by users",
+      "type": "object",
+      "properties": {
+        "targetId": { "type": "string" },
+        "targetType": { "type": "string", "enum": ["post", "comment", "profile"] },
+        "reason": { "type": "string" },
+        "reporterUid": { "type": "string" },
+        "status": { "type": "string", "enum": ["pending", "reviewed", "dismissed"] },
+        "createdAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["targetId", "targetType", "reason", "reporterUid", "createdAt"]
+    }
+  },
+  "firestore": {
+    "reports": {
+      "schema": "Report",
+      "description": "User-submitted content reports"
+    },
+    "groups": {
+      "schema": "Group",
+      "description": "Community groups metadata"
+    },
+    "group_members": {
+      "schema": "GroupMember",
+      "description": "Mapping of users to groups with roles"
+    },
+    "groups/{groupId}/posts": {
+      "schema": "GroupPost",
+      "description": "Feed posts within a group"
+    },
+    "groups/{groupId}/posts/{postId}/comments": {
+      "schema": "GroupComment",
+      "description": "Comments on group posts"
+    },
+    "connections": {
+      "schema": "Connection",
+      "description": "User connection requests and relationships"
+    },
+    "chats": {
+      "schema": "Chat",
+      "description": "Chat room metadata"
+    },
+    "chats/{chatId}/messages": {
+      "schema": "Message",
+      "description": "Messages within a specific chat"
+    },
+    "jobs": {
+      "schema": "Job",
+      "description": "Job board listings"
+    },
+    "notifications": {
+      "schema": "Notification",
+      "description": "User specific alerts"
+    },
+    "/resumes/{resumeId}": {
+      "schema": "resumes",
+      "description": "User professional resumes"
+    },
+    "companies": {
+      "schema": "Company",
+      "description": "Directory of companies"
+    },
+    "company_categories": {
+      "schema": "CompanyCategory",
+      "description": "Nested categories (Level 1, 2, 3)"
+    },
+    "company_claims": {
+      "schema": "CompanyClaim",
+      "description": "Pending and past claim requests"
+    },
+    "reports": {
+      "schema": "Report",
+      "description": "User-submitted content reports"
+    },
+    "settings": {
+      "schema": "AppSettings",
+      "description": "Global application settings"
+    },
+    "dynamic_pages": {
+      "schema": "DynamicPage",
+      "description": "Custom admin-built pages"
+    },
+    "users/{userId}": {
+      "schema": "User",
+      "description": "User profiles"
+    },
+    "news": {
+      "schema": "NewsItem",
+      "description": "Aggregated news feed"
+    },
+    "posts": {
+      "schema": "Post",
+      "description": "Community shared content"
+    },
+    "posts/{postId}/comments": {
+      "schema": "Comment",
+      "description": "Comments on community posts"
+    },
+    "events": {
+      "schema": "Event",
+      "description": "Industry events"
+    },
+    "event_reminders": {
+      "schema": "EventReminder",
+      "description": "Reminders set by users for specific events"
+    },
+    "event_attendees": {
+      "schema": "EventAttendee",
+      "description": "List of users attending events"
+    },
+    "endorsements": {
+      "schema": "Endorsement",
+      "description": "User endorsements for skills"
+    },
+    "recommendations": {
+      "schema": "Recommendation",
+      "description": "Member recommendations"
+    },
+    "product_recommendations": {
+      "schema": "ProductRecommendation",
+      "description": "Member endorsements for company products"
+    },
+    "forum_topics": {
+      "schema": "ForumTopic",
+      "description": "Forum discussion threads"
+    },
+    "forum_topics/{topicId}/posts": {
+      "schema": "ForumPost",
+      "description": "Replies within a forum topic"
+    },
+    "surveys": {
+      "schema": "Survey",
+      "description": "Industry surveys/polls"
+    },
+    "surveys/{surveyId}/votes": {
+      "schema": "object",
+      "description": "Votes for a survey (optionIndex and voterUid)"
+    }
+  }
+}

@@ -1,0 +1,61 @@
+@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&family=Space+Grotesk:wght@300;400;500;600;700&display=swap');
+@import "tailwindcss";
+
+@theme {
+  --font-sans: "Outfit", ui-sans-serif, system-ui, sans-serif;
+  --font-display: "Space Grotesk", sans-serif;
+  
+  --tracking-tightest: -0.05em;
+
+  --color-primary: var(--primary-brand);
+  --color-secondary: var(--secondary-brand);
+  --color-accent: var(--accent-brand);
+  --color-bg-main: var(--bg-main);
+  --color-text-heading: var(--text-heading);
+  --color-text-body: var(--text-body);
+  --color-bg-card: var(--bg-card);
+  --color-border-main: var(--border-main);
+  --color-sidebar-focus: var(--sidebar-focus);
+  --color-sidebar-focus-text: var(--sidebar-focus-text);
+}
+
+@layer base {
+  :root {
+    --primary-brand: #0f172a;
+    --secondary-brand: #4f46e5;
+    --accent-brand: #f59e0b;
+    --bg-main: #f8fafc;
+    --text-heading: #0f172a;
+    --text-body: #475569;
+    --bg-card: #ffffff;
+    --border-main: #e2e8f0;
+    --sidebar-focus: #0f172a;
+    --sidebar-focus-text: #ffffff;
+  }
+
+  .dark {
+    --primary-brand: #818cf8;
+    --secondary-brand: #a5b4fc;
+    --accent-brand: #fbbf24;
+    --bg-main: #020617;
+    --text-heading: #f8fafc;
+    --text-body: #cbd5e1;
+    --bg-card: #0f172a;
+    --border-main: #1e293b;
+    --sidebar-focus: #1e293b;
+    --sidebar-focus-text: #f8fafc;
+  }
+
+  body {
+    background-color: var(--bg-main);
+    color: var(--text-body);
+    @apply transition-colors duration-500 ease-in-out;
+  }
+
+  div, nav, aside, section, header, footer, button, input {
+    @apply transition-colors duration-500 ease-in-out;
+  }
+  h1, h2, h3, h4, h5, h6 {
+    color: var(--text-heading);
+  }
+}
