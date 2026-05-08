@@ -1,10 +1,9 @@
 {
-  "projectId": "my-project-1509023980908",
-  "appId": "1:949648530944:web:a35c9497c9dfb9c43802e5",
-  "apiKey": "AIzaSyBXuTGpHnTJpUQ73vOaPQLc27ACJsWfzOA",
-  "authDomain": "my-project-1509023980908.firebaseapp.com",
-  "firestoreDatabaseId": "ai-studio-6b48fdff-9e77-476e-aa05-ad5b2eb623ec",
-  "storageBucket": "my-project-1509023980908.firebasestorage.app",
-  "messagingSenderId": "949648530944",
+  "projectId": "tankonomics",
+  "appId": "1:919953719236:web:ec22e790a2b1860d916e91",
+  "apiKey": "AIzaSyDddCUzFXmYasggpZuyPOXtAOBDHYtl-ew",
+  "authDomain": "tankonomics.firebaseapp.com",
+  "storageBucket": "tankonomics.firebasestorage.app",
+  "messagingSenderId": "919953719236",
   "measurementId": ""
 }
