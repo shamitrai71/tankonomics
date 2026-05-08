@@ -14,13 +14,18 @@ const __dirname = path.dirname(__filename);
 
 async function startServer() {
   const app = express();
-  const PORT = 3000;
+  // Cloud Run / most PaaS providers inject PORT. Default to 3000 for local dev.
+  const PORT = parseInt(process.env.PORT || "3000", 10);
 
   const resend = process.env.RESEND_API_KEY ? new Resend(process.env.RESEND_API_KEY) : null;
 
+  // Trust the Cloud Run / load-balancer proxy so req.protocol and req.get("host")
+  // reflect the original https URL the client used (needed for OAuth redirect URIs).
+  app.set("trust proxy", true);
+
   app.use(cors());
   app.use(express.json());
-  
+
   // Use a more relaxed helmet config for dev/iframe compatibility
   app.use(
     helmet({
@@ -28,6 +33,15 @@ async function startServer() {
       crossOriginEmbedderPolicy: false,
     })
   );
+
+  // Helper: build the public-facing base URL of this service.
+  // In production prefer the explicit APP_URL env var (set on Cloud Run), and
+  // fall back to inferring from the request. In dev, use the request host.
+  const getBaseUrl = (req: express.Request): string => {
+    if (process.env.APP_URL) return process.env.APP_URL.replace(/\/$/, "");
+    const proto = (req.headers["x-forwarded-proto"] as string) || req.protocol || "https";
+    return `${proto}://${req.get("host")}`;
+  };
 
   // API Routes
   app.get("/api/health", (req, res) => {
@@ -45,7 +59,7 @@ async function startServer() {
 
     try {
       const subject = type === "comment" ? `New comment on your post from ${fromUser}` : `New reaction on your post from ${fromUser}`;
-      const text = type === "comment" 
+      const text = type === "comment"
         ? `${fromUser} commented on your post: "${postContent}"`
         : `${fromUser} reacted to your post: "${postContent}"`;
 
@@ -79,7 +93,7 @@ async function startServer() {
       });
 
       const $ = cheerio.load(response.data);
-      
+
       const metadata = {
         title: $('meta[property="og:title"]').attr('content') || $('title').text() || url,
         description: $('meta[property="og:description"]').attr('content') || $('meta[name="description"]').attr('content') || '',
@@ -110,7 +124,7 @@ async function startServer() {
          to: [creatorEmail],
          subject: `New Application for ${jobTitle} at ${companyName}`,
          text: `${applicantName} (${applicantEmail}) has applied for the ${jobTitle} position at ${companyName}.
-         
+
 ${message ? `Applicant Message:\n"${message}"\n` : ""}
 Please reach out to them directly via their email: ${applicantEmail}`,
       });
@@ -124,10 +138,8 @@ Please reach out to them directly via their email: ${applicantEmail}`,
 
   // LinkedIn OAuth
   app.get("/api/auth/linkedin/url", (req, res) => {
-    const redirectUri = process.env.NODE_ENV === "production" 
-      ? `https://${req.get("host")}/api/auth/linkedin/callback`
-      : `https://${req.get("host")}/api/auth/linkedin/callback`;
-    
+    const redirectUri = `${getBaseUrl(req)}/api/auth/linkedin/callback`;
+
     // Using openid scopes for profile info. Note: job title and company often require additional permissions
     const params = new URLSearchParams({
       response_type: "code",
@@ -161,8 +173,8 @@ Please reach out to them directly via their email: ${applicantEmail}`,
     }
 
     try {
-      const redirectUri = `https://${req.get("host")}/api/auth/linkedin/callback`;
-      
+      const redirectUri = `${getBaseUrl(req)}/api/auth/linkedin/callback`;
+
       // 1. Exchange code for access token
       const tokenResponse = await axios.post("https://www.linkedin.com/oauth/v2/accessToken", new URLSearchParams({
         grant_type: "authorization_code",
@@ -182,7 +194,7 @@ Please reach out to them directly via their email: ${applicantEmail}`,
       });
 
       const userData = userResponse.data;
-      
+
       // Note: In a production app with full permissions, you would fetch positions and skills here.
       // For this demo, we'll return the profile data we have.
       const profile = {
@@ -202,9 +214,9 @@ Please reach out to them directly via their email: ${applicantEmail}`,
         <html>
           <body>
             <script>
-              window.opener.postMessage({ 
-                type: "OAUTH_AUTH_SUCCESS", 
-                payload: ${JSON.stringify(profile)} 
+              window.opener.postMessage({
+                type: "OAUTH_AUTH_SUCCESS",
+                payload: ${JSON.stringify(profile)}
               }, "*");
               window.close();
             </script>
@@ -227,7 +239,7 @@ Please reach out to them directly via their email: ${applicantEmail}`,
     }
   });
 
-  // Vite middleware for development
+  // Vite middleware for development; static-serve the built bundle in production.
   if (process.env.NODE_ENV !== "production") {
     const vite = await createViteServer({
       server: { middlewareMode: true },
@@ -243,7 +255,7 @@ Please reach out to them directly via their email: ${applicantEmail}`,
   }
 
   app.listen(PORT, "0.0.0.0", () => {
-    console.log(`Server running on http://localhost:${PORT}`);
+    console.log(`Server running on http://0.0.0.0:${PORT}`);
   });
 }
 
