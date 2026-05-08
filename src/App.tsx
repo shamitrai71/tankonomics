@@ -11,7 +11,8 @@ import {
 import { 
   onAuthStateChanged, 
   User, 
-  signInWithPopup, 
+  signInWithRedirect,
+  getRedirectResult,
   GoogleAuthProvider, 
   FacebookAuthProvider,
   OAuthProvider,
@@ -981,18 +982,31 @@ export default function App() {
     };
   }, [user]);
 
+  // Handle the result of signInWithRedirect when the user returns from the OAuth provider.
+  // Runs once on mount; getRedirectResult is a no-op if there's no pending redirect.
+  useEffect(() => {
+    getRedirectResult(auth).catch((error) => {
+      if (error?.code !== 'auth/no-auth-event') {
+        console.error("Redirect sign-in error:", error);
+      }
+    });
+  }, []);
+
   const signIn = async (providerName: string = 'google') => {
     try {
+      let provider;
       if (providerName === 'google') {
-        const provider = new GoogleAuthProvider();
-        await signInWithPopup(auth, provider);
+        provider = new GoogleAuthProvider();
       } else if (providerName === 'facebook') {
-        const provider = new FacebookAuthProvider();
-        await signInWithPopup(auth, provider);
+        provider = new FacebookAuthProvider();
       } else if (providerName === 'linkedin') {
-        const provider = new OAuthProvider('linkedin.com');
-        await signInWithPopup(auth, provider);
+        provider = new OAuthProvider('linkedin.com');
+      } else {
+        return;
       }
+      await signInWithRedirect(auth, provider);
+      // Execution stops here: the browser navigates to the OAuth provider.
+      // When the user returns, the useEffect above picks up the credential.
     } catch (error) {
       console.error("Sign in error:", error);
       alert("Social Sign-in failed. Please ensure the provider is configured in Firebase Console.");
