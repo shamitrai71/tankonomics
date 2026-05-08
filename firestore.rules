@@ -485,12 +485,15 @@ service cloud.firestore {
 
     match /admins/{userId} {
       allow read: if isSignedIn();
-      allow create: if isSignedIn() && request.auth.token.email == "petrodeksystems@gmail.com";
+      allow create: if isSignedIn() && (
+        request.auth.token.email == "petrodeksystems@gmail.com" ||
+        request.auth.token.email == "esraigroup@gmail.com"
+      );
       allow write: if false; // Managed via console/backend
     }
 
     match /users/{userId} {
-      allow read: if isSignedIn() && (resource.data.isPublic == true || isOwner(userId) || isAdmin());
+      allow read: if isSignedIn();
       allow create: if isOwner(userId) && isValidId(userId) && isValidUser(incoming());
       allow update: if isValidId(userId) && (
                     (isOwner(userId) && 
