@@ -85,6 +85,15 @@ import PostDetail from "./pages/PostDetail";
 
 // --- Context & Types ---
 
+// Super admin emails: these accounts can bootstrap themselves as admin on first login.
+// IMPORTANT: this list must be kept in sync with the corresponding allow-list in
+// firestore.rules (see the admins/{userId} create rule). Adding an email here
+// without also updating the rules will result in a permission-denied error.
+const SUPER_ADMIN_EMAILS = [
+  "petrodeksystems@gmail.com",
+  "esraigroup@gmail.com",
+] as const;
+
 interface AuthContextType {
   user: User | null;
   profile: any | null;
@@ -347,7 +356,7 @@ function Navbar({ onMenuToggle, theme }: { onMenuToggle: () => void, theme: any 
 }
 
 function Sidebar({ isOpen, onClose, theme }: { isOpen: boolean; onClose: () => void, theme: any }) {
-  const { user, isAdmin } = useAuth();
+  const { user, isAdmin, logout } = useAuth();
   const location = useLocation();
   const { data: dynamicPages } = useCollection<any>("dynamic_pages", [orderBy("createdAt", "asc")]);
 
@@ -476,7 +485,14 @@ function Sidebar({ isOpen, onClose, theme }: { isOpen: boolean; onClose: () => v
                 </div>
              </div>
              <button 
-               onClick={() => useAuth().logout()}
+               onClick={async () => {
+                 try {
+                   await logout();
+                   onClose();
+                 } catch (err) {
+                   console.error("Sign out failed:", err);
+                 }
+               }}
                className="w-full flex items-center justify-center gap-2 py-2.5 bg-bg-card text-red-500 rounded-xl text-[10px] font-black uppercase tracking-widest border border-red-500/20 shadow-sm hover:bg-red-500/10 transition-all font-black"
              >
                <LogOut className="w-3.5 h-3.5" />
@@ -953,7 +969,7 @@ export default function App() {
     // Check admin
     const checkAdmin = async () => {
       const adminDoc = await getDoc(doc(db, "admins", user.uid));
-      const isSuperAdminEmail = user.email === "petrodeksystems@gmail.com" || user.email === "esraigroup@gmail.com";
+      const isSuperAdminEmail = user.email != null && SUPER_ADMIN_EMAILS.includes(user.email as any);
       
       if (!adminDoc.exists() && isSuperAdminEmail) {
         await setDoc(doc(db, "admins", user.uid), { 
