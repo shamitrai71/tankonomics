@@ -32,12 +32,19 @@ export default function PostDetail() {
   const [postingComment, setPostingComment] = useState(false);
 
   const contentType = topicId ? "forum" : groupId ? "group" : "post";
-  const effectiveId = postId || topicId || postId; // postId is used twice here, bit of a mess but we'll fix it
 
-  const id = postId || topicId;
-  
-  const basePath = topicId ? "forum_topics" : (groupId && postId ? `groups/${groupId}/posts` : "posts");
+  // Forum topics use a /posts subcollection per the firestore.rules schema.
+  // Group posts and standalone posts use a /comments subcollection.
+  const isForumTopic = !!topicId;
+  const isGroupPost = !!groupId && !!postId;
+
+  const basePath = isForumTopic
+    ? "forum_topics"
+    : (isGroupPost ? `groups/${groupId}/posts` : "posts");
   const actualId = topicId || postId;
+
+  // Child thread subcollection: forum topics → /posts, everything else → /comments
+  const threadSubcollection = isForumTopic ? "posts" : "comments";
 
   useEffect(() => {
     if (!actualId) return;
@@ -62,9 +69,12 @@ export default function PostDetail() {
     fetchContent();
   }, [actualId, basePath]);
 
+  // Guard the snapshot listener: pass "" path with enabled=false until we have content.
+  // useCollection's third argument controls whether it actually queries.
   const { data: comments, loading: loadingComments } = useCollection<any>(
-    content ? `${basePath}/${content.id}/comments` : null,
-    [orderBy("createdAt", "asc")]
+    content ? `${basePath}/${content.id}/${threadSubcollection}` : "",
+    content ? [orderBy("createdAt", "asc")] : [],
+    !!content
   );
 
   const handleAddComment = async (e: React.FormEvent) => {
@@ -73,20 +83,25 @@ export default function PostDetail() {
 
     setPostingComment(true);
     try {
-      await addDoc(collection(db, `${basePath}/${content.id}/comments`), {
-        content: newComment,
+      await addDoc(collection(db, `${basePath}/${content.id}/${threadSubcollection}`), {
+        // Forum topic posts require topicId per firestore.rules isValidForumPost()
+        ...(isForumTopic ? { topicId: content.id } : {}),
+        content: newComment.trim(),
         authorUid: user.uid,
         authorName: profile?.displayName || user.displayName,
         authorPhoto: profile?.photoURL || user.photoURL,
         authorJobTitle: profile?.jobTitle || "Network Peer",
         createdAt: serverTimestamp()
       });
-      
+
+      // Forum topic rules only allow updating replyCount + updatedAt.
+      // Other content types use commentsCount.
       const contentRef = doc(db, basePath, content.id);
-      await updateDoc(contentRef, {
-        commentsCount: increment(1)
-      });
-      
+      await updateDoc(contentRef, isForumTopic
+        ? { replyCount: increment(1), updatedAt: serverTimestamp() }
+        : { commentsCount: increment(1) }
+      );
+
       setNewComment("");
     } catch (err) {
       console.error("Comment error:", err);

@@ -436,42 +436,71 @@ export default function Admin() {
   };
 
   const handleCreateCompany = async () => {
-    if (!newCompany.name || newCompany.categoryIds.length === 0) return;
-    if (editingCompanyId) {
-      await updateDocument("companies", editingCompanyId, {
-        ...newCompany,
-        updatedAt: serverTimestamp()
-      });
-      setEditingCompanyId(null);
-    } else {
-      await createDocument("companies", {
-        ...newCompany,
-        isClaimed: false,
-        createdAt: serverTimestamp()
-      });
+    if (!newCompany.name.trim() || newCompany.categoryIds.length === 0) {
+      alert("Company name and at least one category are required.");
+      return;
     }
-    setNewCompany({ 
-      name: "", 
-      description: "", 
-      aboutUs: "",
-      address: "",
-      logo: "", 
-      heroImage: "",
-      website: "", 
+
+    // Build a normalized payload. Emit both categoryIds (array, new model)
+    // and categoryId (singular, used by older list/profile views) so the
+    // company object reads consistently across the app.
+    const payload: any = {
+      name: newCompany.name.trim(),
+      description: (newCompany.description || "").trim(),
+      aboutUs: (newCompany.aboutUs || "").trim(),
+      address: (newCompany.address || "").trim(),
+      logo: newCompany.logo || "",
+      heroImage: newCompany.heroImage || "",
+      website: (newCompany.website || "").trim(),
       socialLinks: {
-        linkedin: "",
-        twitter: "",
-        facebook: "",
-        instagram: ""
+        linkedin: newCompany.socialLinks?.linkedin || "",
+        twitter: newCompany.socialLinks?.twitter || "",
+        facebook: newCompany.socialLinks?.facebook || "",
+        instagram: newCompany.socialLinks?.instagram || "",
       },
-      categoryId: "", 
-      subCategoryId: "", 
-      tier3CategoryId: "",
-      categoryIds: [],
-    isFeatured: false,
-    products: []
-  });
-};
+      categoryIds: newCompany.categoryIds,
+      categoryId: newCompany.categoryIds[0], // first category for legacy readers
+      subCategoryId: newCompany.subCategoryId || "",
+      tier3CategoryId: newCompany.tier3CategoryId || "",
+      isFeatured: !!newCompany.isFeatured,
+      products: Array.isArray(newCompany.products) ? newCompany.products : [],
+      updatedAt: serverTimestamp(),
+    };
+
+    try {
+      if (editingCompanyId) {
+        await updateDocument("companies", editingCompanyId, payload);
+        setEditingCompanyId(null);
+      } else {
+        await createDocument("companies", {
+          ...payload,
+          isClaimed: false,
+          ownerUid: "",
+          createdAt: serverTimestamp(),
+        });
+      }
+
+      setNewCompany({
+        name: "",
+        description: "",
+        aboutUs: "",
+        address: "",
+        logo: "",
+        heroImage: "",
+        website: "",
+        socialLinks: { linkedin: "", twitter: "", facebook: "", instagram: "" },
+        categoryId: "",
+        subCategoryId: "",
+        tier3CategoryId: "",
+        categoryIds: [],
+        isFeatured: false,
+        products: []
+      });
+    } catch (err: any) {
+      console.error("Company save failed:", err);
+      alert(`Company save failed: ${err?.message || "Unknown error"}`);
+    }
+  };
 
 const handleEditCompany = (company: any) => {
   setNewCompany({
@@ -1204,7 +1233,7 @@ const handleEditCompany = (company: any) => {
                   </div>
                   <button 
                     onClick={handleCreateCompany}
-                    disabled={!newCompany.name || !newCompany.categoryId}
+                    disabled={!newCompany.name.trim() || newCompany.categoryIds.length === 0}
                     className="w-full bg-slate-900 text-white font-black py-4 rounded-2xl shadow-xl hover:bg-slate-800 transition-all flex items-center justify-center gap-3 active:scale-95 uppercase tracking-widest text-xs mt-6"
                   >
                     <Building2 className="w-5 h-5" /> {editingCompanyId ? "Update Profile" : "Register Business"}

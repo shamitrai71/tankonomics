@@ -490,18 +490,64 @@ export default function Profile() {
   const showActions = profile?.isPublic || isOwner;
 
   const handleSave = async () => {
-    if (!user || saving) return;
+    if (!user?.uid) {
+      alert("You must be signed in to update your profile.");
+      return;
+    }
+    if (saving) return;
+
     setSaving(true);
     try {
-      await updateDocument("users", user.uid, {
-        ...formData,
-        updatedAt: serverTimestamp()
-      });
+      // Build a payload containing ONLY the keys allowed by the firestore.rules
+      // /users/{userId} update whitelist (affectedKeys().hasOnly([...])).
+      // Spreading the whole formData here previously caused rule rejection
+      // when any out-of-whitelist key (e.g. createdAt) was present.
+      const allowedProfileUpdate: any = {
+        uid: user.uid,
+        email: user.email || "",
+        displayName: (formData.displayName || "").trim(),
+        photoURL: formData.photoURL || "",
+        bio: formData.bio || "",
+        industrySegment: formData.industrySegment || "",
+        company: formData.company || "",
+        companyId: formData.companyId || "",
+        jobTitle: formData.jobTitle || "",
+        isPro: !!formData.isPro,
+        isPublic: !!formData.isPublic,
+        skills: Array.isArray(formData.skills) ? formData.skills : [],
+        badges: Array.isArray(formData.badges) ? formData.badges : [],
+        savedJobs: Array.isArray(formData.savedJobs) ? formData.savedJobs : [],
+        profileLabels: formData.profileLabels || {},
+        socialLinks: {
+          linkedin: formData.socialLinks?.linkedin || "",
+          twitter: formData.socialLinks?.twitter || "",
+          facebook: formData.socialLinks?.facebook || "",
+          instagram: formData.socialLinks?.instagram || "",
+          website: formData.socialLinks?.website || "",
+        },
+        updatedAt: serverTimestamp(),
+      };
+
+      // aiUsage is allowed by the rule but should only be sent when present
+      // (otherwise we may overwrite server-managed counters with undefined).
+      if (formData.aiUsage && typeof formData.aiUsage === "object") {
+        allowedProfileUpdate.aiUsage = formData.aiUsage;
+      }
+
+      // Diagnostic log: makes it easy to see exactly which keys are written
+      // when chasing further rule mismatches in DevTools.
+      console.log(
+        "Profile update payload keys:",
+        Object.keys(allowedProfileUpdate)
+      );
+
+      await updateDocument("users", user.uid, allowedProfileUpdate);
       setEditing(false);
       setShowToast(true);
       setTimeout(() => setShowToast(false), 3000);
-    } catch (err) {
+    } catch (err: any) {
       console.error("Error saving profile:", err);
+      alert(`Profile save failed: ${err?.message || "Unknown error"}`);
     } finally {
       setSaving(false);
     }
