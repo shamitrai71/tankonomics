@@ -919,82 +919,138 @@ export default function App() {
     if (!user) {
       setProfile(null);
       setIsAdmin(false);
+      setOwnedCompanies([]);
       return;
     }
 
-    // Real-time profile listener
-    const profileUnsub = onSnapshot(doc(db, "users", user.uid), (userDoc) => {
-      if (userDoc.exists()) {
-        setProfile(userDoc.data());
-      } else {
-        // Create profile if doesn't exist
-        const newProfile = {
-          uid: user.uid,
-          displayName: user.displayName || "New Member",
-          email: user.email,
-          photoURL: user.photoURL,
-          createdAt: serverTimestamp(),
-          isPro: false,
-          isPublic: true,
-          jobTitle: "",
-          company: "",
-          companyId: "",
-          industrySegment: "",
-          bio: "",
-          skills: [],
-          badges: [],
-          socialLinks: {
-            linkedin: "",
-            twitter: "",
-            facebook: "",
-            instagram: "",
-            website: ""
-          },
-          profileLabels: {
-            summaryHeading: "Professional Summary",
-            experienceHeading: "Update Experience",
-            skillsHeading: "Industry Skills & Endorsements",
-            recommendationsHeading: "Professional Recommendations",
-            badgesHeading: "Industry Certification & Badges",
-            activityHeading: "Network Activity",
-            technicalScheduleHeading: "My Technical Schedule"
-          }
-        };
-        setDoc(doc(db, "users", user.uid), newProfile);
-      }
-    }, (error) => {
-      console.error("Profile sync error:", error);
-    });
+    // Track unsubscribers so we can clean up when the effect re-runs or the
+    // user signs out. Declared at function scope (not inside try) so the
+    // cleanup return below can see them.
+    let profileUnsub: (() => void) | undefined;
+    let companiesUnsub: (() => void) | undefined;
 
-    // Check admin
-    const checkAdmin = async () => {
-      const adminDoc = await getDoc(doc(db, "admins", user.uid));
-      const isSuperAdminEmail = user.email != null && SUPER_ADMIN_EMAILS.includes(user.email as any);
-      
-      if (!adminDoc.exists() && isSuperAdminEmail) {
-        await setDoc(doc(db, "admins", user.uid), { 
-          email: user.email, 
-          grantedAt: serverTimestamp(),
-          role: "super_admin"
-        });
-        setIsAdmin(true);
-      } else {
-        setIsAdmin(adminDoc.exists());
+    // initUserContext is the single source of truth for setting up a
+    // signed-in session's Firestore state. It performs three things in
+    // strict order so we never race ahead of incomplete bootstrap:
+    //   1. ensure users/{uid} exists (create if missing, then setProfile locally)
+    //   2. attach a live profile snapshot listener
+    //   3. ensure admins/{uid} state, plus owned-companies snapshot
+    //
+    // The previous implementation called setDoc() fire-and-forget inside
+    // the snapshot callback, which caused Profile.tsx save to race ahead
+    // and hit "No document to update" when the bootstrap write hadn't yet
+    // completed. Awaiting setDoc here and seeding setProfile() with the
+    // freshly-created object eliminates that race.
+    const initUserContext = async () => {
+      try {
+        const userRef = doc(db, "users", user.uid);
+        const userSnap = await getDoc(userRef);
+
+        if (!userSnap.exists()) {
+          const newProfile = {
+            uid: user.uid,
+            displayName: user.displayName || "New Member",
+            email: user.email || "",
+            photoURL: user.photoURL || "",
+            createdAt: serverTimestamp(),
+            updatedAt: serverTimestamp(),
+            isPro: false,
+            isPublic: true,
+            jobTitle: "",
+            company: "",
+            companyId: "",
+            industrySegment: "",
+            bio: "",
+            skills: [],
+            badges: [],
+            savedJobs: [],
+            aiUsage: {},
+            socialLinks: {
+              linkedin: "",
+              twitter: "",
+              facebook: "",
+              instagram: "",
+              website: ""
+            },
+            profileLabels: {
+              summaryHeading: "Professional Summary",
+              experienceHeading: "Update Experience",
+              skillsHeading: "Industry Skills & Endorsements",
+              recommendationsHeading: "Professional Recommendations",
+              badgesHeading: "Industry Certification & Badges",
+              activityHeading: "Network Activity",
+              technicalScheduleHeading: "My Technical Schedule"
+            }
+          };
+
+          // Await so subsequent profile editing always finds a real document.
+          await setDoc(userRef, newProfile);
+
+          // Seed local state immediately - don't wait for the snapshot
+          // round-trip. We swap serverTimestamp() sentinels for Date objects
+          // so any UI that reads .createdAt / .updatedAt doesn't choke on
+          // the sentinel placeholder.
+          setProfile({
+            ...newProfile,
+            createdAt: new Date(),
+            updatedAt: new Date()
+          });
+        }
+
+        // Attach the real-time listener AFTER ensuring the doc exists.
+        profileUnsub = onSnapshot(
+          userRef,
+          (userDoc) => {
+            if (userDoc.exists()) {
+              setProfile(userDoc.data());
+            }
+            // If the doc somehow goes missing later, we intentionally don't
+            // re-create it from here. Recreation belongs in this initial
+            // bootstrap step, not in the live listener, to avoid loops.
+          },
+          (error) => {
+            console.error("Profile sync error:", error);
+          }
+        );
+
+        // Admin bootstrap. Awaited so isAdmin is set deterministically.
+        const adminRef = doc(db, "admins", user.uid);
+        const adminSnap = await getDoc(adminRef);
+        const isSuperAdminEmail =
+          user.email != null &&
+          SUPER_ADMIN_EMAILS.includes(user.email as any);
+
+        if (!adminSnap.exists() && isSuperAdminEmail) {
+          await setDoc(adminRef, {
+            email: user.email,
+            grantedAt: serverTimestamp(),
+            role: "super_admin"
+          });
+          setIsAdmin(true);
+        } else {
+          setIsAdmin(adminSnap.exists());
+        }
+
+        // Owned-companies live listener. Safe to start at any time.
+        companiesUnsub = onSnapshot(
+          query(collection(db, "companies"), where("ownerUid", "==", user.uid)),
+          (snapshot) => {
+            const cos = snapshot.docs.map(d => ({ id: d.id, ...d.data() }));
+            setOwnedCompanies(cos);
+          }
+        );
+      } catch (error) {
+        // Bootstrap failures are now surfaced instead of swallowed.
+        // Common causes: rule rejection on user create, transient network.
+        console.error("User bootstrap failed:", error);
       }
     };
-    checkAdmin();
 
-    const companiesUnsub = onSnapshot(
-      query(collection(db, "companies"), where("ownerUid", "==", user.uid)),
-      (snapshot) => {
-        const cos = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-        setOwnedCompanies(cos);
-      }
-    );
+    initUserContext();
 
     return () => {
-      profileUnsub();
-      companiesUnsub();
+      profileUnsub?.();
+      companiesUnsub?.();
     };
   }, [user]);
 
