@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { Link, useParams } from "react-router-dom";
 import { useAuth } from "../App";
 import { useCollection, useCollectionGroup, updateDocument, createDocument } from "../hooks/useFirestore";
-import { where, doc, getDoc, serverTimestamp } from "firebase/firestore";
+import { where, doc, getDoc, setDoc, serverTimestamp } from "firebase/firestore";
 import { db } from "../firebase";
 import { 
   User as UserIcon, 
@@ -541,7 +541,22 @@ export default function Profile() {
         Object.keys(allowedProfileUpdate)
       );
 
-      await updateDocument("users", user.uid, allowedProfileUpdate);
+      // Use setDoc with merge:true instead of updateDoc:
+      //
+      // updateDoc() requires the document to already exist and fails with
+      // "No document to update" if it doesn't. The auto-creation flow in
+      // App.tsx onSnapshot is supposed to create users/{uid} on first sign-in,
+      // but in practice it can race with rule propagation or be skipped if
+      // the snapshot listener errors out, leaving the doc missing.
+      //
+      // setDoc with merge:true creates the document if absent and merges
+      // fields if present — handling both cases cleanly.
+      //
+      // Note: this requires the create rule (isValidUser) to be satisfied
+      // when the doc is new, hence we always include uid/email/displayName.
+      const ref = doc(db, "users", user.uid);
+      await setDoc(ref, allowedProfileUpdate, { merge: true });
+
       setEditing(false);
       setShowToast(true);
       setTimeout(() => setShowToast(false), 3000);
