@@ -4,6 +4,7 @@ import { useAuth } from "../App";
 import { DynamicContent } from "../components/DynamicContent";
 import { useCollection, createDocument, updateDocument, removeDocument } from "../hooks/useFirestore";
 import { orderBy, where, serverTimestamp } from "firebase/firestore";
+import { uploadImage } from "../lib/uploadImage";
 import ReportModal from "../components/ReportModal";
 import { GoogleGenAI } from "@google/genai";
 import { 
@@ -519,6 +520,9 @@ export default function Home() {
   const { user, profile, isAdmin, isCompanyOwner, ownedCompanies } = useAuth();
   const [newPost, setNewPost] = useState("");
   const [postImage, setPostImage] = useState<string | null>(null);
+  // The actual File the user picked, so we can upload it to Storage on submit
+  // (rather than embedding base64 in the Firestore document).
+  const [postImageFile, setPostImageFile] = useState<File | null>(null);
   const [isPosting, setIsPosting] = useState(false);
   const [postAsCompanyId, setPostAsCompanyId] = useState<string | null>(null);
   const [sharingPost, setSharingPost] = useState<any>(null);
@@ -567,24 +571,49 @@ export default function Home() {
   const handleImageUpload = (e: ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
+    // Quick client-side validation so the user finds out before they hit "Share"
+    if (!file.type.startsWith("image/")) {
+      alert("Please pick an image file.");
+      return;
+    }
+    if (file.size > 10 * 1024 * 1024) {
+      alert(`Image is too large (${(file.size / 1024 / 1024).toFixed(1)} MB). Maximum is 10 MB.`);
+      return;
+    }
+    // Revoke the previous preview to avoid leaking object URLs
+    if (postImage && postImage.startsWith("blob:")) URL.revokeObjectURL(postImage);
+    setPostImageFile(file);
+    setPostImage(URL.createObjectURL(file));
+  };
 
-    const reader = new FileReader();
-    reader.onloadend = () => {
-      setPostImage(reader.result as string);
-    };
-    reader.readAsDataURL(file);
+  const clearPostImage = () => {
+    if (postImage && postImage.startsWith("blob:")) URL.revokeObjectURL(postImage);
+    setPostImage(null);
+    setPostImageFile(null);
   };
 
   const handlePost = async () => {
-    if ((!newPost.trim() && !postImage) || isPosting) return;
-    
+    if ((!newPost.trim() && !postImageFile) || isPosting) return;
+
     setIsPosting(true);
     const videoInfo = getVideoInfo(newPost);
     const selectedCompany = ownedCompanies.find(c => c.id === postAsCompanyId);
-    
+
     try {
       if (!user) throw new Error("Must be logged in to share post");
-      
+
+      // Upload the picked image (if any) to Firebase Storage *first*, then
+      // store only the download URL in Firestore. Documents are capped at
+      // ~1 MiB so we can't embed base64 image bytes here.
+      let uploadedImageUrl: string | null = null;
+      if (postImageFile) {
+        try {
+          uploadedImageUrl = await uploadImage(postImageFile, { folder: "posts" });
+        } catch (uploadErr: any) {
+          throw new Error(`Image upload failed: ${uploadErr?.message || uploadErr}`);
+        }
+      }
+
       const postData: any = {
         content: newPost,
         authorUid: user.uid,
@@ -603,18 +632,21 @@ export default function Home() {
         postData.companyLogo = selectedCompany.logo;
       }
 
-      if (postImage) postData.image = postImage;
+      if (uploadedImageUrl) postData.image = uploadedImageUrl;
       if (videoInfo) postData.video = videoInfo;
 
       const result = await createDocument("posts", postData);
-      if (!result) throw new Error("Database rejection. Please check your profile and image size.");
+      if (!result) throw new Error("The server rejected the post. Please check your profile is complete and try again.");
 
       setNewPost("");
-      setPostImage(null);
+      clearPostImage();
     } catch (error: any) {
       console.error("Post creation failed:", error);
-      const isPermissionError = error.message?.includes("PERMISSION_DENIED") || error.message?.includes("insufficient permissions");
-      alert(isPermissionError ? "Permission denied. Please ensure your profile is fully set up and images are under 10MB." : `Failed to share post: ${error.message || "Unknown error"}`);
+      const msg = error?.message || "Unknown error";
+      const isPermissionError = msg.includes("PERMISSION_DENIED") || msg.includes("insufficient permissions");
+      alert(isPermissionError
+        ? "Permission denied. Please ensure your profile is fully set up."
+        : `Failed to share post: ${msg}`);
     } finally {
       setIsPosting(false);
     }
@@ -768,8 +800,8 @@ export default function Home() {
             {postImage && (
               <div className="relative inline-block mt-2">
                 <img src={postImage} className="max-h-48 rounded-xl border border-slate-200 shadow-sm" alt="Preview" />
-                <button 
-                  onClick={() => setPostImage(null)}
+                <button
+                  onClick={clearPostImage}
                   className="absolute -top-2 -right-2 bg-slate-900 text-white p-1.5 rounded-full shadow-lg hover:bg-red-500 transition-colors"
                 >
                   <CloseIcon className="w-3 h-3" />

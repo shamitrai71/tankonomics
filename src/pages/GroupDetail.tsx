@@ -49,6 +49,7 @@ import {
 import { formatDistanceToNow } from "date-fns";
 import { GoogleGenAI } from "@google/genai";
 import GroupPostCard from "../components/GroupPostCard";
+import { uploadImage } from "../lib/uploadImage";
 
 export default function GroupDetail() {
   const { groupId } = useParams<{ groupId: string }>();
@@ -67,6 +68,9 @@ export default function GroupDetail() {
   // Group Content State
   const [newPost, setNewPost] = useState("");
   const [postImage, setPostImage] = useState<string | null>(null);
+  // Underlying File for the picked image — uploaded to Storage on submit
+  // so we don't embed base64 in Firestore (1 MiB document limit).
+  const [postImageFile, setPostImageFile] = useState<File | null>(null);
   const [postAsCompanyId, setPostAsCompanyId] = useState<string | null>(null);
   const [isGeneratingTip, setIsGeneratingTip] = useState(false);
   const [posting, setPosting] = useState(false);
@@ -93,13 +97,24 @@ export default function GroupDetail() {
 
   const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
-    if (file) {
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        setPostImage(reader.result as string);
-      };
-      reader.readAsDataURL(file);
+    if (!file) return;
+    if (!file.type.startsWith("image/")) {
+      alert("Please pick an image file.");
+      return;
     }
+    if (file.size > 10 * 1024 * 1024) {
+      alert(`Image is too large (${(file.size / 1024 / 1024).toFixed(1)} MB). Maximum is 10 MB.`);
+      return;
+    }
+    if (postImage && postImage.startsWith("blob:")) URL.revokeObjectURL(postImage);
+    setPostImageFile(file);
+    setPostImage(URL.createObjectURL(file));
+  };
+
+  const clearPostImage = () => {
+    if (postImage && postImage.startsWith("blob:")) URL.revokeObjectURL(postImage);
+    setPostImage(null);
+    setPostImageFile(null);
   };
 
   const getVideoInfo = (content: string) => {
@@ -224,6 +239,16 @@ export default function GroupDetail() {
       const selectedCompany = postAsCompanyId ? ownedCompanies.find(c => c.id === postAsCompanyId) : null;
       const videoInfo = getVideoInfo(newPost);
 
+      // Upload the image (if any) to Storage so we only put the URL in the doc.
+      let uploadedImageUrl: string | null = null;
+      if (postImageFile) {
+        try {
+          uploadedImageUrl = await uploadImage(postImageFile, { folder: "groups" });
+        } catch (uploadErr: any) {
+          throw new Error(`Image upload failed: ${uploadErr?.message || uploadErr}`);
+        }
+      }
+
       const postData: any = {
         groupId,
         content: newPost,
@@ -243,13 +268,13 @@ export default function GroupDetail() {
         postData.companyLogo = selectedCompany.logo;
       }
 
-      if (postImage) postData.image = postImage;
+      if (uploadedImageUrl) postData.image = uploadedImageUrl;
       if (videoInfo) postData.video = videoInfo;
 
       const docRef = await addDoc(collection(db, `groups/${groupId}/posts`), postData);
       if (!docRef) throw new Error("Broadcast target rejected. Check membership status.");
       setNewPost("");
-      setPostImage(null);
+      clearPostImage();
     } catch (error: any) {
       console.error("Group post creation failed:", error);
       const isPermissionError = error.message?.includes("PERMISSION_DENIED") || error.message?.includes("insufficient permissions");

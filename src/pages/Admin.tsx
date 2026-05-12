@@ -67,6 +67,7 @@ import {
 type Tab = "analytics" | "news" | "forums" | "events" | "surveys" | "members" | "theme" | "pages" | "moderation" | "companies" | "resumes" | "groups";
 
 import { CategorySelector } from "../components/CategorySelector";
+import { uploadImage } from "../lib/uploadImage";
 
 export default function Admin() {
   const [activeTab, setActiveTab] = useState<Tab>("analytics");
@@ -401,37 +402,42 @@ export default function Admin() {
     }
   };
 
-  const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>, field: "logo" | "heroImage" | "themeLogo" | "eventImage") => {
+  const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>, field: "logo" | "heroImage" | "themeLogo" | "eventImage") => {
     const file = e.target.files?.[0];
-    if (file) {
-      if (file.size > 700 * 1024) {
-        alert("File is too large. Please select an image under 700KB (Firestore limit).");
-        return;
-      }
-      const reader = new FileReader();
+    if (!file) return;
+    if (!file.type.startsWith("image/")) {
+      alert("Please select an image file.");
+      return;
+    }
+    if (file.size > 10 * 1024 * 1024) {
+      alert(`Image is too large (${(file.size / 1024 / 1024).toFixed(1)} MB). Maximum is 10 MB.`);
+      return;
+    }
+    // Upload to Firebase Storage and store only the download URL in Firestore.
+    // (Previously this base64-encoded the file straight into the document,
+    //  which broke on anything bigger than a tiny thumbnail.)
+    try {
       if (field === "themeLogo") setIsLogoUploading(true);
       if (field === "eventImage") setIsEventUploading(true);
-      
-      reader.onloadstart = () => {
-        console.log("File upload started for:", field);
-      };
-      reader.onloadend = () => {
-        console.log("File upload completed for:", field);
-        if (field === "themeLogo") {
-          setThemeData(prev => ({ ...prev, logoUrl: reader.result as string }));
-          setIsLogoUploading(false);
-        } else if (field === "eventImage") {
-          setEventData(prev => ({ ...prev, imageUrl: reader.result as string }));
-          setIsEventUploading(false);
-        } else {
-          setNewCompany(prev => ({ ...prev, [field]: reader.result as string }));
-        }
-      };
-      reader.onerror = (err) => {
-        console.error("FileReader error:", err);
-        alert("Failed to read file.");
-      };
-      reader.readAsDataURL(file);
+
+      const folder = field === "themeLogo" ? "logos"
+                   : field === "eventImage" ? "events"
+                   : "companies";
+      const url = await uploadImage(file, { folder });
+
+      if (field === "themeLogo") {
+        setThemeData(prev => ({ ...prev, logoUrl: url }));
+      } else if (field === "eventImage") {
+        setEventData(prev => ({ ...prev, imageUrl: url }));
+      } else {
+        setNewCompany(prev => ({ ...prev, [field]: url }));
+      }
+    } catch (err: any) {
+      console.error("Image upload error:", err);
+      alert(`Failed to upload image: ${err?.message || err}`);
+    } finally {
+      if (field === "themeLogo") setIsLogoUploading(false);
+      if (field === "eventImage") setIsEventUploading(false);
     }
   };
 

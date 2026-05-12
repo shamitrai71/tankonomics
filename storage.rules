@@ -1,0 +1,36 @@
+rules_version = '2';
+
+// Firebase Storage rules for Tankonomics.
+//
+// The application uploads images (post attachments, profile photos, company
+// logos, event banners, custom theme logos) to Storage and stores only the
+// resulting download URL in Firestore. Firestore documents can't hold large
+// binary payloads (1 MiB document cap), so Storage is the canonical location
+// for all user-uploaded media.
+//
+// Layout:
+//   users/{uid}/posts/...       — feed-post attachments
+//   users/{uid}/profile/...     — profile photos
+//   users/{uid}/covers/...      — profile cover images
+//   users/{uid}/companies/...   — company logos & hero images
+//   users/{uid}/events/...      — event banners
+//   users/{uid}/groups/...      — group post attachments
+//   users/{uid}/logos/...       — site/theme logos (admins)
+//   users/{uid}/misc/...        — catch-all
+//
+// Reading is public so URLs can render in posts and profiles without auth.
+// Writing is restricted to the owning user, capped at 10 MB, and limited
+// to image content types.
+
+service firebase.storage {
+  match /b/{bucket}/o {
+    match /users/{userId}/{allPaths=**} {
+      allow read: if true;
+      allow write: if request.auth != null
+                   && request.auth.uid == userId
+                   && request.resource.size < 10 * 1024 * 1024
+                   && request.resource.contentType.matches('image/.*');
+      allow delete: if request.auth != null && request.auth.uid == userId;
+    }
+  }
+}

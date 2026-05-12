@@ -4,6 +4,7 @@ import { useAuth } from "../App";
 import { useCollection, useCollectionGroup, updateDocument, createDocument } from "../hooks/useFirestore";
 import { where, doc, getDoc, setDoc, serverTimestamp } from "firebase/firestore";
 import { db } from "../firebase";
+import { migrateDataUrlToStorage, isInlineImage } from "../lib/uploadImage";
 import { 
   User as UserIcon, 
   Building2, 
@@ -498,6 +499,22 @@ export default function Profile() {
 
     setSaving(true);
     try {
+      // If photoURL is currently a base64 data URL (legacy data ingested from
+      // an auth provider, or a previous in-doc upload), it almost certainly
+      // exceeds Firestore's 1 MiB document limit and the save would fail with
+      // "value of property image is longer than 1048487 bytes". Migrate it to
+      // Firebase Storage on the fly and store only the resulting download URL.
+      let safePhotoURL = formData.photoURL || "";
+      if (isInlineImage(safePhotoURL)) {
+        try {
+          safePhotoURL = await migrateDataUrlToStorage(safePhotoURL, "profile");
+        } catch (err: any) {
+          throw new Error(
+            `Couldn't move your profile photo to storage: ${err?.message || err}. Try re-uploading the image.`,
+          );
+        }
+      }
+
       // Build a payload containing ONLY the keys allowed by the firestore.rules
       // /users/{userId} update whitelist (affectedKeys().hasOnly([...])).
       // Spreading the whole formData here previously caused rule rejection
@@ -506,7 +523,7 @@ export default function Profile() {
         uid: user.uid,
         email: user.email || "",
         displayName: (formData.displayName || "").trim(),
-        photoURL: formData.photoURL || "",
+        photoURL: safePhotoURL,
         bio: formData.bio || "",
         industrySegment: formData.industrySegment || "",
         company: formData.company || "",
