@@ -1,11 +1,13 @@
-@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&family=Space+Grotesk:wght@300;400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Geist:wght@300;400;500;600;700;800;900&family=Geist+Mono:wght@400;500;600;700&display=swap');
 @import "tailwindcss";
 
 @theme {
-  --font-sans: "Outfit", ui-sans-serif, system-ui, sans-serif;
-  --font-display: "Space Grotesk", sans-serif;
-  
+  --font-sans: "Geist", ui-sans-serif, system-ui, sans-serif;
+  --font-display: "Instrument Serif", ui-serif, Georgia, serif;
+  --font-mono: "Geist Mono", ui-monospace, SFMono-Regular, monospace;
+
   --tracking-tightest: -0.05em;
+  --tracking-display: -0.04em;
 
   --color-primary: var(--primary-brand);
   --color-secondary: var(--secondary-brand);
@@ -17,45 +19,181 @@
   --color-border-main: var(--border-main);
   --color-sidebar-focus: var(--sidebar-focus);
   --color-sidebar-focus-text: var(--sidebar-focus-text);
+
+  --color-ink: var(--ink);
+  --color-blueprint: var(--blueprint);
+  --color-rust: var(--rust);
+  --color-steel: var(--steel);
 }
 
 @layer base {
   :root {
-    --primary-brand: #0f172a;
-    --secondary-brand: #4f46e5;
-    --accent-brand: #f59e0b;
-    --bg-main: #f8fafc;
-    --text-heading: #0f172a;
-    --text-body: #475569;
+    /* Core brand — refined deep-petrol palette */
+    --primary-brand: #0b1b2b;         /* Deep petroleum — hero surfaces */
+    --secondary-brand: #1e4a72;       /* Industrial steel-blue */
+    --accent-brand: #ea7317;          /* Safety-signage orange (hi-vis) */
+
+    /* Backgrounds & text */
+    --bg-main: #f5f3ef;               /* Warm off-white, paper-like */
     --bg-card: #ffffff;
-    --border-main: #e2e8f0;
-    --sidebar-focus: #0f172a;
+    --text-heading: #0b1b2b;
+    --text-body: #4a5a6a;
+    --border-main: #e3dfd6;           /* Warm border that matches paper */
+
+    --sidebar-focus: #0b1b2b;
     --sidebar-focus-text: #ffffff;
+
+    /* Extended industrial palette */
+    --ink: #06121d;                   /* Near-black for deep type */
+    --blueprint: #173a5e;             /* Blueprint mid-blue */
+    --rust: #b14a14;                  /* Oxidized accent */
+    --steel: #94a3b8;                 /* Cool steel grey */
   }
 
   .dark {
-    --primary-brand: #818cf8;
-    --secondary-brand: #a5b4fc;
-    --accent-brand: #fbbf24;
-    --bg-main: #020617;
-    --text-heading: #f8fafc;
-    --text-body: #cbd5e1;
-    --bg-card: #0f172a;
-    --border-main: #1e293b;
-    --sidebar-focus: #1e293b;
-    --sidebar-focus-text: #f8fafc;
+    --primary-brand: #f0a868;
+    --secondary-brand: #6ba4d4;
+    --accent-brand: #ea7317;
+    --bg-main: #06121d;
+    --bg-card: #0b1b2b;
+    --text-heading: #f5f3ef;
+    --text-body: #a8b5c2;
+    --border-main: #1a2f44;
+    --sidebar-focus: #173a5e;
+    --sidebar-focus-text: #f5f3ef;
+
+    --ink: #f5f3ef;
+    --blueprint: #6ba4d4;
+    --rust: #ea7317;
+    --steel: #64748b;
   }
 
   body {
     background-color: var(--bg-main);
     color: var(--text-body);
+    font-feature-settings: "ss01", "cv11";
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
     @apply transition-colors duration-500 ease-in-out;
   }
 
   div, nav, aside, section, header, footer, button, input {
     @apply transition-colors duration-500 ease-in-out;
   }
+
   h1, h2, h3, h4, h5, h6 {
     color: var(--text-heading);
   }
+}
+
+/* ============================================================
+   Industrial design utilities — used by Splash, AuthPanel, and
+   any future hero surfaces.
+   ============================================================ */
+
+@layer utilities {
+  /* Blueprint coordinate grid — subtle technical-drawing texture */
+  .bp-grid {
+    background-image:
+      linear-gradient(rgba(255, 255, 255, 0.045) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(255, 255, 255, 0.045) 1px, transparent 1px),
+      linear-gradient(rgba(255, 255, 255, 0.022) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(255, 255, 255, 0.022) 1px, transparent 1px);
+    background-size: 96px 96px, 96px 96px, 24px 24px, 24px 24px;
+  }
+
+  /* Light-mode (paper) blueprint grid */
+  .bp-grid-paper {
+    background-image:
+      linear-gradient(rgba(11, 27, 43, 0.06) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(11, 27, 43, 0.06) 1px, transparent 1px),
+      linear-gradient(rgba(11, 27, 43, 0.03) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(11, 27, 43, 0.03) 1px, transparent 1px);
+    background-size: 96px 96px, 96px 96px, 24px 24px, 24px 24px;
+  }
+
+  /* Diagonal hazard stripes — used in narrow accent bars */
+  .hazard-stripes {
+    background-image: repeating-linear-gradient(
+      45deg,
+      var(--accent-brand) 0,
+      var(--accent-brand) 8px,
+      var(--ink) 8px,
+      var(--ink) 16px
+    );
+  }
+
+  /* Subtle film grain — adds tactility to dark hero surfaces */
+  .grain::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    opacity: 0.28;
+    mix-blend-mode: overlay;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0 0 0 0.5 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  }
+
+  /* Display heading — Instrument Serif, slight optical tightening */
+  .font-display {
+    font-family: var(--font-display);
+    font-feature-settings: "liga", "calt", "ss01";
+    letter-spacing: var(--tracking-display);
+  }
+
+  .font-mono {
+    font-family: var(--font-mono);
+  }
+
+  /* Technical eyebrow / data label */
+  .eyebrow {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    font-weight: 500;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+  }
+
+  /* Tabular numerals everywhere we show data */
+  .tabular { font-variant-numeric: tabular-nums; }
+
+  /* Custom scrollbar — slim, on-brand */
+  .custom-scrollbar::-webkit-scrollbar { width: 6px; height: 6px; }
+  .custom-scrollbar::-webkit-scrollbar-track { background: transparent; }
+  .custom-scrollbar::-webkit-scrollbar-thumb {
+    background: var(--border-main);
+    border-radius: 3px;
+  }
+  .custom-scrollbar::-webkit-scrollbar-thumb:hover { background: var(--steel); }
+
+  /* Gauge sweep — used by the splash progress indicator */
+  @keyframes gauge-sweep {
+    0%   { stroke-dashoffset: 360; }
+    50%  { stroke-dashoffset: 90;  }
+    100% { stroke-dashoffset: 360; }
+  }
+  .gauge-sweep {
+    animation: gauge-sweep 2.4s cubic-bezier(0.65, 0, 0.35, 1) infinite;
+  }
+
+  /* Slow drift used by background schematics */
+  @keyframes drift-y {
+    0%, 100% { transform: translateY(0); }
+    50%      { transform: translateY(-8px); }
+  }
+  .drift-y { animation: drift-y 6s ease-in-out infinite; }
+
+  /* Marquee for the rolling industry strip */
+  @keyframes marquee {
+    0%   { transform: translateX(0); }
+    100% { transform: translateX(-50%); }
+  }
+  .marquee { animation: marquee 38s linear infinite; }
+
+  /* Soft pulse for live indicators */
+  @keyframes soft-pulse {
+    0%, 100% { opacity: 0.9; transform: scale(1); }
+    50%      { opacity: 0.4; transform: scale(0.92); }
+  }
+  .soft-pulse { animation: soft-pulse 2s ease-in-out infinite; }
 }

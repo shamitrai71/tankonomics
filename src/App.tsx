@@ -65,6 +65,7 @@ import {
 import { motion, AnimatePresence } from "framer-motion";
 import { useCollection, updateDocument, removeDocument } from "./hooks/useFirestore";
 import { formatDistanceToNow } from "date-fns";
+import { BrandMark } from "./components/BrandMark";
 
 import Home from "./pages/Home";
 import News from "./pages/News";
@@ -162,190 +163,213 @@ function Navbar({ onMenuToggle, theme }: { onMenuToggle: () => void, theme: any 
 
   return (
     <>
-    <nav className="h-20 border-b border-border-main bg-bg-card/80 backdrop-blur-md sticky top-0 z-[60] px-2 sm:px-4 md:px-8 flex items-center justify-between transition-all">
+    <nav className="h-20 border-b border-border-main bg-bg-card/85 backdrop-blur-md sticky top-0 z-[60] px-2 sm:px-4 md:px-8 flex items-center justify-between">
+      {/* Hairline accent — a thin orange stripe at the very top, like a status bar */}
+      <span className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-accent/60 to-transparent" />
+
       <div className="flex items-center gap-2 sm:gap-4 md:gap-8">
-        <button 
+        <button
           onClick={onMenuToggle}
           className="p-2 text-text-body hover:bg-bg-main rounded-xl transition-colors"
           id="hamburger-menu-button"
+          aria-label="Open menu"
         >
           <Menu className="w-5 h-5 sm:w-6 sm:h-6" />
         </button>
-        
-        <Link to="/" className="flex items-center gap-2 group shrink-0">
+
+        <Link to="/" className="flex items-center gap-2.5 group shrink-0">
           {theme?.displayMode !== 'text_only' && (
-            <div className={`rounded-lg flex items-center justify-center transition-all shrink-0 overflow-hidden ${theme?.logoUrl ? "w-8 h-8 md:w-[50px] md:h-[50px]" : "w-8 h-8 md:w-10 md:h-10 bg-primary shadow-xl shadow-primary/20"}`}>
+            <div className={`flex items-center justify-center transition-all shrink-0 overflow-hidden ${theme?.logoUrl ? "rounded-lg w-8 h-8 md:w-[50px] md:h-[50px]" : "w-9 h-9 md:w-11 md:h-11"}`}>
                {theme?.logoUrl ? (
-                 <img 
-                   src={theme.logoUrl} 
-                   className="w-full h-full object-contain transition-transform group-hover:scale-105" 
+                 <img
+                   src={theme.logoUrl}
+                   className="w-full h-full object-contain transition-transform group-hover:scale-105"
                    alt="Logo"
                    onError={(e) => {
                      (e.target as HTMLImageElement).style.display = 'none';
-                   }} 
+                   }}
                  />
                ) : (
-                 <LayoutDashboard className="text-white w-5 h-5 md:w-7 md:h-7" />
+                 <BrandMark size={44} tone="dark" className="transition-transform group-hover:scale-105" />
                )}
             </div>
           )}
           {theme?.displayMode !== 'image_only' && (
             <div className="flex flex-col">
-              <span className="font-black text-[15px] sm:text-lg md:text-3xl tracking-tighter text-text-heading line-clamp-1 uppercase whitespace-nowrap leading-none transition-colors group-hover:text-primary">
+              <span className="font-display text-[22px] sm:text-2xl md:text-[28px] tracking-tight text-text-heading line-clamp-1 whitespace-nowrap leading-none transition-colors group-hover:text-primary">
                 {theme?.siteName || "Tankonomics"}
               </span>
               {theme?.displayMode === 'both' && (
-                <span className="text-[7px] md:text-[8px] font-black uppercase text-text-body/40 tracking-widest mt-0.5 md:mt-1 md:block hidden">
-                  {theme?.siteTagline || "Verified Network Identity"}
+                <span className="eyebrow tabular text-text-body/55 mt-1 md:block hidden">
+                  {theme?.siteTagline || "Verified network identity"}
                 </span>
               )}
             </div>
           )}
         </Link>
-        
-        <div className="hidden md:flex items-center gap-2 bg-bg-main rounded-2xl px-4 py-2.5 w-80 border border-border-main focus-within:bg-bg-card focus-within:ring-4 focus-within:ring-primary/10 focus-within:border-primary/50 transition-all">
-          <Search className="w-4 h-4 text-text-body/60" />
-          <input 
-            type="text" 
-            placeholder="Search partners, news, events..." 
-            className="bg-transparent border-none focus:ring-0 text-sm w-full font-medium text-text-body placeholder:text-text-body/30 outline-none"
+
+        {/* Search — refined with mono placeholder + kbd hint */}
+        <div className="hidden md:flex items-center gap-2.5 bg-bg-main rounded-xl pl-4 pr-2 py-2 w-80 border border-border-main focus-within:bg-bg-card focus-within:ring-4 focus-within:ring-text-heading/5 focus-within:border-text-heading transition-all">
+          <Search className="w-4 h-4 text-text-body/50 shrink-0" />
+          <input
+            type="text"
+            placeholder="Search partners, news, events…"
+            className="bg-transparent border-none focus:ring-0 text-[14px] w-full text-text-heading placeholder:text-text-body/45 outline-none"
           />
+          <kbd className="hidden lg:inline-flex items-center px-1.5 py-0.5 text-[10px] font-mono text-text-body/50 bg-bg-card border border-border-main rounded">⌘K</kbd>
         </div>
       </div>
 
-      <div className="flex items-center gap-2 sm:gap-3 md:gap-6">
+      <div className="flex items-center gap-1 sm:gap-2 md:gap-3">
         {user ? (
-          <div className="flex items-center gap-1 sm:gap-3 md:gap-6 relative">
-            <button 
+          <div className="flex items-center gap-1 sm:gap-2 md:gap-3 relative">
+            <button
               id="notifications-toggle"
               onClick={() => {
                 setShowNotifications(!showNotifications);
                 if (!showNotifications && unreadCount > 0) markAllAsRead();
               }}
-              className={`p-2 sm:p-3 rounded-2xl transition-all relative ${showNotifications ? 'bg-primary text-white shadow-lg' : 'text-text-body/60 hover:bg-bg-main'}`}
+              className={`p-2 sm:p-2.5 rounded-xl transition-all relative ${showNotifications ? 'bg-text-heading text-bg-card' : 'text-text-body hover:bg-bg-main hover:text-text-heading'}`}
+              aria-label="Notifications"
             >
-              <Bell className="w-4 h-4 sm:w-5 sm:h-5" />
+              <Bell className="w-4 h-4 sm:w-5 sm:h-5" strokeWidth={1.75} />
               {unreadCount > 0 && (
-                <span className="absolute top-2 right-2 sm:top-3 sm:right-3 w-3.5 h-3.5 sm:w-4 sm:h-4 bg-accent text-[7px] sm:text-[8px] font-black text-white flex items-center justify-center rounded-full border-2 border-bg-card">
-                  {unreadCount}
+                <span className="absolute top-1 right-1 sm:top-1.5 sm:right-1.5 min-w-[16px] h-4 px-1 bg-accent text-[9px] font-mono font-bold text-white flex items-center justify-center rounded-full border-2 border-bg-card tabular">
+                  {unreadCount > 9 ? "9+" : unreadCount}
                 </span>
               )}
             </button>
 
-            <button 
+            <button
               id="messages-nav-link"
               onClick={() => setShowNewChat(true)}
-              className="p-2 sm:p-3 text-text-body/60 hover:bg-bg-main rounded-2xl transition-all relative"
+              className="hidden sm:flex items-center gap-1.5 px-3 py-2 text-text-body hover:bg-bg-main hover:text-text-heading rounded-xl transition-all"
+              aria-label="New message"
+              title="New message"
             >
-              <Plus className="w-4 h-4 sm:w-5 sm:h-5 text-primary" />
+              <Plus className="w-4 h-4" strokeWidth={2} />
+              <span className="hidden lg:inline text-[13px] font-medium">New</span>
             </button>
 
             <AnimatePresence>
               {showNotifications && (
                 <>
-                  <div 
-                    className="fixed inset-0 z-[60]" 
+                  <div
+                    className="fixed inset-0 z-[60]"
                     onClick={() => setShowNotifications(false)}
                   />
-                  <motion.div 
-                    initial={{ opacity: 0, y: 10, scale: 0.95 }}
+                  <motion.div
+                    initial={{ opacity: 0, y: 8, scale: 0.97 }}
                     animate={{ opacity: 1, y: 0, scale: 1 }}
-                    exit={{ opacity: 0, y: 10, scale: 0.95 }}
-                    className="absolute top-full right-0 mt-4 w-80 bg-bg-card rounded-[2rem] shadow-2xl border border-border-main p-2 z-[70] overflow-hidden"
+                    exit={{ opacity: 0, y: 8, scale: 0.97 }}
+                    transition={{ duration: 0.18, ease: [0.22, 1, 0.36, 1] }}
+                    className="absolute top-full right-0 mt-3 w-[360px] bg-bg-card rounded-2xl shadow-2xl border border-border-main z-[70] overflow-hidden"
                   >
-                    <div className="p-4 border-b border-border-main flex items-center justify-between">
-                       <h3 className="text-[10px] font-black uppercase tracking-widest text-text-heading">Notifications</h3>
-                       {notifications.length > 0 && (
-                         <button 
-                           onClick={markAllAsRead}
-                           className="text-[9px] font-black text-primary uppercase hover:underline"
-                         >
-                           Mark all read
-                         </button>
-                       )}
+                    {/* Header */}
+                    <div className="px-4 py-3 border-b border-border-main flex items-center justify-between bg-bg-main/40">
+                      <div className="flex items-center gap-2">
+                        <span className="inline-block w-1.5 h-1.5 rounded-full bg-accent soft-pulse" />
+                        <h3 className="eyebrow tabular text-text-heading">Notifications</h3>
+                      </div>
+                      {notifications.length > 0 && (
+                        <button
+                          onClick={markAllAsRead}
+                          className="text-[11px] font-medium text-text-body hover:text-text-heading transition-colors"
+                        >
+                          Mark all read
+                        </button>
+                      )}
                     </div>
-                    <div className="max-h-[400px] overflow-y-auto custom-scrollbar">
-                       {notifications.length === 0 ? (
-                         <div className="p-12 text-center">
-                            <Bell className="w-8 h-8 text-text-body/20 mx-auto mb-3" />
-                            <p className="text-[10px] font-black text-text-body/30 uppercase tracking-widest">No alerts yet</p>
-                         </div>
-                       ) : (
-                         <div className="space-y-1 p-1">
-                           {notifications.map((n) => (
-                             <div 
-                                key={n.id}
-                                className={`p-4 rounded-2xl transition-all flex items-start gap-4 group ${n.read ? 'opacity-60' : 'bg-bg-main'}`}
-                             >
-                                <div className="w-10 h-10 shrink-0 bg-bg-card border border-border-main rounded-xl flex items-center justify-center shadow-sm">
-                                   {n.type === 'connection' ? <UserPlus className="w-5 h-5 text-primary" /> : <Briefcase className="w-5 h-5 text-primary" />}
-                                </div>
-                                <div className="flex-1 overflow-hidden">
-                                   <p className="text-[11px] font-black text-text-heading leading-tight mb-1">{n.title}</p>
-                                   <p className="text-[11px] text-text-body/70 line-clamp-2 leading-relaxed">{n.message}</p>
-                                   
-                                   {n.type === 'connection' && n.metadata?.connectionId && !n.read && (
-                                     <div className="flex gap-2 mt-3">
-                                       <button 
-                                         onClick={async (e) => {
-                                           e.stopPropagation();
-                                           await updateDocument("connections", n.metadata.connectionId, { status: "accepted" });
-                                           await updateDocument("notifications", n.id, { read: true });
-                                         }}
-                                         className="px-3 py-1.5 bg-primary text-white text-[9px] font-black uppercase rounded-lg hover:brightness-110 shadow-lg shadow-primary/20 flex items-center gap-1.5"
-                                       >
-                                         <Check className="w-3 h-3" />
-                                         Accept
-                                       </button>
-                                       <button 
-                                         onClick={async (e) => {
-                                           e.stopPropagation();
-                                           await updateDocument("connections", n.metadata.connectionId, { status: "rejected" });
-                                           await updateDocument("notifications", n.id, { read: true });
-                                         }}
-                                         className="px-3 py-1.5 bg-slate-100 text-slate-500 text-[9px] font-black uppercase rounded-lg hover:bg-slate-200"
-                                       >
-                                         Decline
-                                       </button>
-                                     </div>
-                                   )}
-                                   <p className="text-[8px] font-black text-text-body/30 uppercase mt-2 tracking-widest">
-                                      {n.createdAt && formatDistanceToNow(n.createdAt?.seconds ? new Date(n.createdAt.seconds * 1000) : new Date(n.createdAt), { addSuffix: true })}
-                                   </p>
-                                </div>
-                                <button 
-                                  onClick={() => deleteNotification(n.id)}
-                                  className="p-1.5 opacity-0 group-hover:opacity-100 hover:bg-bg-card hover:text-red-500 rounded-lg transition-all text-text-body/30"
-                                >
-                                   <X className="w-3.5 h-3.5" />
-                                </button>
-                             </div>
-                           ))}
-                         </div>
-                       )}
+                    <div className="max-h-[440px] overflow-y-auto custom-scrollbar">
+                      {notifications.length === 0 ? (
+                        <div className="p-12 text-center">
+                          <Bell className="w-7 h-7 text-text-body/25 mx-auto mb-3" strokeWidth={1.5} />
+                          <p className="eyebrow tabular text-text-body/50">No alerts yet</p>
+                          <p className="text-xs text-text-body/40 mt-2">You're all caught up.</p>
+                        </div>
+                      ) : (
+                        <div className="divide-y divide-border-main">
+                          {notifications.map((n) => (
+                            <div
+                              key={n.id}
+                              className={`p-4 flex items-start gap-3 group transition-colors hover:bg-bg-main/50 ${n.read ? 'opacity-60' : ''}`}
+                            >
+                              <div className="w-9 h-9 shrink-0 bg-bg-main border border-border-main rounded-xl flex items-center justify-center">
+                                {n.type === 'connection' ? <UserPlus className="w-4 h-4 text-text-heading" strokeWidth={1.75} /> : <Briefcase className="w-4 h-4 text-text-heading" strokeWidth={1.75} />}
+                              </div>
+                              <div className="flex-1 min-w-0">
+                                <p className="text-[13px] font-medium text-text-heading leading-tight mb-0.5 truncate">{n.title}</p>
+                                <p className="text-[12px] text-text-body line-clamp-2 leading-relaxed">{n.message}</p>
+
+                                {n.type === 'connection' && n.metadata?.connectionId && !n.read && (
+                                  <div className="flex gap-2 mt-3">
+                                    <button
+                                      onClick={async (e) => {
+                                        e.stopPropagation();
+                                        await updateDocument("connections", n.metadata.connectionId, { status: "accepted" });
+                                        await updateDocument("notifications", n.id, { read: true });
+                                      }}
+                                      className="px-3 py-1.5 bg-text-heading text-bg-card text-[11px] font-medium rounded-lg hover:brightness-110 flex items-center gap-1.5"
+                                    >
+                                      <Check className="w-3 h-3" strokeWidth={2.5} />
+                                      Accept
+                                    </button>
+                                    <button
+                                      onClick={async (e) => {
+                                        e.stopPropagation();
+                                        await updateDocument("connections", n.metadata.connectionId, { status: "rejected" });
+                                        await updateDocument("notifications", n.id, { read: true });
+                                      }}
+                                      className="px-3 py-1.5 bg-bg-main text-text-body text-[11px] font-medium rounded-lg hover:bg-border-main"
+                                    >
+                                      Decline
+                                    </button>
+                                  </div>
+                                )}
+                                <p className="eyebrow tabular text-text-body/40 mt-2">
+                                  {n.createdAt && formatDistanceToNow(n.createdAt?.seconds ? new Date(n.createdAt.seconds * 1000) : new Date(n.createdAt), { addSuffix: true })}
+                                </p>
+                              </div>
+                              <button
+                                onClick={() => deleteNotification(n.id)}
+                                className="p-1.5 opacity-0 group-hover:opacity-100 hover:bg-bg-card hover:text-rust rounded-lg transition-all text-text-body/40"
+                                aria-label="Dismiss"
+                              >
+                                <X className="w-3.5 h-3.5" />
+                              </button>
+                            </div>
+                          ))}
+                        </div>
+                      )}
                     </div>
                   </motion.div>
                 </>
               )}
             </AnimatePresence>
-              <Link to="/profile" className="flex items-center gap-3 group px-1 rounded-2xl">
-              <div className="text-right hidden sm:block">
-                <p className="text-sm font-black text-text-heading leading-none mb-1">{profile?.displayName || user.displayName}</p>
-                <p className="text-[10px] font-black uppercase tracking-widest text-primary">{profile?.jobTitle || "Member"}</p>
+
+            {/* Profile chip — refined to a flat editorial style */}
+            <Link to="/profile" className="flex items-center gap-3 group pl-2 pr-1 sm:pr-2 py-1 rounded-xl hover:bg-bg-main transition-all ml-1">
+              <div className="text-right hidden md:block">
+                <p className="text-[13px] font-medium text-text-heading leading-tight">{profile?.displayName || user.displayName}</p>
+                <p className="eyebrow tabular text-text-body/60 mt-0.5">{profile?.jobTitle || "Member"}</p>
               </div>
-              <img 
-                src={user.photoURL || `https://api.dicebear.com/7.x/initials/svg?seed=${user.displayName}`} 
-                alt="Profile" 
-                className="w-11 h-11 rounded-2xl border-2 border-border-main group-hover:border-primary transition-all shadow-xl shadow-primary/10"
-              />
+              <div className="relative">
+                <img
+                  src={user.photoURL || `https://api.dicebear.com/7.x/initials/svg?seed=${user.displayName}`}
+                  alt="Profile"
+                  className="w-9 h-9 sm:w-10 sm:h-10 rounded-xl border border-border-main group-hover:border-text-heading transition-all object-cover"
+                />
+                {/* Verified-status dot — small accent in the corner */}
+                <span className="absolute -bottom-0.5 -right-0.5 w-3 h-3 rounded-full bg-accent border-2 border-bg-card" title="Verified member" />
+              </div>
             </Link>
           </div>
         ) : (
-          <button 
+          <button
             onClick={() => useAuth().signIn()}
-            className="bg-primary text-white px-6 py-3 rounded-2xl font-black text-xs uppercase tracking-widest hover:brightness-110 transition-all shadow-xl active:scale-95"
+            className="bg-primary text-white px-5 py-2.5 rounded-xl font-medium text-sm hover:brightness-110 transition-all active:scale-[0.98]"
           >
-            Start Exploring
+            Sign in
           </button>
         )}
       </div>
@@ -390,79 +414,95 @@ function Sidebar({ isOpen, onClose, theme }: { isOpen: boolean; onClose: () => v
         )}
       </AnimatePresence>
 
-      <motion.aside 
+      <motion.aside
         initial={false}
-        animate={{ 
+        animate={{
           x: isOpen ? 0 : -320,
           opacity: isOpen ? 1 : 0
         }}
         transition={{ type: "spring", damping: 30, stiffness: 300 }}
-        className="w-72 fixed left-0 top-0 bottom-0 bg-bg-card z-[80] shadow-2xl border-r border-border-main flex flex-col p-6"
+        className="w-72 fixed left-0 top-0 bottom-0 bg-bg-card z-[80] shadow-2xl border-r border-border-main flex flex-col"
       >
-        <div className="flex items-center justify-between mb-10">
+        {/* Top accent hairline */}
+        <span className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-accent/0 via-accent/60 to-accent/0" />
+
+        <div className="flex items-center justify-between px-6 pt-6 pb-8">
           <Link to="/" onClick={onClose} className="flex items-center gap-3">
              {theme?.displayMode !== 'text_only' && (
-               <div className={`rounded-2xl flex items-center justify-center transition-all ${theme?.logoUrl ? "" : "w-10 h-10 bg-primary shadow-xl shadow-primary/20"}`}>
+               <div className={`flex items-center justify-center transition-all ${theme?.logoUrl ? "rounded-2xl" : ""}`}>
                   {theme?.logoUrl ? (
-                    <img src={theme.logoUrl} className="h-8 w-auto" alt="Logo" />
+                    <img src={theme.logoUrl} className="h-9 w-auto" alt="Logo" />
                   ) : (
-                    <LayoutDashboard className="text-white w-6 h-6" />
+                    <BrandMark size={40} tone="dark" />
                   )}
                </div>
              )}
              {theme?.displayMode !== 'image_only' && (
-               <span className="font-black text-xl tracking-tighter text-text-heading uppercase">
+               <span className="font-display text-2xl tracking-tight text-text-heading leading-none">
                  {theme?.siteName || "Tankonomics"}
                </span>
              )}
           </Link>
-          <button onClick={onClose} className="p-2 hover:bg-bg-main rounded-xl text-text-body/40">
+          <button
+            onClick={onClose}
+            className="p-2 hover:bg-bg-main rounded-xl text-text-body/50 hover:text-text-heading transition-colors"
+            aria-label="Close menu"
+          >
              <X className="w-5 h-5" />
           </button>
         </div>
 
-        <div className="space-y-1.5 flex-1 overflow-y-auto pr-2 custom-scrollbar">
-          <p className="px-3 text-[10px] font-black uppercase tracking-[0.2em] text-text-body/30 mb-4">Core Navigation</p>
-          {navItems.map((item) => {
-            const active = location.pathname === item.path;
-            return (
-              <Link 
-                key={item.path} 
-                to={item.path}
-                onClick={onClose}
-                className={`flex items-center gap-4 px-4 py-3.5 rounded-2xl text-sm font-black transition-all ${
-                  active 
-                    ? "text-white shadow-xl translate-x-1" 
-                    : "text-text-body/50 hover:bg-bg-main hover:text-text-heading"
-                }`}
-                style={active ? { backgroundColor: "var(--primary-brand)" } : {}}
-              >
-                <item.icon className={`w-5 h-5 ${active ? "text-secondary" : "text-text-body/60 dark:text-text-body/80 group-hover:text-text-heading"}`} />
-                {item.name}
-              </Link>
-            );
-          })}
+        <div className="flex-1 overflow-y-auto px-3 custom-scrollbar">
+          <p className="px-4 eyebrow tabular text-text-body/45 mb-3">Core navigation</p>
+          <div className="space-y-0.5">
+            {navItems.map((item) => {
+              const active = location.pathname === item.path;
+              return (
+                <Link
+                  key={item.path}
+                  to={item.path}
+                  onClick={onClose}
+                  className={`relative flex items-center gap-3 px-4 py-2.5 rounded-lg text-[14px] font-medium transition-all group ${
+                    active
+                      ? "bg-bg-main text-text-heading"
+                      : "text-text-body hover:bg-bg-main hover:text-text-heading"
+                  }`}
+                >
+                  {/* Vertical accent bar when active — like a control-panel indicator */}
+                  {active && (
+                    <span className="absolute left-0 top-1.5 bottom-1.5 w-0.5 rounded-full bg-accent" />
+                  )}
+                  <item.icon
+                    className={`w-[18px] h-[18px] shrink-0 ${active ? "text-text-heading" : "text-text-body/65 group-hover:text-text-heading"}`}
+                    strokeWidth={active ? 2 : 1.75}
+                  />
+                  <span>{item.name}</span>
+                </Link>
+              );
+            })}
+          </div>
 
           {dynamicPages.length > 0 && (
-            <div className="mt-10">
-              <p className="px-3 text-[10px] font-black uppercase tracking-[0.2em] text-text-body/40 dark:text-text-body/60 mb-4">Custom Pages</p>
-              <div className="space-y-1.5">
+            <div className="mt-8">
+              <p className="px-4 eyebrow tabular text-text-body/45 mb-3">Custom pages</p>
+              <div className="space-y-0.5">
                 {dynamicPages.filter(p => p.published).map((page) => {
                   const path = `/page/${page.slug}`;
                   const active = location.pathname === path;
                   return (
-                    <Link 
-                      key={page.id} 
+                    <Link
+                      key={page.id}
                       to={path}
                       onClick={onClose}
-                      className={`flex items-center gap-4 px-4 py-3.5 rounded-2xl text-[11px] font-black uppercase tracking-widest transition-all ${
-                        active 
-                          ? "bg-bg-main text-text-heading border border-border-main shadow-sm" 
-                          : "text-text-body/50 dark:text-text-body/70 hover:bg-bg-main hover:text-text-heading"
+                      className={`relative flex items-center gap-3 px-4 py-2.5 rounded-lg text-[13px] transition-all group ${
+                        active
+                          ? "bg-bg-main text-text-heading font-medium"
+                          : "text-text-body hover:bg-bg-main hover:text-text-heading"
                       }`}
                     >
-                      <FileCode className="w-4 h-4" />
-                      {page.title}
+                      {active && <span className="absolute left-0 top-1.5 bottom-1.5 w-0.5 rounded-full bg-accent" />}
+                      <FileCode className="w-4 h-4 shrink-0 text-text-body/55 group-hover:text-text-heading" strokeWidth={1.75} />
+                      <span className="truncate">{page.title}</span>
                     </Link>
                   );
                 })}
@@ -471,20 +511,20 @@ function Sidebar({ isOpen, onClose, theme }: { isOpen: boolean; onClose: () => v
           )}
         </div>
 
-        <div className="mt-auto pt-6 border-t border-border-main">
-          <div className="bg-bg-main rounded-[2rem] p-5 mb-4 border border-border-main/50">
+        <div className="mt-auto px-6 pb-6 pt-4 border-t border-border-main">
+          <div className="bg-bg-main rounded-xl p-4 mb-3 border border-border-main">
              <div className="flex items-center gap-3 mb-3">
-                <img 
-                  src={user?.photoURL || `https://api.dicebear.com/7.x/initials/svg?seed=${user?.displayName}`} 
-                  className="w-8 h-8 rounded-full border border-border-main" 
-                  alt="" 
+                <img
+                  src={user?.photoURL || `https://api.dicebear.com/7.x/initials/svg?seed=${user?.displayName}`}
+                  className="w-9 h-9 rounded-lg border border-border-main object-cover"
+                  alt=""
                 />
-                <div className="overflow-hidden">
-                   <p className="text-xs font-black truncate text-text-heading">{user?.displayName}</p>
-                   <p className="text-[10px] text-text-body/60 truncate">{user?.email}</p>
+                <div className="overflow-hidden flex-1">
+                   <p className="text-[13px] font-medium truncate text-text-heading leading-tight">{user?.displayName}</p>
+                   <p className="text-[11px] text-text-body/60 truncate mt-0.5">{user?.email}</p>
                 </div>
              </div>
-             <button 
+             <button
                onClick={async () => {
                  try {
                    await logout();
@@ -493,13 +533,13 @@ function Sidebar({ isOpen, onClose, theme }: { isOpen: boolean; onClose: () => v
                    console.error("Sign out failed:", err);
                  }
                }}
-               className="w-full flex items-center justify-center gap-2 py-2.5 bg-bg-card text-red-500 rounded-xl text-[10px] font-black uppercase tracking-widest border border-red-500/20 shadow-sm hover:bg-red-500/10 transition-all font-black"
+               className="w-full flex items-center justify-center gap-2 py-2 bg-bg-card text-text-body rounded-lg text-[12px] font-medium border border-border-main hover:border-rust hover:text-rust transition-all"
              >
-               <LogOut className="w-3.5 h-3.5" />
-               Sign Out
+               <LogOut className="w-3.5 h-3.5" strokeWidth={1.75} />
+               Sign out
              </button>
           </div>
-          <p className="text-[9px] text-center text-text-body/40 font-bold uppercase tracking-widest">© 2026 Tankonomics Industrial</p>
+          <p className="eyebrow tabular text-center text-text-body/35">© 2026 Tankonomics</p>
         </div>
       </motion.aside>
     </>
@@ -645,154 +685,453 @@ function AuthPanel({ onSignIn, theme }: { onSignIn: (provider: string) => Promis
     }
   };
 
+  const siteName = theme?.siteName || "Tankonomics";
+  const siteTagline = theme?.siteTagline || "The global network for tank & terminal professionals";
+
   return (
-    <div className="min-h-screen flex items-center justify-center p-4 bg-primary relative overflow-hidden">
-      {/* Decorative background elements */}
-      <div className="absolute top-0 right-0 w-96 h-96 bg-white/5 rounded-full blur-3xl -mr-48 -mt-48 animate-pulse" />
-      <div className="absolute bottom-0 left-0 w-96 h-96 bg-white/5 rounded-full blur-3xl -ml-48 -mb-48" />
-      
-      <motion.div 
-        initial={{ opacity: 0, scale: 0.9, y: 20 }}
-        animate={{ opacity: 1, scale: 1, y: 0 }}
-        className="bg-bg-card p-8 sm:p-12 rounded-[3.5rem] shadow-2xl max-w-lg w-full text-center relative z-10 border border-white/10"
-      >
-        <div className={`mx-auto flex items-center justify-center mb-8 transition-all ${theme?.logoUrl ? "" : "w-20 h-20 bg-primary shadow-2xl shadow-primary/40 rounded-[2rem]"}`}>
-           {theme?.logoUrl ? (
-             <img src={theme.logoUrl} className="h-20 w-auto" alt="Logo" />
-           ) : (
-             <LayoutDashboard className="text-white w-10 h-10" />
-           )}
-        </div>
-        
-        <h1 className="text-4xl font-black mb-2 uppercase tracking-tighter text-text-heading">
-          {theme?.siteName || "Tankonomics"}
-        </h1>
-        <p className="text-text-body/60 font-medium mb-10 text-sm tracking-tight capitalize">
-          {theme?.siteTagline || "The Sovereign Network for Tank Professionals"}
-        </p>
+    <div className="min-h-screen w-full grid lg:grid-cols-[1.05fr_1fr] bg-bg-main">
+      {/* ============ LEFT — editorial hero panel ============ */}
+      <aside className="relative hidden lg:flex flex-col justify-between text-white p-12 xl:p-16 bg-primary overflow-hidden grain">
+        {/* Blueprint grid background */}
+        <div className="absolute inset-0 bp-grid pointer-events-none" />
+        {/* Atmospheric wash */}
+        <div
+          className="absolute inset-0 pointer-events-none opacity-90"
+          style={{
+            background:
+              "radial-gradient(ellipse at 15% 10%, rgba(30,74,114,0.55) 0%, rgba(11,27,43,0) 60%)",
+          }}
+        />
 
-        {error && (
-          <div className="mb-6 p-4 bg-red-500/10 border border-red-500/20 rounded-2xl text-red-500 text-xs font-bold uppercase tracking-widest">
-            {error}
+        {/* Top row: logo + locator */}
+        <div className="relative flex items-start justify-between">
+          <Link to="/" className="flex items-center gap-3">
+            {theme?.logoUrl ? (
+              <img src={theme.logoUrl} className="h-12 w-auto" alt={siteName} />
+            ) : (
+              <BrandMark size={48} tone="light" />
+            )}
+            <div className="font-display text-3xl leading-none">{siteName}</div>
+          </Link>
+          <div className="eyebrow tabular text-white/55 text-right">
+            <div className="text-white/80">EST. 2026</div>
+            <div>N 19.07° · E 72.88°</div>
           </div>
-        )}
-
-        <form onSubmit={handleEmailAuth} className="space-y-4 mb-10">
-          <div className="relative">
-            <Mail className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-text-body/30" />
-            <input 
-              type="email" 
-              placeholder="Operational Email" 
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              className="w-full pl-12 pr-4 py-4 bg-bg-main border border-border-main rounded-2xl text-sm font-bold focus:ring-4 focus:ring-primary/10 outline-none text-text-heading transition-all"
-              required
-            />
-          </div>
-          <div className="relative">
-            <LockIcon className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-text-body/30" />
-            <input 
-              type="password" 
-              placeholder="Secure Password" 
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              className="w-full pl-12 pr-4 py-4 bg-bg-main border border-border-main rounded-2xl text-sm font-bold focus:ring-4 focus:ring-primary/10 outline-none text-text-heading transition-all"
-              required
-            />
-          </div>
-          <button 
-            type="submit"
-            disabled={authLoading}
-            className="w-full bg-primary text-white py-4 rounded-2xl font-black tracking-widest text-[11px] uppercase hover:brightness-110 shadow-xl shadow-primary/20 transition-all flex items-center justify-center gap-2 active:scale-[0.98] disabled:opacity-50"
-          >
-            {authLoading ? <Loader2 className="w-5 h-5 animate-spin" /> : (isRegistering ? "Deploy Account" : "Secure Authentication")}
-            <ChevronRight className="w-4 h-4" />
-          </button>
-          
-          <button 
-            type="button"
-            onClick={() => setIsRegistering(!isRegistering)}
-            className="text-[10px] font-black uppercase tracking-[0.2em] text-text-body/40 hover:text-primary transition-all"
-          >
-            {isRegistering ? "Existing Member? Sign In" : "New Agent? Create Account"}
-          </button>
-        </form>
-
-        <div className="relative mb-10">
-          <div className="absolute inset-0 flex items-center"><div className="w-full border-t border-border-main" /></div>
-          <div className="relative flex justify-center"><span className="bg-bg-card px-4 text-[9px] font-black uppercase tracking-[0.3em] text-text-body/30">Or Connect Via</span></div>
         </div>
 
-        <div className="grid grid-cols-3 gap-4">
-          <button 
-            onClick={() => onSignIn('google')}
-            className="flex flex-col items-center justify-center p-4 bg-bg-main border border-border-main rounded-2xl hover:border-primary/50 transition-all group"
-            title="Sign in with Google"
-          >
-            <img src="https://www.google.com/favicon.ico" className="w-6 h-6 grayscale group-hover:grayscale-0 transition-all mb-2" alt="Google" />
-            <span className="text-[8px] font-black uppercase tracking-widest text-text-body/40 group-hover:text-text-heading">Google</span>
-          </button>
-          
-          <button 
-            onClick={() => onSignIn('facebook')}
-            className="flex flex-col items-center justify-center p-4 bg-bg-main border border-border-main rounded-2xl hover:border-blue-600/50 transition-all group"
-            title="Sign in with Facebook"
-          >
-            <Facebook className="w-6 h-6 text-text-body/20 group-hover:text-blue-600 transition-all mb-2" />
-            <span className="text-[8px] font-black uppercase tracking-widest text-text-body/40 group-hover:text-text-heading">Facebook</span>
-          </button>
+        {/* Centre: editorial statement */}
+        <div className="relative max-w-xl">
+          <div className="flex items-center gap-3 eyebrow tabular text-accent mb-6">
+            <span className="inline-block w-1.5 h-1.5 rounded-full bg-accent soft-pulse" />
+            VERIFIED INDUSTRY NETWORK
+          </div>
+          <h2 className="font-display text-[clamp(2.5rem,4.2vw,4.5rem)] leading-[0.98] text-white">
+            Where the storage tank industry meets,{" "}
+            <em className="italic text-accent">
+              quietly.
+            </em>
+          </h2>
+          <p className="mt-8 text-white/65 text-base leading-relaxed max-w-md">
+            Connect with vetted operators, EPCs, OEMs and inspectors. Read sector reports,
+            post technical questions, and discover work — without the noise of a public feed.
+          </p>
 
-          <button 
-            onClick={() => onSignIn('linkedin')}
-            className="flex flex-col items-center justify-center p-4 bg-bg-main border border-border-main rounded-2xl hover:border-indigo-600/50 transition-all group"
-            title="Sign in with LinkedIn"
-          >
-            <Linkedin className="w-6 h-6 text-text-body/20 group-hover:text-indigo-600 transition-all mb-2" />
-            <span className="text-[8px] font-black uppercase tracking-widest text-text-body/40 group-hover:text-text-heading">LinkedIn</span>
-          </button>
+          {/* Three small data plinths */}
+          <div className="mt-12 grid grid-cols-3 gap-px bg-white/10 border border-white/10 max-w-md">
+            {[
+              { kpi: "1,200+", label: "Verified members" },
+              { kpi: "180", label: "Companies indexed" },
+              { kpi: "42", label: "Countries" },
+            ].map((s) => (
+              <div key={s.label} className="bg-primary/80 p-4">
+                <div className="font-display text-3xl text-white tabular">{s.kpi}</div>
+                <div className="eyebrow tabular text-white/45 mt-1">{s.label}</div>
+              </div>
+            ))}
+          </div>
         </div>
 
-        <p className="mt-10 text-[9px] text-text-body/30 font-black uppercase tracking-[0.2em] leading-relaxed">
-          Integrated Security Protocols Active. By continuing, you agree to our <a href="#" className="text-primary hover:underline">Code of Professional Conduct</a>.
-        </p>
-      </motion.div>
+        {/* Bottom: rolling industry strip */}
+        <div className="relative -mx-12 xl:-mx-16">
+          <div className="flex items-center gap-3 eyebrow tabular text-white/40 px-12 xl:px-16 mb-3">
+            <span className="h-px flex-1 bg-white/15" />
+            INDEXED SECTORS
+            <span className="h-px flex-1 bg-white/15" />
+          </div>
+          <div className="overflow-hidden mask-fade-x">
+            <div className="marquee flex gap-12 whitespace-nowrap w-max">
+              {[...Array(2)].flatMap((_, k) =>
+                [
+                  "Crude oil storage",
+                  "Refined products",
+                  "Chemicals · Petrochem",
+                  "LNG · LPG",
+                  "Biofuels",
+                  "Vegetable oils",
+                  "Inspection & integrity",
+                  "Cleaning & maintenance",
+                  "Terminal automation",
+                  "EPC · Engineering",
+                ].map((s, i) => (
+                  <span
+                    key={`${k}-${i}`}
+                    className="eyebrow tabular text-white/55 flex items-center gap-3"
+                  >
+                    <span className="text-accent">◆</span>
+                    {s}
+                  </span>
+                )),
+              )}
+            </div>
+          </div>
+        </div>
+
+        {/* Corner registration ticks */}
+        <span className="absolute top-8 left-8 w-4 h-4 border-t border-l border-white/30" />
+        <span className="absolute top-8 right-8 w-4 h-4 border-t border-r border-white/30" />
+        <span className="absolute bottom-8 left-8 w-4 h-4 border-b border-l border-white/30" />
+        <span className="absolute bottom-8 right-8 w-4 h-4 border-b border-r border-white/30" />
+      </aside>
+
+      {/* ============ RIGHT — sign-in form ============ */}
+      <section className="relative flex flex-col justify-center p-6 sm:p-10 lg:p-16 bg-bg-main min-w-0 overflow-hidden">
+        {/* Mobile-only header (since the left panel is hidden on mobile) */}
+        <div className="lg:hidden flex items-center justify-between mb-10">
+          <div className="flex items-center gap-3">
+            {theme?.logoUrl ? (
+              <img src={theme.logoUrl} className="h-10 w-auto" alt={siteName} />
+            ) : (
+              <BrandMark size={40} tone="dark" />
+            )}
+            <span className="font-display text-2xl text-text-heading leading-none">{siteName}</span>
+          </div>
+          <span className="eyebrow tabular text-text-body/50">EST. 2026</span>
+        </div>
+
+        <motion.div
+          initial={{ opacity: 0, y: 16 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
+          className="w-full max-w-md mx-auto"
+        >
+          {/* Eyebrow + heading */}
+          <div className="eyebrow tabular text-accent mb-3">
+            {isRegistering ? "01 / CREATE ACCOUNT" : "01 / SIGN IN"}
+          </div>
+          <h1 className="font-display text-5xl sm:text-6xl text-text-heading leading-[0.95] mb-3">
+            {isRegistering ? "Join the index." : "Welcome back."}
+          </h1>
+          <p className="text-text-body text-base leading-relaxed mb-10 lg:hidden">{siteTagline}</p>
+          <p className="text-text-body text-base leading-relaxed mb-10 hidden lg:block">
+            {isRegistering
+              ? "Set up credentials. You can complete your industry profile after sign-in."
+              : "Sign in to your account to continue."}
+          </p>
+
+          {/* Primary CTA — Google */}
+          <button
+            onClick={() => onSignIn("google")}
+            className="w-full flex items-center justify-center gap-3 px-5 py-4 bg-bg-card border border-border-main rounded-xl text-text-heading font-medium hover:border-text-heading hover:shadow-sm transition-all group"
+          >
+            <GoogleGlyph />
+            <span>Continue with Google</span>
+            <ChevronRight className="w-4 h-4 text-text-body/40 group-hover:translate-x-0.5 group-hover:text-text-heading transition-all ml-auto" />
+          </button>
+
+          {/* Secondary providers */}
+          <div className="mt-3 grid grid-cols-2 gap-3">
+            <button
+              onClick={() => onSignIn("facebook")}
+              className="flex items-center justify-center gap-2 px-4 py-3 bg-bg-card border border-border-main rounded-xl text-text-body text-sm font-medium hover:border-text-heading hover:text-text-heading transition-all"
+            >
+              <Facebook className="w-4 h-4" />
+              Facebook
+            </button>
+            <button
+              onClick={() => onSignIn("linkedin")}
+              className="flex items-center justify-center gap-2 px-4 py-3 bg-bg-card border border-border-main rounded-xl text-text-body text-sm font-medium hover:border-text-heading hover:text-text-heading transition-all"
+            >
+              <Linkedin className="w-4 h-4" />
+              LinkedIn
+            </button>
+          </div>
+
+          {/* Divider */}
+          <div className="relative my-8 flex items-center">
+            <div className="flex-1 h-px bg-border-main" />
+            <span className="px-4 eyebrow tabular text-text-body/50">or with email</span>
+            <div className="flex-1 h-px bg-border-main" />
+          </div>
+
+          {/* Error toast */}
+          {error && (
+            <motion.div
+              initial={{ opacity: 0, y: -4 }}
+              animate={{ opacity: 1, y: 0 }}
+              className="mb-5 px-4 py-3 bg-rust/8 border border-rust/25 rounded-xl text-rust text-sm flex items-start gap-2"
+              style={{ backgroundColor: "rgba(177,74,20,0.08)" }}
+            >
+              <span className="font-mono text-xs mt-0.5">!</span>
+              <span>{error}</span>
+            </motion.div>
+          )}
+
+          {/* Email form */}
+          <form onSubmit={handleEmailAuth} className="space-y-3">
+            <label className="block">
+              <span className="eyebrow tabular text-text-body/60 mb-2 block">Work email</span>
+              <div className="relative">
+                <Mail className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-text-body/35" />
+                <input
+                  type="email"
+                  placeholder="you@company.com"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  className="w-full pl-11 pr-4 py-3.5 bg-bg-card border border-border-main rounded-xl text-[15px] text-text-heading placeholder:text-text-body/40 focus:border-text-heading focus:ring-4 focus:ring-text-heading/5 outline-none transition-all"
+                  required
+                />
+              </div>
+            </label>
+            <label className="block">
+              <span className="eyebrow tabular text-text-body/60 mb-2 block">Password</span>
+              <div className="relative">
+                <LockIcon className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-text-body/35" />
+                <input
+                  type="password"
+                  placeholder="••••••••"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  className="w-full pl-11 pr-4 py-3.5 bg-bg-card border border-border-main rounded-xl text-[15px] text-text-heading placeholder:text-text-body/40 focus:border-text-heading focus:ring-4 focus:ring-text-heading/5 outline-none transition-all"
+                  required
+                />
+              </div>
+            </label>
+
+            <button
+              type="submit"
+              disabled={authLoading}
+              className="w-full bg-primary text-white py-3.5 rounded-xl font-medium text-[15px] hover:brightness-110 transition-all flex items-center justify-center gap-2 active:scale-[0.99] disabled:opacity-50 mt-2"
+            >
+              {authLoading ? (
+                <Loader2 className="w-4 h-4 animate-spin" />
+              ) : (
+                <>
+                  {isRegistering ? "Create account" : "Sign in"}
+                  <ChevronRight className="w-4 h-4" />
+                </>
+              )}
+            </button>
+          </form>
+
+          {/* Toggle register / sign-in */}
+          <div className="mt-6 text-center">
+            <button
+              type="button"
+              onClick={() => setIsRegistering(!isRegistering)}
+              className="text-sm text-text-body hover:text-text-heading transition-colors"
+            >
+              {isRegistering ? (
+                <>Already have an account? <span className="text-text-heading font-medium underline underline-offset-4 decoration-accent decoration-2">Sign in</span></>
+              ) : (
+                <>New to {siteName}? <span className="text-text-heading font-medium underline underline-offset-4 decoration-accent decoration-2">Create an account</span></>
+              )}
+            </button>
+          </div>
+
+          {/* Footer */}
+          <p className="mt-12 text-xs text-text-body/55 leading-relaxed text-center">
+            By continuing you agree to our{" "}
+            <a href="#" className="text-text-heading underline underline-offset-2">Terms</a> and{" "}
+            <a href="#" className="text-text-heading underline underline-offset-2">Privacy Policy</a>. Identity
+            verification is required for full member access.
+          </p>
+        </motion.div>
+
+        {/* Mobile sector marquee — gives mobile a hint of the industrial feel */}
+        <div className="lg:hidden mt-12 -mx-6 sm:-mx-10 overflow-hidden mask-fade-x">
+          <div className="marquee flex gap-8 whitespace-nowrap w-max">
+            {[...Array(2)].flatMap((_, k) =>
+              ["Crude oil", "Refined products", "Chemicals", "LNG · LPG", "Biofuels", "Inspection", "EPC"].map(
+                (s, i) => (
+                  <span
+                    key={`${k}-${i}`}
+                    className="eyebrow tabular text-text-body/40 flex items-center gap-2"
+                  >
+                    <span className="text-accent">◆</span>
+                    {s}
+                  </span>
+                ),
+              ),
+            )}
+          </div>
+        </div>
+      </section>
+
+      {/* Mask-fade utility for marquee edges */}
+      <style>{`
+        .mask-fade-x {
+          mask-image: linear-gradient(90deg, transparent, #000 8%, #000 92%, transparent);
+          -webkit-mask-image: linear-gradient(90deg, transparent, #000 8%, #000 92%, transparent);
+        }
+      `}</style>
     </div>
+  );
+}
+
+/** Google "G" glyph — uses official brand colours instead of a favicon image. */
+function GoogleGlyph() {
+  return (
+    <svg width="18" height="18" viewBox="0 0 18 18" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+      <path
+        d="M17.64 9.2c0-.637-.057-1.251-.164-1.84H9v3.481h4.844a4.14 4.14 0 01-1.796 2.716v2.258h2.908c1.702-1.567 2.684-3.874 2.684-6.615z"
+        fill="#4285F4"
+      />
+      <path
+        d="M9 18c2.43 0 4.467-.806 5.956-2.18l-2.908-2.259c-.806.54-1.837.86-3.048.86-2.344 0-4.328-1.583-5.036-3.71H.957v2.332A8.997 8.997 0 009 18z"
+        fill="#34A853"
+      />
+      <path
+        d="M3.964 10.71A5.41 5.41 0 013.682 9c0-.593.102-1.17.282-1.71V4.958H.957A8.996 8.996 0 000 9c0 1.452.348 2.827.957 4.042l3.007-2.332z"
+        fill="#FBBC05"
+      />
+      <path
+        d="M9 3.58c1.321 0 2.508.454 3.44 1.345l2.582-2.58C13.463.891 11.426 0 9 0A8.997 8.997 0 00.957 4.958L3.964 7.29C4.672 5.163 6.656 3.58 9 3.58z"
+        fill="#EA4335"
+      />
+    </svg>
   );
 }
 
 function Splash() {
   return (
-    <div className="fixed inset-0 z-[1000] bg-primary flex flex-col items-center justify-center">
-      <motion.div 
-        animate={{ 
-          scale: [1, 1.1, 1],
-          opacity: [0.5, 1, 0.5]
+    <div className="fixed inset-0 z-[1000] bg-primary text-white flex flex-col items-center justify-center overflow-hidden grain">
+      {/* Blueprint coordinate grid */}
+      <div className="absolute inset-0 bp-grid pointer-events-none" />
+
+      {/* Atmospheric radial wash from top-left */}
+      <div
+        className="absolute inset-0 pointer-events-none opacity-90"
+        style={{
+          background:
+            "radial-gradient(ellipse at 20% 0%, rgba(30,74,114,0.55) 0%, rgba(11,27,43,0) 55%)",
         }}
-        transition={{ duration: 3, repeat: Infinity }}
+      />
+
+      {/* Corner registration marks — like an engineering drawing */}
+      <CornerTicks />
+
+      {/* Top-left technical metadata */}
+      <div className="absolute top-6 left-6 sm:top-10 sm:left-10 text-white/55 eyebrow tabular flex items-center gap-3">
+        <span className="inline-block w-1.5 h-1.5 rounded-full bg-accent soft-pulse" />
+        <span>INDEX · LIVE</span>
+      </div>
+
+      {/* Top-right coordinates */}
+      <div className="absolute top-6 right-6 sm:top-10 sm:right-10 text-white/55 eyebrow tabular text-right">
+        <div>N 19.0760° · E 72.8777°</div>
+        <div className="opacity-60">REV 2026.05</div>
+      </div>
+
+      {/* Hero mark with gauge sweep */}
+      <motion.div
+        initial={{ opacity: 0, scale: 0.92 }}
+        animate={{ opacity: 1, scale: 1 }}
+        transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
         className="relative"
       >
-        <div className="w-24 h-24 bg-white/10 rounded-full flex items-center justify-center blur-2xl absolute inset-0" />
-        <LayoutDashboard className="w-16 h-16 text-white relative z-10" />
+        {/* Gauge sweep ring — animated stroke */}
+        <svg
+          className="absolute inset-0 -m-6"
+          width="180"
+          height="180"
+          viewBox="0 0 180 180"
+          fill="none"
+          style={{ filter: "drop-shadow(0 0 24px rgba(234,115,23,0.35))" }}
+        >
+          <circle cx="90" cy="90" r="78" stroke="rgba(245,243,239,0.08)" strokeWidth="1" />
+          <circle
+            cx="90"
+            cy="90"
+            r="78"
+            stroke="#ea7317"
+            strokeWidth="1.5"
+            strokeLinecap="round"
+            strokeDasharray="490"
+            className="gauge-sweep"
+            transform="rotate(-90 90 90)"
+          />
+        </svg>
+
+        <BrandMark size={132} tone="light" />
       </motion.div>
-      <motion.div 
-        initial={{ opacity: 0, y: 20 }}
+
+      {/* Wordmark */}
+      <motion.div
+        initial={{ opacity: 0, y: 14 }}
         animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.5 }}
-        className="mt-8 text-center"
+        transition={{ delay: 0.35, duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
+        className="mt-12 text-center px-6"
       >
-        <h1 className="text-3xl font-black text-white uppercase tracking-[0.5em] mb-2 leading-none">Tankonomics</h1>
-        <p className="text-white/40 text-[10px] font-black uppercase tracking-[0.3em]">Connecting Terminals Globally</p>
+        <h1 className="font-display text-5xl sm:text-6xl text-white leading-[0.95]">
+          Tankonomics
+        </h1>
+        <div className="mt-3 flex items-center justify-center gap-3 text-white/50">
+          <span className="h-px w-8 bg-white/30" />
+          <span className="eyebrow tabular text-white/65">The Global Tank & Terminal Network</span>
+          <span className="h-px w-8 bg-white/30" />
+        </div>
       </motion.div>
-      
-      <div className="absolute bottom-12 w-48 h-1 bg-white/10 rounded-full overflow-hidden">
-        <motion.div 
-          initial={{ x: "-100%" }}
-          animate={{ x: "100%" }}
-          transition={{ duration: 2, repeat: Infinity, ease: "linear" }}
-          className="w-full h-full bg-white/40"
-        />
-      </div>
+
+      {/* Bottom technical strip */}
+      <motion.div
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ delay: 0.7 }}
+        className="absolute bottom-8 sm:bottom-12 left-0 right-0 flex flex-col items-center gap-4 px-6"
+      >
+        {/* Gauge progress bar */}
+        <div className="relative w-56 h-px bg-white/15">
+          <motion.div
+            initial={{ scaleX: 0 }}
+            animate={{ scaleX: 1 }}
+            transition={{ duration: 2.2, ease: [0.22, 1, 0.36, 1] }}
+            style={{ transformOrigin: "left" }}
+            className="absolute inset-y-0 left-0 right-0 bg-accent"
+          />
+          {/* Tick marks */}
+          {[0, 0.25, 0.5, 0.75, 1].map((p) => (
+            <span
+              key={p}
+              className="absolute -top-1 w-px h-2 bg-white/30"
+              style={{ left: `${p * 100}%` }}
+            />
+          ))}
+        </div>
+        <div className="eyebrow tabular text-white/40 flex items-center gap-3 sm:gap-6 whitespace-nowrap">
+          <span className="hidden sm:inline">INITIALISING</span>
+          <span className="sm:hidden">INIT</span>
+          <span className="opacity-60">·</span>
+          <span className="hidden sm:inline">VERIFYING IDENTITY</span>
+          <span className="sm:hidden">VERIFY</span>
+          <span className="opacity-60">·</span>
+          <span className="hidden sm:inline">LOADING INDEX</span>
+          <span className="sm:hidden">INDEX</span>
+        </div>
+      </motion.div>
     </div>
+  );
+}
+
+/** Corner registration ticks — small L-shaped marks at each corner of the viewport. */
+function CornerTicks() {
+  const tick = "absolute w-5 h-5 border-white/35";
+  return (
+    <>
+      <div className={`${tick} top-6 left-6 sm:top-10 sm:left-10 border-t border-l`} />
+      <div className={`${tick} top-6 right-6 sm:top-10 sm:right-10 border-t border-r`} />
+      <div className={`${tick} bottom-6 left-6 sm:bottom-10 sm:left-10 border-b border-l`} />
+      <div className={`${tick} bottom-6 right-6 sm:bottom-10 sm:right-10 border-b border-r`} />
+    </>
   );
 }
 
