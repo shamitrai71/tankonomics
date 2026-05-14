@@ -49,7 +49,7 @@ import {
 import { formatDistanceToNow } from "date-fns";
 import { GoogleGenAI } from "@google/genai";
 import GroupPostCard from "../components/GroupPostCard";
-import { uploadImage } from "../lib/uploadImage";
+import { uploadImage, isInlineImage, migrateDataUrlToStorage } from "../lib/uploadImage";
 
 export default function GroupDetail() {
   const { groupId } = useParams<{ groupId: string }>();
@@ -249,12 +249,37 @@ export default function GroupDetail() {
         }
       }
 
+      // Defensive: if profile.photoURL or company.logo is still a legacy
+      // base64 data URL, migrate it to Storage now so it fits within the
+      // per-field size cap in firestore.rules. Skip rather than fail if
+      // the migration itself errors out.
+      let authorPhotoSafe: string | null = selectedCompany
+        ? selectedCompany.logo
+        : (profile?.avatarUrl || profile?.photoURL || user.photoURL ||
+           `https://api.dicebear.com/7.x/initials/svg?seed=${profile?.displayName || user.displayName}`);
+      if (isInlineImage(authorPhotoSafe)) {
+        try {
+          authorPhotoSafe = await migrateDataUrlToStorage(authorPhotoSafe, "profile");
+        } catch {
+          authorPhotoSafe = null;
+        }
+      }
+
+      let companyLogoSafe: string | null = selectedCompany?.logo ?? null;
+      if (isInlineImage(companyLogoSafe)) {
+        try {
+          companyLogoSafe = await migrateDataUrlToStorage(companyLogoSafe, "companies");
+        } catch {
+          companyLogoSafe = null;
+        }
+      }
+
       const postData: any = {
         groupId,
         content: newPost,
         authorUid: user.uid,
         authorName: selectedCompany ? selectedCompany.name : (profile?.displayName || user.displayName || "Anonymous"),
-        authorPhoto: selectedCompany ? selectedCompany.logo : (profile?.avatarUrl || profile?.photoURL || user.photoURL || `https://api.dicebear.com/7.x/initials/svg?seed=${profile?.displayName || user.displayName}`),
+        authorPhoto: authorPhotoSafe,
         authorJobTitle: selectedCompany ? "Verified Company" : (profile?.jobTitle || "Network Peer"),
         createdAt: serverTimestamp(),
         likesCount: 0,
@@ -265,7 +290,7 @@ export default function GroupDetail() {
       if (selectedCompany) {
         postData.companyId = selectedCompany.id;
         postData.companyName = selectedCompany.name;
-        postData.companyLogo = selectedCompany.logo;
+        postData.companyLogo = companyLogoSafe;
       }
 
       if (uploadedImageUrl) postData.image = uploadedImageUrl;

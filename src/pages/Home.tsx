@@ -4,7 +4,7 @@ import { useAuth } from "../App";
 import { DynamicContent } from "../components/DynamicContent";
 import { useCollection, createDocument, updateDocument, removeDocument } from "../hooks/useFirestore";
 import { orderBy, where, serverTimestamp } from "firebase/firestore";
-import { uploadImage } from "../lib/uploadImage";
+import { uploadImage, isInlineImage, migrateDataUrlToStorage } from "../lib/uploadImage";
 import ReportModal from "../components/ReportModal";
 import { GoogleGenAI } from "@google/genai";
 import { 
@@ -614,12 +614,38 @@ export default function Home() {
         }
       }
 
+      // Defensive: if the user's profile.photoURL or selectedCompany.logo is
+      // a legacy base64 data URL, it'll exceed the per-field size limit in
+      // firestore.rules' isValidPost (`authorPhoto.size() <= 2097152` and the
+      // same for `companyLogo`). Migrate them to Storage on the fly so the
+      // post still goes through; never block a legitimate post just because
+      // legacy data sits on the profile.
+      let authorPhotoSafe: string | null = selectedCompany
+        ? selectedCompany.logo
+        : (profile?.photoURL || user.photoURL || null);
+      if (isInlineImage(authorPhotoSafe)) {
+        try {
+          authorPhotoSafe = await migrateDataUrlToStorage(authorPhotoSafe, "profile");
+        } catch {
+          authorPhotoSafe = null; // skip rather than fail the whole post
+        }
+      }
+
+      let companyLogoSafe: string | null = selectedCompany?.logo ?? null;
+      if (isInlineImage(companyLogoSafe)) {
+        try {
+          companyLogoSafe = await migrateDataUrlToStorage(companyLogoSafe, "companies");
+        } catch {
+          companyLogoSafe = null;
+        }
+      }
+
       const postData: any = {
         content: newPost,
         authorUid: user.uid,
         authorName: selectedCompany ? selectedCompany.name : (profile?.displayName || user.displayName || "Anonymous"),
         authorEmail: user.email || null,
-        authorPhoto: selectedCompany ? selectedCompany.logo : (profile?.photoURL || user.photoURL || null),
+        authorPhoto: authorPhotoSafe,
         authorJobTitle: selectedCompany ? `${selectedCompany.name} Admin` : (profile?.jobTitle || "Professional"),
         likesCount: 0,
         commentsCount: 0,
@@ -629,11 +655,23 @@ export default function Home() {
       if (selectedCompany) {
         postData.companyId = selectedCompany.id;
         postData.companyName = selectedCompany.name;
-        postData.companyLogo = selectedCompany.logo;
+        postData.companyLogo = companyLogoSafe;
       }
 
       if (uploadedImageUrl) postData.image = uploadedImageUrl;
       if (videoInfo) postData.video = videoInfo;
+
+      // Diagnostic: log a sanitised summary of what we're about to write.
+      // (Truncates long strings so we don't dump megabytes into the console.)
+      const debugPayload = Object.fromEntries(
+        Object.entries(postData).map(([k, v]) => [
+          k,
+          typeof v === "string" && v.length > 120
+            ? `${v.slice(0, 120)}…(${v.length} chars)`
+            : v,
+        ]),
+      );
+      console.log("[post] creating with payload:", debugPayload);
 
       const result = await createDocument("posts", postData);
       if (!result) throw new Error("The server rejected the post. Please check your profile is complete and try again.");
