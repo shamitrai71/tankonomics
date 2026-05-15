@@ -1,29 +1,31 @@
+/**
+ * Groups — micro-communities of verified members.
+ *
+ * Restyled. All data wiring preserved verbatim:
+ *   - useCollection groups
+ *   - handleCreateGroup (creates with pending status, auto-joins creator)
+ *   - Verification gate: must be connected to a verified company
+ *   - Search + public/private filter
+ */
+
 import { useState } from "react";
 import { Link } from "react-router-dom";
-import { 
-  Users, 
-  Search, 
-  Plus, 
-  ShieldCheck, 
+import {
+  Users,
+  Search,
+  Plus,
+  ShieldCheck,
   ArrowRight,
   Globe,
   Lock,
   X,
-  Building2,
-  AlertCircle
+  ChevronRight,
 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useAuth } from "../App";
 import { useCollection } from "../hooks/useFirestore";
 import { db } from "../firebase";
-import {
-  collection,
-  addDoc,
-  serverTimestamp,
-  setDoc,
-  doc
-} from "firebase/firestore";
-import { format } from "date-fns";
+import { collection, addDoc, serverTimestamp, setDoc, doc } from "firebase/firestore";
 
 export default function Groups() {
   const { user, profile } = useAuth();
@@ -32,13 +34,13 @@ export default function Groups() {
   const [filterStatus, setFilterStatus] = useState<"all" | "public" | "private">("all");
   const [showCreateModal, setShowCreateModal] = useState(false);
   const [creating, setCreating] = useState(false);
-  
+
   const [newGroup, setNewGroup] = useState({
     name: "",
     description: "",
     isPrivate: false,
     iconUrl: "",
-    coverUrl: ""
+    coverUrl: "",
   });
 
   const isConnectedToCompany = !!profile?.companyId;
@@ -64,63 +66,79 @@ export default function Groups() {
       };
 
       const docRef = await addDoc(collection(db, "groups"), groupData);
-      
-      // Auto-join as creator
       await setDoc(doc(db, "group_members", `${docRef.id}_${user.uid}`), {
         groupId: docRef.id,
         userUid: user.uid,
         role: "creator",
-        joinedAt: serverTimestamp()
+        joinedAt: serverTimestamp(),
       });
 
       setShowCreateModal(false);
       setNewGroup({ name: "", description: "", isPrivate: false, iconUrl: "", coverUrl: "" });
       alert("Group creation initiated. An administrator will review your request shortly.");
-    } catch (error) {
-      console.error("Error creating group:", error);
+    } catch (err) {
+      console.error("Error creating group:", err);
     } finally {
       setCreating(false);
     }
   };
-  
-  const filteredGroups = groups.filter(g => {
+
+  const filteredGroups = groups.filter((g) => {
     const isApproved = g.status === "approved";
     const isOwner = g.creatorUid === user?.uid;
     if (!isApproved && !isOwner) return false;
 
-    const matchesSearch = g.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    const matchesSearch =
+      g.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
       g.description?.toLowerCase().includes(searchTerm.toLowerCase());
-    
-    const matchesFilter = filterStatus === "all" || 
-      (filterStatus === "public" && !g.isPrivate) || 
+
+    const matchesFilter =
+      filterStatus === "all" ||
+      (filterStatus === "public" && !g.isPrivate) ||
       (filterStatus === "private" && g.isPrivate);
-      
+
     return matchesSearch && matchesFilter;
   });
 
   return (
-    <div className="max-w-7xl mx-auto px-4 py-12 md:px-8">
-      <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-12">
-        <div>
-          <div className="flex items-center gap-3 mb-4">
-            <div className="w-12 h-12 bg-indigo-600 rounded-2xl flex items-center justify-center shadow-lg shadow-indigo-200">
-               <Users className="text-white w-6 h-6" />
+    <div className="min-h-screen bg-bg-main">
+      <div className="max-w-7xl mx-auto px-4 md:px-8 py-8 md:py-12">
+        {/* Heading */}
+        <header className="mb-10 md:mb-12 relative flex flex-col md:flex-row md:items-end md:justify-between gap-6">
+          <div className="relative">
+            <div className="absolute -top-4 -left-4 right-0 h-24 bp-grid-paper opacity-50 pointer-events-none" />
+            <div className="relative">
+              <div className="eyebrow tabular text-accent inline-flex items-center gap-2 mb-3">
+                <span className="inline-block w-1.5 h-1.5 rounded-full bg-accent soft-pulse" />
+                COMMUNITY GROUPS
+              </div>
+              <h1 className="font-display text-[clamp(2.25rem,5vw,4rem)] text-text-heading leading-[0.98]">
+                Specialist circles.
+              </h1>
+              <p className="text-text-body text-[15px] mt-3 max-w-xl">
+                High-integrity micro-communities for verified tank-storage professionals. Join existing networks or propose a new one.
+              </p>
             </div>
-            <h1 className="text-4xl font-black text-slate-900 tracking-tighter uppercase">Community Groups</h1>
           </div>
-          <p className="text-slate-500 font-medium max-w-xl">Collaborate with industry peers in specialized interest groups. High-integrity networks for tank storage professionals.</p>
-        </div>
 
-        <div className="flex flex-col gap-6 w-full md:w-auto">
-          <div className="flex bg-white p-1.5 rounded-2xl border border-slate-200 shadow-sm">
+          <button
+            onClick={() => setShowCreateModal(true)}
+            className="inline-flex items-center justify-center gap-2 bg-text-heading text-bg-card px-5 py-3 rounded-xl text-[14px] font-medium hover:brightness-110 transition-all shrink-0"
+          >
+            <Plus className="w-4 h-4" strokeWidth={1.75} />
+            Create group
+          </button>
+        </header>
+
+        {/* Filter bar */}
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-6">
+          <div className="flex bg-bg-card border border-border-main rounded-xl p-1 w-fit">
             {(["all", "public", "private"] as const).map((status) => (
               <button
                 key={status}
                 onClick={() => setFilterStatus(status)}
-                className={`px-6 py-2.5 rounded-xl text-[10px] font-black uppercase tracking-[0.15em] transition-all ${
-                  filterStatus === status 
-                    ? "bg-slate-900 text-white shadow-lg" 
-                    : "text-slate-400 hover:text-slate-900 hover:bg-slate-50"
+                className={`px-4 py-1.5 rounded-lg eyebrow tabular transition-all ${
+                  filterStatus === status ? "bg-text-heading text-bg-card" : "text-text-body/55 hover:text-text-body"
                 }`}
               >
                 {status}
@@ -128,251 +146,269 @@ export default function Groups() {
             ))}
           </div>
 
-          <div className="flex items-center gap-3">
-            <div className="relative group flex-1 md:flex-none">
-              <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400 group-focus-within:text-indigo-600 transition-colors" />
-              <input 
-                type="text" 
-                placeholder="Find a group..."
-                value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
-                className="pl-12 pr-6 py-4 bg-white border border-slate-200 rounded-2xl text-sm font-bold outline-none focus:ring-4 focus:ring-indigo-50 transition-all w-full md:w-80 shadow-sm"
-              />
-            </div>
-            <button 
-              onClick={() => setShowCreateModal(true)}
-              className="flex items-center gap-3 bg-slate-900 text-white px-6 py-4 rounded-2xl font-black text-xs uppercase tracking-widest hover:bg-slate-800 transition-all shadow-xl active:scale-95 shrink-0"
-            >
-              <Plus className="w-4 h-4" />
-              <span className="hidden sm:inline">Create Group</span>
-            </button>
+          <div className="relative w-full sm:w-80">
+            <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-text-body/40" strokeWidth={1.75} />
+            <input
+              type="text"
+              placeholder="Find a group…"
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              className="w-full pl-11 pr-10 py-3 bg-bg-card border border-border-main rounded-xl text-[14px] text-text-heading placeholder:text-text-body/40 outline-none focus:border-text-heading transition-all"
+            />
+            {searchTerm && (
+              <button
+                onClick={() => setSearchTerm("")}
+                className="absolute right-3 top-1/2 -translate-y-1/2 w-6 h-6 rounded-md hover:bg-bg-main flex items-center justify-center text-text-body/50"
+              >
+                <X className="w-3.5 h-3.5" />
+              </button>
+            )}
           </div>
         </div>
-      </div>
 
-      {loading ? (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-          {[1,2,3].map(i => (
-            <div key={i} className="h-64 bg-slate-50 animate-pulse rounded-[2.5rem]" />
-          ))}
-        </div>
-      ) : (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-          {filteredGroups.map((group) => (
-            <Link 
-              key={group.id} 
-              to={`/groups/${group.id}`}
-              className="group bg-white rounded-[2.5rem] border border-slate-100 shadow-sm hover:shadow-2xl hover:-translate-y-2 transition-all overflow-hidden flex flex-col h-full"
-            >
-              <div className="h-32 bg-slate-100 relative">
-                 {group.coverUrl ? (
-                   <img src={group.coverUrl} className="w-full h-full object-cover" alt="" />
-                 ) : (
-                   <div className="w-full h-full bg-gradient-to-br from-slate-100 to-slate-200" />
-                 )}
-                 <div className="absolute -bottom-6 left-8 w-16 h-16 bg-white rounded-2xl shadow-xl flex items-center justify-center border-4 border-white overflow-hidden p-1">
-                   {group.iconUrl ? (
-                     <img src={group.iconUrl} className="w-full h-full object-contain" alt="" />
-                   ) : (
-                     <Users className="w-8 h-8 text-slate-300" />
-                   )}
-                 </div>
-              </div>
+        {/* Group grid */}
+        {loading ? (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+            {[1, 2, 3].map((i) => <div key={i} className="h-64 bg-bg-card border border-border-main rounded-2xl animate-pulse" />)}
+          </div>
+        ) : filteredGroups.length === 0 ? (
+          <div className="text-center py-20 bg-bg-card border border-dashed border-border-main rounded-2xl">
+            {filterStatus === "all" ? (
+              <Users className="w-12 h-12 text-text-body/25 mx-auto mb-4" strokeWidth={1.5} />
+            ) : filterStatus === "private" ? (
+              <Lock className="w-12 h-12 text-text-body/25 mx-auto mb-4" strokeWidth={1.5} />
+            ) : (
+              <Globe className="w-12 h-12 text-text-body/25 mx-auto mb-4" strokeWidth={1.5} />
+            )}
+            <p className="eyebrow tabular text-text-body/55 mb-1">NO MATCH</p>
+            <h3 className="font-display text-2xl text-text-heading mb-2">
+              No {filterStatus !== "all" ? `${filterStatus} ` : ""}groups found
+            </h3>
+            <p className="text-text-body text-[14px]">Try adjusting your search or filter.</p>
+            {(searchTerm || filterStatus !== "all") && (
+              <button
+                onClick={() => {
+                  setSearchTerm("");
+                  setFilterStatus("all");
+                }}
+                className="mt-5 inline-flex items-center gap-2 px-4 py-2 bg-text-heading text-bg-card rounded-xl text-[13px] font-medium"
+              >
+                Reset filters
+                <ArrowRight className="w-3.5 h-3.5" />
+              </button>
+            )}
+          </div>
+        ) : (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+            {filteredGroups.map((group) => (
+              <Link
+                key={group.id}
+                to={`/groups/${group.id}`}
+                className="group bg-bg-card border border-border-main rounded-2xl hover:border-text-heading transition-all overflow-hidden flex flex-col"
+              >
+                {/* Cover */}
+                <div className="h-28 bg-bg-main relative border-b border-border-main">
+                  {group.coverUrl ? (
+                    <img src={group.coverUrl} className="w-full h-full object-cover" alt="" />
+                  ) : (
+                    <div className="w-full h-full bp-grid-paper opacity-70" />
+                  )}
+                  <div className="absolute -bottom-5 left-5 w-12 h-12 bg-bg-card rounded-xl border border-border-main flex items-center justify-center overflow-hidden p-1.5 shadow-md">
+                    {group.iconUrl ? (
+                      <img src={group.iconUrl} className="w-full h-full object-contain" alt="" />
+                    ) : (
+                      <Users className="w-5 h-5 text-text-body/40" strokeWidth={1.5} />
+                    )}
+                  </div>
+                </div>
 
-              <div className="p-8 pt-10 flex-1 flex flex-col">
-                <div className="flex items-center justify-between mb-4">
-                  <h3 className="text-xl font-black text-slate-900 uppercase tracking-tight line-clamp-1">{group.name}</h3>
-                  <div className="flex items-center gap-2">
+                <div className="p-5 pt-7 flex-1 flex flex-col">
+                  <div className="flex items-start justify-between gap-2 mb-2 flex-wrap">
+                    <h3 className="font-display text-lg text-text-heading leading-tight line-clamp-1 group-hover:text-accent transition-colors flex-1 min-w-0">
+                      {group.name}
+                    </h3>
+                    <div className="flex items-center gap-1.5 shrink-0">
+                      {group.isPrivate ? (
+                        <span className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded eyebrow tabular bg-bg-main border border-border-main text-text-body/60">
+                          <Lock className="w-2.5 h-2.5" strokeWidth={2} />
+                          Private
+                        </span>
+                      ) : (
+                        <span className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded eyebrow tabular bg-accent/10 text-accent border border-accent/20">
+                          <Globe className="w-2.5 h-2.5" strokeWidth={2} />
+                          Public
+                        </span>
+                      )}
+                    </div>
+                  </div>
+
+                  <div className="flex items-center gap-1.5 mb-3 flex-wrap">
                     {group.status === "pending" && (
-                      <div className="bg-amber-100 text-amber-600 px-2 py-0.5 rounded-lg text-[8px] font-black uppercase tracking-widest border border-amber-200">
-                        Awaiting Approval
-                      </div>
+                      <span className="eyebrow tabular px-1.5 py-0.5 rounded bg-rust/10 text-rust border border-rust/20">
+                        Pending approval
+                      </span>
                     )}
                     {group.creatorUid === user?.uid && (
-                      <div className="bg-slate-900 text-white px-2 py-0.5 rounded-lg text-[8px] font-black uppercase tracking-widest border border-slate-800">
+                      <span className="eyebrow tabular px-1.5 py-0.5 rounded bg-text-heading text-bg-card">
                         Creator
-                      </div>
-                    )}
-                    {group.isPrivate ? (
-                      <Lock className="w-4 h-4 text-amber-500" />
-                    ) : (
-                      <Globe className="w-4 h-4 text-emerald-500" />
+                      </span>
                     )}
                   </div>
-                </div>
-                <p className="text-sm text-slate-500 font-medium line-clamp-2 mb-6 flex-1">{group.description || "No description provided."}</p>
-                
-                <div className="flex items-center justify-between mt-auto">
-                  <div className="flex items-center gap-2">
-                    <div className="w-8 h-8 rounded-full bg-slate-50 border border-slate-100 flex items-center justify-center">
-                       <Users className="w-3.5 h-3.5 text-slate-400" />
-                    </div>
-                    <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest">{group.memberCount || 1} Members</span>
-                  </div>
-                  <div className="bg-slate-50 p-2.5 rounded-xl group-hover:bg-indigo-600 group-hover:text-white transition-all">
-                    <ArrowRight className="w-4 h-4" />
-                  </div>
-                </div>
-              </div>
-            </Link>
-          ))}
-        </div>
-      )}
 
-      {filteredGroups.length === 0 && !loading && (
-        <div className="text-center py-24 bg-slate-50 rounded-[3rem] border border-dashed border-slate-200">
-           {filterStatus === "all" ? <Users className="w-16 h-16 text-slate-200 mx-auto mb-6" /> : 
-            filterStatus === "private" ? <Lock className="w-16 h-16 text-slate-200 mx-auto mb-6" /> : 
-            <Globe className="w-16 h-16 text-slate-200 mx-auto mb-6" />}
-           <p className="text-xl font-black text-slate-400 uppercase tracking-tighter">
-             No {filterStatus !== "all" ? `${filterStatus} ` : ""}groups found matching your search
-           </p>
-           {(searchTerm || filterStatus !== "all") && (
-             <button 
-               onClick={() => { setSearchTerm(""); setFilterStatus("all"); }}
-               className="mt-6 text-indigo-600 font-black text-[10px] uppercase tracking-widest hover:underline"
-             >
-               Clear all filters
-             </button>
-           )}
-        </div>
-      )}
+                  <p className="text-[13px] text-text-body line-clamp-2 mb-5 flex-1 leading-relaxed">
+                    {group.description || "No description provided."}
+                  </p>
+
+                  <div className="flex items-center justify-between pt-4 border-t border-border-main">
+                    <span className="eyebrow tabular text-text-body/55 flex items-center gap-1.5">
+                      <Users className="w-3 h-3" strokeWidth={1.75} />
+                      {group.memberCount || 1} {(group.memberCount || 1) === 1 ? "MEMBER" : "MEMBERS"}
+                    </span>
+                    <div className="w-8 h-8 rounded-lg bg-bg-main border border-border-main flex items-center justify-center text-text-body/50 group-hover:bg-text-heading group-hover:border-text-heading group-hover:text-bg-card group-hover:translate-x-0.5 transition-all">
+                      <ChevronRight className="w-4 h-4" strokeWidth={1.75} />
+                    </div>
+                  </div>
+                </div>
+              </Link>
+            ))}
+          </div>
+        )}
+      </div>
 
       {/* Create Modal */}
       <AnimatePresence>
         {showCreateModal && (
-          <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-slate-900/80 backdrop-blur-md">
-            <motion.div 
-              initial={{ opacity: 0, scale: 0.95, y: 20 }}
+          <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
+            <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} onClick={() => setShowCreateModal(false)} className="absolute inset-0 bg-ink/60 backdrop-blur-sm" />
+            <motion.div
+              initial={{ opacity: 0, scale: 0.96, y: 12 }}
               animate={{ opacity: 1, scale: 1, y: 0 }}
-              exit={{ opacity: 0, scale: 0.95, y: 20 }}
-              className="bg-white rounded-[3rem] w-full max-w-xl overflow-hidden shadow-2xl relative"
+              exit={{ opacity: 0, scale: 0.96, y: 12 }}
+              className="bg-bg-card border border-border-main rounded-2xl shadow-2xl w-full max-w-xl relative z-10 overflow-hidden max-h-[90vh] flex flex-col"
             >
-              <div className="p-10 border-b border-slate-50 flex items-center justify-between">
+              <div className="px-6 py-5 border-b border-border-main flex items-baseline justify-between shrink-0">
                 <div>
-                  <h2 className="text-3xl font-black text-slate-900 uppercase tracking-tighter mb-1">Create a Group</h2>
-                  <p className="text-xs text-slate-400 font-medium uppercase tracking-widest">Build your professional micro-community</p>
+                  <p className="eyebrow tabular text-accent">NEW MICRO-COMMUNITY</p>
+                  <h2 className="font-display text-2xl text-text-heading mt-1">Create a group</h2>
                 </div>
-                <button 
-                  onClick={() => setShowCreateModal(false)}
-                  className="p-3 bg-slate-50 hover:bg-slate-100 rounded-2xl text-slate-400 transition-all"
-                >
-                  <X className="w-6 h-6" />
+                <button onClick={() => setShowCreateModal(false)} className="p-2 hover:bg-bg-main rounded-lg transition-colors text-text-body/60">
+                  <X className="w-4 h-4" />
                 </button>
               </div>
 
               {!isConnectedToCompany ? (
-                <div className="p-10">
-                  <div className="p-8 bg-amber-50 rounded-3xl border border-amber-100 flex flex-col items-center text-center">
-                    <div className="w-16 h-16 bg-white rounded-2xl shadow-xl flex items-center justify-center mb-6">
-                      <ShieldCheck className="w-8 h-8 text-amber-500" />
+                <div className="p-6">
+                  <div className="p-6 bg-rust/5 border border-rust/20 rounded-2xl flex flex-col items-center text-center">
+                    <div className="w-12 h-12 bg-bg-card border border-border-main rounded-xl flex items-center justify-center mb-4 text-rust">
+                      <ShieldCheck className="w-5 h-5" strokeWidth={1.75} />
                     </div>
-                    <h3 className="text-xl font-black text-amber-900 uppercase tracking-tight mb-4">Identity Verification Required</h3>
-                    <p className="text-sm text-amber-700 font-medium leading-relaxed mb-8">To maintain the professional integrity of groups, you must be connected to a verified company to create or join groups.</p>
-                    <Link 
-                      to="/profile" 
-                      className="inline-flex items-center gap-2 bg-amber-600 text-white px-8 py-4 rounded-2xl font-black text-xs uppercase tracking-widest hover:bg-amber-700 transition-all shadow-lg"
+                    <p className="eyebrow tabular text-rust mb-2">VERIFICATION REQUIRED</p>
+                    <h3 className="font-display text-xl text-text-heading mb-3">Connect your profile to a verified company first</h3>
+                    <p className="text-[13px] text-text-body leading-relaxed mb-5 max-w-sm">
+                      To maintain the professional integrity of groups, you must be connected to a verified company before creating or joining one.
+                    </p>
+                    <Link
+                      to="/profile"
+                      className="inline-flex items-center gap-2 bg-text-heading text-bg-card px-5 py-3 rounded-xl text-[14px] font-medium hover:brightness-110 transition-all"
                     >
-                      Update Profile
-                      <ArrowRight className="w-4 h-4" />
+                      Update profile
+                      <ArrowRight className="w-4 h-4" strokeWidth={1.75} />
                     </Link>
                   </div>
                 </div>
               ) : (
-                <form onSubmit={handleCreateGroup} className="p-10 space-y-8">
-                  <div className="space-y-6">
-                    <div>
-                      <label className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-400 mb-2 block">Group Professional Name</label>
-                      <input 
-                        required
-                        type="text" 
-                        value={newGroup.name}
-                        onChange={(e) => setNewGroup({...newGroup, name: e.target.value})}
-                        placeholder="e.g. European Terminal Managers"
-                        className="w-full px-6 py-4 bg-slate-50 border border-slate-200 rounded-2xl outline-none focus:ring-4 focus:ring-indigo-100 transition-all font-bold placeholder:text-slate-300"
-                      />
-                    </div>
+                <form onSubmit={handleCreateGroup} className="p-6 space-y-5 overflow-y-auto">
+                  <label className="block">
+                    <span className="eyebrow tabular text-text-body/60 mb-2 block">Group name</span>
+                    <input
+                      required
+                      type="text"
+                      value={newGroup.name}
+                      onChange={(e) => setNewGroup({ ...newGroup, name: e.target.value })}
+                      placeholder="e.g. European Terminal Managers"
+                      className="w-full px-4 py-3 bg-bg-main border border-border-main rounded-xl text-[15px] text-text-heading placeholder:text-text-body/40 outline-none focus:border-text-heading transition-all"
+                    />
+                  </label>
 
-                    <div>
-                      <label className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-400 mb-2 block">Group Mission / Description</label>
-                      <textarea 
-                        value={newGroup.description}
-                        onChange={(e) => setNewGroup({...newGroup, description: e.target.value})}
-                        placeholder="Define the purpose and rules of the group..."
-                        className="w-full px-6 py-4 bg-slate-50 border border-slate-200 rounded-2xl outline-none focus:ring-4 focus:ring-indigo-100 transition-all font-medium h-24 resize-none placeholder:text-slate-300"
-                      />
-                    </div>
+                  <label className="block">
+                    <span className="eyebrow tabular text-text-body/60 mb-2 block">Mission / description</span>
+                    <textarea
+                      value={newGroup.description}
+                      onChange={(e) => setNewGroup({ ...newGroup, description: e.target.value })}
+                      placeholder="Define the purpose and rules of the group…"
+                      className="w-full px-4 py-3 bg-bg-main border border-border-main rounded-xl text-[14px] text-text-heading placeholder:text-text-body/40 outline-none focus:border-text-heading h-24 resize-none transition-all"
+                    />
+                  </label>
 
-                    <div className="grid grid-cols-2 gap-6">
-                      <div>
-                        <label className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-400 mb-2 block">Icon Asset URL</label>
-                        <div className="flex gap-2">
-                           {newGroup.iconUrl && (
-                             <div className="w-14 h-14 rounded-xl border border-slate-100 flex-shrink-0 overflow-hidden bg-slate-50">
-                               <img src={newGroup.iconUrl} className="w-full h-full object-contain" alt="" />
-                             </div>
-                           )}
-                           <input 
-                            type="text" 
-                            value={newGroup.iconUrl}
-                            onChange={(e) => setNewGroup({...newGroup, iconUrl: e.target.value})}
-                            placeholder="https://..."
-                            className="flex-1 px-6 py-4 bg-slate-50 border border-slate-200 rounded-2xl outline-none focus:ring-4 focus:ring-indigo-100 transition-all font-bold placeholder:text-slate-300 text-xs"
-                          />
-                        </div>
-                      </div>
-                      <div>
-                        <label className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-400 mb-2 block">Cover Asset URL</label>
-                        <div className="flex gap-2">
-                           {newGroup.coverUrl && (
-                             <div className="w-14 h-14 rounded-xl border border-slate-100 flex-shrink-0 overflow-hidden bg-slate-50">
-                               <img src={newGroup.coverUrl} className="w-full h-full object-cover" alt="" />
-                             </div>
-                           )}
-                           <input 
-                            type="text" 
-                            value={newGroup.coverUrl}
-                            onChange={(e) => setNewGroup({...newGroup, coverUrl: e.target.value})}
-                            placeholder="https://..."
-                            className="flex-1 px-6 py-4 bg-slate-50 border border-slate-200 rounded-2xl outline-none focus:ring-4 focus:ring-indigo-100 transition-all font-bold placeholder:text-slate-300 text-xs"
-                          />
-                        </div>
-                      </div>
-                    </div>
-
-                    <div className="flex items-center justify-between p-6 bg-slate-50 rounded-3xl border border-slate-200">
-                      <div className="flex items-center gap-4">
-                        <div className={`w-12 h-12 rounded-2xl flex items-center justify-center transition-all ${newGroup.isPrivate ? 'bg-amber-500 text-white shadow-lg shadow-amber-100' : 'bg-emerald-500 text-white shadow-lg shadow-emerald-100'}`}>
-                          {newGroup.isPrivate ? <Lock className="w-6 h-6" /> : <Globe className="w-6 h-6" />}
-                        </div>
-                        <div>
-                          <p className="text-[11px] font-black uppercase tracking-tight text-slate-900">{newGroup.isPrivate ? "Private Network" : "Public Network"}</p>
-                          <p className="text-[10px] text-slate-400 font-bold">{newGroup.isPrivate ? "Invited members only" : "Visible to all members"}</p>
-                        </div>
-                      </div>
-                      <label className="relative inline-flex items-center cursor-pointer">
-                        <input 
-                          type="checkbox" 
-                          checked={newGroup.isPrivate}
-                          onChange={(e) => setNewGroup({...newGroup, isPrivate: e.target.checked})}
-                          className="sr-only peer" 
+                  <div className="grid grid-cols-2 gap-3">
+                    <label className="block">
+                      <span className="eyebrow tabular text-text-body/60 mb-2 block">Icon URL</span>
+                      <div className="flex gap-2">
+                        {newGroup.iconUrl && (
+                          <div className="w-12 h-12 rounded-lg border border-border-main bg-bg-main shrink-0 overflow-hidden p-1">
+                            <img src={newGroup.iconUrl} className="w-full h-full object-contain" alt="" />
+                          </div>
+                        )}
+                        <input
+                          type="text"
+                          value={newGroup.iconUrl}
+                          onChange={(e) => setNewGroup({ ...newGroup, iconUrl: e.target.value })}
+                          placeholder="https://…"
+                          className="flex-1 px-3 py-3 bg-bg-main border border-border-main rounded-xl text-[12px] text-text-heading placeholder:text-text-body/40 outline-none focus:border-text-heading transition-all"
                         />
-                        <div className="w-14 h-8 bg-slate-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-1 after:left-1 after:bg-white after:border-gray-300 after:border after:rounded-full after:h-6 after:w-6 after:transition-all peer-checked:bg-indigo-600"></div>
-                      </label>
-                    </div>
+                      </div>
+                    </label>
+                    <label className="block">
+                      <span className="eyebrow tabular text-text-body/60 mb-2 block">Cover URL</span>
+                      <div className="flex gap-2">
+                        {newGroup.coverUrl && (
+                          <div className="w-12 h-12 rounded-lg border border-border-main bg-bg-main shrink-0 overflow-hidden">
+                            <img src={newGroup.coverUrl} className="w-full h-full object-cover" alt="" />
+                          </div>
+                        )}
+                        <input
+                          type="text"
+                          value={newGroup.coverUrl}
+                          onChange={(e) => setNewGroup({ ...newGroup, coverUrl: e.target.value })}
+                          placeholder="https://…"
+                          className="flex-1 px-3 py-3 bg-bg-main border border-border-main rounded-xl text-[12px] text-text-heading placeholder:text-text-body/40 outline-none focus:border-text-heading transition-all"
+                        />
+                      </div>
+                    </label>
                   </div>
 
-                  <button 
+                  <div className="flex items-center justify-between p-4 bg-bg-main rounded-xl border border-border-main">
+                    <div className="flex items-center gap-3">
+                      <div className={`w-10 h-10 rounded-xl flex items-center justify-center text-bg-card ${newGroup.isPrivate ? "bg-rust" : "bg-accent"}`}>
+                        {newGroup.isPrivate ? <Lock className="w-4 h-4" strokeWidth={1.75} /> : <Globe className="w-4 h-4" strokeWidth={1.75} />}
+                      </div>
+                      <div>
+                        <p className="text-[14px] font-medium text-text-heading">{newGroup.isPrivate ? "Private network" : "Public network"}</p>
+                        <p className="eyebrow tabular text-text-body/55 mt-0.5">{newGroup.isPrivate ? "Invited members only" : "Visible to all members"}</p>
+                      </div>
+                    </div>
+                    <label className="relative inline-flex items-center cursor-pointer">
+                      <input
+                        type="checkbox"
+                        checked={newGroup.isPrivate}
+                        onChange={(e) => setNewGroup({ ...newGroup, isPrivate: e.target.checked })}
+                        className="sr-only peer"
+                      />
+                      <div className="w-11 h-6 bg-border-main rounded-full peer peer-checked:after:translate-x-full after:content-[''] after:absolute after:top-0.5 after:left-0.5 after:bg-bg-card after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-text-heading" />
+                    </label>
+                  </div>
+
+                  <button
                     type="submit"
                     disabled={creating || !newGroup.name}
-                    className="w-full py-5 bg-indigo-600 text-white rounded-2xl font-black uppercase tracking-widest text-xs flex items-center justify-center gap-3 shadow-2xl shadow-indigo-100 hover:bg-indigo-700 transition-all active:scale-95 disabled:opacity-50"
+                    className="w-full py-3 bg-text-heading text-bg-card rounded-xl font-medium text-[14px] flex items-center justify-center gap-2 hover:brightness-110 transition-all disabled:opacity-50"
                   >
                     {creating ? (
-                      <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                      <div className="w-4 h-4 border-2 border-bg-card border-t-transparent rounded-full animate-spin" />
                     ) : (
                       <>
-                        <Plus className="w-5 h-5" />
-                        Initialize Group
+                        <Plus className="w-4 h-4" strokeWidth={1.75} />
+                        Submit for review
                       </>
                     )}
                   </button>
