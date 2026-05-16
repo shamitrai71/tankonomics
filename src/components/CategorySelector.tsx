@@ -1,3 +1,9 @@
+/**
+ * CategorySelector — nested checkbox tree for picking sectors.
+ *
+ * Restyled. Same props, same toggle logic.
+ */
+
 import { X } from "lucide-react";
 
 interface CategorySelectorProps {
@@ -6,74 +12,85 @@ interface CategorySelectorProps {
   onChange: (ids: string[]) => void;
 }
 
-export const CategorySelector = ({ 
-  categories, 
-  selectedIds, 
-  onChange 
-}: CategorySelectorProps) => {
+export const CategorySelector = ({ categories, selectedIds, onChange }: CategorySelectorProps) => {
   const toggleId = (id: string) => {
     if (selectedIds.includes(id)) {
-      onChange(selectedIds.filter(i => i !== id));
+      onChange(selectedIds.filter((i) => i !== id));
     } else {
       onChange([...selectedIds, id]);
     }
   };
 
-  const level1 = categories.filter(c => c.level === 1);
-  
+  const level1 = categories.filter((c) => c.level === 1);
+
   return (
-    <div className="space-y-4">
-      <div className="flex flex-wrap gap-2">
-        {selectedIds.map(id => {
-          const cat = categories.find(c => c.id === id);
-          if (!cat) return null;
-          return (
-            <span key={id} className="inline-flex items-center gap-1 px-2 py-1 bg-primary/10 text-primary rounded-lg text-[10px] font-bold border border-primary/20">
-              {cat.name}
-              <button 
-                onClick={(e) => {
-                  e.preventDefault();
-                  e.stopPropagation();
-                  toggleId(id);
-                }} 
-                className="hover:text-primary/70 transition-colors"
-                type="button"
+    <div className="space-y-3">
+      {/* Selected chips */}
+      {selectedIds.length > 0 && (
+        <div className="flex flex-wrap gap-1.5">
+          {selectedIds.map((id) => {
+            const cat = categories.find((c) => c.id === id);
+            if (!cat) return null;
+            return (
+              <span
+                key={id}
+                className="inline-flex items-center gap-1 pl-2.5 pr-1 py-1 bg-accent/10 text-accent border border-accent/20 rounded-full eyebrow tabular"
               >
-                <X size={10} />
-              </button>
-            </span>
-          );
-        })}
-      </div>
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 max-h-60 overflow-y-auto p-4 bg-slate-50 rounded-2xl border border-slate-100 custom-scrollbar shadow-inner">
-        {level1.map(parent => (
-          <div key={parent.id} className="space-y-2">
+                {cat.name}
+                <button
+                  onClick={(e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    toggleId(id);
+                  }}
+                  className="w-4 h-4 rounded-full hover:bg-accent/20 flex items-center justify-center transition-colors"
+                  type="button"
+                  aria-label={`Remove ${cat.name}`}
+                >
+                  <X className="w-2.5 h-2.5" />
+                </button>
+              </span>
+            );
+          })}
+        </div>
+      )}
+
+      {/* Picker tree */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-4 gap-y-3 max-h-60 overflow-y-auto p-4 bg-bg-main rounded-xl border border-border-main custom-scrollbar">
+        {level1.map((parent) => (
+          <div key={parent.id} className="space-y-1.5">
             <label className="flex items-center gap-2 cursor-pointer group">
-              <input 
-                type="checkbox" 
-                checked={selectedIds.includes(parent.id)} 
+              <input
+                type="checkbox"
+                checked={selectedIds.includes(parent.id)}
                 onChange={() => toggleId(parent.id)}
-                className="w-4 h-4 rounded border-slate-300 text-primary focus:ring-primary/20 transition-all"
+                className="w-4 h-4 accent-accent border-border-main"
               />
-              <span className="text-xs font-black uppercase text-slate-900 group-hover:text-primary transition-colors tracking-tight">{parent.name}</span>
+              <span className="text-[13px] font-medium text-text-heading group-hover:text-accent transition-colors">
+                {parent.name}
+              </span>
             </label>
-            <div className="pl-6 space-y-1">
-              {categories.filter(c => c.parentId === parent.id).map(sub => (
+            <div className="pl-6 space-y-0.5">
+              {categories.filter((c) => c.parentId === parent.id).map((sub) => (
                 <label key={sub.id} className="flex items-center gap-2 cursor-pointer group">
-                  <input 
-                    type="checkbox" 
-                    checked={selectedIds.includes(sub.id)} 
+                  <input
+                    type="checkbox"
+                    checked={selectedIds.includes(sub.id)}
                     onChange={() => toggleId(sub.id)}
-                    className="w-3.5 h-3.5 rounded border-slate-300 text-primary focus:ring-primary/20 transition-all"
+                    className="w-3.5 h-3.5 accent-accent"
                   />
-                  <span className="text-[10px] font-bold text-slate-500 group-hover:text-slate-900 transition-colors">{sub.name}</span>
+                  <span className="text-[12px] text-text-body/70 group-hover:text-text-heading transition-colors">
+                    {sub.name}
+                  </span>
                 </label>
               ))}
             </div>
           </div>
         ))}
         {level1.length === 0 && (
-          <p className="text-[10px] text-slate-400 font-medium italic py-4 text-center col-span-full">No categories available.</p>
+          <p className="eyebrow tabular text-text-body/40 italic py-4 text-center col-span-full">
+            NO CATEGORIES AVAILABLE
+          </p>
         )}
       </div>
     </div>

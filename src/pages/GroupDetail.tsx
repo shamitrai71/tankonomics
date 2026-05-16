@@ -1,11 +1,22 @@
+/**
+ * GroupDetail — single group surface (feed / members / settings).
+ *
+ * Restyled to the new design language. All data wiring preserved verbatim:
+ *   - onSnapshot listener for the group document
+ *   - useCollection for posts and members
+ *   - handleJoin / handleLeave / handlePost / handleTechnicalTip / handleSaveSettings
+ *   - handleReport, handleCopyLink, shareOnSocial, handleInternalShare
+ *   - Image upload pipeline via uploadImage helper + base64 migration
+ *   - RequestCard, MemberCard subcomponents (restyled, same handlers)
+ */
+
 import { useState, useEffect, useMemo } from "react";
 import { useParams, Link, useNavigate } from "react-router-dom";
-import { 
-  Users, 
-  Settings, 
-  Image as ImageIcon, 
-  Send, 
-  Plus, 
+import {
+  Users,
+  Image as ImageIcon,
+  Send,
+  Plus,
   X,
   ShieldCheck,
   ShieldAlert,
@@ -15,18 +26,21 @@ import {
   Loader2,
   Building2,
   Camera,
-  MapPin,
-  Calendar,
   Clock,
   ChevronRight,
-  Flag,
-  AlertTriangle,
   Share2,
   Link2,
   Check,
   Sparkles,
   User,
-  Play
+  Play,
+  Flag,
+  LogOut,
+  Settings as SettingsIcon,
+  ArrowLeft,
+  Twitter,
+  Linkedin,
+  Facebook,
 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useAuth } from "../App";
@@ -44,7 +58,7 @@ import {
   serverTimestamp,
   orderBy,
   where,
-  increment
+  increment,
 } from "firebase/firestore";
 import { formatDistanceToNow } from "date-fns";
 import { GoogleGenAI } from "@google/genai";
@@ -65,28 +79,28 @@ export default function GroupDetail() {
   const [leaving, setLeaving] = useState(false);
   const [postSortOrder, setPostSortOrder] = useState<"createdAt" | "likesCount">("createdAt");
 
-  // Group Content State
+  // Group content state
   const [newPost, setNewPost] = useState("");
   const [postImage, setPostImage] = useState<string | null>(null);
-  // Underlying File for the picked image — uploaded to Storage on submit
-  // so we don't embed base64 in Firestore (1 MiB document limit).
   const [postImageFile, setPostImageFile] = useState<File | null>(null);
   const [postAsCompanyId, setPostAsCompanyId] = useState<string | null>(null);
   const [isGeneratingTip, setIsGeneratingTip] = useState(false);
   const [posting, setPosting] = useState(false);
-  
+
   const MAX_POST_CHARS = 1000;
-  
+
   const { data: posts, loading: loadingPosts } = useCollection<any>(`groups/${groupId}/posts`, [orderBy(postSortOrder, "desc")]);
   const { data: members, loading: loadingMembers } = useCollection<any>(`group_members`, [where("groupId", "==", groupId || "")]);
 
   const ownedCompanies = useMemo(() => {
     if (!profile?.companyId) return [];
-    return [{
-      id: profile.companyId,
-      name: profile.company || "My Company",
-      logo: profile.companyLogo || ""
-    }];
+    return [
+      {
+        id: profile.companyId,
+        name: profile.company || "My Company",
+        logo: profile.companyLogo || "",
+      },
+    ];
   }, [profile]);
 
   useEffect(() => {
@@ -122,8 +136,8 @@ export default function GroupDetail() {
     const vimeoRegex = /(?:vimeo\.com\/|player\.vimeo\.com\/video\/)(\d+)/i;
     const ytMatch = content.match(ytRegex);
     const vimeoMatch = content.match(vimeoRegex);
-    if (ytMatch) return { type: 'youtube', id: ytMatch[1] };
-    if (vimeoMatch) return { type: 'vimeo', id: vimeoMatch[1] };
+    if (ytMatch) return { type: "youtube", id: ytMatch[1] };
+    if (vimeoMatch) return { type: "vimeo", id: vimeoMatch[1] };
     return null;
   };
 
@@ -134,17 +148,17 @@ export default function GroupDetail() {
     description: "",
     iconUrl: "",
     coverUrl: "",
-    isPrivate: false
+    isPrivate: false,
   });
   const [savingSettings, setSavingSettings] = useState(false);
 
-  // Reporting State
+  // Reporting state
   const [reportModalOpen, setReportModalOpen] = useState(false);
   const [reportPostId, setReportPostId] = useState<string | null>(null);
   const [reportReason, setReportReason] = useState("");
   const [submittingReport, setSubmittingReport] = useState(false);
 
-  // Sharing State
+  // Sharing state
   const [shareModalOpen, setShareModalOpen] = useState(false);
   const [sharePost, setSharePost] = useState<any>(null);
   const [sharingToGroup, setSharingToGroup] = useState<string | null>(null);
@@ -154,7 +168,6 @@ export default function GroupDetail() {
 
   useEffect(() => {
     if (!groupId) return;
-
     const unsubGroup = onSnapshot(doc(db, "groups", groupId), (docSnap) => {
       if (docSnap.exists()) {
         const data = docSnap.data();
@@ -164,20 +177,19 @@ export default function GroupDetail() {
           description: data.description || "",
           iconUrl: data.iconUrl || "",
           coverUrl: data.coverUrl || "",
-          isPrivate: data.isPrivate ?? false
+          isPrivate: data.isPrivate ?? false,
         });
         setLoading(false);
       } else {
         navigate("/groups");
       }
     });
-
     return () => unsubGroup();
   }, [groupId, navigate]);
 
   useEffect(() => {
     if (!user || !members) return;
-    const membership = members.find(m => m.userUid === user.uid);
+    const membership = members.find((m) => m.userUid === user.uid);
     setIsMember(membership?.status === "approved" || membership?.role === "creator");
     setIsPending(membership?.status === "pending");
     setIsAdmin(membership?.role === "admin" || membership?.role === "creator");
@@ -197,17 +209,15 @@ export default function GroupDetail() {
         userCompany: profile?.company || "",
         role: isPrivate ? "pending" : "member",
         status: isPrivate ? "pending" : "approved",
-        joinedAt: serverTimestamp()
+        joinedAt: serverTimestamp(),
       });
       if (!isPrivate) {
-        await updateDoc(doc(db, "groups", groupId), {
-          memberCount: increment(1)
-        });
+        await updateDoc(doc(db, "groups", groupId), { memberCount: increment(1) });
       } else {
         alert("Your request to join this private group has been sent to the administrators.");
       }
-    } catch (error) {
-      console.error("Error joining group:", error);
+    } catch (err) {
+      console.error("Error joining group:", err);
     } finally {
       setJoining(false);
     }
@@ -218,12 +228,10 @@ export default function GroupDetail() {
     setLeaving(true);
     try {
       await deleteDoc(doc(db, "group_members", `${groupId}_${user.uid}`));
-      await updateDoc(doc(db, "groups", groupId), {
-        memberCount: increment(-1)
-      });
+      await updateDoc(doc(db, "groups", groupId), { memberCount: increment(-1) });
       setIsMember(false);
-    } catch (error) {
-      console.error("Error leaving group:", error);
+    } catch (err) {
+      console.error("Error leaving group:", err);
     } finally {
       setLeaving(false);
     }
@@ -236,10 +244,9 @@ export default function GroupDetail() {
     setPosting(true);
     try {
       if (!user) throw new Error("Must be logged in to post");
-      const selectedCompany = postAsCompanyId ? ownedCompanies.find(c => c.id === postAsCompanyId) : null;
+      const selectedCompany = postAsCompanyId ? ownedCompanies.find((c) => c.id === postAsCompanyId) : null;
       const videoInfo = getVideoInfo(newPost);
 
-      // Upload the image (if any) to Storage so we only put the URL in the doc.
       let uploadedImageUrl: string | null = null;
       if (postImageFile) {
         try {
@@ -249,14 +256,12 @@ export default function GroupDetail() {
         }
       }
 
-      // Defensive: if profile.photoURL or company.logo is still a legacy
-      // base64 data URL, migrate it to Storage now so it fits within the
-      // per-field size cap in firestore.rules. Skip rather than fail if
-      // the migration itself errors out.
       let authorPhotoSafe: string | null = selectedCompany
         ? selectedCompany.logo
-        : (profile?.avatarUrl || profile?.photoURL || user.photoURL ||
-           `https://api.dicebear.com/7.x/initials/svg?seed=${profile?.displayName || user.displayName}`);
+        : profile?.avatarUrl ||
+          profile?.photoURL ||
+          user.photoURL ||
+          `https://api.dicebear.com/7.x/initials/svg?seed=${profile?.displayName || user.displayName}`;
       if (isInlineImage(authorPhotoSafe)) {
         try {
           authorPhotoSafe = await migrateDataUrlToStorage(authorPhotoSafe, "profile");
@@ -278,13 +283,13 @@ export default function GroupDetail() {
         groupId,
         content: newPost,
         authorUid: user.uid,
-        authorName: selectedCompany ? selectedCompany.name : (profile?.displayName || user.displayName || "Anonymous"),
+        authorName: selectedCompany ? selectedCompany.name : profile?.displayName || user.displayName || "Anonymous",
         authorPhoto: authorPhotoSafe,
-        authorJobTitle: selectedCompany ? "Verified Company" : (profile?.jobTitle || "Network Peer"),
+        authorJobTitle: selectedCompany ? "Verified Company" : profile?.jobTitle || "Network Peer",
         createdAt: serverTimestamp(),
         likesCount: 0,
         commentsCount: 0,
-        reactions: {}
+        reactions: {},
       };
 
       if (selectedCompany) {
@@ -297,13 +302,13 @@ export default function GroupDetail() {
       if (videoInfo) postData.video = videoInfo;
 
       const docRef = await addDoc(collection(db, `groups/${groupId}/posts`), postData);
-      if (!docRef) throw new Error("Broadcast target rejected. Check membership status.");
+      if (!docRef) throw new Error("Post target rejected. Check membership status.");
       setNewPost("");
       clearPostImage();
     } catch (error: any) {
       console.error("Group post creation failed:", error);
       const isPermissionError = error.message?.includes("PERMISSION_DENIED") || error.message?.includes("insufficient permissions");
-      alert(isPermissionError ? "Permission denied. You must be a member of this group to broadcast updates." : `Failed to broadcast: ${error.message || "Unknown error"}`);
+      alert(isPermissionError ? "Permission denied. You must be a member of this group to post updates." : `Failed to post: ${error.message || "Unknown error"}`);
     } finally {
       setPosting(false);
     }
@@ -317,7 +322,7 @@ export default function GroupDetail() {
       const response = await ggenAI.models.generateContent({
         model: "gemini-3-flash-preview",
         contents: `You are a technical editor for an industrial networking platform. Enhance this draft for a group discussion with a professional technical insight.
-        
+
         Draft: "${newPost}"`,
       });
       const generated = response.text;
@@ -332,16 +337,15 @@ export default function GroupDetail() {
   const handleSaveSettings = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!isAdmin || !groupId) return;
-
     setSavingSettings(true);
     try {
       await updateDoc(doc(db, "groups", groupId), {
         ...settingsForm,
-        updatedAt: serverTimestamp()
+        updatedAt: serverTimestamp(),
       });
       setActiveTab("feed");
-    } catch (error) {
-      console.error("Error saving settings:", error);
+    } catch (err) {
+      console.error("Error saving settings:", err);
     } finally {
       setSavingSettings(false);
     }
@@ -350,7 +354,6 @@ export default function GroupDetail() {
   const handleReport = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!user || !reportPostId || !reportReason.trim()) return;
-
     setSubmittingReport(true);
     try {
       await addDoc(collection(db, "reports"), {
@@ -359,13 +362,13 @@ export default function GroupDetail() {
         reason: reportReason,
         reporterUid: user.uid,
         status: "pending",
-        createdAt: serverTimestamp()
+        createdAt: serverTimestamp(),
       });
       setReportModalOpen(false);
       setReportPostId(null);
       setReportReason("");
-    } catch (error) {
-      console.error("Error submitting report:", error);
+    } catch (err) {
+      console.error("Error submitting report:", err);
     } finally {
       setSubmittingReport(false);
     }
@@ -383,7 +386,6 @@ export default function GroupDetail() {
     const link = `${window.location.origin}/groups/${groupId}/posts/${sharePost.id}`;
     const text = encodeURIComponent(sharePost.content.substring(0, 100) + "...");
     let url = "";
-
     switch (platform) {
       case "twitter":
         url = `https://twitter.com/intent/tweet?url=${link}&text=${text}`;
@@ -409,13 +411,13 @@ export default function GroupDetail() {
         authorName: profile?.displayName || user.displayName,
         authorPhoto: profile?.photoURL || user.photoURL,
         likesCount: 0,
-        createdAt: serverTimestamp()
+        createdAt: serverTimestamp(),
       });
       setShareModalOpen(false);
       setSharePost(null);
       setSharingToGroup(null);
-    } catch (error) {
-      console.error("Error sharing post:", error);
+    } catch (err) {
+      console.error("Error sharing post:", err);
     } finally {
       setIsSharing(false);
     }
@@ -423,586 +425,670 @@ export default function GroupDetail() {
 
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center">
-        <Loader2 className="w-10 h-10 animate-spin text-primary" />
+      <div className="min-h-screen bg-bg-main flex items-center justify-center">
+        <div className="w-10 h-10 border-2 border-text-heading border-t-transparent rounded-full animate-spin" />
       </div>
     );
   }
 
+  const approvedMembers = members.filter((m) => m.status === "approved" || m.role === "creator");
+  const pendingRequests = members.filter((m) => m.status === "pending");
+  const currentIdentityLogo = postAsCompanyId
+    ? ownedCompanies.find((c) => c.id === postAsCompanyId)?.logo
+    : profile?.photoURL;
+  const currentIdentityName = postAsCompanyId
+    ? ownedCompanies.find((c) => c.id === postAsCompanyId)?.name
+    : profile?.displayName;
+
   return (
-    <div className="bg-slate-50 min-h-screen pb-20">
-      {/* Group Header */}
-      <div className="bg-white border-b border-slate-200">
-        <div className="h-64 md:h-80 w-full relative overflow-hidden group/cover">
-           {group.coverUrl ? (
-             <img src={group.coverUrl} className="w-full h-full object-cover" alt="" />
-           ) : (
-             <div className="w-full h-full bg-gradient-to-br from-primary to-primary/80" />
-           )}
-           {isAdmin && (
-             <button 
-               onClick={() => setActiveTab("settings")}
-               className="absolute top-6 right-6 p-4 bg-white/10 backdrop-blur-md rounded-2xl text-white opacity-0 group-hover/cover:opacity-100 transition-all hover:bg-white/20"
-             >
-               <Camera className="w-6 h-6" />
-             </button>
-           )}
+    <div className="min-h-screen bg-bg-main pb-20">
+      {/* HERO */}
+      <div className="relative h-[260px] md:h-[320px] w-full overflow-hidden">
+        {group.coverUrl ? (
+          <img src={group.coverUrl} className="w-full h-full object-cover" alt={`${group.name} cover`} />
+        ) : (
+          <div className="w-full h-full bg-gradient-to-br from-blueprint via-primary to-ink" />
+        )}
+        <div className="absolute inset-0 bg-gradient-to-t from-primary/95 via-primary/55 to-transparent" />
+        <div className="absolute inset-0 bp-grid opacity-25 pointer-events-none" />
+
+        {/* Back to groups */}
+        <div className="absolute top-6 left-4 md:left-8 z-10">
+          <Link
+            to="/groups"
+            className="inline-flex items-center gap-2 px-3.5 py-2 bg-bg-card/10 backdrop-blur-md border border-white/20 rounded-xl eyebrow tabular text-white hover:bg-bg-card/20 transition-all"
+          >
+            <ArrowLeft className="w-3.5 h-3.5" strokeWidth={1.75} />
+            All groups
+          </Link>
         </div>
 
-        <div className="max-w-7xl mx-auto px-4 md:px-8 relative">
-           <div className="absolute -top-16 md:-top-24 left-4 md:left-8">
-              <div className="w-32 h-32 md:w-48 md:h-48 bg-white rounded-[2rem] border-8 border-white shadow-2xl overflow-hidden flex items-center justify-center p-2 group/icon relative">
-                 {group.iconUrl ? (
-                   <img src={group.iconUrl} className="w-full h-full object-contain" alt="" />
-                 ) : (
-                   <Users className="w-16 h-16 md:w-24 md:h-24 text-slate-200" />
-                 )}
-                 {isAdmin && (
-                   <button 
-                     onClick={() => setActiveTab("settings")}
-                     className="absolute inset-0 bg-black/40 text-white opacity-0 group-hover/icon:opacity-100 transition-all flex items-center justify-center"
-                   >
-                     <Camera className="w-8 h-8" />
-                   </button>
-                 )}
-              </div>
-           </div>
-
-           <div className="pt-24 md:pt-8 md:pl-64 pb-8 flex flex-col md:flex-row md:items-end justify-between gap-8">
-              <div>
-                 <div className="flex items-center gap-3 mb-2">
-                    <h1 className="text-3xl md:text-5xl font-black text-text-heading tracking-tighter uppercase">{group.name}</h1>
-                    {group.isPrivate ? (
-                      <div className="bg-amber-50 text-amber-600 px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-widest flex items-center gap-1.5 border border-amber-100">
-                         <Lock className="w-3 h-3" />
-                         Private
-                      </div>
-                    ) : (
-                      <div className="bg-emerald-50 text-emerald-600 px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-widest flex items-center gap-1.5 border border-emerald-100">
-                         <Globe className="w-3 h-3" />
-                         Public
-                      </div>
-                    )}
-                 </div>
-                 <p className="text-slate-500 font-medium text-lg mb-4 max-w-2xl">{group.description}</p>
-                 <div className="flex items-center gap-6">
-                    <div className="flex items-center gap-2">
-                       <Users className="w-4 h-4 text-primary" />
-                       <span className="text-sm font-black text-text-heading tracking-tight">{group.memberCount || 1} <span className="text-slate-400 font-bold uppercase text-[10px]">Members Joined</span></span>
-                    </div>
-                    {/* Add more stats if needed */}
-                 </div>
-              </div>
-
-              <div className="flex flex-col md:flex-row items-center gap-3">
-                 {isMember ? (
-                   <div className="flex items-center gap-2">
-                      <button 
-                        onClick={handleLeave}
-                        disabled={leaving}
-                        className="px-8 py-4 bg-slate-100 text-slate-500 rounded-2xl font-black text-xs uppercase tracking-widest hover:bg-rose-50 hover:text-rose-600 transition-all active:scale-95 border border-slate-200 flex items-center gap-2 disabled:opacity-50"
-                      >
-                         {leaving ? <Loader2 className="w-4 h-4 animate-spin" /> : <Plus className="w-4 h-4 rotate-45" />}
-                         Leave Group
-                      </button>
-                      <button 
-                        onClick={() => setActiveTab("feed")}
-                        className="px-8 py-4 bg-primary text-white rounded-2xl font-black text-xs uppercase tracking-widest shadow-xl shadow-primary/20 hover:brightness-110 transition-all active:scale-95 flex items-center gap-2"
-                      >
-                         Connected
-                         <ShieldCheck className="w-4 h-4" />
-                      </button>
-                   </div>
-                 ) : isPending ? (
-                    <button 
-                      disabled
-                      className="px-12 py-4 bg-amber-100 text-amber-600 rounded-2xl font-black text-xs uppercase tracking-widest border border-amber-200 flex items-center gap-3"
-                    >
-                      <Clock className="w-4 h-4" />
-                      Approval Pending
-                    </button>
-                 ) : (
-                   <div className="flex flex-col items-center gap-2">
-                     <button 
-                       onClick={handleJoin}
-                       disabled={joining || !profile?.companyId}
-                       className="px-12 py-4 bg-primary text-white rounded-2xl font-black text-xs uppercase tracking-widest shadow-2xl shadow-primary/30 hover:brightness-110 transition-all active:scale-95 disabled:opacity-50 flex items-center gap-3"
-                     >
-                       {joining ? <Loader2 className="w-4 h-4 animate-spin" /> : <Plus className="w-4 h-4" />}
-                       Join Enterprise Group
-                     </button>
-                     {!profile?.companyId && (
-                       <p className="text-[9px] font-black text-amber-500 uppercase tracking-widest flex items-center gap-1.5 bg-amber-50 px-3 py-1 rounded-full border border-amber-100">
-                          <Building2 className="w-3 h-3" />
-                          Verify Company to Join
-                       </p>
-                     )}
-                   </div>
-                 )}
-                 {isAdmin && (
-                    <button 
-                      onClick={() => setActiveTab("settings")}
-                      className={`p-4 rounded-2xl transition-all shadow-sm ${activeTab === "settings" ? "bg-sidebar-focus text-sidebar-focus-text shadow-xl" : "bg-white text-slate-500 border border-slate-200 hover:bg-slate-50"}`}
-                    >
-                       <Settings className="w-6 h-6" />
-                    </button>
-                 )}
-              </div>
-           </div>
+        {/* Visibility chip in hero */}
+        <div className="absolute top-6 right-4 md:right-8 z-10">
+          {group.isPrivate ? (
+            <span className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-bg-card/10 backdrop-blur-md border border-white/20 rounded-xl eyebrow tabular text-white">
+              <Lock className="w-3 h-3" strokeWidth={2} />
+              Private
+            </span>
+          ) : (
+            <span className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-accent text-white rounded-xl eyebrow tabular shadow-lg">
+              <Globe className="w-3 h-3" strokeWidth={2} />
+              Public
+            </span>
+          )}
         </div>
+
+        {/* Cover edit shortcut */}
+        {isAdmin && (
+          <button
+            onClick={() => setActiveTab("settings")}
+            className="absolute bottom-6 right-6 w-10 h-10 bg-bg-card/10 backdrop-blur-md border border-white/20 rounded-xl text-white opacity-0 hover:opacity-100 focus:opacity-100 transition-all flex items-center justify-center"
+            title="Edit cover"
+          >
+            <Camera className="w-4 h-4" strokeWidth={1.75} />
+          </button>
+        )}
       </div>
 
-      <div className="max-w-7xl mx-auto px-4 md:px-8 pt-12">
-         {/* Internal Navigation */}
-         <div className="flex items-center gap-2 mb-12 bg-white p-2 rounded-3xl border border-slate-200 w-fit">
-            {(["feed", "members"] as const).map(tab => (
-              <button 
-                key={tab}
-                onClick={() => setActiveTab(tab)}
-                className={`px-8 py-3.5 rounded-2xl text-[10px] font-black uppercase tracking-[0.2em] transition-all ${activeTab === tab ? "bg-sidebar-focus text-sidebar-focus-text shadow-xl" : "text-slate-400 hover:text-text-heading hover:bg-slate-50"}`}
-              >
-                {tab === "feed" ? "Network Feed" : "Member Directory"}
-              </button>
-            ))}
-            {isAdmin && (
-              <button 
-                onClick={() => setActiveTab("requests" as any)}
-                className={`px-8 py-3.5 rounded-2xl text-[10px] font-black uppercase tracking-[0.2em] transition-all flex items-center gap-2 ${activeTab === ("requests" as any) ? "bg-amber-500 text-white shadow-xl" : "text-slate-400 hover:text-text-heading hover:bg-slate-50"}`}
-              >
-                Join Requests
-                {members?.filter(m => m.status === "pending").length > 0 && (
-                  <span className="bg-white/20 px-2 py-0.5 rounded-full text-[8px] tracking-normal font-black">
-                    {members.filter(m => m.status === "pending").length}
-                  </span>
+      {/* IDENTITY CARD — overlaps hero */}
+      <div className="max-w-7xl mx-auto px-4 md:px-8 -mt-16 md:-mt-20 relative z-10">
+        <div className="bg-bg-card border border-border-main rounded-2xl p-5 md:p-7 shadow-xl">
+          <div className="flex flex-col md:flex-row md:items-end gap-5 md:gap-7">
+            {/* Icon */}
+            <div className="relative shrink-0 -mt-14 md:-mt-12">
+              <div className="w-24 h-24 md:w-28 md:h-28 bg-bg-main rounded-2xl border border-border-main p-3 flex items-center justify-center overflow-hidden shadow-lg">
+                {group.iconUrl ? (
+                  <img src={group.iconUrl} className="max-w-full max-h-full object-contain" alt={group.name} />
+                ) : (
+                  <Users className="w-12 h-12 text-text-body/30" strokeWidth={1.5} />
                 )}
-              </button>
-            )}
-         </div>
-
-         {activeTab === "feed" && (
-           <div className="grid grid-cols-1 lg:grid-cols-3 gap-12">
-              <div className="lg:col-span-2 space-y-8">
-                 {isMember && (
-                   <div className="bg-white rounded-[2.5rem] border border-slate-200 shadow-sm p-8">
-                      <div className="flex gap-4 items-start">
-                         <img src={profile?.photoURL || `https://api.dicebear.com/7.x/initials/svg?seed=${user?.displayName}`} className="w-14 h-14 rounded-2xl border-2 border-slate-50" alt="" />
-                         <div className="flex-1">
-                            <textarea 
-                              value={newPost}
-                              onChange={(e) => setNewPost(e.target.value)}
-                              placeholder={`Share something with ${group.name}...`}
-                              className="w-full bg-slate-50 border border-slate-100 rounded-3xl p-6 text-sm font-medium outline-none focus:ring-4 focus:ring-indigo-50 transition-all h-32 resize-none placeholder:text-slate-300"
-                            />
-                            <div className="mt-4 flex items-center justify-between">
-                               <button className="flex items-center gap-3 text-slate-400 hover:text-primary transition-colors p-2 rounded-xl">
-                                  <ImageIcon className="w-5 h-5" />
-                                  <span className="text-[10px] font-black uppercase tracking-widest">Attach Media</span>
-                               </button>
-                               <button 
-                                 onClick={handlePost}
-                                 disabled={posting || !newPost.trim()}
-                                 className="bg-primary text-white px-10 py-3.5 rounded-2xl font-black text-[10px] uppercase tracking-widest flex items-center gap-3 hover:brightness-110 transition-all active:scale-95 disabled:opacity-50 shadow-2xl shadow-primary/20"
-                               >
-                                 {posting ? <Loader2 className="w-4 h-4 animate-spin" /> : <ShieldCheck className="w-4 h-4 text-white/50" />}
-                                 Broadcast update
-                               </button>
-                            </div>
-                         </div>
-                      </div>
-                   </div>
-                 )}
-
-                 <div className="flex items-center justify-between">
-                    <p className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-400">Activity Stream</p>
-                    <div className="flex gap-1 bg-white p-1 rounded-xl border border-slate-200 shadow-sm">
-                       <button 
-                        onClick={() => setPostSortOrder("createdAt")}
-                        className={`px-4 py-2 rounded-lg text-[9px] font-black uppercase tracking-widest transition-all ${postSortOrder === "createdAt" ? "bg-sidebar-focus text-sidebar-focus-text shadow-lg" : "text-slate-400 hover:text-text-heading"}`}
-                       >
-                          Newest
-                       </button>
-                       <button 
-                        onClick={() => setPostSortOrder("likesCount")}
-                        className={`px-4 py-2 rounded-lg text-[9px] font-black uppercase tracking-widest transition-all ${postSortOrder === "likesCount" ? "bg-emerald-500 text-white shadow-lg" : "text-slate-400 hover:text-emerald-600"}`}
-                       >
-                          Helpful
-                       </button>
-                    </div>
-                 </div>
-
-                  <div className="space-y-8">
-                    {loadingPosts ? (
-                      [1, 2].map(i => <div key={i} className="h-64 bg-slate-100 animate-pulse rounded-[2.5rem]" />)
-                    ) : posts.length === 0 ? (
-                      <div className="p-20 text-center bg-white rounded-[3rem] border border-dashed border-slate-200">
-                        <Users className="w-16 h-16 text-slate-100 mx-auto mb-6" />
-                        <p className="text-xl font-black text-slate-300 uppercase tracking-tighter">No broadcasts found</p>
-                      </div>
-                    ) : (
-                      posts.slice(0, 20).map(post => (
-                        <GroupPostCard 
-                          key={post.id} 
-                          post={post} 
-                          groupId={groupId!} 
-                          isAdmin={isAdmin} 
-                          onCommentsToggle={() => {}} 
-                        />
-                      ))
-                    )}
-                  </div>
-               </div>
-
-              {/* Sidebar */}
-              <div className="space-y-8">
-                 <div className="bg-white rounded-[2.5rem] border border-slate-100 shadow-sm p-8 overflow-hidden relative">
-                    <div className="absolute top-0 right-0 p-8">
-                       <ShieldCheck className="w-12 h-12 text-slate-50" />
-                    </div>
-                    <p className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-400 mb-6 relative z-10">Network Identity</p>
-                    <div className="flex items-center gap-4 mb-8">
-                       <div className="w-16 h-16 bg-slate-50 rounded-2xl flex items-center justify-center border border-slate-100">
-                          <Building2 className="w-8 h-8 text-primary" />
-                       </div>
-                       <div>
-                          <p className="text-xl font-black text-text-heading tracking-tight leading-none mb-1">Company Linked</p>
-                          <p className="text-[10px] text-emerald-500 font-bold uppercase tracking-widest">Verified Workspace</p>
-                       </div>
-                    </div>
-                    <p className="text-xs text-text-body/60 leading-relaxed font-medium">This group is restricted to verified industry members connected to a recognized business profile. High-trust collaboration environment.</p>
-                 </div>
-
-                 <div className="bg-sidebar-focus rounded-[2.5rem] shadow-2xl p-8 text-sidebar-focus-text relative overflow-hidden group">
-                    <div className="absolute top-0 right-0 w-32 h-32 bg-white/5 rounded-full -mr-16 -mt-16 group-hover:scale-110 transition-all duration-700" />
-                    <p className="text-[10px] font-black uppercase tracking-[0.2em] text-white/40 mb-6">Active Contributors</p>
-                    <div className="space-y-4">
-                       {members?.slice(0, 5).map(m => (
-                         <MemberRow key={m.id} uid={m.userUid} role={m.role} />
-                       ))}
-                       {members?.length > 5 && (
-                         <button 
-                           onClick={() => setActiveTab("members")}
-                           className="w-full flex items-center justify-between p-4 bg-white/5 rounded-2xl hover:bg-white/10 transition-all group/see-all"
-                         >
-                            <span className="text-[10px] font-black uppercase tracking-widest">See all {members.length} members</span>
-                            <ChevronRight className="w-4 h-4 group-hover/see-all:translate-x-1 transition-transform" />
-                         </button>
-                       )}
-                    </div>
-                 </div>
               </div>
-           </div>
-         )}
-
-         {activeTab === "members" && (
-           <div className="bg-white rounded-[3rem] border border-slate-100 shadow-sm p-12">
-              <div className="flex items-center justify-between mb-12">
-                 <div>
-                    <h2 className="text-3xl font-black text-text-heading uppercase tracking-tighter">Member Directory</h2>
-                    <p className="text-sm font-medium text-text-body/60">Industry colleagues and network peers in this group</p>
-                 </div>
-              </div>
-
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                 {members?.filter(m => m.status === "approved" || m.role === "creator").map(m => (
-                   <MemberCard 
-                    key={m.id} 
-                    uid={m.userUid} 
-                    role={m.role} 
-                    groupId={groupId!} 
-                    canManage={isAdmin} 
-                    isCurrentUserAdmin={isAdmin}
-                   />
-                 ))}
-              </div>
-           </div>
-         )}
-
-         {activeTab === ("requests" as any) && isAdmin && (
-           <div className="bg-white rounded-[3rem] border border-slate-100 shadow-sm p-12">
-              <div className="flex items-center justify-between mb-12">
-                 <div>
-                    <h2 className="text-3xl font-black text-text-heading uppercase tracking-tighter">Membership Requests</h2>
-                    <p className="text-sm font-medium text-text-body/60">Review professionals requesting to join your private network</p>
-                 </div>
-              </div>
-
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                 {members?.filter(m => m.status === "pending").map(m => (
-                   <RequestCard 
-                     key={m.id} 
-                     request={m} 
-                     groupId={groupId!} 
-                     onAction={() => {}} 
-                   />
-                 ))}
-                 {members?.filter(m => m.status === "pending").length === 0 && (
-                   <div className="col-span-full py-20 text-center bg-slate-50 rounded-[2.5rem] border border-dashed border-slate-200">
-                     <Users className="w-16 h-16 text-slate-100 mx-auto mb-6" />
-                     <p className="text-xl font-black text-slate-300 uppercase tracking-tighter">No pending requests</p>
-                   </div>
-                 )}
-              </div>
-           </div>
-         )}
-
-         {activeTab === "settings" && isAdmin && (
-            <div className="bg-white rounded-[3rem] border border-slate-100 shadow-sm overflow-hidden max-w-4xl mx-auto">
-               <div className="p-12 bg-slate-50 border-b border-slate-200">
-                  <h2 className="text-3xl font-black text-text-heading uppercase tracking-tighter">Group Configuration</h2>
-                  <p className="text-sm font-medium text-slate-500">Customize your group identity and visibility</p>
-               </div>
-
-               <form onSubmit={handleSaveSettings} className="p-12 space-y-10">
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-                     <div className="space-y-6">
-                        <div>
-                          <label className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-400 mb-2 block">Enterprise Name</label>
-                          <input 
-                            required
-                            type="text" 
-                            value={settingsForm.name}
-                            onChange={(e) => setSettingsForm({...settingsForm, name: e.target.value})}
-                            className="w-full px-6 py-4 bg-slate-50 border border-slate-100 rounded-2xl outline-none focus:ring-4 focus:ring-indigo-50 transition-all font-bold"
-                          />
-                        </div>
-                        <div>
-                          <label className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-400 mb-2 block">Group Mission Control</label>
-                          <textarea 
-                            value={settingsForm.description}
-                            onChange={(e) => setSettingsForm({...settingsForm, description: e.target.value})}
-                            className="w-full px-6 py-4 bg-slate-50 border border-slate-100 rounded-2xl outline-none focus:ring-4 focus:ring-indigo-50 transition-all font-medium h-32 resize-none"
-                          />
-                        </div>
-                     </div>
-
-                     <div className="space-y-6">
-                        <div>
-                          <label className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-400 mb-2 block">Icon Asset URL</label>
-                          <input 
-                            type="text" 
-                            value={settingsForm.iconUrl}
-                            onChange={(e) => setSettingsForm({...settingsForm, iconUrl: e.target.value})}
-                            placeholder="https://..."
-                            className="w-full px-6 py-4 bg-slate-50 border border-slate-100 rounded-2xl outline-none focus:ring-4 focus:ring-indigo-50 transition-all font-medium"
-                          />
-                        </div>
-                        <div>
-                          <label className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-400 mb-2 block">Cover Asset URL</label>
-                          <input 
-                            type="text" 
-                            value={settingsForm.coverUrl}
-                            onChange={(e) => setSettingsForm({...settingsForm, coverUrl: e.target.value})}
-                            placeholder="https://..."
-                            className="w-full px-6 py-4 bg-slate-50 border border-slate-100 rounded-2xl outline-none focus:ring-4 focus:ring-indigo-50 transition-all font-medium"
-                          />
-                        </div>
-                        <div className="flex items-center justify-between p-6 bg-slate-50 rounded-2xl border border-slate-100 shadow-inner">
-                           <div>
-                              <p className="text-[11px] font-black uppercase text-text-heading">Private Network Mode</p>
-                              <p className="text-[10px] text-slate-400 font-bold">Only invited members can join</p>
-                           </div>
-                           <label className="relative inline-flex items-center cursor-pointer">
-                            <input 
-                              type="checkbox" 
-                              checked={settingsForm.isPrivate}
-                              onChange={(e) => setSettingsForm({...settingsForm, isPrivate: e.target.checked})}
-                              className="sr-only peer" 
-                            />
-                            <div className="w-12 h-7 bg-slate-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-1 after:left-1 after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-indigo-600"></div>
-                          </label>
-                        </div>
-                     </div>
-                  </div>
-
-                  <div className="pt-8 border-t border-slate-100 flex items-center justify-between">
-                     <button 
-                       type="button"
-                       onClick={() => setActiveTab("feed")}
-                       className="px-10 py-4 bg-white text-slate-400 rounded-2xl font-black text-xs uppercase tracking-widest border border-slate-200 hover:text-slate-600 transition-all"
-                     >
-                        Cancel
-                     </button>
-                     <button 
-                       type="submit"
-                       disabled={savingSettings}
-                       className="px-12 py-4 bg-primary text-white rounded-2xl font-black text-xs uppercase tracking-widest shadow-2xl shadow-primary/20 hover:brightness-110 transition-all flex items-center gap-3"
-                     >
-                       {savingSettings ? <Loader2 className="w-4 h-4 animate-spin" /> : <ShieldCheck className="w-4 h-4" />}
-                       Synchronize Settings
-                     </button>
-                  </div>
-               </form>
+              {isAdmin && (
+                <button
+                  type="button"
+                  onClick={() => setActiveTab("settings")}
+                  className="absolute -bottom-2 -right-2 w-9 h-9 bg-text-heading text-bg-card rounded-xl flex items-center justify-center shadow-lg hover:scale-105 transition-transform"
+                  title="Edit icon"
+                >
+                  <Camera className="w-4 h-4" strokeWidth={1.75} />
+                </button>
+              )}
             </div>
-         )}
+
+            {/* Name + description */}
+            <div className="flex-1 min-w-0">
+              <div className="eyebrow tabular text-accent mb-1 inline-flex items-center gap-2">
+                <span className="inline-block w-1.5 h-1.5 rounded-full bg-accent soft-pulse" />
+                COMMUNITY GROUP
+              </div>
+              <h1 className="font-display text-[clamp(1.875rem,4vw,3rem)] text-text-heading leading-[1.0]">{group.name}</h1>
+              {group.description && (
+                <p className="text-text-body text-[14px] mt-2 max-w-2xl leading-relaxed">{group.description}</p>
+              )}
+              <p className="eyebrow tabular text-text-body/55 mt-3 inline-flex items-center gap-1.5">
+                <Users className="w-3 h-3" strokeWidth={1.75} />
+                {approvedMembers.length} {approvedMembers.length === 1 ? "MEMBER" : "MEMBERS"}
+              </p>
+            </div>
+
+            {/* CTA */}
+            <div className="flex items-center gap-2 shrink-0">
+              {isMember ? (
+                <>
+                  <span className="inline-flex items-center gap-1.5 px-4 py-2.5 bg-accent/10 text-accent border border-accent/20 rounded-xl text-[13px] font-medium">
+                    <ShieldCheck className="w-4 h-4" strokeWidth={1.75} />
+                    Member
+                  </span>
+                  <button
+                    onClick={handleLeave}
+                    disabled={leaving}
+                    className="inline-flex items-center gap-2 bg-bg-card border border-border-main text-text-body hover:text-rust hover:border-rust/30 px-4 py-2.5 rounded-xl text-[13px] font-medium transition-all"
+                  >
+                    {leaving ? <Loader2 className="w-4 h-4 animate-spin" /> : <LogOut className="w-4 h-4" strokeWidth={1.75} />}
+                    Leave
+                  </button>
+                </>
+              ) : isPending ? (
+                <span className="inline-flex items-center gap-2 bg-rust/5 text-rust border border-rust/20 px-4 py-2.5 rounded-xl text-[13px] font-medium">
+                  <Clock className="w-4 h-4" strokeWidth={1.75} />
+                  Approval pending
+                </span>
+              ) : (
+                <button
+                  onClick={handleJoin}
+                  disabled={joining || !profile?.companyId}
+                  className="inline-flex items-center gap-2 bg-text-heading text-bg-card px-5 py-2.5 rounded-xl text-[14px] font-medium hover:brightness-110 disabled:opacity-50 transition-all"
+                  title={!profile?.companyId ? "Connect your profile to a verified company first" : ""}
+                >
+                  {joining ? <Loader2 className="w-4 h-4 animate-spin" /> : <Plus className="w-4 h-4" strokeWidth={1.75} />}
+                  {group.isPrivate ? "Request to join" : "Join group"}
+                </button>
+              )}
+            </div>
+          </div>
+        </div>
       </div>
 
-      {/* Report Modal */}
-      <AnimatePresence>
-        {reportModalOpen && (
-          <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 md:p-8">
-             <motion.div 
-               initial={{ opacity: 0 }}
-               animate={{ opacity: 1 }}
-               exit={{ opacity: 0 }}
-               onClick={() => setReportModalOpen(false)}
-               className="absolute inset-0 bg-slate-900/60 backdrop-blur-sm"
-             />
-             <motion.div 
-               initial={{ opacity: 0, scale: 0.9, y: 20 }}
-               animate={{ opacity: 1, scale: 1, y: 0 }}
-               exit={{ opacity: 0, scale: 0.9, y: 20 }}
-               className="relative bg-white w-full max-w-lg rounded-[2.5rem] shadow-2xl overflow-hidden"
-             >
-                <div className="p-8 pt-10 text-center border-b border-slate-100 bg-slate-50">
-                   <div className="w-16 h-16 bg-rose-50 rounded-2xl flex items-center justify-center mx-auto mb-6">
-                      <AlertTriangle className="w-8 h-8 text-rose-500" />
-                   </div>
-                   <h2 className="text-2xl font-black text-text-heading uppercase tracking-tighter mb-2">Report Content</h2>
-                   <p className="text-sm font-medium text-text-body/60">Help us maintain a high-trust professional network</p>
+      {/* TABS */}
+      <div className="max-w-7xl mx-auto px-4 md:px-8 mt-8">
+        <div className="flex gap-7 border-b border-border-main mb-8 overflow-x-auto">
+          {([
+            { key: "feed", label: "Feed", count: posts.length },
+            { key: "members", label: "Members", count: approvedMembers.length },
+            ...(isAdmin ? [{ key: "settings" as const, label: "Settings", count: pendingRequests.length || null }] : []),
+          ] as { key: typeof activeTab; label: string; count: number | null }[]).map((tab) => (
+            <button
+              key={tab.key}
+              onClick={() => setActiveTab(tab.key)}
+              className={`pb-4 eyebrow tabular relative whitespace-nowrap transition-colors inline-flex items-center gap-2 ${
+                activeTab === tab.key ? "text-text-heading" : "text-text-body/55 hover:text-text-body"
+              }`}
+            >
+              {tab.label}
+              {tab.count !== null && tab.count !== undefined && (
+                <span className={`px-1.5 py-0.5 rounded eyebrow tabular ${activeTab === tab.key ? "bg-text-heading text-bg-card" : "bg-bg-main border border-border-main text-text-body/60"}`}>
+                  {tab.count}
+                </span>
+              )}
+              {activeTab === tab.key && <motion.div layoutId="gtab" className="absolute bottom-0 left-0 w-full h-0.5 bg-accent" />}
+            </button>
+          ))}
+        </div>
+
+        {/* TAB CONTENT */}
+        <AnimatePresence mode="wait">
+          {activeTab === "feed" && (
+            <motion.div key="feed" initial={{ opacity: 0, y: 6 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -6 }} className="grid grid-cols-1 lg:grid-cols-[1fr_320px] gap-8">
+              {/* Main feed column */}
+              <div className="space-y-6">
+                {/* Composer */}
+                {isMember && (
+                  <div className="bg-bg-card border border-border-main rounded-2xl p-5 md:p-6">
+                    {/* Identity toggle */}
+                    {ownedCompanies.length > 0 && (
+                      <div className="flex items-center gap-1 p-1 bg-bg-main rounded-xl border border-border-main w-fit mb-4">
+                        <button
+                          onClick={() => setPostAsCompanyId(null)}
+                          className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg eyebrow tabular transition-all ${
+                            !postAsCompanyId ? "bg-text-heading text-bg-card" : "text-text-body/55 hover:text-text-body"
+                          }`}
+                        >
+                          <User className="w-3 h-3" strokeWidth={1.75} />
+                          Individual
+                        </button>
+                        {ownedCompanies.map((co) => (
+                          <button
+                            key={co.id}
+                            onClick={() => setPostAsCompanyId(co.id)}
+                            className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg eyebrow tabular transition-all ${
+                              postAsCompanyId === co.id ? "bg-text-heading text-bg-card" : "text-text-body/55 hover:text-text-body"
+                            }`}
+                          >
+                            {co.logo ? <img src={co.logo} className="w-3 h-3 rounded-sm object-contain" alt="" /> : <Building2 className="w-3 h-3" strokeWidth={1.75} />}
+                            {co.name}
+                          </button>
+                        ))}
+                      </div>
+                    )}
+
+                    <form onSubmit={handlePost}>
+                      <div className="flex gap-3">
+                        <img
+                          src={currentIdentityLogo || `https://api.dicebear.com/7.x/initials/svg?seed=${currentIdentityName}`}
+                          className="w-10 h-10 md:w-12 md:h-12 rounded-xl border border-border-main object-cover shrink-0"
+                          alt=""
+                        />
+                        <div className="flex-1 space-y-2">
+                          <div className="relative">
+                            <textarea
+                              value={newPost}
+                              onChange={(e) => setNewPost(e.target.value.slice(0, MAX_POST_CHARS))}
+                              placeholder="Share a technical update with the group…"
+                              className="w-full bg-bg-main border border-border-main rounded-xl p-4 text-[14px] focus:bg-bg-card focus:border-text-heading outline-none transition-all resize-none h-24 placeholder:text-text-body/40 leading-relaxed"
+                            />
+                            <div
+                              className={`absolute bottom-3 right-3 eyebrow tabular px-2 py-0.5 rounded ${
+                                newPost.length > MAX_POST_CHARS * 0.9 ? "bg-rust/10 text-rust" : "bg-bg-card text-text-body/45"
+                              }`}
+                            >
+                              {MAX_POST_CHARS - newPost.length}
+                            </div>
+                          </div>
+
+                          {/* Video preview */}
+                          {videoPreview && (
+                            <div className="relative mt-2 rounded-xl overflow-hidden aspect-video bg-bg-main border border-border-main">
+                              <div className="absolute inset-0 flex items-center justify-center bg-ink/30 opacity-0 hover:opacity-100 transition-opacity z-10">
+                                <div className="bg-bg-card/30 backdrop-blur-md p-3 rounded-full">
+                                  <Play className="w-7 h-7 text-white fill-current" />
+                                </div>
+                              </div>
+                              {videoPreview.type === "youtube" ? (
+                                <iframe width="100%" height="100%" src={`https://www.youtube.com/embed/${videoPreview.id}?controls=0`} title="Video preview" frameBorder="0" className="pointer-events-none" />
+                              ) : (
+                                <iframe src={`https://player.vimeo.com/video/${videoPreview.id}?background=1`} width="100%" height="100%" frameBorder="0" className="pointer-events-none" />
+                              )}
+                              <div className="absolute top-2 left-2 px-2 py-1 bg-ink/85 rounded eyebrow tabular text-white z-20">
+                                {videoPreview.type} DETECTED
+                              </div>
+                            </div>
+                          )}
+
+                          {/* Image preview */}
+                          {postImage && (
+                            <div className="relative inline-block mt-2">
+                              <img src={postImage} className="max-h-48 rounded-xl border border-border-main" alt="Preview" />
+                              <button
+                                type="button"
+                                onClick={clearPostImage}
+                                className="absolute -top-2 -right-2 bg-ink text-white p-1.5 rounded-full shadow-lg hover:bg-rust transition-colors"
+                                aria-label="Remove image"
+                              >
+                                <X className="w-3 h-3" />
+                              </button>
+                            </div>
+                          )}
+                        </div>
+                      </div>
+
+                      {/* Composer footer */}
+                      <div className="flex items-center justify-between mt-5 pt-4 border-t border-border-main">
+                        <div className="flex items-center gap-1">
+                          <label className="flex items-center gap-2 eyebrow tabular text-text-body/65 hover:text-text-heading px-2.5 py-2 hover:bg-bg-main rounded-lg cursor-pointer transition-all">
+                            <ImageIcon className="w-4 h-4 text-accent" strokeWidth={1.75} />
+                            <span>Media</span>
+                            <input type="file" accept="image/*" className="hidden" onChange={handleImageUpload} />
+                          </label>
+                          <button
+                            type="button"
+                            onClick={handleTechnicalTip}
+                            disabled={!newPost.trim() || isGeneratingTip}
+                            className="flex items-center gap-2 eyebrow tabular text-text-body/65 hover:text-text-heading px-2.5 py-2 hover:bg-bg-main rounded-lg transition-all disabled:opacity-30 disabled:cursor-not-allowed"
+                          >
+                            {isGeneratingTip ? <Loader2 className="w-4 h-4 animate-spin text-accent" /> : <Sparkles className="w-4 h-4 text-accent" strokeWidth={1.75} />}
+                            <span>Insight</span>
+                          </button>
+                        </div>
+                        <button
+                          type="submit"
+                          disabled={(!newPost.trim() && !postImage) || posting}
+                          className="inline-flex items-center gap-2 bg-text-heading text-bg-card px-5 py-2.5 rounded-xl text-[14px] font-medium hover:brightness-110 disabled:opacity-30 transition-all"
+                        >
+                          {posting ? <Loader2 className="w-4 h-4 animate-spin" /> : <Send className="w-4 h-4" strokeWidth={1.75} />}
+                          Post
+                        </button>
+                      </div>
+                    </form>
+                  </div>
+                )}
+
+                {/* Posts */}
+                {loadingPosts ? (
+                  <div className="space-y-3">
+                    {[1, 2].map((i) => <div key={i} className="h-32 bg-bg-card border border-border-main rounded-2xl animate-pulse" />)}
+                  </div>
+                ) : posts.length === 0 ? (
+                  <div className="text-center py-16 bg-bg-card border border-dashed border-border-main rounded-2xl">
+                    <Building2 className="w-10 h-10 text-text-body/25 mx-auto mb-4" strokeWidth={1.5} />
+                    <p className="eyebrow tabular text-text-body/55 mb-1">QUIET CHANNEL</p>
+                    <p className="text-text-body text-[14px]">No posts in this group yet.</p>
+                  </div>
+                ) : (
+                  posts.map((post: any) => (
+                    <GroupPostCard
+                      key={post.id}
+                      post={post}
+                      groupId={groupId!}
+                      isAdmin={isAdmin}
+                      onCommentsToggle={() => {}}
+                    />
+                  ))
+                )}
+              </div>
+
+              {/* Sidebar — sort + group info */}
+              <aside className="space-y-6">
+                <div className="bg-bg-card border border-border-main rounded-2xl p-5">
+                  <p className="eyebrow tabular text-text-body/55 mb-3">Sort posts by</p>
+                  <div className="flex gap-2">
+                    <button
+                      onClick={() => setPostSortOrder("createdAt")}
+                      className={`flex-1 px-3 py-2 rounded-lg eyebrow tabular text-center transition-all ${
+                        postSortOrder === "createdAt" ? "bg-text-heading text-bg-card" : "bg-bg-main border border-border-main text-text-body hover:border-text-heading"
+                      }`}
+                    >
+                      Newest
+                    </button>
+                    <button
+                      onClick={() => setPostSortOrder("likesCount")}
+                      className={`flex-1 px-3 py-2 rounded-lg eyebrow tabular text-center transition-all ${
+                        postSortOrder === "likesCount" ? "bg-text-heading text-bg-card" : "bg-bg-main border border-border-main text-text-body hover:border-text-heading"
+                      }`}
+                    >
+                      Top liked
+                    </button>
+                  </div>
                 </div>
 
-                <form onSubmit={handleReport} className="p-8 space-y-6">
-                   <div>
-                      <label className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-400 mb-2 block">Reason for Report</label>
-                      <textarea 
-                        required
-                        value={reportReason}
-                        onChange={(e) => setReportReason(e.target.value)}
-                        placeholder="Please describe why this content is inappropriate (e.g. spam, harassment, non-industry related)..."
-                        className="w-full px-6 py-4 bg-slate-50 border border-slate-100 rounded-2xl outline-none focus:ring-4 focus:ring-rose-50 transition-all font-medium h-40 resize-none placeholder:text-slate-300"
+                <div className="bg-bg-card border border-border-main rounded-2xl p-5">
+                  <p className="eyebrow tabular text-text-body/55 mb-3">Recent members</p>
+                  {approvedMembers.length === 0 ? (
+                    <p className="text-[13px] text-text-body/55 italic">No members yet.</p>
+                  ) : (
+                    <div className="space-y-2">
+                      {approvedMembers.slice(0, 6).map((m) => (
+                        <Link key={m.id} to={`/profile/${m.userUid}`} className="flex items-center gap-3 group/m">
+                          <img
+                            src={m.userPhoto || `https://api.dicebear.com/7.x/initials/svg?seed=${m.userName}`}
+                            className="w-8 h-8 rounded-lg border border-border-main object-cover shrink-0"
+                            alt=""
+                          />
+                          <div className="min-w-0">
+                            <p className="text-[13px] font-medium text-text-heading truncate group-hover/m:text-accent transition-colors">{m.userName}</p>
+                            <p className="eyebrow tabular text-text-body/55 truncate">{m.userJobTitle || "Member"}</p>
+                          </div>
+                        </Link>
+                      ))}
+                    </div>
+                  )}
+                  {approvedMembers.length > 6 && (
+                    <button onClick={() => setActiveTab("members")} className="mt-4 eyebrow tabular text-accent hover:underline inline-flex items-center gap-1">
+                      View all members
+                      <ChevronRight className="w-3 h-3" />
+                    </button>
+                  )}
+                </div>
+              </aside>
+            </motion.div>
+          )}
+
+          {activeTab === "members" && (
+            <motion.div key="members" initial={{ opacity: 0, y: 6 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -6 }} className="space-y-8">
+              {/* Pending requests (admin only) */}
+              {isAdmin && pendingRequests.length > 0 && (
+                <section>
+                  <div className="flex items-baseline justify-between mb-4">
+                    <div>
+                      <p className="eyebrow tabular text-accent">REVIEW PENDING</p>
+                      <h2 className="font-display text-2xl text-text-heading mt-1">{pendingRequests.length} {pendingRequests.length === 1 ? "request" : "requests"} awaiting approval</h2>
+                    </div>
+                  </div>
+                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                    {pendingRequests.map((req) => (
+                      <RequestCard key={req.id} request={req} groupId={groupId!} onAction={() => {}} />
+                    ))}
+                  </div>
+                </section>
+              )}
+
+              <section>
+                <div className="flex items-baseline justify-between mb-4">
+                  <div>
+                    <p className="eyebrow tabular text-text-body/55">{approvedMembers.length} {approvedMembers.length === 1 ? "MEMBER" : "MEMBERS"}</p>
+                    <h2 className="font-display text-2xl text-text-heading mt-1">Group roster</h2>
+                  </div>
+                </div>
+                {loadingMembers ? (
+                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                    {[1, 2, 3].map((i) => <div key={i} className="h-48 bg-bg-card border border-border-main rounded-2xl animate-pulse" />)}
+                  </div>
+                ) : approvedMembers.length === 0 ? (
+                  <div className="text-center py-16 bg-bg-card border border-dashed border-border-main rounded-2xl">
+                    <Users className="w-10 h-10 text-text-body/25 mx-auto mb-4" strokeWidth={1.5} />
+                    <p className="text-text-body/55 text-[14px]">No members yet.</p>
+                  </div>
+                ) : (
+                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                    {approvedMembers.map((m) => (
+                      <MemberCard key={m.id} uid={m.userUid} role={m.role} groupId={groupId!} canManage={isAdmin} isCurrentUserAdmin={isAdmin} />
+                    ))}
+                  </div>
+                )}
+              </section>
+            </motion.div>
+          )}
+
+          {activeTab === "settings" && isAdmin && (
+            <motion.div key="settings" initial={{ opacity: 0, y: 6 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -6 }} className="max-w-2xl">
+              <div className="bg-bg-card border border-border-main rounded-2xl overflow-hidden">
+                <div className="px-6 py-5 border-b border-border-main">
+                  <p className="eyebrow tabular text-accent">GROUP SETTINGS</p>
+                  <h2 className="font-display text-2xl text-text-heading mt-1">Configure this group</h2>
+                </div>
+                <form onSubmit={handleSaveSettings} className="p-6 space-y-5">
+                  <label className="block">
+                    <span className="eyebrow tabular text-text-body/60 mb-2 block">Group name</span>
+                    <input
+                      type="text"
+                      value={settingsForm.name}
+                      onChange={(e) => setSettingsForm({ ...settingsForm, name: e.target.value })}
+                      className="w-full px-4 py-3 bg-bg-main border border-border-main rounded-xl text-[15px] text-text-heading outline-none focus:border-text-heading transition-all"
+                    />
+                  </label>
+
+                  <label className="block">
+                    <span className="eyebrow tabular text-text-body/60 mb-2 block">Description / mission</span>
+                    <textarea
+                      value={settingsForm.description}
+                      onChange={(e) => setSettingsForm({ ...settingsForm, description: e.target.value })}
+                      className="w-full px-4 py-3 bg-bg-main border border-border-main rounded-xl text-[14px] text-text-heading outline-none focus:border-text-heading h-28 resize-none transition-all"
+                    />
+                  </label>
+
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                    <label className="block">
+                      <span className="eyebrow tabular text-text-body/60 mb-2 block">Icon URL</span>
+                      <div className="flex gap-2">
+                        {settingsForm.iconUrl && (
+                          <div className="w-12 h-12 rounded-lg border border-border-main bg-bg-main shrink-0 overflow-hidden p-1">
+                            <img src={settingsForm.iconUrl} className="w-full h-full object-contain" alt="" />
+                          </div>
+                        )}
+                        <input
+                          type="text"
+                          value={settingsForm.iconUrl}
+                          onChange={(e) => setSettingsForm({ ...settingsForm, iconUrl: e.target.value })}
+                          placeholder="https://…"
+                          className="flex-1 px-3 py-3 bg-bg-main border border-border-main rounded-xl text-[12px] text-text-heading outline-none focus:border-text-heading transition-all"
+                        />
+                      </div>
+                    </label>
+                    <label className="block">
+                      <span className="eyebrow tabular text-text-body/60 mb-2 block">Cover URL</span>
+                      <div className="flex gap-2">
+                        {settingsForm.coverUrl && (
+                          <div className="w-12 h-12 rounded-lg border border-border-main bg-bg-main shrink-0 overflow-hidden">
+                            <img src={settingsForm.coverUrl} className="w-full h-full object-cover" alt="" />
+                          </div>
+                        )}
+                        <input
+                          type="text"
+                          value={settingsForm.coverUrl}
+                          onChange={(e) => setSettingsForm({ ...settingsForm, coverUrl: e.target.value })}
+                          placeholder="https://…"
+                          className="flex-1 px-3 py-3 bg-bg-main border border-border-main rounded-xl text-[12px] text-text-heading outline-none focus:border-text-heading transition-all"
+                        />
+                      </div>
+                    </label>
+                  </div>
+
+                  <div className="flex items-center justify-between p-4 bg-bg-main rounded-xl border border-border-main">
+                    <div className="flex items-center gap-3">
+                      <div className={`w-10 h-10 rounded-xl flex items-center justify-center text-bg-card ${settingsForm.isPrivate ? "bg-rust" : "bg-accent"}`}>
+                        {settingsForm.isPrivate ? <Lock className="w-4 h-4" strokeWidth={1.75} /> : <Globe className="w-4 h-4" strokeWidth={1.75} />}
+                      </div>
+                      <div>
+                        <p className="text-[14px] font-medium text-text-heading">{settingsForm.isPrivate ? "Private network" : "Public network"}</p>
+                        <p className="eyebrow tabular text-text-body/55 mt-0.5">{settingsForm.isPrivate ? "Invite or approval required" : "Open to all members"}</p>
+                      </div>
+                    </div>
+                    <label className="relative inline-flex items-center cursor-pointer">
+                      <input
+                        type="checkbox"
+                        checked={settingsForm.isPrivate}
+                        onChange={(e) => setSettingsForm({ ...settingsForm, isPrivate: e.target.checked })}
+                        className="sr-only peer"
                       />
-                   </div>
+                      <div className="w-11 h-6 bg-border-main rounded-full peer peer-checked:after:translate-x-full after:content-[''] after:absolute after:top-0.5 after:left-0.5 after:bg-bg-card after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-text-heading" />
+                    </label>
+                  </div>
 
-                   <div className="flex items-center gap-4">
-                      <button 
-                        type="button"
-                        onClick={() => setReportModalOpen(false)}
-                        className="flex-1 py-4 bg-white text-slate-400 rounded-2xl font-black text-[10px] uppercase tracking-widest border border-slate-200 hover:text-slate-600 transition-all"
-                      >
-                         Discard
-                      </button>
-                      <button 
-                        type="submit"
-                        disabled={submittingReport || !reportReason.trim()}
-                        className="flex-1 py-4 bg-rose-500 text-white rounded-2xl font-black text-[10px] uppercase tracking-widest shadow-xl shadow-rose-100 hover:bg-rose-600 transition-all active:scale-95 disabled:opacity-50 flex items-center justify-center gap-2"
-                      >
-                         {submittingReport ? <Loader2 className="w-4 h-4 animate-spin" /> : <Flag className="w-4 h-4" />}
-                         Submit Report
-                      </button>
-                   </div>
+                  <div className="flex justify-end gap-3 pt-3 border-t border-border-main">
+                    <button type="button" onClick={() => setActiveTab("feed")} className="px-4 py-2.5 text-[13px] text-text-body hover:text-text-heading">
+                      Cancel
+                    </button>
+                    <button
+                      type="submit"
+                      disabled={savingSettings}
+                      className="inline-flex items-center gap-2 bg-text-heading text-bg-card px-5 py-2.5 rounded-xl text-[14px] font-medium hover:brightness-110 disabled:opacity-50 transition-all"
+                    >
+                      {savingSettings ? <Loader2 className="w-4 h-4 animate-spin" /> : <Check className="w-4 h-4" strokeWidth={2.5} />}
+                      Save settings
+                    </button>
+                  </div>
                 </form>
+              </div>
+            </motion.div>
+          )}
+        </AnimatePresence>
+      </div>
 
-                <button 
-                  onClick={() => setReportModalOpen(false)}
-                  className="absolute top-6 right-6 p-2 text-slate-300 hover:text-slate-900 transition-colors"
-                >
-                   <X className="w-6 h-6" />
-                </button>
-             </motion.div>
+      {/* Report modal */}
+      <AnimatePresence>
+        {reportModalOpen && (
+          <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
+            <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} onClick={() => setReportModalOpen(false)} className="absolute inset-0 bg-ink/60 backdrop-blur-sm" />
+            <motion.div
+              initial={{ opacity: 0, scale: 0.96, y: 12 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              exit={{ opacity: 0, scale: 0.96, y: 12 }}
+              className="bg-bg-card border border-border-main rounded-2xl shadow-2xl w-full max-w-md relative z-10 overflow-hidden"
+            >
+              <form onSubmit={handleReport}>
+                <div className="px-6 py-5 border-b border-border-main flex items-baseline justify-between">
+                  <div>
+                    <p className="eyebrow tabular text-rust">FLAG CONTENT</p>
+                    <h2 className="font-display text-2xl text-text-heading mt-1">Report this post</h2>
+                  </div>
+                  <button type="button" onClick={() => setReportModalOpen(false)} className="p-2 hover:bg-bg-main rounded-lg transition-colors text-text-body/60">
+                    <X className="w-4 h-4" />
+                  </button>
+                </div>
+                <div className="p-6">
+                  <label className="block">
+                    <span className="eyebrow tabular text-text-body/60 mb-2 block">Reason</span>
+                    <textarea
+                      value={reportReason}
+                      onChange={(e) => setReportReason(e.target.value)}
+                      placeholder="Why are you reporting this post?"
+                      className="w-full px-4 py-3 bg-bg-main border border-border-main rounded-xl text-[14px] text-text-heading placeholder:text-text-body/40 outline-none focus:border-text-heading h-28 resize-none transition-all"
+                    />
+                  </label>
+                </div>
+                <div className="px-6 py-4 border-t border-border-main flex items-center justify-end gap-3">
+                  <button type="button" onClick={() => setReportModalOpen(false)} className="px-4 py-2.5 text-[13px] text-text-body hover:text-text-heading">
+                    Cancel
+                  </button>
+                  <button
+                    type="submit"
+                    disabled={!reportReason.trim() || submittingReport}
+                    className="inline-flex items-center gap-2 bg-rust text-white px-5 py-2.5 rounded-xl text-[14px] font-medium hover:brightness-110 disabled:opacity-50 transition-all"
+                  >
+                    {submittingReport ? <Loader2 className="w-4 h-4 animate-spin" /> : <Flag className="w-4 h-4" strokeWidth={1.75} />}
+                    Submit report
+                  </button>
+                </div>
+              </form>
+            </motion.div>
           </div>
         )}
       </AnimatePresence>
 
-      {/* Share Modal */}
+      {/* Share modal */}
       <AnimatePresence>
-        {shareModalOpen && (
+        {shareModalOpen && sharePost && (
           <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
-             <motion.div 
-               initial={{ opacity: 0 }}
-               animate={{ opacity: 1 }}
-               exit={{ opacity: 0 }}
-               onClick={() => setShareModalOpen(false)}
-               className="absolute inset-0 bg-slate-900/60 backdrop-blur-sm"
-             />
-             <motion.div 
-               initial={{ opacity: 0, scale: 0.9, y: 20 }}
-               animate={{ opacity: 1, scale: 1, y: 0 }}
-               exit={{ opacity: 0, scale: 0.9, y: 20 }}
-               className="relative bg-white w-full max-w-lg rounded-[2.5rem] shadow-2xl overflow-hidden"
-             >
-                <div className="p-8 pt-10 text-center border-b border-slate-100 bg-slate-50">
-                   <div className="w-16 h-16 bg-amber-50 rounded-2xl flex items-center justify-center mx-auto mb-6">
-                      <Share2 className="w-8 h-8 text-amber-500" />
-                   </div>
-                   <h2 className="text-2xl font-black text-text-heading uppercase tracking-tighter mb-2">Share Broadcast</h2>
-                   <p className="text-sm font-medium text-text-body/60">Distribute industry insights across the network</p>
+            <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} onClick={() => setShareModalOpen(false)} className="absolute inset-0 bg-ink/60 backdrop-blur-sm" />
+            <motion.div
+              initial={{ opacity: 0, scale: 0.96, y: 12 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              exit={{ opacity: 0, scale: 0.96, y: 12 }}
+              className="bg-bg-card border border-border-main rounded-2xl shadow-2xl w-full max-w-md relative z-10 overflow-hidden"
+            >
+              <div className="px-6 py-5 border-b border-border-main flex items-baseline justify-between">
+                <div>
+                  <p className="eyebrow tabular text-text-body/55">Distribute</p>
+                  <h2 className="font-display text-2xl text-text-heading mt-1">Share this post</h2>
                 </div>
-
-                <div className="p-8 space-y-8">
-                   <div className="space-y-4">
-                      <p className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-400">External Link</p>
-                      <button 
-                        onClick={() => handleCopyLink(sharePost.id)}
-                        className="w-full flex items-center justify-between p-6 bg-slate-50 rounded-2xl border border-slate-100 hover:bg-white hover:border-indigo-600 transition-all group"
-                      >
-                         <div className="flex items-center gap-4">
-                            <div className="w-10 h-10 bg-white rounded-xl flex items-center justify-center shadow-sm">
-                               <Link2 className="w-5 h-5 text-indigo-600" />
-                            </div>
-                            <div className="text-left">
-                               <p className="text-xs font-black uppercase tracking-tight text-text-heading">Copy Deep Link</p>
-                               <p className="text-[10px] text-slate-400 font-bold">Paste into email or industry groups</p>
-                            </div>
-                         </div>
-                         {copied ? <Check className="w-5 h-5 text-emerald-500" /> : <ChevronRight className="w-5 h-5 text-slate-300 group-hover:translate-x-1 transition-transform" />}
-                      </button>
-                   </div>
-
-                   <div className="space-y-4">
-                      <p className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-400">Social Transmission</p>
-                      <div className="grid grid-cols-2 gap-3">
-                         <button 
-                           onClick={() => shareOnSocial('linkedin')}
-                           className="bg-[#0077b5] text-white p-4 rounded-2xl flex items-center justify-center gap-3 hover:brightness-110 transition-all shadow-lg shadow-blue-900/20"
-                         >
-                            <svg className="w-5 h-5 fill-current" viewBox="0 0 24 24"><path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z"/></svg>
-                            <span className="text-xs font-black uppercase tracking-widest">LinkedIn</span>
-                         </button>
-                         <button 
-                           onClick={() => shareOnSocial('twitter')}
-                           className="bg-black text-white p-4 rounded-2xl flex items-center justify-center gap-3 hover:brightness-110 transition-all shadow-lg shadow-slate-900/20"
-                         >
-                            <svg className="w-5 h-5 fill-current" viewBox="0 0 24 24"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
-                            <span className="text-xs font-black uppercase tracking-widest">Twitter</span>
-                         </button>
-                      </div>
-                   </div>
-
-                   {myGroups && myGroups.length > 0 && (
-                     <div className="space-y-4">
-                        <p className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-400">Collaborate within Network</p>
-                        <div className="space-y-3">
-                           <label className="text-[10px] font-bold text-slate-500 block">Select a Group you manage:</label>
-                           <select 
-                             className="w-full px-6 py-4 bg-slate-50 border border-slate-200 rounded-2xl outline-none focus:ring-4 focus:ring-indigo-100 transition-all text-sm font-bold appearance-none cursor-pointer"
-                             value={sharingToGroup || ""}
-                             onChange={(e) => setSharingToGroup(e.target.value)}
-                           >
-                              <option value="">Select Target Destination...</option>
-                              {myGroups.map(g => (
-                                <option key={g.id} value={g.id}>{g.name}</option>
-                              ))}
-                           </select>
-                           <button 
-                             onClick={handleInternalShare}
-                             disabled={isSharing || !sharingToGroup}
-                             className="w-full py-5 bg-sidebar-focus text-sidebar-focus-text rounded-2xl font-black text-xs uppercase tracking-widest flex items-center justify-center gap-3 shadow-2xl hover:brightness-110 transition-all disabled:opacity-50"
-                           >
-                              {isSharing ? <Loader2 className="w-5 h-5 animate-spin" /> : <Send className="w-5 h-5" />}
-                              Share internally
-                           </button>
-                        </div>
-                     </div>
-                   )}
-                </div>
-
-                <button 
-                  onClick={() => setShareModalOpen(false)}
-                  className="absolute top-6 right-6 p-2 text-slate-300 hover:text-slate-900 transition-colors"
-                >
-                   <X className="w-6 h-6" />
+                <button onClick={() => setShareModalOpen(false)} className="p-2 hover:bg-bg-main rounded-lg transition-colors text-text-body/60">
+                  <X className="w-4 h-4" />
                 </button>
-             </motion.div>
+              </div>
+              <div className="p-6 space-y-5">
+                {/* Internal share */}
+                {myGroups.length > 0 && (
+                  <div>
+                    <p className="eyebrow tabular text-text-body/55 mb-2 flex items-center gap-2">
+                      <Share2 className="w-3.5 h-3.5" strokeWidth={1.75} />
+                      Share to one of your groups
+                    </p>
+                    <select
+                      value={sharingToGroup || ""}
+                      onChange={(e) => setSharingToGroup(e.target.value || null)}
+                      className="w-full px-4 py-3 bg-bg-main border border-border-main rounded-xl text-[14px] text-text-heading outline-none focus:border-text-heading transition-all mb-3"
+                    >
+                      <option value="">— Choose a group —</option>
+                      {myGroups.filter((g: any) => g.id !== groupId).map((g: any) => (
+                        <option key={g.id} value={g.id}>{g.name}</option>
+                      ))}
+                    </select>
+                    <button
+                      onClick={handleInternalShare}
+                      disabled={!sharingToGroup || isSharing}
+                      className="w-full inline-flex items-center justify-center gap-2 bg-text-heading text-bg-card py-3 rounded-xl text-[14px] font-medium hover:brightness-110 disabled:opacity-50 transition-all"
+                    >
+                      {isSharing ? <Loader2 className="w-4 h-4 animate-spin" /> : <Send className="w-4 h-4" strokeWidth={1.75} />}
+                      Cross-post
+                    </button>
+                  </div>
+                )}
+
+                <div className="relative">
+                  <div className="absolute inset-0 flex items-center"><span className="w-full border-t border-border-main" /></div>
+                  <p className="relative flex justify-center bg-bg-card eyebrow tabular text-text-body/40 px-3">OR</p>
+                </div>
+
+                <div>
+                  <p className="eyebrow tabular text-text-body/55 mb-2 flex items-center gap-2">
+                    <Link2 className="w-3.5 h-3.5" strokeWidth={1.75} />
+                    Share externally
+                  </p>
+                  <div className="grid grid-cols-2 gap-2">
+                    <button onClick={() => handleCopyLink(sharePost.id)} className="col-span-2 border border-border-main py-3 rounded-xl flex items-center justify-center gap-2 hover:border-text-heading hover:bg-bg-main transition-all text-text-heading">
+                      {copied ? (
+                        <>
+                          <Check className="w-4 h-4 text-accent" strokeWidth={2.5} />
+                          <span className="text-[13px] font-medium">Link copied</span>
+                        </>
+                      ) : (
+                        <>
+                          <Link2 className="w-4 h-4 text-text-body/50" strokeWidth={1.75} />
+                          <span className="text-[13px] font-medium">Copy link</span>
+                        </>
+                      )}
+                    </button>
+                    <button onClick={() => shareOnSocial("linkedin")} className="bg-bg-main border border-border-main p-3 rounded-xl flex items-center justify-center gap-2 hover:border-text-heading transition-all">
+                      <Linkedin className="w-4 h-4 text-[#0077b5]" strokeWidth={1.75} />
+                      <span className="eyebrow tabular text-text-heading">LinkedIn</span>
+                    </button>
+                    <button onClick={() => shareOnSocial("twitter")} className="bg-bg-main border border-border-main p-3 rounded-xl flex items-center justify-center gap-2 hover:border-text-heading transition-all">
+                      <Twitter className="w-4 h-4 text-text-heading" strokeWidth={1.75} />
+                      <span className="eyebrow tabular text-text-heading">Twitter</span>
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </motion.div>
           </div>
         )}
       </AnimatePresence>
@@ -1010,7 +1096,10 @@ export default function GroupDetail() {
   );
 }
 
-function RequestCard({ request, groupId, onAction }: { request: any, groupId: string, onAction: () => void }) {
+/* ============================================================
+   RequestCard — pending request review (admin only)
+   ============================================================ */
+function RequestCard({ request, groupId, onAction }: { request: any; groupId: string; onAction: () => void }) {
   const [updating, setUpdating] = useState(false);
 
   const handleApprove = async () => {
@@ -1019,11 +1108,9 @@ function RequestCard({ request, groupId, onAction }: { request: any, groupId: st
       await updateDoc(doc(db, "group_members", `${groupId}_${request.userUid}`), {
         status: "approved",
         role: "member",
-        joinedAt: serverTimestamp()
+        joinedAt: serverTimestamp(),
       });
-      await updateDoc(doc(db, "groups", groupId), {
-        memberCount: increment(1)
-      });
+      await updateDoc(doc(db, "groups", groupId), { memberCount: increment(1) });
       onAction();
     } catch (err) {
       console.error(err);
@@ -1045,81 +1132,51 @@ function RequestCard({ request, groupId, onAction }: { request: any, groupId: st
   };
 
   return (
-    <div className="bg-white rounded-[2.5rem] border border-slate-200 p-8 flex flex-col items-center text-center shadow-sm hover:shadow-xl transition-all group">
-       <div className="relative mb-6">
-          <img 
-            src={request.userPhoto || `https://api.dicebear.com/7.x/initials/svg?seed=${request.userName}`} 
-            className="w-24 h-24 rounded-3xl border-4 border-slate-50 shadow-lg" 
-            alt="" 
-          />
-       </div>
+    <div className="bg-bg-card border border-border-main rounded-2xl p-5 flex flex-col items-center text-center hover:border-text-heading transition-all">
+      <div className="relative mb-4">
+        <img
+          src={request.userPhoto || `https://api.dicebear.com/7.x/initials/svg?seed=${request.userName}`}
+          className="w-16 h-16 rounded-xl border border-border-main object-cover shadow-md"
+          alt=""
+        />
+        <span className="absolute -bottom-1 -right-1 w-6 h-6 rounded-full bg-rust text-white border-2 border-bg-card flex items-center justify-center" title="Pending">
+          <Clock className="w-3 h-3" strokeWidth={2} />
+        </span>
+      </div>
+      <h3 className="font-display text-lg text-text-heading leading-tight mb-1 truncate w-full">{request.userName}</h3>
+      <p className="eyebrow tabular text-text-body/55 mb-1 truncate w-full">{request.userJobTitle || "Member"}</p>
+      <p className="eyebrow tabular text-accent mb-5 truncate w-full">{request.userCompany || "—"}</p>
 
-       <h3 className="text-xl font-black text-text-heading uppercase tracking-tight mb-1">{request.userName}</h3>
-       <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-2">{request.userJobTitle}</p>
-       <p className="text-[9px] font-bold text-primary uppercase tracking-widest mb-8">{request.userCompany}</p>
-       
-       <div className="w-full flex items-center gap-3">
-          <button 
-           onClick={handleReject}
-           disabled={updating}
-           className="flex-1 py-4 bg-slate-50 text-slate-400 rounded-2xl font-black text-[10px] uppercase tracking-widest hover:bg-rose-50 hover:text-rose-600 transition-all"
-          >
-            Decline
-          </button>
-          <button 
-           onClick={handleApprove}
-           disabled={updating}
-           className="flex-1 py-4 bg-primary text-white rounded-2xl font-black text-[10px] uppercase tracking-widest shadow-xl shadow-primary/20 hover:brightness-110 transition-all flex items-center justify-center gap-2"
-          >
-             {updating ? <Loader2 className="w-4 h-4 animate-spin" /> : <Check className="w-4 h-4" />}
-             Approve
-          </button>
-       </div>
+      <div className="w-full flex items-center gap-2 mt-auto">
+        <button
+          onClick={handleReject}
+          disabled={updating}
+          className="flex-1 py-2.5 bg-bg-main border border-border-main rounded-xl eyebrow tabular text-text-body hover:text-rust hover:border-rust/30 transition-all"
+        >
+          Decline
+        </button>
+        <button
+          onClick={handleApprove}
+          disabled={updating}
+          className="flex-1 py-2.5 bg-text-heading text-bg-card rounded-xl eyebrow tabular hover:brightness-110 transition-all flex items-center justify-center gap-1.5"
+        >
+          {updating ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Check className="w-3.5 h-3.5" strokeWidth={2.5} />}
+          Approve
+        </button>
+      </div>
     </div>
   );
 }
 
-function MemberRow({ uid, role }: { uid: string, role: string }) {
-  const [memberProfile, setMemberProfile] = useState<any>(null);
-
-  useEffect(() => {
-    getDoc(doc(db, "users", uid)).then(snap => {
-      if (snap.exists()) setMemberProfile(snap.data());
-    });
-  }, [uid]);
-
-  if (!memberProfile) return null;
-
-  return (
-    <div className="flex items-center justify-between p-3 bg-white/5 rounded-2xl border border-white/5 hover:bg-white/10 transition-all">
-       <div className="flex items-center gap-3">
-          <img 
-            src={memberProfile.photoURL || `https://api.dicebear.com/7.x/initials/svg?seed=${memberProfile.displayName}`} 
-            className="w-10 h-10 rounded-xl" 
-            alt="" 
-          />
-          <div>
-             <p className="text-[11px] font-black uppercase tracking-tight">{memberProfile.displayName}</p>
-             <p className="text-[9px] text-white/40 font-bold uppercase tracking-widest">{memberProfile.jobTitle || "Member"}</p>
-          </div>
-       </div>
-       <div className={`px-2 py-1 rounded-full text-[8px] font-black uppercase tracking-widest ${
-         role === 'creator' ? 'bg-primary text-white' : 
-         role === 'admin' ? 'bg-amber-500 text-white' : 
-         'bg-white/10 text-white/60'
-       }`}>
-          {role}
-       </div>
-    </div>
-  );
-}
-
-function MemberCard({ uid, role, groupId, isCurrentUserAdmin }: { uid: string, role: string, groupId: string, canManage: boolean, isCurrentUserAdmin: boolean }) {
+/* ============================================================
+   MemberCard — single member tile (with admin controls)
+   ============================================================ */
+function MemberCard({ uid, role, groupId, isCurrentUserAdmin }: { uid: string; role: string; groupId: string; canManage: boolean; isCurrentUserAdmin: boolean }) {
   const [memberProfile, setMemberProfile] = useState<any>(null);
   const [updating, setUpdating] = useState(false);
 
   useEffect(() => {
-    getDoc(doc(db, "users", uid)).then(snap => {
+    getDoc(doc(db, "users", uid)).then((snap) => {
       if (snap.exists()) setMemberProfile(snap.data());
     });
   }, [uid]);
@@ -1128,18 +1185,13 @@ function MemberCard({ uid, role, groupId, isCurrentUserAdmin }: { uid: string, r
     if (!isCurrentUserAdmin) return;
     setUpdating(true);
     try {
-      await updateDoc(doc(db, "group_members", `${groupId}_${uid}`), {
-        role: "admin"
-      });
-      // Also update admins array in group document
+      await updateDoc(doc(db, "group_members", `${groupId}_${uid}`), { role: "admin" });
       const groupRef = doc(db, "groups", groupId);
       const groupSnap = await getDoc(groupRef);
       if (groupSnap.exists()) {
         const admins = groupSnap.data().admins || [];
         if (!admins.includes(uid)) {
-          await updateDoc(groupRef, {
-            admins: [...admins, uid]
-          });
+          await updateDoc(groupRef, { admins: [...admins, uid] });
         }
       }
     } finally {
@@ -1152,9 +1204,7 @@ function MemberCard({ uid, role, groupId, isCurrentUserAdmin }: { uid: string, r
     setUpdating(true);
     try {
       await deleteDoc(doc(db, "group_members", `${groupId}_${uid}`));
-      await updateDoc(doc(db, "groups", groupId), {
-        memberCount: increment(-1)
-      });
+      await updateDoc(doc(db, "groups", groupId), { memberCount: increment(-1) });
     } finally {
       setUpdating(false);
     }
@@ -1163,51 +1213,58 @@ function MemberCard({ uid, role, groupId, isCurrentUserAdmin }: { uid: string, r
   if (!memberProfile) return null;
 
   return (
-    <div className="bg-slate-50 rounded-[2.5rem] border border-slate-100 p-8 flex flex-col items-center text-center group transition-all hover:bg-white hover:shadow-xl">
-       <Link to={`/profile/${uid}`} className="relative mb-6">
-          <img 
-            src={memberProfile.photoURL || `https://api.dicebear.com/7.x/initials/svg?seed=${memberProfile.displayName}`} 
-            className="w-24 h-24 rounded-3xl border-4 border-white shadow-lg transition-transform group-hover:scale-105" 
-            alt="" 
-          />
-          <div className="absolute -bottom-2 -right-2 w-8 h-8 bg-white rounded-xl shadow-lg flex items-center justify-center border border-slate-100">
-             {role === 'creator' ? <ShieldCheck className="w-4 h-4 text-primary" /> : 
-              role === 'admin' ? <ShieldAlert className="w-4 h-4 text-amber-500" /> : 
-              <Users className="w-4 h-4 text-slate-300" />}
-          </div>
-       </Link>
-
-       <h3 className="text-xl font-black text-text-heading uppercase tracking-tight mb-1">{memberProfile.displayName}</h3>
-       <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-6">{memberProfile.company || "Independent"}</p>
-       
-       <div className="w-full flex items-center gap-2 mt-auto">
-          {isCurrentUserAdmin && role !== 'creator' && (
-            <>
-               {role === 'member' && (
-                 <button 
-                  onClick={handleMakeAdmin}
-                  disabled={updating}
-                  className="flex-1 py-3 bg-white border border-slate-200 rounded-xl text-[9px] font-black uppercase tracking-widest hover:bg-amber-50 hover:text-amber-600 transition-all"
-                 >
-                   Make Admin
-                 </button>
-               )}
-               <button 
-                onClick={handleRemoveMember}
-                disabled={updating}
-                className="p-3 bg-white border border-slate-200 rounded-xl text-slate-300 hover:text-rose-500 transition-all"
-               >
-                 <Trash2 className="w-4 h-4" />
-               </button>
-            </>
+    <div className="bg-bg-card border border-border-main rounded-2xl p-5 flex flex-col items-center text-center hover:border-text-heading transition-all group">
+      <Link to={`/profile/${uid}`} className="relative mb-4">
+        <img
+          src={memberProfile.photoURL || `https://api.dicebear.com/7.x/initials/svg?seed=${memberProfile.displayName}`}
+          className="w-20 h-20 rounded-xl border border-border-main object-cover shadow-md transition-transform group-hover:scale-105"
+          alt=""
+        />
+        <span className="absolute -bottom-1 -right-1 w-7 h-7 rounded-full bg-bg-card border-2 border-bg-card flex items-center justify-center shadow-md">
+          {role === "creator" ? (
+            <ShieldCheck className="w-4 h-4 text-accent" strokeWidth={2} />
+          ) : role === "admin" ? (
+            <ShieldAlert className="w-4 h-4 text-rust" strokeWidth={2} />
+          ) : (
+            <Users className="w-4 h-4 text-text-body/40" strokeWidth={2} />
           )}
-          <Link 
-            to={`/profile/${uid}`}
-            className="flex-1 py-3 bg-sidebar-focus text-sidebar-focus-text rounded-xl text-[9px] font-black uppercase tracking-widest hover:brightness-110 transition-all"
-          >
-            View Profile
-          </Link>
-       </div>
+        </span>
+      </Link>
+
+      <h3 className="font-display text-lg text-text-heading leading-tight mb-1 truncate w-full">{memberProfile.displayName}</h3>
+      {memberProfile.jobTitle && <p className="text-[12px] text-text-body/65 mb-1 truncate w-full">{memberProfile.jobTitle}</p>}
+      <p className="eyebrow tabular text-text-body/55 mb-5 truncate w-full">{memberProfile.company || "Independent"}</p>
+
+      <div className="w-full flex items-center gap-2 mt-auto">
+        {isCurrentUserAdmin && role !== "creator" && (
+          <>
+            {role === "member" && (
+              <button
+                onClick={handleMakeAdmin}
+                disabled={updating}
+                className="flex-1 py-2.5 bg-bg-main border border-border-main rounded-xl eyebrow tabular text-text-body hover:text-text-heading hover:border-text-heading transition-all"
+              >
+                Promote
+              </button>
+            )}
+            <button
+              onClick={handleRemoveMember}
+              disabled={updating}
+              className="w-9 h-9 bg-bg-main border border-border-main rounded-xl text-text-body/40 hover:text-rust hover:border-rust/30 flex items-center justify-center transition-all"
+              title="Remove from group"
+            >
+              <Trash2 className="w-4 h-4" strokeWidth={1.75} />
+            </button>
+          </>
+        )}
+        <Link
+          to={`/profile/${uid}`}
+          className="flex-1 py-2.5 bg-text-heading text-bg-card rounded-xl eyebrow tabular hover:brightness-110 transition-all flex items-center justify-center gap-1.5"
+        >
+          View profile
+          <ChevronRight className="w-3 h-3" strokeWidth={1.75} />
+        </Link>
+      </div>
     </div>
   );
 }

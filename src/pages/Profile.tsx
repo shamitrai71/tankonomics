@@ -461,6 +461,9 @@ export default function Profile() {
   const { data: targetConnections } = useCollection<any>("connections", [where("userIds", "array-contains", targetId || "")]);
   const { data: follows } = useCollection<any>("follows", [where("targetId", "==", targetId || ""), where("targetType", "==", "member")]);
   const { data: likes } = useCollection<any>("likes", [where("targetId", "==", targetId || ""), where("targetType", "==", "member")]);
+  const { data: ownerResumes } = useCollection<any>("resumes", [where("userUid", "==", user?.uid || "")]);
+  const hasResume = ownerResumes.length > 0;
+  const ownerResume = ownerResumes[0];
 
   const isFollowing = follows.some((f: any) => f.followerId === user?.uid);
   const isLiked = likes.some((l: any) => l.likerId === user?.uid);
@@ -1440,6 +1443,48 @@ export default function Profile() {
                   <div className="h-full bg-accent rounded-full transition-all" style={{ width: `${Math.min(100, ((profile?.aiUsage?.monthly || 0) / 10) * 100)}%` }} />
                 </div>
                 <p className="eyebrow tabular text-text-body/45 mt-3">Limits reset monthly</p>
+              </div>
+            )}
+
+            {/* Career Blueprint — the entry point into CreateResume */}
+            {isOwner && (
+              <div className="bg-bg-card border border-border-main rounded-2xl p-6 relative overflow-hidden">
+                <div className="absolute -top-3 -right-3 w-20 h-20 opacity-[0.07] pointer-events-none">
+                  <FileText className="w-full h-full text-accent" strokeWidth={1} />
+                </div>
+                <div className="relative">
+                  <div className="flex items-center justify-between mb-3">
+                    <p className="eyebrow tabular text-text-body/55 flex items-center gap-2">
+                      <FileText className="w-3.5 h-3.5 text-accent" strokeWidth={1.75} />
+                      Career blueprint
+                    </p>
+                    {hasResume ? (
+                      <span className="inline-flex items-center gap-1 eyebrow tabular bg-accent/10 text-accent border border-accent/20 px-1.5 py-0.5 rounded">
+                        <span className="w-1.5 h-1.5 rounded-full bg-accent" />
+                        Live
+                      </span>
+                    ) : (
+                      <span className="inline-flex items-center gap-1 eyebrow tabular bg-bg-main text-text-body/55 border border-border-main px-1.5 py-0.5 rounded">
+                        Not built
+                      </span>
+                    )}
+                  </div>
+                  <h3 className="font-display text-xl text-text-heading mb-2 leading-tight">
+                    {hasResume ? "Refine your blueprint" : "Get discovered by employers"}
+                  </h3>
+                  <p className="text-[13px] text-text-body leading-relaxed mb-4">
+                    {hasResume
+                      ? `Your record is indexed under ${ownerResume?.categoryName || "your sector"}${ownerResume?.subCategoryName ? ` · ${ownerResume.subCategoryName}` : ""}. Keep it current to surface in recruiter searches.`
+                      : "A structured technical record makes you searchable to verified employers across the global tank & terminal network."}
+                  </p>
+                  <Link
+                    to="/create-resume"
+                    className="inline-flex items-center gap-2 bg-text-heading text-bg-card px-4 py-2.5 rounded-xl text-[13px] font-medium hover:brightness-110 transition-all"
+                  >
+                    {hasResume ? "Edit blueprint" : "Build blueprint"}
+                    <ChevronRight className="w-4 h-4" strokeWidth={1.75} />
+                  </Link>
+                </div>
               </div>
             )}
 

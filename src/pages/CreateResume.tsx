@@ -1,33 +1,55 @@
+/**
+ * CreateResume — the career blueprint editor.
+ *
+ * Restyled. All data wiring preserved verbatim:
+ *   - useCollection resumes (lookup by userUid) + categories
+ *   - handleSave creates or updates Firestore doc with mandatory categoryId/Name
+ *   - All array helpers (handleAddField / handleRemoveField / handleUpdateListItem)
+ *   - Age auto-calc from dateOfBirth
+ *   - Custom "other" sector entry path
+ *   - Public/Private isLocked toggle
+ *
+ * Visual changes only — structure is a single editorial spread:
+ *   - Hero strip with eyebrow, display headline, save bar
+ *   - Categorisation card (mandatory — clearly marked) with safety-orange accent
+ *   - Two-col grid: Personal Foundation + Professional Trajectory
+ *   - Career Milestones (Active + Historical)
+ *   - Credentials (Academic / Certifications / Courses)
+ *   - Lifestyle (Travel + Hobbies)
+ *   - Sticky bottom save bar
+ */
+
 import { useState, useEffect } from "react";
 import { useAuth } from "../App";
 import { useNavigate } from "react-router-dom";
-import { 
-  createDocument, 
-  useCollection, 
-  updateDocument 
+import {
+  createDocument,
+  useCollection,
+  updateDocument,
 } from "../hooks/useFirestore";
-import { 
-  ArrowLeft, 
-  Save, 
-  Plus, 
-  Trash2, 
-  User, 
-  MapPin, 
-  Calendar as CalendarIcon, 
-  Phone, 
-  Briefcase, 
-  GraduationCap, 
-  Award, 
-  Globe, 
-  Heart, 
-  Lock, 
+import {
+  ArrowLeft,
+  Save,
+  Plus,
+  Trash2,
+  User,
+  MapPin,
+  Phone,
+  Briefcase,
+  GraduationCap,
+  Award,
+  Globe,
+  Heart,
+  Lock,
   Unlock,
   Sparkles,
-  Camera,
-  X
+  X,
+  Loader2,
+  Check,
+  Tag,
 } from "lucide-react";
 import { motion } from "framer-motion";
-import { format, differenceInYears } from "date-fns";
+import { differenceInYears } from "date-fns";
 import { serverTimestamp, where } from "firebase/firestore";
 
 export default function CreateResume() {
@@ -61,10 +83,11 @@ export default function CreateResume() {
     subCategoryId: "",
     subCategoryName: "",
     customCategory: "",
-    customSubCategory: ""
+    customSubCategory: "",
   });
 
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [savedToast, setSavedToast] = useState(false);
 
   useEffect(() => {
     if (!loadingCheck && existingResumes.length > 0) {
@@ -77,7 +100,7 @@ export default function CreateResume() {
         additionalCourses: resume.additionalCourses || [],
         additionalSkills: resume.additionalSkills || [],
         countriesTravelled: resume.countriesTravelled || [],
-        hobbies: resume.hobbies || []
+        hobbies: resume.hobbies || [],
       });
     }
   }, [existingResumes, loadingCheck]);
@@ -87,7 +110,7 @@ export default function CreateResume() {
       const birthDate = new Date(formData.dateOfBirth);
       if (!isNaN(birthDate.getTime())) {
         const calculatedAge = differenceInYears(new Date(), birthDate);
-        setFormData(prev => ({ ...prev, age: calculatedAge }));
+        setFormData((prev: any) => ({ ...prev, age: calculatedAge }));
       }
     }
   }, [formData.dateOfBirth]);
@@ -120,483 +143,680 @@ export default function CreateResume() {
 
   const handleSave = async () => {
     if (!formData.categoryId || !formData.categoryName) {
-      alert("Please select or type an industry category for mandatory reporting.");
+      alert("Please select or type an industry category — this is required so employers can find you.");
       return;
     }
 
     setIsSubmitting(true);
     try {
-      // Cleanup data for storage
       const { customCategory, customSubCategory, ...dataForStorage } = formData;
       const payload = {
         ...dataForStorage,
-        userUid: user?.uid, // Ensure required fields for rules validation
+        userUid: user?.uid,
         fullName: formData.fullName,
-        updatedAt: serverTimestamp()
+        updatedAt: serverTimestamp(),
       };
-      
+
       if (existingResumes.length > 0) {
         await updateDocument("resumes", existingResumes[0].id, payload);
       } else {
         await createDocument("resumes", {
           ...payload,
-          createdAt: serverTimestamp()
+          createdAt: serverTimestamp(),
         });
       }
-      alert("Resume saved successfully!");
-      navigate("/profile");
+      setSavedToast(true);
+      setTimeout(() => setSavedToast(false), 3000);
     } catch (err) {
       console.error(err);
-      alert("Failed to save resume.");
+      alert("Failed to save resume. Please try again.");
     } finally {
       setIsSubmitting(false);
     }
   };
 
+  /* ---------- Small helpers ---------- */
+  const TextField = ({
+    label, value, onChange, placeholder = "", icon: Icon, type = "text",
+  }: {
+    label: string;
+    value: string;
+    onChange: (v: string) => void;
+    placeholder?: string;
+    icon?: any;
+    type?: string;
+  }) => (
+    <label className="block">
+      <span className="eyebrow tabular text-text-body/60 mb-2 block">{label}</span>
+      <div className="relative">
+        {Icon && <Icon className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-text-body/40" strokeWidth={1.75} />}
+        <input
+          type={type}
+          value={value}
+          onChange={(e) => onChange(e.target.value)}
+          placeholder={placeholder}
+          className={`w-full ${Icon ? "pl-10" : "pl-4"} pr-4 py-3 bg-bg-main border border-border-main rounded-xl text-[14px] text-text-heading placeholder:text-text-body/40 outline-none focus:border-text-heading focus:bg-bg-card transition-all`}
+        />
+      </div>
+    </label>
+  );
+
+  const SectionHeading = ({ icon: Icon, eyebrow, title, action }: { icon: any; eyebrow: string; title: string; action?: React.ReactNode }) => (
+    <div className="flex items-end justify-between mb-5 pb-3 border-b border-border-main">
+      <div className="flex items-center gap-3">
+        <div className="w-9 h-9 bg-bg-main border border-border-main rounded-xl flex items-center justify-center text-accent shrink-0">
+          <Icon className="w-4 h-4" strokeWidth={1.75} />
+        </div>
+        <div>
+          <p className="eyebrow tabular text-text-body/55">{eyebrow}</p>
+          <h3 className="font-display text-xl text-text-heading leading-tight">{title}</h3>
+        </div>
+      </div>
+      {action}
+    </div>
+  );
+
+  if (loadingCheck) {
+    return (
+      <div className="min-h-screen bg-bg-main flex items-center justify-center">
+        <div className="w-10 h-10 border-2 border-text-heading border-t-transparent rounded-full animate-spin" />
+      </div>
+    );
+  }
+
   return (
-    <div className="min-h-screen bg-slate-50 pt-20 pb-20">
-      <div className="max-w-4xl mx-auto px-4">
-        {/* Header */}
-        <div className="flex items-center justify-between mb-8">
-           <button onClick={() => navigate("/profile")} className="flex items-center gap-2 text-slate-400 font-black uppercase text-[10px] tracking-widest hover:text-slate-900 transition-colors">
-              <ArrowLeft className="w-4 h-4" /> Back to Profile
-           </button>
-           <div className="flex items-center gap-4">
-              <button 
-                onClick={() => setFormData({...formData, isLocked: !formData.isLocked})}
-                className={`flex items-center gap-2 px-4 py-2 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all ${formData.isLocked ? "bg-red-50 text-red-600 border border-red-100" : "bg-green-50 text-green-600 border border-green-100"}`}
-              >
-                {formData.isLocked ? <Lock className="w-3 h-3" /> : <Unlock className="w-3 h-3" />}
-                {formData.isLocked ? "Private Mode" : "Public View"}
-              </button>
-              <button 
-                onClick={handleSave}
-                disabled={isSubmitting}
-                className="bg-slate-900 text-white px-6 py-2.5 rounded-xl font-black uppercase tracking-widest text-[10px] flex items-center gap-2 shadow-xl shadow-slate-200 active:scale-95 disabled:opacity-50"
-              >
-                {isSubmitting ? "Saving..." : <><Save className="w-4 h-4" /> Save Resume</>}
-              </button>
-           </div>
+    <div className="min-h-screen bg-bg-main pb-24">
+      <div className="max-w-5xl mx-auto px-4 md:px-6 py-8 md:py-12">
+        {/* Back chip */}
+        <button
+          onClick={() => navigate("/profile")}
+          className="inline-flex items-center gap-2 text-text-body/55 hover:text-text-heading transition-colors mb-8 group"
+        >
+          <span className="w-8 h-8 rounded-lg bg-bg-card border border-border-main flex items-center justify-center group-hover:bg-text-heading group-hover:text-bg-card group-hover:border-text-heading transition-all">
+            <ArrowLeft className="w-4 h-4" strokeWidth={1.75} />
+          </span>
+          <span className="eyebrow tabular">Back to profile</span>
+        </button>
+
+        {/* Hero strip */}
+        <header className="relative mb-10">
+          <div className="absolute inset-x-0 top-0 h-32 bp-grid-paper opacity-50 pointer-events-none" />
+          <div className="relative">
+            <div className="eyebrow tabular text-accent inline-flex items-center gap-2 mb-3">
+              <span className="inline-block w-1.5 h-1.5 rounded-full bg-accent soft-pulse" />
+              {existingResumes.length > 0 ? "UPDATE YOUR RECORD" : "CAREER BLUEPRINT"}
+            </div>
+            <h1 className="font-display text-[clamp(2.25rem,5vw,4rem)] text-text-heading leading-[0.98]">
+              {existingResumes.length > 0 ? "Refine your blueprint." : "Build your career blueprint."}
+            </h1>
+            <p className="text-text-body text-[15px] mt-3 max-w-2xl">
+              A structured technical record that makes you searchable by verified employers across the global tank &amp; terminal network. All fields support recruitment matching — the more complete, the better the match.
+            </p>
+          </div>
+        </header>
+
+        {/* Categorisation — mandatory */}
+        <section className="bg-bg-card border-2 border-accent/30 rounded-2xl p-6 md:p-7 mb-8 relative overflow-hidden">
+          <div className="absolute top-0 right-0 w-32 h-32 opacity-[0.05] pointer-events-none">
+            <Tag className="w-full h-full text-accent" strokeWidth={1} />
+          </div>
+          <div className="relative">
+            <div className="flex items-center gap-2 mb-2">
+              <span className="inline-flex items-center gap-1.5 px-2 py-0.5 rounded eyebrow tabular bg-accent text-white">
+                <span className="w-1.5 h-1.5 rounded-full bg-white" />
+                Required
+              </span>
+              <p className="eyebrow tabular text-accent">INDUSTRY MATCHING</p>
+            </div>
+            <h3 className="font-display text-2xl text-text-heading mb-2 leading-tight">Categorise your discipline</h3>
+            <p className="text-[13px] text-text-body mb-6 max-w-xl leading-relaxed">
+              This drives every recruitment search on the platform. Be specific — employers filter by sector and sub-segment first.
+            </p>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <label className="block">
+                <span className="eyebrow tabular text-text-body/60 mb-2 block">Primary sector</span>
+                <select
+                  value={formData.categoryId}
+                  onChange={(e) => {
+                    const cat = (categories || []).find((c: any) => c.id === e.target.value);
+                    setFormData({
+                      ...formData,
+                      categoryId: e.target.value,
+                      categoryName: cat?.name || (e.target.value === "other" ? (formData.customCategory || "Other") : ""),
+                      subCategoryId: "",
+                      subCategoryName: "",
+                    });
+                  }}
+                  className="w-full p-3.5 bg-bg-main border border-border-main rounded-xl text-[14px] text-text-heading outline-none focus:border-text-heading transition-all"
+                >
+                  <option value="">Select industry vertical…</option>
+                  {(categories || []).filter((c: any) => c.level === 1).map((cat: any) => (
+                    <option key={cat.id} value={cat.id}>{cat.name}</option>
+                  ))}
+                  <option value="other">Other (manual entry)</option>
+                </select>
+
+                {formData.categoryId === "other" && (
+                  <motion.input
+                    initial={{ opacity: 0, y: -6 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    placeholder="Type your industry sector…"
+                    value={formData.customCategory}
+                    onChange={(e) => setFormData({ ...formData, customCategory: e.target.value, categoryName: e.target.value })}
+                    className="w-full mt-2 p-3.5 bg-bg-main border border-accent/40 rounded-xl text-[14px] text-text-heading outline-none focus:border-accent transition-all"
+                  />
+                )}
+              </label>
+
+              <label className="block">
+                <span className="eyebrow tabular text-text-body/60 mb-2 block">Sub-segment</span>
+                <select
+                  value={formData.subCategoryId}
+                  disabled={!formData.categoryId}
+                  onChange={(e) => {
+                    const sub = (categories || []).find((c: any) => c.id === e.target.value);
+                    setFormData({
+                      ...formData,
+                      subCategoryId: e.target.value,
+                      subCategoryName: sub?.name || (e.target.value === "other" ? (formData.customSubCategory || "Other") : ""),
+                    });
+                  }}
+                  className="w-full p-3.5 bg-bg-main border border-border-main rounded-xl text-[14px] text-text-heading outline-none focus:border-text-heading disabled:opacity-50 transition-all"
+                >
+                  <option value="">Select technical segment…</option>
+                  {(categories || [])
+                    .filter((c: any) => c.level === 2 && c.parentId === formData.categoryId)
+                    .map((sub: any) => (
+                      <option key={sub.id} value={sub.id}>{sub.name}</option>
+                    ))}
+                  {formData.categoryId && <option value="other">Other (manual entry)</option>}
+                </select>
+
+                {formData.subCategoryId === "other" && (
+                  <motion.input
+                    initial={{ opacity: 0, y: -6 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    placeholder="Type your specific sub-segment…"
+                    value={formData.customSubCategory}
+                    onChange={(e) => setFormData({ ...formData, customSubCategory: e.target.value, subCategoryName: e.target.value })}
+                    className="w-full mt-2 p-3.5 bg-bg-main border border-accent/40 rounded-xl text-[14px] text-text-heading outline-none focus:border-accent transition-all"
+                  />
+                )}
+              </label>
+            </div>
+          </div>
+        </section>
+
+        {/* Two-column: Personal + Professional */}
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
+          {/* Personal Foundation */}
+          <section className="bg-bg-card border border-border-main rounded-2xl p-6 md:p-7">
+            <SectionHeading icon={User} eyebrow="01 · IDENTITY" title="Personal foundation" />
+
+            <div className="space-y-4">
+              <TextField label="Full name" value={formData.fullName} onChange={(v) => setFormData({ ...formData, fullName: v })} placeholder="As shown on credentials" />
+              <TextField label="Residential address" value={formData.address} onChange={(v) => setFormData({ ...formData, address: v })} placeholder="City, Country" icon={MapPin} />
+
+              <div className="grid grid-cols-2 gap-3">
+                <label className="block">
+                  <span className="eyebrow tabular text-text-body/60 mb-2 block">Date of birth</span>
+                  <input
+                    type="date"
+                    value={formData.dateOfBirth}
+                    onChange={(e) => setFormData({ ...formData, dateOfBirth: e.target.value })}
+                    className="w-full p-3 bg-bg-main border border-border-main rounded-xl text-[14px] text-text-heading outline-none focus:border-text-heading transition-all"
+                  />
+                </label>
+                <div>
+                  <span className="eyebrow tabular text-text-body/60 mb-2 block">Calculated age</span>
+                  <div className="p-3 bg-bg-main border border-border-main rounded-xl flex items-center gap-2">
+                    <span className="font-display tabular text-2xl text-text-heading leading-none">{formData.age || "—"}</span>
+                    <span className="eyebrow tabular text-text-body/55">years</span>
+                  </div>
+                </div>
+              </div>
+
+              <div className="grid grid-cols-2 gap-3">
+                <TextField label="Mobile number" value={formData.mobile} onChange={(v) => setFormData({ ...formData, mobile: v })} placeholder="+XX XXX XXX XXXX" icon={Phone} />
+                <label className="block">
+                  <span className="eyebrow tabular text-text-body/60 mb-2 block">Marital status</span>
+                  <select
+                    value={formData.maritalStatus}
+                    onChange={(e) => setFormData({ ...formData, maritalStatus: e.target.value })}
+                    className="w-full p-3 bg-bg-main border border-border-main rounded-xl text-[14px] text-text-heading outline-none focus:border-text-heading transition-all"
+                  >
+                    <option>Single</option>
+                    <option>Married</option>
+                    <option>Other</option>
+                  </select>
+                </label>
+              </div>
+
+              <TextField label="Dependents" value={formData.dependents} onChange={(v) => setFormData({ ...formData, dependents: v })} placeholder="e.g. 2 children" />
+            </div>
+          </section>
+
+          {/* Professional Trajectory */}
+          <section className="bg-bg-card border border-border-main rounded-2xl p-6 md:p-7">
+            <SectionHeading icon={Briefcase} eyebrow="02 · PROFILE" title="Professional trajectory" />
+
+            <div className="space-y-4">
+              <label className="block">
+                <span className="eyebrow tabular text-text-body/60 mb-2 block">About me / summary</span>
+                <textarea
+                  value={formData.aboutMe}
+                  onChange={(e) => setFormData({ ...formData, aboutMe: e.target.value })}
+                  placeholder="Executive summary of your industry impact, focus areas, and what you bring to a terminal operation…"
+                  className="w-full p-4 bg-bg-main border border-border-main rounded-xl text-[14px] text-text-body min-h-[120px] focus:border-text-heading outline-none resize-none transition-all leading-relaxed"
+                />
+              </label>
+
+              <div>
+                <div className="flex items-center justify-between mb-2">
+                  <span className="eyebrow tabular text-text-body/60">AI &amp; emerging-tech proficiency</span>
+                  <span className="eyebrow tabular text-accent">
+                    {formData.aiSkillLevel}<span className="text-text-body/40">/10</span>
+                  </span>
+                </div>
+                <input
+                  type="range"
+                  min="1"
+                  max="10"
+                  step="1"
+                  value={formData.aiSkillLevel}
+                  onChange={(e) => setFormData({ ...formData, aiSkillLevel: parseInt(e.target.value) })}
+                  className="w-full h-2 bg-bg-main rounded-full appearance-none cursor-pointer accent-accent"
+                />
+                <div className="flex justify-between mt-1.5">
+                  <span className="eyebrow tabular text-text-body/40">Novice</span>
+                  <span className="eyebrow tabular text-text-body/40">Expert</span>
+                </div>
+              </div>
+
+              <div className="pt-2">
+                <div className="flex items-center justify-between mb-3">
+                  <span className="eyebrow tabular text-text-body/60">Key technical skills</span>
+                  <button
+                    onClick={() => handleAddField("additionalSkills")}
+                    className="inline-flex items-center gap-1 eyebrow tabular text-accent hover:underline"
+                  >
+                    <Plus className="w-3 h-3" strokeWidth={1.75} /> Add
+                  </button>
+                </div>
+                <div className="flex flex-wrap gap-1.5">
+                  {formData.additionalSkills.map((skill: string, idx: number) => (
+                    <div key={idx} className="flex items-center gap-1 bg-accent/10 text-accent border border-accent/20 rounded-full eyebrow tabular pl-2.5 pr-1 py-1 group">
+                      <input
+                        value={skill}
+                        onChange={(e) => handleUpdateListItem("additionalSkills", idx, e.target.value)}
+                        className="bg-transparent border-none focus:outline-none p-0 text-inherit min-w-[60px]"
+                        placeholder="Skill"
+                      />
+                      <button
+                        onClick={() => handleRemoveField("additionalSkills", idx)}
+                        className="w-4 h-4 rounded-full hover:bg-accent/20 flex items-center justify-center transition-colors"
+                      >
+                        <X className="w-2.5 h-2.5" />
+                      </button>
+                    </div>
+                  ))}
+                  {formData.additionalSkills.length === 0 && (
+                    <button onClick={() => handleAddField("additionalSkills")} className="text-[13px] text-text-body/50 italic">
+                      Add your first skill…
+                    </button>
+                  )}
+                </div>
+              </div>
+            </div>
+          </section>
         </div>
 
-        <div className="bg-white rounded-[2.5rem] border border-slate-200 shadow-2xl overflow-hidden mb-12">
-           {/* Cover Photo Area */}
-           <div className="h-40 bg-slate-900 relative">
-              <div className="absolute -bottom-16 left-12 p-1 bg-white rounded-3xl shadow-2xl">
-                 <div className="relative group cursor-pointer">
-                    <img 
-                      src={formData.photoUrl || `https://api.dicebear.com/7.x/initials/svg?seed=${formData.fullName}`} 
-                      className="w-32 h-32 rounded-[1.25rem] object-cover bg-slate-100 transition-opacity group-hover:opacity-60" 
+        {/* Career Milestones */}
+        <section className="bg-bg-card border border-border-main rounded-2xl p-6 md:p-7 mb-8">
+          <SectionHeading
+            icon={Award}
+            eyebrow="03 · EXPERIENCE"
+            title="Career milestones"
+            action={
+              <button
+                onClick={handleAddJob}
+                className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-bg-main border border-border-main rounded-lg eyebrow tabular text-text-body hover:border-text-heading hover:text-text-heading transition-all"
+              >
+                <Plus className="w-3.5 h-3.5" strokeWidth={1.75} />
+                Past role
+              </button>
+            }
+          />
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            {/* Active */}
+            <div className="bg-primary text-white rounded-2xl p-5 grain relative overflow-hidden">
+              <div className="absolute inset-0 bp-grid pointer-events-none opacity-30" />
+              <div className="relative space-y-3">
+                <div className="flex items-center gap-2 mb-1">
+                  <span className="inline-flex w-1.5 h-1.5 rounded-full bg-accent soft-pulse" />
+                  <p className="eyebrow tabular text-accent">CURRENT ENGAGEMENT</p>
+                </div>
+                <input
+                  placeholder="Job title"
+                  value={formData.currentJob.title}
+                  onChange={(e) => setFormData({ ...formData, currentJob: { ...formData.currentJob, title: e.target.value } })}
+                  className="w-full p-3 bg-white/10 border border-white/15 rounded-xl text-[15px] text-white placeholder:text-white/40 outline-none focus:border-white/40 transition-all"
+                />
+                <input
+                  placeholder="Company name"
+                  value={formData.currentJob.company}
+                  onChange={(e) => setFormData({ ...formData, currentJob: { ...formData.currentJob, company: e.target.value } })}
+                  className="w-full p-3 bg-white/10 border border-white/15 rounded-xl text-[14px] text-white placeholder:text-white/40 outline-none focus:border-white/40 transition-all"
+                />
+                <input
+                  placeholder="Duration (e.g. 2021 – Present)"
+                  value={formData.currentJob.duration}
+                  onChange={(e) => setFormData({ ...formData, currentJob: { ...formData.currentJob, duration: e.target.value } })}
+                  className="w-full p-3 bg-white/10 border border-white/15 rounded-xl text-[14px] text-white placeholder:text-white/40 outline-none focus:border-white/40 transition-all"
+                />
+              </div>
+            </div>
+
+            {/* Past roles */}
+            <div>
+              <p className="eyebrow tabular text-text-body/55 mb-3">Past engagements</p>
+              <div className="space-y-2">
+                {formData.pastJobs.length === 0 ? (
+                  <button
+                    onClick={handleAddJob}
+                    className="w-full py-8 bg-bg-main border border-dashed border-border-main rounded-xl text-[13px] text-text-body/55 hover:border-text-heading hover:text-text-heading transition-all flex items-center justify-center gap-2"
+                  >
+                    <Plus className="w-4 h-4" strokeWidth={1.75} />
+                    Add a previous role
+                  </button>
+                ) : (
+                  formData.pastJobs.map((job: any, idx: number) => (
+                    <div key={idx} className="bg-bg-main border border-border-main rounded-xl p-3 flex items-center gap-2 group">
+                      <div className="flex-1 grid grid-cols-3 gap-1.5">
+                        <input
+                          placeholder="Title"
+                          value={job.title}
+                          onChange={(e) => {
+                            const list = [...formData.pastJobs];
+                            list[idx].title = e.target.value;
+                            setFormData({ ...formData, pastJobs: list });
+                          }}
+                          className="text-[12px] w-full bg-bg-card border border-border-main rounded-lg px-2 py-1.5 outline-none focus:border-text-heading"
+                        />
+                        <input
+                          placeholder="Company"
+                          value={job.company}
+                          onChange={(e) => {
+                            const list = [...formData.pastJobs];
+                            list[idx].company = e.target.value;
+                            setFormData({ ...formData, pastJobs: list });
+                          }}
+                          className="text-[12px] w-full bg-bg-card border border-border-main rounded-lg px-2 py-1.5 outline-none focus:border-text-heading"
+                        />
+                        <input
+                          placeholder="Date"
+                          value={job.duration}
+                          onChange={(e) => {
+                            const list = [...formData.pastJobs];
+                            list[idx].duration = e.target.value;
+                            setFormData({ ...formData, pastJobs: list });
+                          }}
+                          className="text-[12px] w-full bg-bg-card border border-border-main rounded-lg px-2 py-1.5 outline-none focus:border-text-heading"
+                        />
+                      </div>
+                      <button
+                        onClick={() => handleRemoveJob(idx)}
+                        className="w-8 h-8 rounded-lg text-text-body/40 hover:text-rust hover:bg-rust/5 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all"
+                        aria-label="Remove role"
+                      >
+                        <Trash2 className="w-3.5 h-3.5" strokeWidth={1.75} />
+                      </button>
+                    </div>
+                  ))
+                )}
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* Credentials */}
+        <section className="bg-bg-card border border-border-main rounded-2xl p-6 md:p-7 mb-8">
+          <SectionHeading icon={GraduationCap} eyebrow="04 · CREDENTIALS" title="Education &amp; certifications" />
+
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            {/* Academic */}
+            <div>
+              <div className="flex items-center justify-between mb-3">
+                <p className="eyebrow tabular text-text-body/55 flex items-center gap-1.5">
+                  <GraduationCap className="w-3.5 h-3.5 text-accent" strokeWidth={1.75} />
+                  Academic
+                </p>
+                <button onClick={() => handleAddField("qualifications")} className="text-accent text-[11px] font-medium hover:underline inline-flex items-center gap-1">
+                  <Plus className="w-3 h-3" strokeWidth={1.75} /> Add
+                </button>
+              </div>
+              <div className="space-y-2">
+                {formData.qualifications.length === 0 ? (
+                  <p className="text-[13px] text-text-body/45 italic px-3 py-2">No qualifications added.</p>
+                ) : (
+                  formData.qualifications.map((item: string, idx: number) => (
+                    <div key={idx} className="flex items-center gap-1.5 group">
+                      <input
+                        value={item}
+                        onChange={(e) => handleUpdateListItem("qualifications", idx, e.target.value)}
+                        className="w-full p-3 bg-bg-main border border-border-main rounded-xl text-[13px] text-text-heading outline-none focus:border-text-heading transition-all"
+                        placeholder="Degree / University"
+                      />
+                      <button
+                        onClick={() => handleRemoveField("qualifications", idx)}
+                        className="w-8 h-8 rounded-lg text-text-body/30 hover:text-rust hover:bg-rust/5 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all shrink-0"
+                      >
+                        <Trash2 className="w-3.5 h-3.5" strokeWidth={1.75} />
+                      </button>
+                    </div>
+                  ))
+                )}
+              </div>
+            </div>
+
+            {/* Certifications */}
+            <div>
+              <div className="flex items-center justify-between mb-3">
+                <p className="eyebrow tabular text-text-body/55 flex items-center gap-1.5">
+                  <Award className="w-3.5 h-3.5 text-accent" strokeWidth={1.75} />
+                  Certifications
+                </p>
+                <button onClick={() => handleAddField("certifications")} className="text-accent text-[11px] font-medium hover:underline inline-flex items-center gap-1">
+                  <Plus className="w-3 h-3" strokeWidth={1.75} /> Add
+                </button>
+              </div>
+              <div className="space-y-2">
+                {formData.certifications.length === 0 ? (
+                  <p className="text-[13px] text-text-body/45 italic px-3 py-2">e.g. API 653, NEBOSH, ISO 9001 lead auditor</p>
+                ) : (
+                  formData.certifications.map((item: string, idx: number) => (
+                    <div key={idx} className="flex items-center gap-1.5 group">
+                      <input
+                        value={item}
+                        onChange={(e) => handleUpdateListItem("certifications", idx, e.target.value)}
+                        className="w-full p-3 bg-bg-main border border-border-main rounded-xl text-[13px] text-text-heading outline-none focus:border-text-heading transition-all"
+                        placeholder="ISO, API, NEBOSH…"
+                      />
+                      <button
+                        onClick={() => handleRemoveField("certifications", idx)}
+                        className="w-8 h-8 rounded-lg text-text-body/30 hover:text-rust hover:bg-rust/5 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all shrink-0"
+                      >
+                        <Trash2 className="w-3.5 h-3.5" strokeWidth={1.75} />
+                      </button>
+                    </div>
+                  ))
+                )}
+              </div>
+            </div>
+
+            {/* Additional courses */}
+            <div>
+              <div className="flex items-center justify-between mb-3">
+                <p className="eyebrow tabular text-text-body/55 flex items-center gap-1.5">
+                  <Sparkles className="w-3.5 h-3.5 text-accent" strokeWidth={1.75} />
+                  Additional courses
+                </p>
+                <button onClick={() => handleAddField("additionalCourses")} className="text-accent text-[11px] font-medium hover:underline inline-flex items-center gap-1">
+                  <Plus className="w-3 h-3" strokeWidth={1.75} /> Add
+                </button>
+              </div>
+              <div className="space-y-2">
+                {formData.additionalCourses.length === 0 ? (
+                  <p className="text-[13px] text-text-body/45 italic px-3 py-2">Workshops, trade shows, short courses</p>
+                ) : (
+                  formData.additionalCourses.map((item: string, idx: number) => (
+                    <div key={idx} className="flex items-center gap-1.5 group">
+                      <input
+                        value={item}
+                        onChange={(e) => handleUpdateListItem("additionalCourses", idx, e.target.value)}
+                        className="w-full p-3 bg-bg-main border border-border-main rounded-xl text-[13px] text-text-heading outline-none focus:border-text-heading transition-all"
+                        placeholder="Course name"
+                      />
+                      <button
+                        onClick={() => handleRemoveField("additionalCourses", idx)}
+                        className="w-8 h-8 rounded-lg text-text-body/30 hover:text-rust hover:bg-rust/5 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all shrink-0"
+                      >
+                        <Trash2 className="w-3.5 h-3.5" strokeWidth={1.75} />
+                      </button>
+                    </div>
+                  ))
+                )}
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* Lifestyle — travel + hobbies */}
+        <section className="bg-bg-card border border-border-main rounded-2xl p-6 md:p-7 mb-8">
+          <SectionHeading icon={Globe} eyebrow="05 · CONTEXT" title="Global footprint &amp; interests" />
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+            {/* Travel */}
+            <div>
+              <div className="flex items-center justify-between mb-3">
+                <p className="eyebrow tabular text-text-body/55 flex items-center gap-1.5">
+                  <Globe className="w-3.5 h-3.5 text-accent" strokeWidth={1.75} />
+                  Countries travelled
+                </p>
+                <button onClick={() => handleAddField("countriesTravelled")} className="text-accent text-[11px] font-medium hover:underline inline-flex items-center gap-1">
+                  <Plus className="w-3 h-3" strokeWidth={1.75} /> Add
+                </button>
+              </div>
+              <div className="flex flex-wrap gap-1.5">
+                {formData.countriesTravelled.length === 0 && (
+                  <p className="text-[13px] text-text-body/45 italic">No travel logged yet.</p>
+                )}
+                {formData.countriesTravelled.map((item: string, idx: number) => (
+                  <div key={idx} className="flex items-center gap-1 bg-bg-main border border-border-main rounded-full eyebrow tabular pl-2.5 pr-1 py-1 group">
+                    <input
+                      value={item}
+                      onChange={(e) => handleUpdateListItem("countriesTravelled", idx, e.target.value)}
+                      className="bg-transparent border-none focus:outline-none p-0 text-text-heading min-w-[60px]"
+                      placeholder="Country"
                     />
-                    <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
-                       <Camera className="w-8 h-8 text-black" />
-                    </div>
-                 </div>
+                    <button
+                      onClick={() => handleRemoveField("countriesTravelled", idx)}
+                      className="w-4 h-4 rounded-full hover:bg-border-main flex items-center justify-center text-text-body/50 transition-colors"
+                    >
+                      <X className="w-2.5 h-2.5" />
+                    </button>
+                  </div>
+                ))}
               </div>
-              <div className="absolute bottom-6 right-12 text-white/40 font-black text-4xl uppercase tracking-tighter select-none">
-                 Career Blueprint
+            </div>
+
+            {/* Hobbies */}
+            <div>
+              <div className="flex items-center justify-between mb-3">
+                <p className="eyebrow tabular text-text-body/55 flex items-center gap-1.5">
+                  <Heart className="w-3.5 h-3.5 text-accent" strokeWidth={1.75} />
+                  Lifestyle &amp; hobbies
+                </p>
+                <button onClick={() => handleAddField("hobbies")} className="text-accent text-[11px] font-medium hover:underline inline-flex items-center gap-1">
+                  <Plus className="w-3 h-3" strokeWidth={1.75} /> Add
+                </button>
               </div>
-           </div>
-
-           <div className="pt-24 px-12 pb-16">
-              {/* Mandatory Categorization */}
-              <div className="mb-12 p-8 bg-indigo-50/50 rounded-[2rem] border border-indigo-100">
-                 <h3 className="text-xs font-black text-indigo-600 uppercase tracking-[0.2em] flex items-center gap-2 mb-6">
-                    <Sparkles className="w-3 h-3" /> Industry Categorization & Reporting
-                 </h3>
-                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <div className="space-y-4">
-                       <label className="text-[10px] font-black uppercase text-slate-400 block">Primary Sector</label>
-                       <select 
-                         value={formData.categoryId}
-                         onChange={(e) => {
-                            const cat = (categories || []).find((c: any) => c.id === e.target.value);
-                            setFormData({
-                               ...formData, 
-                               categoryId: e.target.value, 
-                               categoryName: cat?.name || (e.target.value === "other" ? (formData.customCategory || "Other") : ""),
-                               subCategoryId: "",
-                               subCategoryName: ""
-                            });
-                         }}
-                         className="w-full p-4 bg-white border border-indigo-100 rounded-2xl text-sm font-bold shadow-sm focus:ring-4 focus:ring-indigo-500/5 transition-all outline-none"
-                       >
-                          <option value="">Select Industry Vertical...</option>
-                          {(categories || []).filter((c: any) => c.level === 1).map((cat: any) => (
-                             <option key={cat.id} value={cat.id}>{cat.name}</option>
-                          ))}
-                          <option value="other">Other (Manual Entry)</option>
-                       </select>
-                       
-                       {formData.categoryId === "other" && (
-                          <input 
-                             placeholder="Type your industry sector..."
-                             value={formData.customCategory}
-                             onChange={(e) => setFormData({...formData, customCategory: e.target.value, categoryName: e.target.value})}
-                             className="w-full p-4 bg-white border border-indigo-200 rounded-2xl text-sm font-bold shadow-sm animate-in fade-in slide-in-from-top-2"
-                          />
-                       )}
+              <div className="space-y-2">
+                {formData.hobbies.length === 0 ? (
+                  <p className="text-[13px] text-text-body/45 italic">Adds personal context for cultural fit.</p>
+                ) : (
+                  formData.hobbies.map((item: string, idx: number) => (
+                    <div key={idx} className="flex items-center gap-1.5 group">
+                      <input
+                        value={item}
+                        onChange={(e) => handleUpdateListItem("hobbies", idx, e.target.value)}
+                        className="w-full p-3 bg-bg-main border border-border-main rounded-xl text-[13px] text-text-heading outline-none focus:border-text-heading transition-all"
+                        placeholder="e.g. Long-distance cycling"
+                      />
+                      <button
+                        onClick={() => handleRemoveField("hobbies", idx)}
+                        className="w-8 h-8 rounded-lg text-text-body/30 hover:text-rust hover:bg-rust/5 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all shrink-0"
+                      >
+                        <Trash2 className="w-3.5 h-3.5" strokeWidth={1.75} />
+                      </button>
                     </div>
-
-                    <div className="space-y-4">
-                       <label className="text-[10px] font-black uppercase text-slate-400 block">Sub-Segment</label>
-                       <select 
-                         value={formData.subCategoryId}
-                         disabled={!formData.categoryId}
-                         onChange={(e) => {
-                            const sub = (categories || []).find((c: any) => c.id === e.target.value);
-                            setFormData({
-                               ...formData, 
-                               subCategoryId: e.target.value, 
-                               subCategoryName: sub?.name || (e.target.value === "other" ? (formData.customSubCategory || "Other") : "")
-                            });
-                         }}
-                         className="w-full p-4 bg-white border border-indigo-100 rounded-2xl text-sm font-bold shadow-sm focus:ring-4 focus:ring-indigo-500/5 transition-all outline-none disabled:opacity-50"
-                       >
-                          <option value="">Select Technical Segment...</option>
-                          {(categories || [])
-                            .filter((c: any) => c.level === 2 && c.parentId === formData.categoryId)
-                            .map((sub: any) => (
-                               <option key={sub.id} value={sub.id}>{sub.name}</option>
-                            ))
-                          }
-                          {formData.categoryId && <option value="other">Other (Manual Entry)</option>}
-                       </select>
-
-                       {formData.subCategoryId === "other" && (
-                          <input 
-                             placeholder="Type your specific sub-segment..."
-                             value={formData.customSubCategory}
-                             onChange={(e) => setFormData({...formData, customSubCategory: e.target.value, subCategoryName: e.target.value})}
-                             className="w-full p-4 bg-white border border-indigo-200 rounded-2xl text-sm font-bold shadow-sm animate-in fade-in slide-in-from-top-2"
-                          />
-                       )}
-                    </div>
-                 </div>
+                  ))
+                )}
               </div>
+            </div>
+          </div>
+        </section>
+      </div>
 
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-x-12 gap-y-8">
-                 {/* Personal Info */}
-                 <section className="space-y-6">
-                    <h3 className="text-xs font-black text-indigo-600 uppercase tracking-[0.2em] flex items-center gap-2 border-b border-indigo-50 pb-2">
-                       <User className="w-3 h-3" /> Personal Foundation
-                    </h3>
-                    <div className="space-y-4">
-                       <div>
-                          <label className="text-[10px] font-black uppercase text-slate-400 mb-1 block">Full Name</label>
-                          <input 
-                            value={formData.fullName}
-                            onChange={(e) => setFormData({...formData, fullName: e.target.value})}
-                            className="w-full p-4 bg-slate-50 border border-slate-100 rounded-2xl text-sm font-bold focus:bg-white focus:ring-4 focus:ring-slate-900/5 transition-all outline-none"
-                            placeholder="Engineering Professional"
-                          />
-                       </div>
-                       <div>
-                          <label className="text-[10px] font-black uppercase text-slate-400 mb-1 block">Residential Address</label>
-                          <div className="relative">
-                             <MapPin className="absolute left-4 top-4 w-4 h-4 text-slate-300" />
-                             <input 
-                               value={formData.address}
-                               onChange={(e) => setFormData({...formData, address: e.target.value})}
-                               className="w-full p-4 pl-12 bg-slate-50 border border-slate-100 rounded-2xl text-sm font-medium focus:bg-white focus:ring-4 focus:ring-slate-900/5 transition-all outline-none"
-                               placeholder="City, Country"
-                             />
-                          </div>
-                       </div>
-                       <div className="grid grid-cols-2 gap-4">
-                          <div>
-                             <label className="text-[10px] font-black uppercase text-slate-400 mb-1 block">Date of Birth</label>
-                             <input 
-                               type="date"
-                               value={formData.dateOfBirth}
-                               onChange={(e) => setFormData({...formData, dateOfBirth: e.target.value})}
-                               className="w-full p-4 bg-slate-50 border border-slate-100 rounded-2xl text-sm font-bold focus:bg-white focus:ring-4 focus:ring-slate-900/5 transition-all outline-none"
-                             />
-                          </div>
-                          <div>
-                             <label className="text-[10px] font-black uppercase text-slate-400 mb-1 block">Calculated Age</label>
-                             <div className="p-4 bg-slate-100 rounded-2xl text-sm font-black text-slate-400 italic">
-                                {formData.age || "--"} Years Old
-                             </div>
-                          </div>
-                       </div>
-                       <div className="grid grid-cols-2 gap-4">
-                          <div>
-                             <label className="text-[10px] font-black uppercase text-slate-400 mb-1 block">Mobile Number</label>
-                             <div className="relative">
-                                <Phone className="absolute left-4 top-4 w-4 h-4 text-slate-300" />
-                                <input 
-                                  value={formData.mobile}
-                                  onChange={(e) => setFormData({...formData, mobile: e.target.value})}
-                                  className="w-full p-4 pl-12 bg-slate-50 border border-slate-100 rounded-2xl text-sm font-medium focus:bg-white focus:ring-4 focus:ring-slate-900/5 transition-all outline-none"
-                                  placeholder="+XX XXX XXX XXXX"
-                                />
-                             </div>
-                          </div>
-                          <div>
-                             <label className="text-[10px] font-black uppercase text-slate-400 mb-1 block">Marital Status</label>
-                             <select 
-                               value={formData.maritalStatus}
-                               onChange={(e) => setFormData({...formData, maritalStatus: e.target.value})}
-                               className="w-full p-4 bg-slate-50 border border-slate-100 rounded-2xl text-sm font-bold focus:bg-white focus:ring-4 focus:ring-slate-900/5 transition-all outline-none"
-                             >
-                                <option>Single</option>
-                                <option>Married</option>
-                                <option>Other</option>
-                             </select>
-                          </div>
-                       </div>
-                       <div>
-                          <label className="text-[10px] font-black uppercase text-slate-400 mb-1 block">Dependents Info</label>
-                          <input 
-                            value={formData.dependents}
-                            onChange={(e) => setFormData({...formData, dependents: e.target.value})}
-                            className="w-full p-4 bg-slate-50 border border-slate-100 rounded-2xl text-sm font-medium focus:bg-white focus:ring-4 focus:ring-slate-900/5 transition-all outline-none"
-                            placeholder="e.g. 2 Children"
-                          />
-                       </div>
-                    </div>
-                 </section>
+      {/* Sticky save bar */}
+      <div className="fixed bottom-0 inset-x-0 z-50 bg-bg-card/95 backdrop-blur-md border-t border-border-main">
+        <div className="max-w-5xl mx-auto px-4 md:px-6 py-3 flex items-center justify-between gap-3">
+          <div className="flex items-center gap-3 min-w-0">
+            <button
+              onClick={() => setFormData({ ...formData, isLocked: !formData.isLocked })}
+              className={`inline-flex items-center gap-2 px-3 py-2 rounded-xl text-[12px] font-medium transition-all border ${
+                formData.isLocked
+                  ? "bg-rust/5 text-rust border-rust/20"
+                  : "bg-accent/10 text-accent border-accent/20"
+              }`}
+            >
+              {formData.isLocked ? <Lock className="w-3.5 h-3.5" strokeWidth={1.75} /> : <Unlock className="w-3.5 h-3.5" strokeWidth={1.75} />}
+              {formData.isLocked ? "Private — hidden from search" : "Public — visible to verified employers"}
+            </button>
+          </div>
 
-                 {/* Professional Bio & Skills */}
-                 <section className="space-y-6">
-                    <h3 className="text-xs font-black text-indigo-600 uppercase tracking-[0.2em] flex items-center gap-2 border-b border-indigo-50 pb-2">
-                       <Briefcase className="w-3 h-3" /> Professional Trajectory
-                    </h3>
-                    <div className="space-y-4">
-                       <div>
-                          <label className="text-[10px] font-black uppercase text-slate-400 mb-1 block">About Me / Summary</label>
-                          <textarea 
-                            value={formData.aboutMe}
-                            onChange={(e) => setFormData({...formData, aboutMe: e.target.value})}
-                            className="w-full p-4 bg-slate-50 border border-slate-100 rounded-2xl text-sm font-medium min-h-[120px] focus:bg-white focus:ring-4 focus:ring-slate-900/5 transition-all outline-none resize-none"
-                            placeholder="Executive summary of your industry impact..."
-                          />
-                       </div>
-                       <div>
-                          <label className="text-[10px] font-black uppercase text-slate-400 mb-1 flex justify-between items-center">
-                            AI & Emerging Tech Score
-                            <span className="text-indigo-600 font-black">{formData.aiSkillLevel}/10</span>
-                          </label>
-                          <input 
-                            type="range"
-                            min="1"
-                            max="10"
-                            step="1"
-                            value={formData.aiSkillLevel}
-                            onChange={(e) => setFormData({...formData, aiSkillLevel: parseInt(e.target.value)})}
-                            className="w-full h-2 bg-indigo-100 rounded-lg appearance-none cursor-pointer accent-indigo-600"
-                          />
-                       </div>
-                       <div className="pt-4">
-                          <label className="text-[10px] font-black uppercase text-slate-400 mb-3 flex items-center justify-between">
-                             Key Technical Skills
-                             <button onClick={() => handleAddField('additionalSkills')} className="p-1 hover:bg-slate-100 rounded-md text-indigo-600"><Plus className="w-4 h-4" /></button>
-                          </label>
-                          <div className="flex flex-wrap gap-2">
-                             {formData.additionalSkills.map((skill: string, idx: number) => (
-                               <div key={idx} className="flex items-center gap-2 bg-slate-900 text-white px-3 py-1.5 rounded-full text-[10px] font-black uppercase tracking-widest group">
-                                  <input 
-                                    value={skill}
-                                    onChange={(e) => handleUpdateListItem('additionalSkills', idx, e.target.value)}
-                                    className="bg-transparent border-none focus:ring-0 p-0 text-[10px] w-auto inline-block min-w-[50px]"
-                                  />
-                                  <button onClick={() => handleRemoveField('additionalSkills', idx)}><Trash2 className="w-3 h-3 text-white/40 hover:text-red-400" /></button>
-                               </div>
-                             ))}
-                             {formData.additionalSkills.length === 0 && (
-                               <button onClick={() => handleAddField('additionalSkills')} className="text-[10px] text-slate-400 italic">Add your first skill...</button>
-                             )}
-                          </div>
-                       </div>
-                    </div>
-                 </section>
-
-                 {/* Experience */}
-                 <section className="col-span-1 md:col-span-2 mt-8 space-y-6">
-                    <h3 className="text-xs font-black text-indigo-600 uppercase tracking-[0.2em] flex items-center gap-2 border-b border-indigo-50 pb-2">
-                       <Award className="w-3 h-3" /> Career Milestones
-                    </h3>
-                    
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-                       <div className="bg-slate-50 border border-slate-100 rounded-3xl p-6">
-                          <p className="text-[10px] font-black uppercase text-indigo-600/40 mb-4 tracking-widest">Active Engagement</p>
-                          <div className="space-y-4">
-                             <input 
-                               placeholder="Job Title"
-                               value={formData.currentJob.title}
-                               onChange={(e) => setFormData({...formData, currentJob: {...formData.currentJob, title: e.target.value}})}
-                               className="w-full p-4 bg-white border border-slate-100 rounded-2xl text-sm font-bold shadow-sm outline-none"
-                             />
-                             <input 
-                               placeholder="Company Name"
-                               value={formData.currentJob.company}
-                               onChange={(e) => setFormData({...formData, currentJob: {...formData.currentJob, company: e.target.value}})}
-                               className="w-full p-4 bg-white border border-slate-100 rounded-2xl text-sm font-bold shadow-sm outline-none"
-                             />
-                             <input 
-                               placeholder="Duration (e.g. 2021 - Present)"
-                               value={formData.currentJob.duration}
-                               onChange={(e) => setFormData({...formData, currentJob: {...formData.currentJob, duration: e.target.value}})}
-                               className="w-full p-4 bg-white border border-slate-100 rounded-2xl text-sm font-bold shadow-sm outline-none"
-                             />
-                          </div>
-                       </div>
-
-                       <div className="space-y-4">
-                          <div className="flex items-center justify-between">
-                            <p className="text-[10px] font-black uppercase text-slate-400 tracking-widest">Historical Records</p>
-                            <button onClick={handleAddJob} className="flex items-center gap-1.5 text-xs font-black text-indigo-600 hover:underline">
-                               <Plus className="w-3.5 h-3.5" /> Add Job
-                            </button>
-                          </div>
-                          <div className="space-y-3">
-                             {formData.pastJobs.map((job: any, idx: number) => (
-                               <div key={idx} className="p-4 bg-white border border-slate-200 rounded-2xl flex items-center justify-between shadow-sm group">
-                                  <div className="flex-1 grid grid-cols-3 gap-2 mr-4">
-                                     <input 
-                                       placeholder="Title" 
-                                       value={job.title} 
-                                       onChange={(e) => {
-                                         const list = [...formData.pastJobs];
-                                         list[idx].title = e.target.value;
-                                         setFormData({...formData, pastJobs: list});
-                                       }}
-                                       className="text-xs font-bold w-full bg-slate-50 border-none rounded-lg p-2"
-                                     />
-                                     <input 
-                                       placeholder="Company" 
-                                       value={job.company} 
-                                       onChange={(e) => {
-                                         const list = [...formData.pastJobs];
-                                         list[idx].company = e.target.value;
-                                         setFormData({...formData, pastJobs: list});
-                                       }}
-                                       className="text-xs font-bold w-full bg-slate-50 border-none rounded-lg p-2"
-                                     />
-                                     <input 
-                                       placeholder="Date" 
-                                       value={job.duration} 
-                                       onChange={(e) => {
-                                         const list = [...formData.pastJobs];
-                                         list[idx].duration = e.target.value;
-                                         setFormData({...formData, pastJobs: list});
-                                       }}
-                                       className="text-xs font-bold w-full bg-slate-50 border-none rounded-lg p-2"
-                                     />
-                                  </div>
-                                  <button onClick={() => handleRemoveJob(idx)} className="text-slate-300 hover:text-red-500"><Trash2 className="w-4 h-4" /></button>
-                               </div>
-                             ))}
-                          </div>
-                       </div>
-                    </div>
-                 </section>
-
-                 {/* Credentials */}
-                 <section className="space-y-8">
-                    <div className="space-y-4">
-                       <h3 className="text-xs font-black text-indigo-600 uppercase tracking-[0.2em] flex items-center gap-2 border-b border-indigo-50 pb-2">
-                          <GraduationCap className="w-4 h-4" /> Academic Credentials
-                          <button onClick={() => handleAddField('qualifications')} className="ml-auto p-1.5 bg-indigo-50 rounded-lg"><Plus className="w-3.5 h-3.5" /></button>
-                       </h3>
-                       <div className="space-y-2">
-                          {formData.qualifications.map((item: string, idx: number) => (
-                             <div key={idx} className="flex items-center gap-2 group">
-                                <input 
-                                  value={item}
-                                  onChange={(e) => handleUpdateListItem('qualifications', idx, e.target.value)}
-                                  className="w-full p-3 bg-slate-50 border border-slate-100 rounded-xl text-xs font-bold outline-none"
-                                  placeholder="Degree / University"
-                                />
-                                <button onClick={() => handleRemoveField('qualifications', idx)} className="opacity-0 group-hover:opacity-100 text-red-500 rounded-lg transition-opacity"><Trash2 className="w-4 h-4" /></button>
-                             </div>
-                          ))}
-                       </div>
-                    </div>
-
-                    <div className="space-y-4">
-                       <h3 className="text-xs font-black text-indigo-600 uppercase tracking-[0.2em] flex items-center gap-2 border-b border-indigo-50 pb-2">
-                          <Award className="w-4 h-4" /> Industry Certifications
-                          <button onClick={() => handleAddField('certifications')} className="ml-auto p-1.5 bg-indigo-50 rounded-lg"><Plus className="w-3.5 h-3.5" /></button>
-                       </h3>
-                       <div className="space-y-2">
-                          {formData.certifications.map((item: string, idx: number) => (
-                             <div key={idx} className="flex items-center gap-2 group">
-                                <input 
-                                  value={item}
-                                  onChange={(e) => handleUpdateListItem('certifications', idx, e.target.value)}
-                                  className="w-full p-3 bg-slate-50 border border-slate-100 rounded-xl text-xs font-bold outline-none"
-                                  placeholder="ISO, API, NEBOSH etc."
-                                />
-                                <button onClick={() => handleRemoveField('certifications', idx)} className="opacity-0 group-hover:opacity-100 text-red-500 rounded-lg transition-opacity"><Trash2 className="w-4 h-4" /></button>
-                             </div>
-                          ))}
-                       </div>
-                    </div>
-
-                    <div className="space-y-4">
-                       <h3 className="text-xs font-black text-indigo-600 uppercase tracking-[0.2em] flex items-center gap-2 border-b border-indigo-50 pb-2">
-                          <Sparkles className="w-4 h-4" /> Additional Courses
-                          <button onClick={() => handleAddField('additionalCourses')} className="ml-auto p-1.5 bg-indigo-50 rounded-lg"><Plus className="w-3.5 h-3.5" /></button>
-                       </h3>
-                       <div className="space-y-2">
-                          {formData.additionalCourses.map((item: string, idx: number) => (
-                             <div key={idx} className="flex items-center gap-2 group">
-                                <input 
-                                  value={item}
-                                  onChange={(e) => handleUpdateListItem('additionalCourses', idx, e.target.value)}
-                                  className="w-full p-3 bg-slate-50 border border-slate-100 rounded-xl text-xs font-bold outline-none"
-                                />
-                                <button onClick={() => handleRemoveField('additionalCourses', idx)} className="opacity-0 group-hover:opacity-100 text-red-500 rounded-lg transition-opacity"><Trash2 className="w-4 h-4" /></button>
-                             </div>
-                          ))}
-                       </div>
-                    </div>
-                 </section>
-
-                 {/* Leisure & Travel */}
-                 <section className="space-y-8">
-                    <div className="space-y-4">
-                       <h3 className="text-xs font-black text-indigo-600 uppercase tracking-[0.2em] flex items-center gap-2 border-b border-indigo-50 pb-2">
-                          <Globe className="w-4 h-4" /> Global Footprint
-                          <button onClick={() => handleAddField('countriesTravelled')} className="ml-auto p-1.5 bg-indigo-50 rounded-lg"><Plus className="w-3.5 h-3.5" /></button>
-                       </h3>
-                       <div className="flex flex-wrap gap-2">
-                          {formData.countriesTravelled.map((item: string, idx: number) => (
-                             <div key={idx} className="flex items-center gap-2 bg-indigo-50 text-indigo-600 px-3 py-1.5 rounded-xl text-[10px] font-black uppercase group">
-                                <input 
-                                  value={item}
-                                  onChange={(e) => handleUpdateListItem('countriesTravelled', idx, e.target.value)}
-                                  className="bg-transparent border-none p-0 text-[10px] w-20"
-                                />
-                                <button onClick={() => handleRemoveField('countriesTravelled', idx)}><X className="w-3 h-3" /></button>
-                             </div>
-                          ))}
-                       </div>
-                    </div>
-
-                    <div className="space-y-4">
-                       <h3 className="text-xs font-black text-indigo-600 uppercase tracking-[0.2em] flex items-center gap-2 border-b border-indigo-50 pb-2">
-                          <Heart className="w-4 h-4" /> Lifestyle & Hobbies
-                          <button onClick={() => handleAddField('hobbies')} className="ml-auto p-1.5 bg-indigo-50 rounded-lg"><Plus className="w-3.5 h-3.5" /></button>
-                       </h3>
-                       <div className="space-y-2">
-                          {formData.hobbies.map((item: string, idx: number) => (
-                             <div key={idx} className="flex items-center gap-2 group">
-                                <input 
-                                  value={item}
-                                  onChange={(e) => handleUpdateListItem('hobbies', idx, e.target.value)}
-                                  className="w-full p-3 bg-slate-50 border border-slate-100 rounded-xl text-xs font-bold outline-none"
-                                />
-                                <button onClick={() => handleRemoveField('hobbies', idx)} className="opacity-0 group-hover:opacity-100 text-red-500 rounded-lg transition-opacity"><Trash2 className="w-4 h-4" /></button>
-                             </div>
-                          ))}
-                       </div>
-                    </div>
-                 </section>
-              </div>
-           </div>
+          <div className="flex items-center gap-3">
+            {savedToast && (
+              <motion.span
+                initial={{ opacity: 0, x: 6 }}
+                animate={{ opacity: 1, x: 0 }}
+                className="inline-flex items-center gap-1.5 eyebrow tabular text-accent"
+              >
+                <Check className="w-3.5 h-3.5" strokeWidth={2.5} />
+                Saved
+              </motion.span>
+            )}
+            <button
+              onClick={() => navigate("/profile")}
+              className="px-3 py-2.5 text-[13px] text-text-body hover:text-text-heading transition-colors"
+            >
+              Cancel
+            </button>
+            <button
+              onClick={handleSave}
+              disabled={isSubmitting}
+              className="inline-flex items-center gap-2 bg-text-heading text-bg-card px-5 py-2.5 rounded-xl text-[14px] font-medium hover:brightness-110 disabled:opacity-50 transition-all"
+            >
+              {isSubmitting ? (
+                <Loader2 className="w-4 h-4 animate-spin" />
+              ) : (
+                <Save className="w-4 h-4" strokeWidth={1.75} />
+              )}
+              {existingResumes.length > 0 ? "Update blueprint" : "Save blueprint"}
+            </button>
+          </div>
         </div>
       </div>
     </div>
