@@ -325,21 +325,39 @@ export default function Admin() {
 
   const handleCreateEvent = async () => {
     if (!eventData.title || !eventData.date) return;
-    await createDocument("events", {
-      ...eventData,
-      organizerUid: user?.uid,
-      createdAt: serverTimestamp()
-    });
-    setEventData({ 
-      title:"", 
-      date:"", 
-      location:"", 
-      description:"", 
-      imageUrl:"", 
-      categoryIds: [], 
-      ctaText:"", 
-      ctaUrl:"" 
-    });
+    try {
+      // Strip empty-string fields so the payload only carries meaningful values.
+      // Empty arrays (categoryIds: []) are kept since the rule accepts them.
+      const payload: any = {
+        title: eventData.title,
+        date: eventData.date,
+        organizerUid: user?.uid,
+        createdAt: serverTimestamp(),
+      };
+      if (eventData.location?.trim()) payload.location = eventData.location.trim();
+      if (eventData.description?.trim()) payload.description = eventData.description.trim();
+      if (eventData.imageUrl?.trim()) payload.imageUrl = eventData.imageUrl.trim();
+      if (eventData.ctaText?.trim()) payload.ctaText = eventData.ctaText.trim();
+      if (eventData.ctaUrl?.trim()) payload.ctaUrl = eventData.ctaUrl.trim();
+      if (Array.isArray(eventData.categoryIds) && eventData.categoryIds.length > 0) {
+        payload.categoryIds = eventData.categoryIds;
+      }
+
+      await createDocument("events", payload);
+      setEventData({ 
+        title:"", 
+        date:"", 
+        location:"", 
+        description:"", 
+        imageUrl:"", 
+        categoryIds: [], 
+        ctaText:"", 
+        ctaUrl:"" 
+      });
+    } catch (err: any) {
+      console.error("Event create failed:", err);
+      alert(`Failed to save event: ${err?.message || "unknown error"}. Check that you are signed in as an admin and that the date is set.`);
+    }
   };
 
   const handleCreateSurvey = async () => {

@@ -126,11 +126,19 @@ service cloud.firestore {
              (!data.keys().contains('description') || data.description is string) &&
              (!data.keys().contains('location') || data.location is string) &&
              (!data.keys().contains('type') || data.type is string) &&
+             (!data.keys().contains('time') || data.time is string) &&
              (!data.keys().contains('categoryId') || data.categoryId is string) &&
              (!data.keys().contains('categoryName') || data.categoryName is string) &&
+             (!data.keys().contains('categoryIds') || data.categoryIds is list) &&
              (!data.keys().contains('image') || data.image is string) &&
+             (!data.keys().contains('imageUrl') || data.imageUrl is string) &&
+             (!data.keys().contains('ctaText') || data.ctaText is string) &&
+             (!data.keys().contains('ctaUrl') || data.ctaUrl is string) &&
+             (!data.keys().contains('companyId') || data.companyId is string) &&
+             (!data.keys().contains('companyName') || data.companyName is string) &&
+             (!data.keys().contains('companyLogo') || data.companyLogo is string) &&
              (!data.keys().contains('isFeatured') || data.isFeatured is bool) &&
-             (!data.keys().contains('createdAt') || data.createdAt == request.time);
+             (!data.keys().contains('createdAt') || data.createdAt is timestamp);
     }
 
     function isValidComment(data) {

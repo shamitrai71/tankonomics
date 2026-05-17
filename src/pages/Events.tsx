@@ -84,24 +84,44 @@ export default function Events() {
 
   const handleCreateEvent = async () => {
     if (!newEvent.title.trim() || !newEvent.date) return;
-    await createDocument("events", {
-      ...newEvent,
-      organizerUid: user?.uid,
-      createdAt: serverTimestamp(),
-    });
-    setNewEvent({
-      title: "",
-      description: "",
-      date: new Date().toISOString().split("T")[0],
-      time: "10:00",
-      location: "",
-      imageUrl: "",
-      categoryIds: [],
-      companyId: "",
-      companyName: "",
-      companyLogo: "",
-    });
-    setIsCreating(false);
+    try {
+      const payload: any = {
+        title: newEvent.title.trim(),
+        date: newEvent.date,
+        organizerUid: user?.uid,
+        createdAt: serverTimestamp(),
+      };
+      if (newEvent.time?.trim()) payload.time = newEvent.time;
+      if (newEvent.location?.trim()) payload.location = newEvent.location.trim();
+      if (newEvent.description?.trim()) payload.description = newEvent.description.trim();
+      if (newEvent.imageUrl?.trim()) payload.imageUrl = newEvent.imageUrl.trim();
+      if (Array.isArray(newEvent.categoryIds) && newEvent.categoryIds.length > 0) {
+        payload.categoryIds = newEvent.categoryIds;
+      }
+      if (newEvent.companyId) {
+        payload.companyId = newEvent.companyId;
+        payload.companyName = newEvent.companyName;
+        payload.companyLogo = newEvent.companyLogo;
+      }
+
+      await createDocument("events", payload);
+      setNewEvent({
+        title: "",
+        description: "",
+        date: new Date().toISOString().split("T")[0],
+        time: "10:00",
+        location: "",
+        imageUrl: "",
+        categoryIds: [],
+        companyId: "",
+        companyName: "",
+        companyLogo: "",
+      });
+      setIsCreating(false);
+    } catch (err: any) {
+      console.error("Event create failed:", err);
+      alert(`Failed to save event: ${err?.message || "unknown error"}.`);
+    }
   };
 
   const { data: events, loading } = useCollection<any>("events", [orderBy("date", "asc")]);
