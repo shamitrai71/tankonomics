@@ -67,7 +67,7 @@ import { uploadImage, isInlineImage, migrateDataUrlToStorage } from "../lib/uplo
 
 export default function GroupDetail() {
   const { groupId } = useParams<{ groupId: string }>();
-  const { user, profile } = useAuth();
+  const { user, profile, isAdmin: isPlatformAdmin } = useAuth();
   const navigate = useNavigate();
   const [group, setGroup] = useState<any>(null);
   const [loading, setLoading] = useState(true);
@@ -192,14 +192,23 @@ export default function GroupDetail() {
     const membership = members.find((m) => m.userUid === user.uid);
     setIsMember(membership?.status === "approved" || membership?.role === "creator");
     setIsPending(membership?.status === "pending");
-    setIsAdmin(membership?.role === "admin" || membership?.role === "creator");
-  }, [user, members]);
+    // Platform admins always have full management rights over any group,
+    // in addition to per-group creators and admins.
+    setIsAdmin(isPlatformAdmin || membership?.role === "admin" || membership?.role === "creator");
+  }, [user, members, isPlatformAdmin]);
 
   const handleJoin = async () => {
-    if (!user || !groupId || !profile?.companyId) return;
+    if (!user || !groupId) return;
+    // Platform admins can join without a verified company; everyone else needs one.
+    if (!isPlatformAdmin && !profile?.companyId) {
+      alert("Connect your profile to a verified company before joining a group.");
+      return;
+    }
     setJoining(true);
     try {
       const isPrivate = group.isPrivate;
+      // Admins are auto-approved even on private groups.
+      const autoApprove = isPlatformAdmin || !isPrivate;
       await setDoc(doc(db, "group_members", `${groupId}_${user.uid}`), {
         groupId,
         userUid: user.uid,
@@ -207,11 +216,11 @@ export default function GroupDetail() {
         userPhoto: profile?.photoURL || user.photoURL,
         userJobTitle: profile?.jobTitle || "",
         userCompany: profile?.company || "",
-        role: isPrivate ? "pending" : "member",
-        status: isPrivate ? "pending" : "approved",
+        role: autoApprove ? "member" : "pending",
+        status: autoApprove ? "approved" : "pending",
         joinedAt: serverTimestamp(),
       });
-      if (!isPrivate) {
+      if (autoApprove) {
         await updateDoc(doc(db, "groups", groupId), { memberCount: increment(1) });
       } else {
         alert("Your request to join this private group has been sent to the administrators.");
@@ -556,12 +565,12 @@ export default function GroupDetail() {
               ) : (
                 <button
                   onClick={handleJoin}
-                  disabled={joining || !profile?.companyId}
+                  disabled={joining || (!isPlatformAdmin && !profile?.companyId)}
                   className="inline-flex items-center gap-2 bg-text-heading text-bg-card px-5 py-2.5 rounded-xl text-[14px] font-medium hover:brightness-110 disabled:opacity-50 transition-all"
-                  title={!profile?.companyId ? "Connect your profile to a verified company first" : ""}
+                  title={!isPlatformAdmin && !profile?.companyId ? "Connect your profile to a verified company first" : ""}
                 >
                   {joining ? <Loader2 className="w-4 h-4 animate-spin" /> : <Plus className="w-4 h-4" strokeWidth={1.75} />}
-                  {group.isPrivate ? "Request to join" : "Join group"}
+                  {isPlatformAdmin || !group.isPrivate ? "Join group" : "Request to join"}
                 </button>
               )}
             </div>

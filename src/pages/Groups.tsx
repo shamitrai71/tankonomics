@@ -28,7 +28,7 @@ import { db } from "../firebase";
 import { collection, addDoc, serverTimestamp, setDoc, doc } from "firebase/firestore";
 
 export default function Groups() {
-  const { user, profile } = useAuth();
+  const { user, profile, isAdmin } = useAuth();
   const { data: groups, loading } = useCollection<any>("groups");
   const [searchTerm, setSearchTerm] = useState("");
   const [filterStatus, setFilterStatus] = useState<"all" | "public" | "private">("all");
@@ -43,11 +43,13 @@ export default function Groups() {
     coverUrl: "",
   });
 
-  const isConnectedToCompany = !!profile?.companyId;
+  // Admins always have full group-management rights. Other users must be
+  // connected to a verified company to create or join a group.
+  const canCreateGroup = isAdmin || !!profile?.companyId;
 
   const handleCreateGroup = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!user || !isConnectedToCompany || !newGroup.name) return;
+    if (!user || !canCreateGroup || !newGroup.name) return;
 
     setCreating(true);
     try {
@@ -61,7 +63,8 @@ export default function Groups() {
         creatorName: profile?.displayName || user.displayName,
         admins: [],
         memberCount: 1,
-        status: "pending",
+        // Admin-created groups are auto-approved; member submissions await review.
+        status: isAdmin ? "approved" : "pending",
         createdAt: serverTimestamp(),
       };
 
@@ -75,7 +78,9 @@ export default function Groups() {
 
       setShowCreateModal(false);
       setNewGroup({ name: "", description: "", isPrivate: false, iconUrl: "", coverUrl: "" });
-      alert("Group creation initiated. An administrator will review your request shortly.");
+      alert(isAdmin
+        ? "Group created and published."
+        : "Group creation initiated. An administrator will review your request shortly.");
     } catch (err) {
       console.error("Error creating group:", err);
     } finally {
@@ -296,7 +301,7 @@ export default function Groups() {
                 </button>
               </div>
 
-              {!isConnectedToCompany ? (
+              {!canCreateGroup ? (
                 <div className="p-6">
                   <div className="p-6 bg-rust/5 border border-rust/20 rounded-2xl flex flex-col items-center text-center">
                     <div className="w-12 h-12 bg-bg-card border border-border-main rounded-xl flex items-center justify-center mb-4 text-rust">

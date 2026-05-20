@@ -247,11 +247,14 @@ service cloud.firestore {
       return data.keys().hasAll(['name', 'creatorUid', 'createdAt']) &&
              data.name is string && data.name.size() <= 128 &&
              data.creatorUid == request.auth.uid &&
-             data.createdAt == request.time &&
+             data.createdAt is timestamp &&
              (!data.keys().contains('description') || data.description is string) &&
              (!data.keys().contains('iconUrl') || data.iconUrl is string) &&
              (!data.keys().contains('coverUrl') || data.coverUrl is string) &&
              (!data.keys().contains('admins') || data.admins is list) &&
+             (!data.keys().contains('creatorName') || data.creatorName is string) &&
+             (!data.keys().contains('memberCount') || data.memberCount is number) &&
+             (!data.keys().contains('status') || data.status in ['pending', 'approved', 'rejected']) &&
              (!data.keys().contains('isPrivate') || data.isPrivate is bool);
     }
 
@@ -277,8 +280,13 @@ service cloud.firestore {
       return data.keys().hasAll(['groupId', 'userUid', 'role', 'joinedAt']) &&
              data.groupId is string &&
              data.userUid is string &&
-             data.role in ['member', 'admin', 'creator'] &&
-             data.joinedAt == request.time;
+             data.role in ['member', 'admin', 'creator', 'pending'] &&
+             data.joinedAt is timestamp &&
+             (!data.keys().contains('status') || data.status in ['pending', 'approved', 'rejected']) &&
+             (!data.keys().contains('userName') || data.userName == null || data.userName is string) &&
+             (!data.keys().contains('userPhoto') || data.userPhoto == null || data.userPhoto is string) &&
+             (!data.keys().contains('userJobTitle') || data.userJobTitle == null || data.userJobTitle is string) &&
+             (!data.keys().contains('userCompany') || data.userCompany == null || data.userCompany is string);
     }
 
     function isValidForumTopic(data) {
@@ -408,12 +416,12 @@ service cloud.firestore {
 
     match /groups/{groupId} {
       allow read: if isSignedIn();
-      allow create: if isSignedIn() && isConnectedToCompany(request.auth.uid) && isValidGroup(incoming());
+      allow create: if isSignedIn() && (isAdmin() || isConnectedToCompany(request.auth.uid)) && isValidGroup(incoming());
       allow update: if isSignedIn() && (
                     ((isGroupAdmin(groupId) || isAdmin()) &&
                     isValidGroup(incoming()) &&
                     (!incoming().diff(existing()).affectedKeys().hasAny(['creatorUid', 'createdAt']))) ||
-                    (isConnectedToCompany(request.auth.uid) && 
+                    ((isAdmin() || isConnectedToCompany(request.auth.uid)) &&
                      incoming().diff(existing()).affectedKeys().hasOnly(['memberCount']) &&
                      (incoming().memberCount == existing().memberCount + 1 || incoming().memberCount == existing().memberCount - 1))
                   );
@@ -439,11 +447,10 @@ service cloud.firestore {
       // memberId is groupId + "_" + userUid
       allow read: if isSignedIn();
       allow create: if isSignedIn() && 
-                      isConnectedToCompany(request.auth.uid) && 
+                      (isAdmin() || isConnectedToCompany(request.auth.uid)) && 
                       isValidGroupMember(incoming()) &&
                       memberId == (incoming().groupId + "_" + incoming().userUid);
       allow update: if isSignedIn() && 
-                      isConnectedToCompany(request.auth.uid) &&
                       (isGroupAdmin(incoming().groupId) || isAdmin()) &&
                       isValidGroupMember(incoming());
       allow delete: if isSignedIn() && 
