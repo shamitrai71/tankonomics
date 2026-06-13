@@ -127,6 +127,8 @@ service cloud.firestore {
              (!data.keys().contains('location') || data.location is string) &&
              (!data.keys().contains('type') || data.type is string) &&
              (!data.keys().contains('time') || data.time is string) &&
+             (!data.keys().contains('endDate') || data.endDate is string) &&
+             (!data.keys().contains('endTime') || data.endTime is string) &&
              (!data.keys().contains('categoryId') || data.categoryId is string) &&
              (!data.keys().contains('categoryName') || data.categoryName is string) &&
              (!data.keys().contains('categoryIds') || data.categoryIds is list) &&

@@ -142,6 +142,9 @@ export default function Admin() {
   const [eventData, setEventData] = useState({ 
     title:"", 
     date:"", 
+    endDate:"",
+    time:"",
+    endTime:"",
     location:"", 
     description:"",
     imageUrl:"",
@@ -325,6 +328,13 @@ export default function Admin() {
 
   const handleCreateEvent = async () => {
     if (!eventData.title || !eventData.date) return;
+
+    // Reject inverted ranges before sending.
+    if (eventData.endDate && eventData.endDate < eventData.date) {
+      alert("End date cannot be earlier than the start date.");
+      return;
+    }
+
     try {
       // Strip empty-string fields so the payload only carries meaningful values.
       // Empty arrays (categoryIds: []) are kept since the rule accepts them.
@@ -334,6 +344,12 @@ export default function Admin() {
         organizerUid: user?.uid,
         createdAt: serverTimestamp(),
       };
+      // Only set endDate when it's a real multi-day span; same-day end = single-day event.
+      if (eventData.endDate && eventData.endDate !== eventData.date) {
+        payload.endDate = eventData.endDate;
+      }
+      if (eventData.time?.trim()) payload.time = eventData.time;
+      if (eventData.endTime?.trim()) payload.endTime = eventData.endTime;
       if (eventData.location?.trim()) payload.location = eventData.location.trim();
       if (eventData.description?.trim()) payload.description = eventData.description.trim();
       if (eventData.imageUrl?.trim()) payload.imageUrl = eventData.imageUrl.trim();
@@ -347,6 +363,9 @@ export default function Admin() {
       setEventData({ 
         title:"", 
         date:"", 
+        endDate:"",
+        time:"",
+        endTime:"",
         location:"", 
         description:"", 
         imageUrl:"", 
@@ -356,7 +375,12 @@ export default function Admin() {
       });
     } catch (err: any) {
       console.error("Event create failed:", err);
-      alert(`Failed to save event: ${err?.message || "unknown error"}. Check that you are signed in as an admin and that the date is set.`);
+      alert(
+        `Failed to save event: ${err?.message || "unknown error"}.\n\n` +
+        `Most likely cause: Firestore rules have not been deployed.\n` +
+        `Fix: run \`firebase deploy --only firestore:rules\` from the project root, ` +
+        `or paste the latest \`isValidEvent\` block into the Firebase Console → Firestore → Rules.`
+      );
     }
   };
 
@@ -2208,10 +2232,40 @@ const handleEditCompany = (company: any) => {
                 <h2 className="font-bold text-text-heading mb-4">Post Official Event</h2>
                 
                 <div>
-                  <label className="eyebrow tabular text-text-body/55 mb-1 block">Title & Date</label>
-                  <div className="space-y-2">
-                    <input placeholder="Event Title" value={eventData.title} onChange={(e) => setEventData({...eventData, title: e.target.value})} className="w-full p-3 bg-bg-main border border-border-main rounded-xl text-sm" />
-                    <input type="date" value={eventData.date} onChange={(e) => setEventData({...eventData, date: e.target.value})} className="w-full p-3 bg-bg-main border border-border-main rounded-xl text-sm" />
+                  <label className="eyebrow tabular text-text-body/55 mb-1 block">Title</label>
+                  <input placeholder="Event Title" value={eventData.title} onChange={(e) => setEventData({...eventData, title: e.target.value})} className="w-full p-3 bg-bg-main border border-border-main rounded-xl text-sm" />
+                </div>
+
+                <div>
+                  <label className="eyebrow tabular text-text-body/55 mb-1 block">Dates</label>
+                  <div className="grid grid-cols-2 gap-2">
+                    <div>
+                      <span className="text-[11px] text-text-body/55 mb-1 block">Start date</span>
+                      <input type="date" value={eventData.date} onChange={(e) => setEventData({...eventData, date: e.target.value})} className="w-full p-3 bg-bg-main border border-border-main rounded-xl text-sm" />
+                    </div>
+                    <div>
+                      <span className="text-[11px] text-text-body/55 mb-1 block">End date <span className="text-text-body/40">(opt.)</span></span>
+                      <input type="date" value={eventData.endDate} min={eventData.date || undefined} onChange={(e) => setEventData({...eventData, endDate: e.target.value})} className="w-full p-3 bg-bg-main border border-border-main rounded-xl text-sm" />
+                    </div>
+                  </div>
+                  {eventData.endDate && eventData.endDate !== eventData.date && (
+                    <p className="eyebrow tabular text-accent mt-2">
+                      Multi-day event · {Math.round((new Date(eventData.endDate).getTime() - new Date(eventData.date).getTime()) / 86400000) + 1} days
+                    </p>
+                  )}
+                </div>
+
+                <div>
+                  <label className="eyebrow tabular text-text-body/55 mb-1 block">Times <span className="text-text-body/40">(optional)</span></label>
+                  <div className="grid grid-cols-2 gap-2">
+                    <div>
+                      <span className="text-[11px] text-text-body/55 mb-1 block">Start</span>
+                      <input type="time" value={eventData.time} onChange={(e) => setEventData({...eventData, time: e.target.value})} className="w-full p-3 bg-bg-main border border-border-main rounded-xl text-sm" />
+                    </div>
+                    <div>
+                      <span className="text-[11px] text-text-body/55 mb-1 block">End</span>
+                      <input type="time" value={eventData.endTime} onChange={(e) => setEventData({...eventData, endTime: e.target.value})} className="w-full p-3 bg-bg-main border border-border-main rounded-xl text-sm" />
+                    </div>
                   </div>
                 </div>
 
@@ -2292,7 +2346,9 @@ const handleEditCompany = (company: any) => {
                       <div>
                         <p className="font-bold text-text-heading">{event.title}</p>
                         <p className="text-[10px] text-text-body/55 flex items-center gap-2">
-                          {event.date} • {event.location}
+                          {event.endDate && event.endDate !== event.date
+                            ? `${event.date} → ${event.endDate}`
+                            : event.date} • {event.location}
                           {event.categoryId && (
                             <span className="bg-accent/10 text-accent px-1.5 py-0.5 rounded ml-2">
                               {categories.find((c: any) => c.id === event.categoryId)?.name}

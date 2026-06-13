@@ -39,6 +39,7 @@ import {
   eachDayOfInterval,
   isSameMonth,
   isSameDay,
+  isSameYear,
   addMonths,
   subMonths,
   isWithinInterval,
@@ -49,6 +50,51 @@ import {
 import { motion, AnimatePresence } from "framer-motion";
 import { useState, useMemo, useEffect } from "react";
 import { CategorySelector } from "../components/CategorySelector";
+
+/**
+ * Format an event's date span for display.
+ * Single day → "Nov 2, 2026"
+ * Same month → "Nov 2–5, 2026"
+ * Same year → "Dec 30 – Jan 2, 2027"
+ * Cross-year → "Dec 30, 2026 – Jan 2, 2027"
+ */
+function formatEventRange(event: { date: string; endDate?: string }): {
+  shortLabel: string;
+  longLabel: string;
+  isMultiDay: boolean;
+  dayCount: number;
+} {
+  const start = new Date(event.date);
+  const end = event.endDate ? new Date(event.endDate) : start;
+  const isMultiDay = !isSameDay(start, end);
+  const dayCount = Math.round((end.getTime() - start.getTime()) / 86400000) + 1;
+
+  if (!isMultiDay) {
+    return { shortLabel: format(start, "MMM d"), longLabel: format(start, "MMM d, yyyy"), isMultiDay: false, dayCount: 1 };
+  }
+  if (isSameMonth(start, end) && isSameYear(start, end)) {
+    return {
+      shortLabel: `${format(start, "MMM d")}–${format(end, "d")}`,
+      longLabel: `${format(start, "MMM d")} – ${format(end, "d, yyyy")}`,
+      isMultiDay: true,
+      dayCount,
+    };
+  }
+  if (isSameYear(start, end)) {
+    return {
+      shortLabel: `${format(start, "MMM d")} – ${format(end, "MMM d")}`,
+      longLabel: `${format(start, "MMM d")} – ${format(end, "MMM d, yyyy")}`,
+      isMultiDay: true,
+      dayCount,
+    };
+  }
+  return {
+    shortLabel: `${format(start, "MMM d, yyyy")} – ${format(end, "MMM d, yyyy")}`,
+    longLabel: `${format(start, "MMM d, yyyy")} – ${format(end, "MMM d, yyyy")}`,
+    isMultiDay: true,
+    dayCount,
+  };
+}
 
 export default function Events() {
   const { user, profile, isAdmin, isCompanyOwner, ownedCompanies } = useAuth();
@@ -62,7 +108,9 @@ export default function Events() {
     title: "",
     description: "",
     date: new Date().toISOString().split("T")[0],
+    endDate: "",
     time: "10:00",
+    endTime: "",
     location: "",
     imageUrl: "",
     categoryIds: [] as string[],
@@ -84,6 +132,12 @@ export default function Events() {
 
   const handleCreateEvent = async () => {
     if (!newEvent.title.trim() || !newEvent.date) return;
+
+    if (newEvent.endDate && newEvent.endDate < newEvent.date) {
+      alert("End date cannot be earlier than the start date.");
+      return;
+    }
+
     try {
       const payload: any = {
         title: newEvent.title.trim(),
@@ -91,7 +145,11 @@ export default function Events() {
         organizerUid: user?.uid,
         createdAt: serverTimestamp(),
       };
+      if (newEvent.endDate && newEvent.endDate !== newEvent.date) {
+        payload.endDate = newEvent.endDate;
+      }
       if (newEvent.time?.trim()) payload.time = newEvent.time;
+      if (newEvent.endTime?.trim()) payload.endTime = newEvent.endTime;
       if (newEvent.location?.trim()) payload.location = newEvent.location.trim();
       if (newEvent.description?.trim()) payload.description = newEvent.description.trim();
       if (newEvent.imageUrl?.trim()) payload.imageUrl = newEvent.imageUrl.trim();
@@ -109,7 +167,9 @@ export default function Events() {
         title: "",
         description: "",
         date: new Date().toISOString().split("T")[0],
+        endDate: "",
         time: "10:00",
+        endTime: "",
         location: "",
         imageUrl: "",
         categoryIds: [],
@@ -120,7 +180,11 @@ export default function Events() {
       setIsCreating(false);
     } catch (err: any) {
       console.error("Event create failed:", err);
-      alert(`Failed to save event: ${err?.message || "unknown error"}.`);
+      alert(
+        `Failed to save event: ${err?.message || "unknown error"}.\n\n` +
+        `If this is a permissions error, the Firestore rules likely haven't been deployed. ` +
+        `Run \`firebase deploy --only firestore:rules\` from the project root.`
+      );
     }
   };
 
@@ -209,7 +273,13 @@ export default function Events() {
     const details = encodeURIComponent(event.description || "");
     const location = encodeURIComponent(event.location || "");
     const start = format(new Date(event.date), "yyyyMMdd'T'HHmmss");
-    const end = format(new Date(new Date(event.date).getTime() + 2 * 60 * 60 * 1000), "yyyyMMdd'T'HHmmss");
+    // For multi-day events, end is the start of the day AFTER the last day
+    // (Google's convention for all-day spans). For single-day, default to +2hr.
+    const endBase = event.endDate ? new Date(event.endDate) : new Date(event.date);
+    const endDate = event.endDate
+      ? new Date(endBase.getTime() + 24 * 60 * 60 * 1000)
+      : new Date(endBase.getTime() + 2 * 60 * 60 * 1000);
+    const end = format(endDate, "yyyyMMdd'T'HHmmss");
     return `https://www.google.com/calendar/render?action=TEMPLATE&text=${title}&details=${details}&location=${location}&dates=${start}/${end}`;
   };
 
@@ -229,7 +299,15 @@ export default function Events() {
     }
   };
 
-  const dayEvents = (day: Date) => events.filter((e) => isSameDay(new Date(e.date), day));
+  const dayEvents = (day: Date) =>
+    events.filter((e) => {
+      const start = new Date(e.date);
+      const end = e.endDate ? new Date(e.endDate) : start;
+      const dayStart = new Date(day.getFullYear(), day.getMonth(), day.getDate());
+      const startDay = new Date(start.getFullYear(), start.getMonth(), start.getDate());
+      const endDay = new Date(end.getFullYear(), end.getMonth(), end.getDate());
+      return dayStart >= startDay && dayStart <= endDay;
+    });
 
   const dateFilters = [
     { id: "all", label: "All sessions", icon: CalendarDays },
@@ -323,7 +401,7 @@ export default function Events() {
 
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                       <label className="block">
-                        <span className="eyebrow tabular text-text-body/60 mb-2 block">Date</span>
+                        <span className="eyebrow tabular text-text-body/60 mb-2 block">Start date</span>
                         <input
                           type="date"
                           value={newEvent.date}
@@ -332,11 +410,49 @@ export default function Events() {
                         />
                       </label>
                       <label className="block">
-                        <span className="eyebrow tabular text-text-body/60 mb-2 block">Time</span>
+                        <span className="eyebrow tabular text-text-body/60 mb-2 block">
+                          End date <span className="text-text-body/40 normal-case tracking-normal">(optional)</span>
+                        </span>
+                        <input
+                          type="date"
+                          value={newEvent.endDate}
+                          min={newEvent.date || undefined}
+                          onChange={(e) => setNewEvent({ ...newEvent, endDate: e.target.value })}
+                          className="w-full px-4 py-3 bg-bg-main border border-border-main rounded-xl text-[14px] text-text-heading outline-none focus:border-text-heading transition-all"
+                        />
+                      </label>
+                    </div>
+
+                    {newEvent.endDate && newEvent.endDate !== newEvent.date && (
+                      <div className="px-4 py-2 bg-accent/10 border border-accent/20 rounded-xl">
+                        <p className="eyebrow tabular text-accent">
+                          Multi-day session ·{" "}
+                          {Math.round(
+                            (new Date(newEvent.endDate).getTime() - new Date(newEvent.date).getTime()) / 86400000
+                          ) + 1}{" "}
+                          days
+                        </p>
+                      </div>
+                    )}
+
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                      <label className="block">
+                        <span className="eyebrow tabular text-text-body/60 mb-2 block">Start time</span>
                         <input
                           type="time"
                           value={newEvent.time}
                           onChange={(e) => setNewEvent({ ...newEvent, time: e.target.value })}
+                          className="w-full px-4 py-3 bg-bg-main border border-border-main rounded-xl text-[14px] text-text-heading outline-none focus:border-text-heading transition-all"
+                        />
+                      </label>
+                      <label className="block">
+                        <span className="eyebrow tabular text-text-body/60 mb-2 block">
+                          End time <span className="text-text-body/40 normal-case tracking-normal">(optional)</span>
+                        </span>
+                        <input
+                          type="time"
+                          value={newEvent.endTime}
+                          onChange={(e) => setNewEvent({ ...newEvent, endTime: e.target.value })}
                           className="w-full px-4 py-3 bg-bg-main border border-border-main rounded-xl text-[14px] text-text-heading outline-none focus:border-text-heading transition-all"
                         />
                       </label>
@@ -452,6 +568,7 @@ export default function Events() {
                   {filteredEvents.map((event: any) => {
                     const eventDate = new Date(event.date);
                     const reminded = isReminded(event.id);
+                    const range = formatEventRange(event);
                     return (
                       <motion.div
                         key={event.id}
@@ -461,9 +578,12 @@ export default function Events() {
                         className="bg-bg-card border border-border-main rounded-2xl p-5 hover:border-text-heading transition-all cursor-pointer group flex gap-5 items-start"
                       >
                         {/* Date plinth */}
-                        <div className="w-16 h-16 bg-bg-main border border-border-main rounded-xl flex flex-col items-center justify-center shrink-0">
+                        <div className="w-16 bg-bg-main border border-border-main rounded-xl flex flex-col items-center justify-center shrink-0 py-2">
                           <span className="eyebrow tabular text-text-body/55">{format(eventDate, "MMM")}</span>
                           <span className="font-display text-3xl text-text-heading leading-none tabular">{format(eventDate, "dd")}</span>
+                          {range.isMultiDay && (
+                            <span className="eyebrow tabular text-accent mt-1">+{range.dayCount - 1}d</span>
+                          )}
                         </div>
 
                         <div className="flex-1 min-w-0">
@@ -472,6 +592,12 @@ export default function Events() {
                               <Mic className="w-2.5 h-2.5" strokeWidth={1.75} />
                               Session
                             </span>
+                            {range.isMultiDay && (
+                              <span className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded eyebrow tabular bg-accent/10 text-accent border border-accent/20">
+                                <CalendarDays className="w-2.5 h-2.5" strokeWidth={2} />
+                                {range.shortLabel}
+                              </span>
+                            )}
                             {isAttending(event.id) && (
                               <span className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded eyebrow tabular bg-accent/10 text-accent border border-accent/20">
                                 <CheckCircle2 className="w-2.5 h-2.5" strokeWidth={2} />
@@ -485,7 +611,8 @@ export default function Events() {
                           <div className="flex items-center gap-4 mt-2 flex-wrap">
                             <span className="eyebrow tabular text-text-body/55 inline-flex items-center gap-1.5">
                               <Clock className="w-3 h-3" strokeWidth={1.75} />
-                              {format(eventDate, "HH:mm")} · {format(eventDate, "EEE")}
+                              {event.time || format(eventDate, "HH:mm")} · {format(eventDate, "EEE")}
+                              {event.endTime && ` – ${event.endTime}`}
                             </span>
                             {event.location && (
                               <span className="eyebrow tabular text-text-body/55 inline-flex items-center gap-1.5">
@@ -707,22 +834,33 @@ export default function Events() {
               </div>
 
               <div className="p-6 overflow-y-auto">
-                <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 mb-6">
-                  <div className="p-3 bg-bg-main border border-border-main rounded-xl">
-                    <p className="eyebrow tabular text-text-body/55 mb-1">Date</p>
-                    <p className="text-[14px] font-medium text-text-heading">{format(new Date(selectedEvent.date), "MMM dd, yyyy")}</p>
-                  </div>
-                  <div className="p-3 bg-bg-main border border-border-main rounded-xl">
-                    <p className="eyebrow tabular text-text-body/55 mb-1">Time</p>
-                    <p className="text-[14px] font-medium text-text-heading">{format(new Date(selectedEvent.date), "HH:mm")}</p>
-                  </div>
-                  <div className="p-3 bg-bg-main border border-border-main rounded-xl">
-                    <p className="eyebrow tabular text-text-body/55 mb-1">Attending</p>
-                    <p className="text-[14px] font-medium text-text-heading">
-                      <span className="font-display tabular text-2xl">{attendeeCount(selectedEvent.id)}</span> registered
-                    </p>
-                  </div>
-                </div>
+                {(() => {
+                  const range = formatEventRange(selectedEvent);
+                  return (
+                    <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 mb-6">
+                      <div className="p-3 bg-bg-main border border-border-main rounded-xl">
+                        <p className="eyebrow tabular text-text-body/55 mb-1">{range.isMultiDay ? "Dates" : "Date"}</p>
+                        <p className="text-[14px] font-medium text-text-heading">{range.longLabel}</p>
+                        {range.isMultiDay && (
+                          <p className="eyebrow tabular text-accent mt-1">{range.dayCount} days</p>
+                        )}
+                      </div>
+                      <div className="p-3 bg-bg-main border border-border-main rounded-xl">
+                        <p className="eyebrow tabular text-text-body/55 mb-1">Time</p>
+                        <p className="text-[14px] font-medium text-text-heading">
+                          {selectedEvent.time || format(new Date(selectedEvent.date), "HH:mm")}
+                          {selectedEvent.endTime && <span className="text-text-body/55"> – {selectedEvent.endTime}</span>}
+                        </p>
+                      </div>
+                      <div className="p-3 bg-bg-main border border-border-main rounded-xl">
+                        <p className="eyebrow tabular text-text-body/55 mb-1">Attending</p>
+                        <p className="text-[14px] font-medium text-text-heading">
+                          <span className="font-display tabular text-2xl">{attendeeCount(selectedEvent.id)}</span> registered
+                        </p>
+                      </div>
+                    </div>
+                  );
+                })()}
 
                 {selectedEvent.location && (
                   <div className="mb-5 px-4 py-3 bg-bg-main border border-border-main rounded-xl flex items-start gap-3">
