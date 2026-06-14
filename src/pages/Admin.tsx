@@ -329,6 +329,15 @@ export default function Admin() {
   const handleCreateEvent = async () => {
     if (!eventData.title || !eventData.date) return;
 
+    // organizerUid MUST equal request.auth.uid in the rules. Use the live
+    // auth user as the source of truth (not the React context, which can be
+    // stale). Abort clearly if there's no signed-in user.
+    const uid = auth.currentUser?.uid;
+    if (!uid) {
+      alert("Your session has expired. Please reload the page and sign in again.");
+      return;
+    }
+
     // Reject inverted ranges before sending.
     if (eventData.endDate && eventData.endDate < eventData.date) {
       alert("End date cannot be earlier than the start date.");
@@ -337,36 +346,30 @@ export default function Admin() {
 
     try {
       // Strip empty-string fields so the payload only carries meaningful values.
-      // Empty arrays (categoryIds: []) are kept since the rule accepts them.
       const payload: any = {
-        title: eventData.title,
-        date: eventData.date,
-        organizerUid: user?.uid,
+        title: String(eventData.title).trim(),
+        date: String(eventData.date),
+        organizerUid: uid,
         createdAt: serverTimestamp(),
       };
       // Only set endDate when it's a real multi-day span; same-day end = single-day event.
       if (eventData.endDate && eventData.endDate !== eventData.date) {
-        payload.endDate = eventData.endDate;
+        payload.endDate = String(eventData.endDate);
       }
-      if (eventData.time?.trim()) payload.time = eventData.time;
-      if (eventData.endTime?.trim()) payload.endTime = eventData.endTime;
+      if (eventData.time?.trim()) payload.time = eventData.time.trim();
+      if (eventData.endTime?.trim()) payload.endTime = eventData.endTime.trim();
       if (eventData.location?.trim()) payload.location = eventData.location.trim();
       if (eventData.description?.trim()) payload.description = eventData.description.trim();
       if (eventData.imageUrl?.trim()) payload.imageUrl = eventData.imageUrl.trim();
       if (eventData.ctaText?.trim()) payload.ctaText = eventData.ctaText.trim();
       if (eventData.ctaUrl?.trim()) payload.ctaUrl = eventData.ctaUrl.trim();
-      if (Array.isArray(eventData.categoryIds) && eventData.categoryIds.length > 0) {
-        payload.categoryIds = eventData.categoryIds;
+      // Coerce categoryIds to a clean array of non-empty strings, or omit it.
+      if (Array.isArray(eventData.categoryIds)) {
+        const cleanCats = eventData.categoryIds
+          .filter((c: any) => typeof c === "string" && c.trim().length > 0)
+          .map((c: string) => c.trim());
+        if (cleanCats.length > 0) payload.categoryIds = cleanCats;
       }
-
-      // --- DIAGNOSTIC (temporary): print exactly what we're about to send ---
-      // Remove once event creation is confirmed working.
-      console.log("[event-create] BUILD MARKER 2026-06-14-A (if you don't see this, the new bundle isn't live — hard refresh / check Cloud Build)");
-      console.log("[event-create] auth.currentUser.uid =", auth.currentUser?.uid);
-      console.log("[event-create] payload.organizerUid  =", payload.organizerUid);
-      console.log("[event-create] uid match =", auth.currentUser?.uid === payload.organizerUid);
-      console.log("[event-create] payload keys =", Object.keys(payload));
-      console.log("[event-create] payload =", JSON.parse(JSON.stringify(payload)));
 
       await createDocument("events", payload);
       setEventData({ 
@@ -382,13 +385,13 @@ export default function Admin() {
         ctaText:"", 
         ctaUrl:"" 
       });
+      alert("Event saved successfully.");
     } catch (err: any) {
       console.error("Event create failed:", err);
       alert(
         `Failed to save event: ${err?.message || "unknown error"}.\n\n` +
-        `Most likely cause: Firestore rules have not been deployed.\n` +
-        `Fix: run \`firebase deploy --only firestore:rules\` from the project root, ` +
-        `or paste the latest \`isValidEvent\` block into the Firebase Console → Firestore → Rules.`
+        `If this is a permissions error, confirm the Firestore rules are deployed ` +
+        `(Firebase Console → Firestore → Rules → Publish).`
       );
     }
   };
