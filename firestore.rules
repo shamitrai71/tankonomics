@@ -16,7 +16,11 @@ service cloud.firestore {
     }
 
     function isAdmin() {
-      return isSignedIn() && exists(/databases/$(database)/documents/admins/$(request.auth.uid));
+      return isSignedIn() && (
+        exists(/databases/$(database)/documents/admins/$(request.auth.uid)) ||
+        request.auth.token.email == "petrodeksystems@gmail.com" ||
+        request.auth.token.email == "esraigroup@gmail.com"
+      );
     }
 
     function isValidId(id) {
@@ -324,8 +328,8 @@ service cloud.firestore {
 
 
     function isConnectedToCompany(uid) {
-      let user = get(/databases/$(database)/documents/users/$(uid)).data;
-      return user.companyId != null && user.companyId != "";
+      return exists(/databases/$(database)/documents/users/$(uid)) &&
+             get(/databases/$(database)/documents/users/$(uid)).data.get('companyId', '') != '';
     }
 
     function isGroupAdmin(groupId) {

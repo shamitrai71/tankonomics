@@ -1359,16 +1359,22 @@ export default function App() {
           user.email != null &&
           SUPER_ADMIN_EMAILS.includes(user.email as any);
 
+        // Super-admin emails are admins regardless of whether the backing doc
+        // exists yet — the Firestore rules grant them access by email claim too,
+        // so the two sides agree. Best-effort create the doc for consistency,
+        // but don't gate admin status on the write succeeding.
         if (!adminSnap.exists() && isSuperAdminEmail) {
-          await setDoc(adminRef, {
-            email: user.email,
-            grantedAt: serverTimestamp(),
-            role: "super_admin"
-          });
-          setIsAdmin(true);
-        } else {
-          setIsAdmin(adminSnap.exists());
+          try {
+            await setDoc(adminRef, {
+              email: user.email,
+              grantedAt: serverTimestamp(),
+              role: "super_admin"
+            });
+          } catch (e) {
+            console.warn("admins/{uid} auto-create skipped:", e);
+          }
         }
+        setIsAdmin(adminSnap.exists() || isSuperAdminEmail);
 
         // Owned-companies live listener. Safe to start at any time.
         companiesUnsub = onSnapshot(
