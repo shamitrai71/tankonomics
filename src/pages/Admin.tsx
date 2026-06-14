@@ -43,7 +43,7 @@ import axios from "axios";
 import { createDocument, useCollection, removeDocument, updateDocument } from "../hooks/useFirestore";
 import { useAuth, useTheme } from "../App";
 import { orderBy, serverTimestamp, doc, getDoc, setDoc } from "firebase/firestore";
-import { db } from "../firebase";
+import { db, auth } from "../firebase";
 import { format, subDays, isWithinInterval, startOfDay, endOfDay } from "date-fns";
 import { motion, AnimatePresence } from "framer-motion";
 import { 
@@ -358,6 +358,15 @@ export default function Admin() {
       if (Array.isArray(eventData.categoryIds) && eventData.categoryIds.length > 0) {
         payload.categoryIds = eventData.categoryIds;
       }
+
+      // --- DIAGNOSTIC (temporary): print exactly what we're about to send ---
+      // Remove once event creation is confirmed working.
+      console.log("[event-create] BUILD MARKER 2026-06-14-A (if you don't see this, the new bundle isn't live — hard refresh / check Cloud Build)");
+      console.log("[event-create] auth.currentUser.uid =", auth.currentUser?.uid);
+      console.log("[event-create] payload.organizerUid  =", payload.organizerUid);
+      console.log("[event-create] uid match =", auth.currentUser?.uid === payload.organizerUid);
+      console.log("[event-create] payload keys =", Object.keys(payload));
+      console.log("[event-create] payload =", JSON.parse(JSON.stringify(payload)));
 
       await createDocument("events", payload);
       setEventData({ 
