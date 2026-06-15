@@ -8,6 +8,7 @@ import {
   Check, 
   AlertCircle, 
   Trash2, 
+  Edit, 
   Users, 
   Calendar, 
   MessageSquare, 
@@ -152,6 +153,7 @@ export default function Admin() {
     ctaText:"",
     ctaUrl:""
   });
+  const [editingEventId, setEditingEventId] = useState<string | null>(null);
   const { data: events, loading: loadingEvents } = useCollection<any>("events", [orderBy("date", "asc")]);
 
   // Survey State
@@ -326,6 +328,33 @@ export default function Admin() {
     setForumCategoryIds([]);
   };
 
+  const startEditEvent = (event: any) => {
+    setEditingEventId(event.id);
+    setEventData({
+      title: event.title || "",
+      date: event.date || "",
+      endDate: event.endDate || "",
+      time: event.time || "",
+      endTime: event.endTime || "",
+      location: event.location || "",
+      description: event.description || "",
+      imageUrl: event.imageUrl || event.image || "",
+      categoryIds: Array.isArray(event.categoryIds) ? event.categoryIds : [],
+      ctaText: event.ctaText || "",
+      ctaUrl: event.ctaUrl || "",
+    });
+    // Scroll the form into view for convenience
+    if (typeof window !== "undefined") window.scrollTo({ top: 0, behavior: "smooth" });
+  };
+
+  const cancelEditEvent = () => {
+    setEditingEventId(null);
+    setEventData({
+      title:"", date:"", endDate:"", time:"", endTime:"",
+      location:"", description:"", imageUrl:"", categoryIds: [], ctaText:"", ctaUrl:""
+    });
+  };
+
   const handleCreateEvent = async () => {
     if (!eventData.title || !eventData.date) return;
 
@@ -345,49 +374,55 @@ export default function Admin() {
     }
 
     try {
-      // Strip empty-string fields so the payload only carries meaningful values.
-      const payload: any = {
+      // Build the field set common to create and update. We do NOT include
+      // organizerUid/createdAt here — on create we add them; on update we
+      // must not touch them (the original creator + timestamp stay intact).
+      const fields: any = {
         title: String(eventData.title).trim(),
         date: String(eventData.date),
-        organizerUid: uid,
-        createdAt: serverTimestamp(),
       };
-      // Only set endDate when it's a real multi-day span; same-day end = single-day event.
+      // endDate: set when multi-day, otherwise explicitly clear it on update.
       if (eventData.endDate && eventData.endDate !== eventData.date) {
-        payload.endDate = String(eventData.endDate);
+        fields.endDate = String(eventData.endDate);
+      } else if (editingEventId) {
+        fields.endDate = null; // clear any previous multi-day span
       }
-      if (eventData.time?.trim()) payload.time = eventData.time.trim();
-      if (eventData.endTime?.trim()) payload.endTime = eventData.endTime.trim();
-      if (eventData.location?.trim()) payload.location = eventData.location.trim();
-      if (eventData.description?.trim()) payload.description = eventData.description.trim();
-      if (eventData.imageUrl?.trim()) payload.imageUrl = eventData.imageUrl.trim();
-      if (eventData.ctaText?.trim()) payload.ctaText = eventData.ctaText.trim();
-      if (eventData.ctaUrl?.trim()) payload.ctaUrl = eventData.ctaUrl.trim();
-      // Coerce categoryIds to a clean array of non-empty strings, or omit it.
-      if (Array.isArray(eventData.categoryIds)) {
-        const cleanCats = eventData.categoryIds
-          .filter((c: any) => typeof c === "string" && c.trim().length > 0)
-          .map((c: string) => c.trim());
-        if (cleanCats.length > 0) payload.categoryIds = cleanCats;
+      fields.time = eventData.time?.trim() || null;
+      fields.endTime = eventData.endTime?.trim() || null;
+      fields.location = eventData.location?.trim() || null;
+      fields.description = eventData.description?.trim() || null;
+      fields.imageUrl = eventData.imageUrl?.trim() || null;
+      fields.ctaText = eventData.ctaText?.trim() || null;
+      fields.ctaUrl = eventData.ctaUrl?.trim() || null;
+      // Coerce categoryIds to a clean array of non-empty strings.
+      const cleanCats = Array.isArray(eventData.categoryIds)
+        ? eventData.categoryIds.filter((c: any) => typeof c === "string" && c.trim().length > 0).map((c: string) => c.trim())
+        : [];
+      fields.categoryIds = cleanCats;
+
+      if (editingEventId) {
+        // UPDATE existing event. updateDocument injects updatedAt.
+        await updateDocument("events", editingEventId, fields);
+        alert("Event updated successfully.");
+      } else {
+        // CREATE new event.
+        const payload: any = {
+          ...fields,
+          organizerUid: uid,
+          createdAt: serverTimestamp(),
+        };
+        // On create, drop null fields so the document stays tidy.
+        Object.keys(payload).forEach((k) => {
+          if (payload[k] === null) delete payload[k];
+          if (k === "categoryIds" && payload[k]?.length === 0) delete payload[k];
+        });
+        await createDocument("events", payload);
+        alert("Event saved successfully.");
       }
 
-      await createDocument("events", payload);
-      setEventData({ 
-        title:"", 
-        date:"", 
-        endDate:"",
-        time:"",
-        endTime:"",
-        location:"", 
-        description:"", 
-        imageUrl:"", 
-        categoryIds: [], 
-        ctaText:"", 
-        ctaUrl:"" 
-      });
-      alert("Event saved successfully.");
+      cancelEditEvent();
     } catch (err: any) {
-      console.error("Event create failed:", err);
+      console.error("Event save failed:", err);
       alert(
         `Failed to save event: ${err?.message || "unknown error"}.\n\n` +
         `If this is a permissions error, confirm the Firestore rules are deployed ` +
@@ -2241,8 +2276,14 @@ const handleEditCompany = (company: any) => {
           <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -10 }} key="events" className="grid grid-cols-1 lg:grid-cols-3 gap-8">
             <div className="lg:col-span-1">
               <div className="bg-bg-card p-6 rounded-2xl border border-border-main shadow-sm space-y-4">
-                <h2 className="font-bold text-text-heading mb-4">Post Official Event</h2>
-                
+                <div className="flex items-center justify-between mb-4">
+                  <h2 className="font-bold text-text-heading">{editingEventId ? "Edit Event" : "Post Official Event"}</h2>
+                  {editingEventId && (
+                    <button onClick={cancelEditEvent} className="eyebrow tabular text-text-body/55 hover:text-rust transition-colors">
+                      Cancel edit
+                    </button>
+                  )}
+                </div>
                 <div>
                   <label className="eyebrow tabular text-text-body/55 mb-1 block">Title</label>
                   <input placeholder="Event Title" value={eventData.title} onChange={(e) => setEventData({...eventData, title: e.target.value})} className="w-full p-3 bg-bg-main border border-border-main rounded-xl text-sm" />
@@ -2339,7 +2380,7 @@ const handleEditCompany = (company: any) => {
 
                 <textarea placeholder="Full Description..." value={eventData.description} onChange={(e) => setEventData({...eventData, description: e.target.value})} className="w-full p-3 bg-bg-main border border-border-main rounded-xl text-sm h-24 resize-none shadow-inner" />
                 <button onClick={handleCreateEvent} className="w-full bg-primary text-white font-medium py-4 rounded-xl hover:brightness-110 shadow-lg text-xs flex items-center justify-center gap-2">
-                  <Calendar className="w-4 h-4" /> Add to Calendar
+                  <Calendar className="w-4 h-4" /> {editingEventId ? "Update Event" : "Add to Calendar"}
                 </button>
               </div>
             </div>
@@ -2369,9 +2410,14 @@ const handleEditCompany = (company: any) => {
                         </p>
                       </div>
                     </div>
-                    <button onClick={() => removeDocument("events", event.id)} className="p-2 text-text-body/40 hover:text-rust transition-colors">
-                      <Trash2 className="w-4 h-4" />
-                    </button>
+                    <div className="flex items-center gap-1">
+                      <button onClick={() => startEditEvent(event)} className={`p-2 transition-colors ${editingEventId === event.id ? "text-accent" : "text-text-body/40 hover:text-accent"}`} title="Edit event">
+                        <Edit className="w-4 h-4" />
+                      </button>
+                      <button onClick={() => removeDocument("events", event.id)} className="p-2 text-text-body/40 hover:text-rust transition-colors" title="Delete event">
+                        <Trash2 className="w-4 h-4" />
+                      </button>
+                    </div>
                   </div>
                 ))}
                 {events.length === 0 && (
