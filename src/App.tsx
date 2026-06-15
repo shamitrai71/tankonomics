@@ -71,6 +71,7 @@ import Home from "./pages/Home";
 import News from "./pages/News";
 import Forums from "./pages/Forums";
 import Events from "./pages/Events";
+import EventDetail from "./pages/EventDetail";
 import Surveys from "./pages/Surveys";
 import Profile from "./pages/Profile";
 import Admin from "./pages/Admin";
@@ -1474,6 +1475,7 @@ export default function App() {
                       <Route path="/news" element={<News />} />
                       <Route path="/forums" element={<Forums />} />
                       <Route path="/events" element={<Events />} />
+                      <Route path="/events/:eventId" element={<EventDetail />} />
                       <Route path="/surveys" element={<Surveys />} />
                       <Route path="/profile" element={<Profile />} />
                       <Route path="/profile/:id" element={<Profile />} />

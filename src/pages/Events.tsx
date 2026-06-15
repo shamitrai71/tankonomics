@@ -39,7 +39,6 @@ import {
   eachDayOfInterval,
   isSameMonth,
   isSameDay,
-  isSameYear,
   addMonths,
   subMonths,
   isWithinInterval,
@@ -49,58 +48,19 @@ import {
 } from "date-fns";
 import { motion, AnimatePresence } from "framer-motion";
 import { useState, useMemo, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import { CategorySelector } from "../components/CategorySelector";
+import { formatEventRange } from "../lib/eventDates";
 
 /**
- * Format an event's date span for display.
- * Single day → "Nov 2, 2026"
- * Same month → "Nov 2–5, 2026"
- * Same year → "Dec 30 – Jan 2, 2027"
- * Cross-year → "Dec 30, 2026 – Jan 2, 2027"
+ * Events — technical calendar.
  */
-function formatEventRange(event: { date: string; endDate?: string }): {
-  shortLabel: string;
-  longLabel: string;
-  isMultiDay: boolean;
-  dayCount: number;
-} {
-  const start = new Date(event.date);
-  const end = event.endDate ? new Date(event.endDate) : start;
-  const isMultiDay = !isSameDay(start, end);
-  const dayCount = Math.round((end.getTime() - start.getTime()) / 86400000) + 1;
-
-  if (!isMultiDay) {
-    return { shortLabel: format(start, "MMM d"), longLabel: format(start, "MMM d, yyyy"), isMultiDay: false, dayCount: 1 };
-  }
-  if (isSameMonth(start, end) && isSameYear(start, end)) {
-    return {
-      shortLabel: `${format(start, "MMM d")}–${format(end, "d")}`,
-      longLabel: `${format(start, "MMM d")} – ${format(end, "d, yyyy")}`,
-      isMultiDay: true,
-      dayCount,
-    };
-  }
-  if (isSameYear(start, end)) {
-    return {
-      shortLabel: `${format(start, "MMM d")} – ${format(end, "MMM d")}`,
-      longLabel: `${format(start, "MMM d")} – ${format(end, "MMM d, yyyy")}`,
-      isMultiDay: true,
-      dayCount,
-    };
-  }
-  return {
-    shortLabel: `${format(start, "MMM d, yyyy")} – ${format(end, "MMM d, yyyy")}`,
-    longLabel: `${format(start, "MMM d, yyyy")} – ${format(end, "MMM d, yyyy")}`,
-    isMultiDay: true,
-    dayCount,
-  };
-}
 
 export default function Events() {
   const { user, profile, isAdmin, isCompanyOwner, ownedCompanies } = useAuth();
+  const navigate = useNavigate();
   const [currentMonth, setCurrentMonth] = useState(new Date());
   const [view, setView] = useState<"list" | "calendar">("list");
-  const [selectedEvent, setSelectedEvent] = useState<any>(null);
   const [dateFilter, setDateFilter] = useState<string>("all");
   const [customRange, setCustomRange] = useState<{ start: string; end: string }>({ start: "", end: "" });
   const [isCreating, setIsCreating] = useState(false);
@@ -193,11 +153,6 @@ export default function Events() {
   const { data: categories } = useCollection<any>("company_categories");
   const { data: allAttendees } = useCollection<any>("event_attendees");
 
-  const eventAttendees = useMemo(() => {
-    if (!selectedEvent || !allAttendees) return [];
-    return allAttendees.filter((a: any) => a.eventId === selectedEvent.id);
-  }, [allAttendees, selectedEvent]);
-
   const isAttending = (eventId: string) => {
     if (!user || !allAttendees) return false;
     return allAttendees.some((a: any) => a.eventId === eventId && a.userUid === user.uid);
@@ -206,24 +161,6 @@ export default function Events() {
   const attendeeCount = (eventId: string) => {
     if (!allAttendees) return 0;
     return allAttendees.filter((a: any) => a.eventId === eventId).length;
-  };
-
-  const handleToggleAttendance = async (event: any) => {
-    if (!user || !event) return;
-    const attendance = allAttendees.find((a: any) => a.eventId === event.id && a.userUid === user.uid);
-    if (attendance) {
-      await removeDocument("event_attendees", attendance.id);
-    } else {
-      await createDocument("event_attendees", {
-        eventId: event.id,
-        userUid: user.uid,
-        userName: profile?.displayName || user.displayName || "Member",
-        userPhoto: profile?.photoURL || user.photoURL || "",
-        companyName: profile?.companyName || "",
-        status: "confirmed",
-        timestamp: serverTimestamp(),
-      });
-    }
   };
 
   const monthStart = startOfMonth(currentMonth);
@@ -267,21 +204,6 @@ export default function Events() {
   }, [events, dateFilter, customRange]);
 
   const isReminded = (eventId: string) => userReminders.some((r) => r.eventId === eventId);
-
-  const getGoogleCalendarLink = (event: any) => {
-    const title = encodeURIComponent(event.title);
-    const details = encodeURIComponent(event.description || "");
-    const location = encodeURIComponent(event.location || "");
-    const start = format(new Date(event.date), "yyyyMMdd'T'HHmmss");
-    // For multi-day events, end is the start of the day AFTER the last day
-    // (Google's convention for all-day spans). For single-day, default to +2hr.
-    const endBase = event.endDate ? new Date(event.endDate) : new Date(event.date);
-    const endDate = event.endDate
-      ? new Date(endBase.getTime() + 24 * 60 * 60 * 1000)
-      : new Date(endBase.getTime() + 2 * 60 * 60 * 1000);
-    const end = format(endDate, "yyyyMMdd'T'HHmmss");
-    return `https://www.google.com/calendar/render?action=TEMPLATE&text=${title}&details=${details}&location=${location}&dates=${start}/${end}`;
-  };
 
   const toggleReminder = async (event: any) => {
     if (!user) return;
@@ -574,7 +496,7 @@ export default function Events() {
                         key={event.id}
                         initial={{ opacity: 0, y: 6 }}
                         animate={{ opacity: 1, y: 0 }}
-                        onClick={() => setSelectedEvent(event)}
+                        onClick={() => navigate(`/events/${event.id}`)}
                         className="bg-bg-card border border-border-main rounded-2xl p-5 hover:border-text-heading transition-all cursor-pointer group flex gap-5 items-start"
                       >
                         {/* Date plinth */}
@@ -708,7 +630,7 @@ export default function Events() {
                           {dayEvts.slice(0, 2).map((event) => (
                             <button
                               key={event.id}
-                              onClick={() => setSelectedEvent(event)}
+                              onClick={() => navigate(`/events/${event.id}`)}
                               className="w-full text-left px-2 py-1 bg-bg-main hover:bg-text-heading hover:text-bg-card rounded text-[11px] truncate transition-all"
                             >
                               {event.title}
@@ -716,7 +638,7 @@ export default function Events() {
                           ))}
                           {dayEvts.length > 2 && (
                             <button
-                              onClick={() => setSelectedEvent(dayEvts[2])}
+                              onClick={() => navigate(`/events/${dayEvts[2].id}`)}
                               className="w-full text-left px-2 py-0.5 eyebrow tabular text-accent hover:underline"
                             >
                               +{dayEvts.length - 2} more
@@ -801,147 +723,6 @@ export default function Events() {
         </div>
       </div>
 
-      {/* Event detail modal */}
-      <AnimatePresence>
-        {selectedEvent && (
-          <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
-            <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} onClick={() => setSelectedEvent(null)} className="absolute inset-0 bg-ink/60 backdrop-blur-sm" />
-            <motion.div
-              initial={{ opacity: 0, scale: 0.96, y: 12 }}
-              animate={{ opacity: 1, scale: 1, y: 0 }}
-              exit={{ opacity: 0, scale: 0.96, y: 12 }}
-              className="bg-bg-card border border-border-main rounded-2xl shadow-2xl w-full max-w-2xl relative z-10 overflow-hidden max-h-[90vh] flex flex-col"
-            >
-              {/* Hero */}
-              <div className="relative h-44 overflow-hidden shrink-0">
-                {selectedEvent.imageUrl ? (
-                  <img src={selectedEvent.imageUrl} className="w-full h-full object-cover" alt="" />
-                ) : (
-                  <div className="w-full h-full bg-gradient-to-br from-blueprint to-primary" />
-                )}
-                <div className="absolute inset-0 bg-gradient-to-t from-primary/90 via-primary/30 to-transparent" />
-                <div className="absolute inset-0 bp-grid opacity-20 pointer-events-none" />
-                <button
-                  onClick={() => setSelectedEvent(null)}
-                  className="absolute top-4 right-4 w-9 h-9 bg-bg-card/15 backdrop-blur-md border border-white/20 rounded-xl flex items-center justify-center text-white hover:bg-bg-card/25 transition-all"
-                >
-                  <X className="w-4 h-4" />
-                </button>
-                <div className="absolute bottom-4 left-6 right-6">
-                  <p className="eyebrow tabular text-accent mb-1">TECHNICAL SESSION</p>
-                  <h2 className="font-display text-3xl text-white leading-tight">{selectedEvent.title}</h2>
-                </div>
-              </div>
-
-              <div className="p-6 overflow-y-auto">
-                {(() => {
-                  const range = formatEventRange(selectedEvent);
-                  return (
-                    <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 mb-6">
-                      <div className="p-3 bg-bg-main border border-border-main rounded-xl">
-                        <p className="eyebrow tabular text-text-body/55 mb-1">{range.isMultiDay ? "Dates" : "Date"}</p>
-                        <p className="text-[14px] font-medium text-text-heading">{range.longLabel}</p>
-                        {range.isMultiDay && (
-                          <p className="eyebrow tabular text-accent mt-1">{range.dayCount} days</p>
-                        )}
-                      </div>
-                      <div className="p-3 bg-bg-main border border-border-main rounded-xl">
-                        <p className="eyebrow tabular text-text-body/55 mb-1">Time</p>
-                        <p className="text-[14px] font-medium text-text-heading">
-                          {selectedEvent.time || format(new Date(selectedEvent.date), "HH:mm")}
-                          {selectedEvent.endTime && <span className="text-text-body/55"> – {selectedEvent.endTime}</span>}
-                        </p>
-                      </div>
-                      <div className="p-3 bg-bg-main border border-border-main rounded-xl">
-                        <p className="eyebrow tabular text-text-body/55 mb-1">Attending</p>
-                        <p className="text-[14px] font-medium text-text-heading">
-                          <span className="font-display tabular text-2xl">{attendeeCount(selectedEvent.id)}</span> registered
-                        </p>
-                      </div>
-                    </div>
-                  );
-                })()}
-
-                {selectedEvent.location && (
-                  <div className="mb-5 px-4 py-3 bg-bg-main border border-border-main rounded-xl flex items-start gap-3">
-                    <MapPin className="w-4 h-4 text-accent shrink-0 mt-0.5" strokeWidth={1.75} />
-                    <div>
-                      <p className="eyebrow tabular text-text-body/55 mb-0.5">Location</p>
-                      <p className="text-[14px] text-text-heading">{selectedEvent.location}</p>
-                    </div>
-                  </div>
-                )}
-
-                {selectedEvent.description && (
-                  <div className="mb-6">
-                    <p className="eyebrow tabular text-text-body/55 mb-2">About</p>
-                    <p className="text-[14px] text-text-body leading-relaxed whitespace-pre-wrap">{selectedEvent.description}</p>
-                  </div>
-                )}
-
-                {eventAttendees.length > 0 && (
-                  <div className="mb-5">
-                    <p className="eyebrow tabular text-text-body/55 mb-3">Attending ({eventAttendees.length})</p>
-                    <div className="flex flex-wrap gap-2">
-                      {eventAttendees.slice(0, 8).map((a: any) => (
-                        <div key={a.id} className="flex items-center gap-2 px-2 py-1.5 bg-bg-main border border-border-main rounded-lg">
-                          <img
-                            src={a.userPhoto || `https://api.dicebear.com/7.x/initials/svg?seed=${a.userName}`}
-                            className="w-5 h-5 rounded object-cover"
-                            alt=""
-                          />
-                          <span className="text-[12px] font-medium text-text-heading">{a.userName}</span>
-                        </div>
-                      ))}
-                      {eventAttendees.length > 8 && (
-                        <span className="px-2 py-1.5 eyebrow tabular text-text-body/55 bg-bg-main border border-border-main rounded-lg">
-                          +{eventAttendees.length - 8} more
-                        </span>
-                      )}
-                    </div>
-                  </div>
-                )}
-              </div>
-
-              <div className="px-6 py-4 border-t border-border-main flex items-center justify-between gap-3 bg-bg-card shrink-0">
-                <button
-                  onClick={() => toggleReminder(selectedEvent)}
-                  className={`inline-flex items-center gap-2 px-4 py-2.5 rounded-xl text-[13px] font-medium transition-all ${
-                    isReminded(selectedEvent.id)
-                      ? "bg-accent/10 text-accent border border-accent/20"
-                      : "bg-bg-main border border-border-main text-text-heading hover:border-text-heading"
-                  }`}
-                >
-                  {isReminded(selectedEvent.id) ? <Bell className="w-4 h-4" strokeWidth={1.75} /> : <BellOff className="w-4 h-4" strokeWidth={1.75} />}
-                  {isReminded(selectedEvent.id) ? "Reminded" : "Remind me"}
-                </button>
-                <div className="flex gap-2">
-                  <a
-                    href={getGoogleCalendarLink(selectedEvent)}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="inline-flex items-center gap-1.5 px-3 py-2.5 bg-bg-main border border-border-main rounded-xl text-[13px] font-medium text-text-heading hover:border-text-heading transition-all"
-                  >
-                    <CalendarPlus className="w-4 h-4" strokeWidth={1.75} />
-                    <ExternalLink className="w-3 h-3" strokeWidth={1.75} />
-                  </a>
-                  <button
-                    onClick={() => handleToggleAttendance(selectedEvent)}
-                    className={`inline-flex items-center gap-2 px-4 py-2.5 rounded-xl text-[13px] font-medium transition-all ${
-                      isAttending(selectedEvent.id)
-                        ? "bg-bg-main border border-border-main text-text-heading"
-                        : "bg-text-heading text-bg-card hover:brightness-110"
-                    }`}
-                  >
-                    {isAttending(selectedEvent.id) ? <CheckCircle2 className="w-4 h-4" strokeWidth={2} /> : <Plus className="w-4 h-4" strokeWidth={1.75} />}
-                    {isAttending(selectedEvent.id) ? "Attending" : "Register"}
-                  </button>
-                </div>
-              </div>
-            </motion.div>
-          </div>
-        )}
-      </AnimatePresence>
     </div>
   );
 }
