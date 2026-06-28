@@ -1,0 +1,649 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // 0. Global Safety Net
+    match /{document=**} {
+      allow read, write: if false;
+    }
+
+    // --- Helpers ---
+    function isSignedIn() {
+      return request.auth != null;
+    }
+
+    function isOwner(userId) {
+      return isSignedIn() && request.auth.uid == userId;
+    }
+
+    function isAdmin() {
+      return isSignedIn() && (
+        exists(/databases/$(database)/documents/admins/$(request.auth.uid)) ||
+        request.auth.token.email == "petrodeksystems@gmail.com" ||
+        request.auth.token.email == "esraigroup@gmail.com"
+      );
+    }
+
+    function isValidId(id) {
+      return id is string && id.size() <= 128 && id.matches('^[a-zA-Z0-9_\\-]+$');
+    }
+
+    function incoming() {
+      return request.resource.data;
+    }
+
+    function existing() {
+      return resource.data;
+    }
+
+    // --- Validation Helpers ---
+    function isValidUser(data) {
+      return data.keys().hasAll(['uid', 'email', 'displayName']) &&
+             data.uid is string && data.uid.size() <= 128 &&
+             data.email is string && data.email.size() <= 256 &&
+             data.displayName is string && data.displayName.size() <= 128 &&
+             (!data.keys().contains('photoURL') || data.photoURL == null || (data.photoURL is string && data.photoURL.size() <= 2097152)) &&
+             (!data.keys().contains('bio') || data.bio == null || (data.bio is string && data.bio.size() <= 5000)) &&
+             (!data.keys().contains('industrySegment') || data.industrySegment == null || (data.industrySegment is string && data.industrySegment.size() <= 128)) &&
+             (!data.keys().contains('company') || data.company == null || (data.company is string && data.company.size() <= 256)) &&
+             (!data.keys().contains('jobTitle') || data.jobTitle == null || (data.jobTitle is string && data.jobTitle.size() <= 256)) &&
+             (!data.keys().contains('companyId') || data.companyId == null || (data.companyId is string && data.companyId.size() <= 128)) &&
+             (!data.keys().contains('isPro') || data.isPro is bool) &&
+             (!data.keys().contains('isPublic') || data.isPublic is bool) &&
+             (!data.keys().contains('aiUsage') || data.aiUsage is map) &&
+             (!data.keys().contains('skills') || data.skills is list) &&
+             (!data.keys().contains('badges') || data.badges is list) &&
+             (!data.keys().contains('profileLabels') || data.profileLabels is map) &&
+             (!data.keys().contains('socialLinks') || data.socialLinks is map) &&
+             (!data.keys().contains('savedJobs') || data.savedJobs is list) &&
+             (!data.keys().contains('isVerifiedByCompany') || data.isVerifiedByCompany is bool) &&
+             (!data.keys().contains('verifiedByCompanyId') || data.verifiedByCompanyId is string) &&
+             (!data.keys().contains('verifiedByCompanyName') || data.verifiedByCompanyName is string) &&
+             (!data.keys().contains('verifiedByUid') || data.verifiedByUid is string) &&
+             (!data.keys().contains('verifiedAt') || data.verifiedAt is timestamp || data.verifiedAt == null) &&
+             (!data.keys().contains('updatedAt') || data.updatedAt is timestamp || data.updatedAt == null) &&
+             data.uid == request.auth.uid; // Identity Integrity
+    }
+
+    function isValidEndorsement(data) {
+      return data.keys().hasAll(['targetUid', 'endorserUid', 'skill', 'createdAt']) &&
+             data.endorserUid == request.auth.uid &&
+             data.targetUid is string &&
+             data.skill is string &&
+             data.createdAt == request.time;
+    }
+
+    function isValidRecommendation(data) {
+      return data.keys().hasAll(['targetUid', 'recommenderUid', 'traits', 'createdAt']) &&
+             data.recommenderUid == request.auth.uid &&
+             data.targetUid is string &&
+             data.traits is list &&
+             data.createdAt == request.time;
+    }
+
+    function isValidResume(data) {
+      return data.keys().hasAll(['userUid', 'fullName', 'categoryId', 'categoryName']) &&
+             data.userUid == request.auth.uid &&
+             data.fullName is string && data.fullName.size() <= 256 &&
+             data.categoryId is string &&
+             data.categoryName is string &&
+             (!data.keys().contains('subCategoryId') || data.subCategoryId == null || data.subCategoryId is string) &&
+             (!data.keys().contains('subCategoryName') || data.subCategoryName == null || data.subCategoryName is string);
+    }
+
+    function isValidNews(data) {
+      return data.keys().hasAll(['url', 'title', 'createdAt']) &&
+             data.url is string && data.url.size() <= 2048 &&
+             data.title is string && data.title.size() <= 512 &&
+             data.createdAt == request.time &&
+             (!data.keys().contains('description') || data.description == null || (data.description is string && data.description.size() <= 2000)) &&
+             (!data.keys().contains('image') || data.image == null || (data.image is string && data.image.size() <= 2048)) &&
+             (!data.keys().contains('source') || data.source == null || (data.source is string && data.source.size() <= 128)) &&
+             (!data.keys().contains('authorUid') || data.authorUid == null || (data.authorUid is string && data.authorUid.size() <= 128));
+    }
+
+    function isValidPost(data) {
+      return data.keys().hasAll(['content', 'authorUid', 'createdAt']) &&
+             data.content is string && data.content.size() <= 10000 &&
+             data.authorUid == request.auth.uid &&
+             (data.createdAt == request.time || data.createdAt is string) &&
+             (!data.keys().contains('authorName') || data.authorName == null || (data.authorName is string && data.authorName.size() <= 512)) &&
+             (!data.keys().contains('authorPhoto') || data.authorPhoto == null || (data.authorPhoto is string && data.authorPhoto.size() <= 2097152)) &&
+             (!data.keys().contains('authorJobTitle') || data.authorJobTitle == null || (data.authorJobTitle is string && data.authorJobTitle.size() <= 512)) &&
+             (!data.keys().contains('authorEmail') || data.authorEmail == null || (data.authorEmail is string && data.authorEmail.size() <= 512)) &&
+             (!data.keys().contains('image') || data.image == null || (data.image is string && data.image.size() <= 10485760)) &&
+             (!data.keys().contains('likesCount') || data.likesCount is number) &&
+             (!data.keys().contains('commentsCount') || data.commentsCount is number) &&
+             (!data.keys().contains('isRepost') || data.isRepost is bool) &&
+             (!data.keys().contains('originalAuthor') || data.originalAuthor == null || (data.originalAuthor is string && data.originalAuthor.size() <= 512)) &&
+             (!data.keys().contains('companyId') || data.companyId == null || (data.companyId is string && data.companyId.size() <= 128)) &&
+             (!data.keys().contains('companyName') || data.companyName == null || (data.companyName is string && data.companyName.size() <= 512)) &&
+             (!data.keys().contains('companyLogo') || data.companyLogo == null || (data.companyLogo is string && data.companyLogo.size() <= 2097152)) &&
+             (!data.keys().contains('video') || data.video == null || (data.video is map)) &&
+             (!data.keys().contains('reactions') || data.reactions is map) &&
+             (!data.keys().contains('updatedAt') || data.updatedAt == request.time);
+    }
+
+    function isValidEvent(data) {
+      return data.keys().hasAll(['title', 'date', 'organizerUid']) &&
+             data.title is string && data.title.size() <= 512 &&
+             data.organizerUid == request.auth.uid &&
+             (!data.keys().contains('description') || data.description == null || data.description is string) &&
+             (!data.keys().contains('location') || data.location == null || data.location is string) &&
+             (!data.keys().contains('type') || data.type == null || data.type is string) &&
+             (!data.keys().contains('time') || data.time == null || data.time is string) &&
+             (!data.keys().contains('endDate') || data.endDate == null || data.endDate is string) &&
+             (!data.keys().contains('endTime') || data.endTime == null || data.endTime is string) &&
+             (!data.keys().contains('categoryId') || data.categoryId == null || data.categoryId is string) &&
+             (!data.keys().contains('categoryName') || data.categoryName == null || data.categoryName is string) &&
+             (!data.keys().contains('categoryIds') || data.categoryIds == null || data.categoryIds is list) &&
+             (!data.keys().contains('image') || data.image == null || data.image is string) &&
+             (!data.keys().contains('imageUrl') || data.imageUrl == null || data.imageUrl is string) &&
+             (!data.keys().contains('ctaText') || data.ctaText == null || data.ctaText is string) &&
+             (!data.keys().contains('ctaUrl') || data.ctaUrl == null || data.ctaUrl is string) &&
+             (!data.keys().contains('companyId') || data.companyId == null || data.companyId is string) &&
+             (!data.keys().contains('companyName') || data.companyName == null || data.companyName is string) &&
+             (!data.keys().contains('companyLogo') || data.companyLogo == null || data.companyLogo is string) &&
+             (!data.keys().contains('isFeatured') || data.isFeatured == null || data.isFeatured is bool) &&
+             (!data.keys().contains('createdAt') || data.createdAt is timestamp);
+    }
+
+    function isValidComment(data) {
+      return data.keys().hasAll(['content', 'authorUid', 'createdAt']) &&
+             data.content is string && data.content.size() <= 5000 &&
+             data.authorUid == request.auth.uid &&
+             (data.createdAt == request.time || data.createdAt is string) &&
+             (!data.keys().contains('authorJobTitle') || data.authorJobTitle == null || (data.authorJobTitle is string && data.authorJobTitle.size() <= 512)) &&
+             (!data.keys().contains('authorName') || data.authorName == null || (data.authorName is string && data.authorName.size() <= 512)) &&
+             (!data.keys().contains('authorPhoto') || data.authorPhoto == null || (data.authorPhoto is string && data.authorPhoto.size() <= 2097152)) &&
+             (!data.keys().contains('quote') || data.quote == null || (
+               data.quote is map && 
+               data.quote.keys().hasAll(['authorName', 'content']) &&
+               data.quote.authorName is string &&
+               data.quote.content is string
+             ));
+    }
+
+    function isValidSettings(data) {
+      return data.keys().hasAny(['primaryColor', 'secondaryColor', 'accentColor', 'logoUrl', 'siteName', 'displayMode', 'updatedAt']);
+    }
+
+    function isValidDynamicPage(data) {
+      return data.keys().hasAll(['slug', 'title', 'content']) &&
+             data.slug is string && data.slug.size() <= 128 &&
+             data.title is string && data.title.size() <= 256 &&
+             data.content is string && data.content.size() <= 100000 &&
+             (!data.keys().contains('published') || data.published is bool) &&
+             (!data.keys().contains('updatedAt') || data.updatedAt == request.time);
+    }
+
+    function isValidReport(data) {
+      return data.keys().hasAll(['targetId', 'targetType', 'reason', 'reporterUid', 'createdAt']) &&
+             data.targetId is string &&
+             data.targetType in ['post', 'comment', 'profile'] &&
+             data.reason is string && data.reason.size() <= 2000 &&
+             data.reporterUid == request.auth.uid &&
+             data.createdAt == request.time;
+    }
+
+    function isValidProductRecommendation(data) {
+      return data.keys().hasAll(['companyId', 'productName', 'userUid', 'createdAt']) &&
+             data.userUid == request.auth.uid &&
+             data.companyId is string &&
+             data.productName is string &&
+             data.createdAt == request.time;
+    }
+
+    function isValidCompany(data) {
+      return data.keys().hasAll(['name', 'categoryId']) &&
+             data.name is string && data.name.size() <= 256 &&
+             data.categoryId is string &&
+             (!data.keys().contains('aboutUs') || data.aboutUs is string) &&
+             (!data.keys().contains('address') || data.address is string) &&
+             (!data.keys().contains('heroImage') || data.heroImage is string) &&
+             (!data.keys().contains('isFeatured') || data.isFeatured is bool) &&
+             (!data.keys().contains('products') || data.products is list);
+    }
+
+    function isValidCompanyCategory(data) {
+      return data.keys().hasAll(['name', 'level']) &&
+             data.name is string && data.name.size() <= 64 &&
+             data.level is number;
+    }
+
+    function isValidCompanyClaim(data) {
+      return data.keys().hasAll(['companyId', 'userUid', 'justification']) &&
+             data.companyId is string &&
+             data.userUid == request.auth.uid &&
+             data.justification is string && data.justification.size() <= 2000;
+    }
+
+    function isValidJob(data) {
+      return data.keys().hasAll(['title', 'description', 'companyName', 'creatorUid', 'creatorEmail']) &&
+             data.title is string && data.title.size() <= 256 &&
+             data.description is string && data.description.size() <= 5000 &&
+             data.companyName is string && data.companyName.size() <= 256 &&
+             data.creatorUid == request.auth.uid &&
+             data.creatorEmail is string &&
+             (!data.keys().contains('companyId') || data.companyId is string) &&
+             (!data.keys().contains('companyLogo') || data.companyLogo is string) &&
+             (!data.keys().contains('location') || data.location is string) &&
+             (!data.keys().contains('salary') || data.salary is string) &&
+             (!data.keys().contains('type') || data.type in ["Full-time", "Part-time", "Contract", "Freelance", "Internship"]) &&
+             (!data.keys().contains('status') || data.status in ["open", "closed"]) &&
+             (!data.keys().contains('createdAt') || data.createdAt == request.time);
+    }
+
+    function isValidConnection(data) {
+      return data.keys().hasAll(['userIds', 'status', 'requesterId', 'createdAt']) &&
+             data.userIds is list && data.userIds.size() == 2 &&
+             request.auth.uid in data.userIds &&
+             data.requesterId == request.auth.uid &&
+             data.status in ['pending', 'accepted', 'rejected'] &&
+             data.createdAt == request.time;
+    }
+
+    function isValidChat(data) {
+      return data.keys().hasAll(['participants', 'createdAt']) &&
+             data.participants is list && data.participants.size() >= 2 &&
+             request.auth.uid in data.participants &&
+             data.createdAt == request.time;
+    }
+
+    function isValidGroup(data) {
+      return data.keys().hasAll(['name', 'creatorUid', 'createdAt']) &&
+             data.name is string && data.name.size() <= 128 &&
+             data.creatorUid == request.auth.uid &&
+             data.createdAt is timestamp &&
+             (!data.keys().contains('description') || data.description is string) &&
+             (!data.keys().contains('iconUrl') || data.iconUrl is string) &&
+             (!data.keys().contains('coverUrl') || data.coverUrl is string) &&
+             (!data.keys().contains('admins') || data.admins is list) &&
+             (!data.keys().contains('creatorName') || data.creatorName is string) &&
+             (!data.keys().contains('memberCount') || data.memberCount is number) &&
+             (!data.keys().contains('status') || data.status in ['pending', 'approved', 'rejected']) &&
+             (!data.keys().contains('isPrivate') || data.isPrivate is bool);
+    }
+
+    function isValidGroupPost(data) {
+      return data.keys().hasAll(['groupId', 'content', 'authorUid', 'createdAt']) &&
+             data.groupId is string &&
+             data.content is string && data.content.size() <= 10000 &&
+             data.authorUid == request.auth.uid &&
+             (data.createdAt == request.time || data.createdAt is string) &&
+             (!data.keys().contains('authorName') || data.authorName == null || (data.authorName is string && data.authorName.size() <= 512)) &&
+             (!data.keys().contains('authorPhoto') || data.authorPhoto == null || (data.authorPhoto is string && data.authorPhoto.size() <= 2097152)) &&
+             (!data.keys().contains('authorJobTitle') || data.authorJobTitle == null || (data.authorJobTitle is string && data.authorJobTitle.size() <= 512)) &&
+             (!data.keys().contains('likesCount') || data.likesCount is number) &&
+             (!data.keys().contains('commentsCount') || data.commentsCount is number) &&
+             (!data.keys().contains('companyId') || data.companyId == null || (data.companyId is string && data.companyId.size() <= 128)) &&
+             (!data.keys().contains('companyName') || data.companyName == null || (data.companyName is string && data.companyName.size() <= 512)) &&
+             (!data.keys().contains('companyLogo') || data.companyLogo == null || (data.companyLogo is string && data.companyLogo.size() <= 2097152)) &&
+             (!data.keys().contains('video') || data.video is map) &&
+             (!data.keys().contains('image') || data.image is string);
+    }
+
+    function isValidGroupMember(data) {
+      return data.keys().hasAll(['groupId', 'userUid', 'role', 'joinedAt']) &&
+             data.groupId is string &&
+             data.userUid is string &&
+             data.role in ['member', 'admin', 'creator', 'pending'] &&
+             data.joinedAt is timestamp &&
+             (!data.keys().contains('status') || data.status in ['pending', 'approved', 'rejected']) &&
+             (!data.keys().contains('userName') || data.userName == null || data.userName is string) &&
+             (!data.keys().contains('userPhoto') || data.userPhoto == null || data.userPhoto is string) &&
+             (!data.keys().contains('userJobTitle') || data.userJobTitle == null || data.userJobTitle is string) &&
+             (!data.keys().contains('userCompany') || data.userCompany == null || data.userCompany is string);
+    }
+
+    function isValidForumTopic(data) {
+      return data.keys().hasAll(['title', 'categoryIds', 'authorUid', 'createdAt']) &&
+             data.title is string && data.title.size() <= 512 &&
+             data.authorUid == request.auth.uid &&
+             data.createdAt == request.time &&
+             data.categoryIds is list &&
+             (!data.keys().contains('authorName') || data.authorName is string) &&
+             (!data.keys().contains('replyCount') || data.replyCount is number);
+    }
+
+    function isValidForumPost(data) {
+      return data.keys().hasAll(['topicId', 'content', 'authorUid', 'createdAt']) &&
+             data.topicId is string &&
+             data.content is string && data.content.size() <= 10000 &&
+             data.authorUid == request.auth.uid &&
+             (data.createdAt == request.time || data.createdAt is string) &&
+             (!data.keys().contains('authorName') || data.authorName == null || (data.authorName is string && data.authorName.size() <= 512)) &&
+             (!data.keys().contains('authorPhoto') || data.authorPhoto == null || (data.authorPhoto is string && data.authorPhoto.size() <= 2097152));
+    }
+
+    function isValidEventAttendee(data) {
+      return data.keys().hasAll(['eventId', 'userUid']) &&
+             data.eventId is string &&
+             data.userUid == request.auth.uid &&
+             (!data.keys().contains('userName') || data.userName is string) &&
+             (!data.keys().contains('userPhoto') || data.userPhoto is string) &&
+             (!data.keys().contains('companyName') || data.companyName is string) &&
+             (!data.keys().contains('status') || data.status in ['confirmed', 'interested']) &&
+             (!data.keys().contains('timestamp') || data.timestamp == request.time);
+    }
+
+
+    function isConnectedToCompany(uid) {
+      return exists(/databases/$(database)/documents/users/$(uid)) &&
+             get(/databases/$(database)/documents/users/$(uid)).data.get('companyId', '') != '';
+    }
+
+    function isGroupAdmin(groupId) {
+      let group = get(/databases/$(database)/documents/groups/$(groupId)).data;
+      return request.auth.uid == group.creatorUid || request.auth.uid in group.admins;
+    }
+
+    function isGroupMember(groupId) {
+      return exists(/databases/$(database)/documents/group_members/$(groupId + "_" + request.auth.uid));
+    }
+
+    function isValidMessage(data) {
+      return data.keys().hasAll(['senderId', 'content', 'createdAt']) &&
+             data.senderId == request.auth.uid &&
+             data.content is string && data.content.size() <= 2000 &&
+             data.createdAt == request.time;
+    }
+
+    function isCompanyOwner(companyId) {
+      return isSignedIn() && get(/databases/$(database)/documents/companies/$(companyId)).data.ownerUid == request.auth.uid;
+    }
+
+    // --- Collection Rules ---
+
+    function isValidFollow(data) {
+      return data.keys().hasAll(['followerId', 'targetId', 'targetType', 'createdAt']) &&
+             isValidId(data.targetId) &&
+             data.followerId is string &&
+             data.targetType in ['member', 'company'] &&
+             data.createdAt == request.time;
+    }
+
+    function isValidLike(data) {
+      return data.keys().hasAll(['likerId', 'targetId', 'targetType', 'createdAt']) &&
+             isValidId(data.targetId) &&
+             data.likerId is string &&
+             data.targetType in ['member', 'company'] &&
+             data.createdAt == request.time;
+    }
+
+    match /follows/{followId} {
+      allow get: if isSignedIn() && isValidId(followId);
+      allow list: if isSignedIn() && (resource.data.targetType in ['member', 'company']);
+      allow create: if isSignedIn() && isValidId(followId) && isValidFollow(incoming()) && (
+        incoming().followerId == request.auth.uid ||
+        (incoming().targetType == 'company' && isCompanyOwner(incoming().targetId))
+      );
+      allow delete: if isSignedIn() && isValidId(followId) && (
+        resource.data.followerId == request.auth.uid ||
+        (resource.data.targetType == 'company' && isCompanyOwner(resource.data.targetId))
+      );
+    }
+
+    match /likes/{likeId} {
+      allow get: if isSignedIn() && isValidId(likeId);
+      allow list: if isSignedIn() && (resource.data.targetType in ['member', 'company']);
+      allow create: if isSignedIn() && isValidId(likeId) && isValidLike(incoming()) && (
+        incoming().likerId == request.auth.uid ||
+        (incoming().targetType == 'company' && isCompanyOwner(incoming().targetId))
+      );
+      allow delete: if isSignedIn() && isValidId(likeId) && (
+        resource.data.likerId == request.auth.uid ||
+        (resource.data.targetType == 'company' && isCompanyOwner(resource.data.targetId))
+      );
+    }
+
+    match /connections/{connectionId} {
+      allow read: if isSignedIn();
+      allow create: if isSignedIn() && isValidId(connectionId) && isValidConnection(incoming());
+      allow update: if isValidId(connectionId) && isSignedIn() && (request.auth.uid in resource.data.userIds) &&
+                    (!incoming().diff(existing()).affectedKeys().hasAny(['userIds', 'requesterId', 'createdAt'])) &&
+                    (incoming().status in ['pending', 'accepted', 'rejected']);
+      allow delete: if isSignedIn() && isValidId(connectionId) && (request.auth.uid in resource.data.userIds);
+    }
+
+    match /chats/{chatId} {
+      allow read: if isSignedIn() && (request.auth.uid in resource.data.participants);
+      allow create: if isSignedIn() && 
+                    (request.auth.uid in incoming().participants) &&
+                    (get(/databases/$(database)/documents/users/$(request.auth.uid)).data.isPro == true);
+      allow update: if isSignedIn() && (request.auth.uid in resource.data.participants);
+
+      match /messages/{messageId} {
+        allow read: if isSignedIn() && (request.auth.uid in get(/databases/$(database)/documents/chats/$(chatId)).data.participants);
+        allow create: if isSignedIn() && 
+                      (request.auth.uid in get(/databases/$(database)/documents/chats/$(chatId)).data.participants) && 
+                      isValidMessage(incoming());
+      }
+    }
+
+    match /groups/{groupId} {
+      allow read: if isSignedIn();
+      allow create: if isSignedIn() && (isAdmin() || isConnectedToCompany(request.auth.uid)) && isValidGroup(incoming());
+      allow update: if isSignedIn() && (
+                    ((isGroupAdmin(groupId) || isAdmin()) &&
+                    isValidGroup(incoming()) &&
+                    (!incoming().diff(existing()).affectedKeys().hasAny(['creatorUid', 'createdAt']))) ||
+                    ((isAdmin() || isConnectedToCompany(request.auth.uid)) &&
+                     incoming().diff(existing()).affectedKeys().hasOnly(['memberCount']) &&
+                     (incoming().memberCount == existing().memberCount + 1 || incoming().memberCount == existing().memberCount - 1))
+                  );
+      allow delete: if isAdmin() || (isSignedIn() && existing().creatorUid == request.auth.uid);
+
+      match /posts/{postId} {
+        allow read: if isSignedIn() && isGroupMember(groupId);
+        allow create: if isSignedIn() && isGroupMember(groupId) && isValidGroupPost(incoming());
+        allow update: if (isOwner(existing().authorUid) && isValidGroupPost(incoming())) || 
+                        (isSignedIn() && isGroupMember(groupId) && incoming().diff(existing()).affectedKeys().hasOnly(['likesCount', 'commentsCount', 'updatedAt'])) ||
+                        isGroupAdmin(groupId) || isAdmin();
+        allow delete: if isOwner(existing().authorUid) || isGroupAdmin(groupId) || isAdmin();
+
+        match /comments/{commentId} {
+          allow read: if isSignedIn() && isGroupMember(groupId);
+          allow create: if isSignedIn() && isGroupMember(groupId) && isValidComment(incoming());
+          allow delete: if isOwner(existing().authorUid) || isGroupAdmin(groupId) || isAdmin();
+        }
+      }
+    }
+
+    match /group_members/{memberId} {
+      // memberId is groupId + "_" + userUid
+      allow read: if isSignedIn();
+      allow create: if isSignedIn() && 
+                      (isAdmin() || isConnectedToCompany(request.auth.uid)) && 
+                      isValidGroupMember(incoming()) &&
+                      memberId == (incoming().groupId + "_" + incoming().userUid);
+      allow update: if isSignedIn() && 
+                      (isGroupAdmin(incoming().groupId) || isAdmin()) &&
+                      isValidGroupMember(incoming());
+      allow delete: if isSignedIn() && 
+                      (isOwner(resource.data.userUid) || isGroupAdmin(resource.data.groupId) || isAdmin());
+    }
+
+    match /resumes/{resumeId} {
+      allow read: if isSignedIn() && (resource.data.userUid == request.auth.uid || resource.data.isLocked == false || isAdmin());
+      allow create: if isSignedIn() && isValidResume(incoming());
+      allow update: if isOwner(existing().userUid) && isValidResume(incoming());
+      allow delete: if isOwner(existing().userUid) || isAdmin();
+    }
+
+    match /reports/{reportId} {
+      allow read: if isAdmin();
+      allow create: if isSignedIn() && isValidReport(incoming());
+      allow update: if isAdmin();
+      allow delete: if isAdmin();
+    }
+
+    match /companies/{companyId} {
+      allow read: if isSignedIn();
+      allow write: if isAdmin();
+    }
+
+    match /company_categories/{categoryId} {
+      allow read: if isSignedIn();
+      allow write: if isAdmin();
+    }
+
+    match /company_claims/{claimId} {
+      allow read: if isAdmin() || (isSignedIn() && resource.data.userUid == request.auth.uid);
+      allow create: if isSignedIn() && isValidCompanyClaim(incoming());
+      allow update: if isAdmin();
+      allow delete: if isAdmin();
+    }
+
+    match /settings/{settingId} {
+      allow read: if true; // Public for branding
+      allow write: if isAdmin() && isValidSettings(incoming());
+    }
+
+    match /dynamic_pages/{pageId} {
+      allow read: if isSignedIn();
+      allow write: if isAdmin() && isValidDynamicPage(incoming());
+    }
+
+    match /admins/{userId} {
+      allow read: if isSignedIn();
+      allow create: if isSignedIn() && (
+        request.auth.token.email == "petrodeksystems@gmail.com" ||
+        request.auth.token.email == "esraigroup@gmail.com"
+      );
+      allow write: if false; // Managed via console/backend
+    }
+
+    match /users/{userId} {
+      allow read: if isSignedIn();
+      allow create: if isOwner(userId) && isValidId(userId);
+      allow update: if isValidId(userId) && (
+                    (isOwner(userId) && 
+                      isValidUser(incoming()) && 
+                      incoming().diff(existing()).affectedKeys().hasOnly(['displayName', 'photoURL', 'bio', 'industrySegment', 'company', 'companyId', 'jobTitle', 'isPro', 'aiUsage', 'isPublic', 'skills', 'profileLabels', 'socialLinks', 'updatedAt', 'email', 'uid', 'savedJobs', 'badges'])) ||
+                    (isCompanyOwner(existing().companyId) && 
+                      incoming().diff(existing()).affectedKeys().hasOnly(['isVerifiedByCompany', 'verifiedByCompanyId', 'verifiedByCompanyName', 'verifiedAt', 'verifiedByUid'])) ||
+                    isAdmin()
+                  );
+    }
+
+    match /endorsements/{endorsementId} {
+      allow read: if isSignedIn();
+      allow create: if isSignedIn() && isValidEndorsement(incoming());
+      allow delete: if isOwner(existing().endorserUid) || isAdmin();
+    }
+
+    match /recommendations/{recommendationId} {
+      allow read: if isSignedIn();
+      allow create: if isSignedIn() && isValidRecommendation(incoming());
+      allow update: if isOwner(existing().recommenderUid) && isValidRecommendation(incoming());
+      allow delete: if isOwner(existing().recommenderUid) || isAdmin();
+    }
+
+    match /product_recommendations/{recommendationId} {
+      allow read: if isSignedIn();
+      allow create: if isSignedIn() && isValidProductRecommendation(incoming());
+      allow delete: if isOwner(existing().userUid) || isAdmin();
+    }
+
+    match /news/{newsId} {
+      allow read: if isSignedIn();
+      allow create: if isAdmin() && isValidNews(incoming());
+      allow update: if isAdmin() && isValidNews(incoming());
+      allow delete: if isAdmin();
+    }
+
+    match /posts/{postId} {
+      allow read: if isSignedIn();
+      allow create: if isSignedIn() && isValidPost(incoming());
+      allow update: if (isOwner(existing().authorUid) && 
+                        isValidPost(incoming()) && 
+                        incoming().diff(existing()).affectedKeys().hasOnly(['content', 'image', 'updatedAt'])) ||
+                      (isSignedIn() && incoming().diff(existing()).affectedKeys().hasOnly(['likesCount', 'commentsCount', 'reactions', 'updatedAt'])) ||
+                      isAdmin();
+      allow delete: if isOwner(existing().authorUid) || isAdmin();
+    }
+
+    match /{path=**}/comments/{commentId} {
+      allow read: if isSignedIn();
+      allow create: if isSignedIn() && isValidComment(incoming());
+      allow delete: if isOwner(existing().authorUid) || isAdmin();
+    }
+
+    match /events/{eventId} {
+      allow read: if isSignedIn();
+      allow create: if (isAdmin() || (isSignedIn() && isConnectedToCompany(request.auth.uid))) && isValidEvent(incoming());
+      allow update: if (isOwner(existing().organizerUid) && isValidEvent(incoming())) || isAdmin();
+      allow delete: if (isOwner(existing().organizerUid) || isAdmin());
+    }
+
+    function isValidEventReminder(data) {
+      return data.keys().hasAll(['eventId', 'userUid', 'eventName', 'eventDate']) &&
+             data.userUid == request.auth.uid &&
+             data.eventId is string &&
+             data.eventName is string &&
+             data.eventDate is string;
+    }
+
+    match /forum_topics/{topicId} {
+      allow read: if isSignedIn();
+      allow create: if isSignedIn() && isValidForumTopic(incoming());
+      allow update: if (isOwner(existing().authorUid) && isValidForumTopic(incoming())) || 
+                      (isSignedIn() && incoming().diff(existing()).affectedKeys().hasOnly(['replyCount', 'updatedAt'])) ||
+                      isAdmin();
+      
+      match /posts/{postId} {
+        allow read: if isSignedIn();
+        allow create: if isSignedIn() && incoming().topicId == topicId && isValidForumPost(incoming());
+        allow delete: if isOwner(existing().authorUid) || isAdmin();
+      }
+
+      // The frontend code (PostDetail.tsx) writes/reads from a /comments
+      // subcollection. Define rules so those operations succeed.
+      match /comments/{commentId} {
+        allow read: if isSignedIn();
+        allow create: if isSignedIn() && incoming().authorUid == request.auth.uid;
+        allow update: if isOwner(existing().authorUid) || isAdmin();
+        allow delete: if isOwner(existing().authorUid) || isAdmin();
+      }
+    }
+
+    match /event_reminders/{reminderId} {
+      allow read: if isSignedIn() && (resource.data.userUid == request.auth.uid || isAdmin());
+      allow create: if isSignedIn() && isValidEventReminder(incoming());
+      allow update: if isAdmin();
+      allow delete: if isSignedIn() && (resource.data.userUid == request.auth.uid || isAdmin());
+    }
+
+    match /event_attendees/{attendanceId} {
+      allow read: if isSignedIn();
+      allow create: if isSignedIn() && isValidEventAttendee(incoming());
+      allow delete: if isSignedIn() && (resource.data.userUid == request.auth.uid || isAdmin());
+    }
+
+    match /jobs/{jobId} {
+      allow read: if isSignedIn();
+      allow create: if isSignedIn() && isValidJob(incoming());
+      allow update: if (isOwner(existing().creatorUid) && isValidJob(incoming())) || isAdmin();
+      allow delete: if isOwner(existing().creatorUid) || isAdmin();
+    }
+
+    match /notifications/{notificationId} {
+      allow read: if isSignedIn() && resource.data.recipientUid == request.auth.uid;
+      allow create: if isSignedIn(); // Allow mentions/triggers
+      allow update: if isSignedIn() && resource.data.recipientUid == request.auth.uid && 
+                    incoming().diff(existing()).affectedKeys().hasOnly(['read']);
+      allow delete: if isSignedIn() && resource.data.recipientUid == request.auth.uid;
+    }
+
+    match /surveys/{surveyId} {
+      allow read: if isSignedIn();
+      allow create: if (isAdmin() || (isSignedIn() && isConnectedToCompany(request.auth.uid)));
+      allow update: if (isSignedIn() && incoming().diff(existing()).affectedKeys().hasOnly(['options', 'totalVotes', 'updatedAt'])) || isAdmin();
+      
+      match /votes/{voteId} {
+        allow read: if isSignedIn();
+        allow create: if isSignedIn() && isOwner(voteId); // voteId is userId for uniqueness
+      }
+    }
+  }
+}
