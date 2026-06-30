@@ -89,7 +89,7 @@ export function useCollection<T>(path: string, constraints: QueryConstraint[] = 
     });
 
     return () => unsubscribe();
-  }, [path, JSON.stringify(constraints)]);
+  }, [path, JSON.stringify(constraints), enabled]);
 
   return { data, loading, error };
 }
@@ -122,7 +122,7 @@ export function useCollectionGroup<T>(collectionId: string, constraints: QueryCo
     });
 
     return () => unsubscribe();
-  }, [collectionId, JSON.stringify(constraints)]);
+  }, [collectionId, JSON.stringify(constraints), enabled]);
 
   return { data, loading, error };
 }

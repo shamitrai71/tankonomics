@@ -100,7 +100,11 @@ export default function Admin() {
   // Pages State
   const [newPage, setNewPage] = useState({ title:"", slug:"", content:"", published: true });
   const [editingPageId, setEditingPageId] = useState<string | null>(null);
-  const { data: dynamicPages, loading: loadingPages } = useCollection<any>("dynamic_pages", [orderBy("createdAt", "desc")]);
+  // Each collection below only subscribes while a tab that actually needs it
+  // is open. Previously these were always-on, meaning every admin session
+  // ran 11 simultaneous live listeners across the whole dataset regardless
+  // of which tab was visible.
+  const { data: dynamicPages, loading: loadingPages } = useCollection<any>("dynamic_pages", [orderBy("createdAt", "desc")], activeTab === "pages");
 
   const SYSTEM_PAGES = [
     { title:"Home Dashboard", slug:"home", id:"sys-home" },
@@ -131,12 +135,12 @@ export default function Admin() {
   const [extracting, setExtracting] = useState(false);
   const [preview, setPreview] = useState<any>(null);
   const [error, setError] = useState("");
-  const { data: recentNews, loading: loadingNews } = useCollection<any>("news", [orderBy("createdAt", "desc")]);
+  const { data: recentNews, loading: loadingNews } = useCollection<any>("news", [orderBy("createdAt", "desc")], activeTab === "analytics" || activeTab === "news");
 
   // Forum State
   const [forumTitle, setForumTitle] = useState("");
   const [forumCategoryIds, setForumCategoryIds] = useState<string[]>([]);
-  const { data: forumTopics, loading: loadingForums } = useCollection<any>("forum_topics", [orderBy("createdAt", "desc")]);
+  const { data: forumTopics, loading: loadingForums } = useCollection<any>("forum_topics", [orderBy("createdAt", "desc")], activeTab === "analytics" || activeTab === "forums");
 
   // Event State
   const [confirmDeleteCat, setConfirmDeleteCat] = useState<any>(null);
@@ -154,29 +158,34 @@ export default function Admin() {
     ctaUrl:""
   });
   const [editingEventId, setEditingEventId] = useState<string | null>(null);
-  const { data: events, loading: loadingEvents } = useCollection<any>("events", [orderBy("date", "asc")]);
+  const { data: events, loading: loadingEvents } = useCollection<any>("events", [orderBy("date", "asc")], activeTab === "analytics" || activeTab === "events");
 
   // Survey State
   const [surveyQuestion, setSurveyQuestion] = useState("");
   const [surveyOptions, setSurveyOptions] = useState(["", ""]);
-  const { data: surveys, loading: loadingSurveys } = useCollection<any>("surveys", [orderBy("createdAt", "desc")]);
+  const { data: surveys, loading: loadingSurveys } = useCollection<any>("surveys", [orderBy("createdAt", "desc")], activeTab === "analytics" || activeTab === "surveys");
 
   // Members State
-  const { data: members, loading: loadingMembers } = useCollection<any>("users", [orderBy("createdAt", "desc")]);
+  const { data: members, loading: loadingMembers } = useCollection<any>("users", [orderBy("createdAt", "desc")], activeTab === "analytics" || activeTab === "members");
   const [searchMember, setSearchMember] = useState("");
 
   // Moderation State
-  const { data: reports, loading: loadingReports } = useCollection<any>("reports", [orderBy("createdAt", "desc")]);
+  const { data: reports, loading: loadingReports } = useCollection<any>("reports", [orderBy("createdAt", "desc")], activeTab === "analytics" || activeTab === "moderation");
 
   // Resumes State
-  const { data: resumes, loading: loadingResumes } = useCollection<any>("resumes", [orderBy("createdAt", "desc")]);
+  const { data: resumes, loading: loadingResumes } = useCollection<any>("resumes", [orderBy("createdAt", "desc")], activeTab === "resumes");
   const [resumeFilter, setResumeFilter] = useState({ categoryId:"", subCategoryId:"" });
 
   // Companies & Categories State
-  const { data: categories, loading: loadingCategories } = useCollection<any>("company_categories", [orderBy("level", "asc"), orderBy("order", "asc")]);
-  const { data: companies, loading: loadingCompanies } = useCollection<any>("companies", [orderBy("createdAt", "desc")]);
-  const { data: claims, loading: loadingClaims } = useCollection<any>("company_claims", [orderBy("createdAt", "desc")]);
-  const { data: groups, loading: loadingGroups } = useCollection<any>("groups", [orderBy("createdAt", "desc")]);
+  // categories feeds: the analytics distribution chart, the companies tab's
+  // own category manager, resume filtering, and the CategorySelector used on
+  // both the forums and events forms. claims is companies-tab-only (the claim
+  // queue lives inside that tab). groups has no analytics-tab usage at all.
+  const categoryTabs: Tab[] = ["analytics", "companies", "resumes", "forums", "events"];
+  const { data: categories, loading: loadingCategories } = useCollection<any>("company_categories", [orderBy("level", "asc"), orderBy("order", "asc")], categoryTabs.includes(activeTab));
+  const { data: companies, loading: loadingCompanies } = useCollection<any>("companies", [orderBy("createdAt", "desc")], activeTab === "analytics" || activeTab === "companies");
+  const { data: claims, loading: loadingClaims } = useCollection<any>("company_claims", [orderBy("createdAt", "desc")], activeTab === "companies");
+  const { data: groups, loading: loadingGroups } = useCollection<any>("groups", [orderBy("createdAt", "desc")], activeTab === "groups");
 
   const [newCategory, setNewCategory] = useState({ name:"", parentId:"", level: 1 });
   const [newCompany, setNewCompany] = useState({ 
@@ -252,22 +261,27 @@ export default function Admin() {
 
   const handleCreatePage = async () => {
     if (!newPage.title || !newPage.slug) return;
-    
-    if (editingPageId) {
-      await updateDocument("dynamic_pages", editingPageId, {
-        ...newPage,
-        updatedAt: serverTimestamp()
-      });
-      setEditingPageId(null);
-    } else {
-      await createDocument("dynamic_pages", {
-        ...newPage,
-        authorUid: user?.uid,
-        createdAt: serverTimestamp(),
-        updatedAt: serverTimestamp()
-      });
+
+    try {
+      if (editingPageId) {
+        await updateDocument("dynamic_pages", editingPageId, {
+          ...newPage,
+          updatedAt: serverTimestamp()
+        });
+        setEditingPageId(null);
+      } else {
+        await createDocument("dynamic_pages", {
+          ...newPage,
+          authorUid: user?.uid,
+          createdAt: serverTimestamp(),
+          updatedAt: serverTimestamp()
+        });
+      }
+      setNewPage({ title:"", slug:"", content:"", published: true });
+    } catch (err: any) {
+      console.error("Page save failed:", err);
+      alert(`Failed to save page: ${err?.message || "Unknown error"}`);
     }
-    setNewPage({ title:"", slug:"", content:"", published: true });
   };
 
   const handleEditPage = (page: any) => {
@@ -281,10 +295,15 @@ export default function Admin() {
   };
 
   const handleTogglePublish = async (page: any) => {
-    await updateDocument("dynamic_pages", page.id, {
-      published: !page.published,
-      updatedAt: serverTimestamp()
-    });
+    try {
+      await updateDocument("dynamic_pages", page.id, {
+        published: !page.published,
+        updatedAt: serverTimestamp()
+      });
+    } catch (err: any) {
+      console.error("Toggle publish failed:", err);
+      alert(`Failed to update page: ${err?.message || "Unknown error"}`);
+    }
   };
 
   const handleExtract = async () => {
@@ -317,15 +336,20 @@ export default function Admin() {
 
   const handleCreateForum = async () => {
     if (!forumTitle.trim()) return;
-    await createDocument("forum_topics", {
-      title: forumTitle,
-      categoryIds: forumCategoryIds,
-      authorUid: user?.uid,
-      authorName: user?.displayName ||"Admin",
-      replyCount: 0,
-    });
-    setForumTitle("");
-    setForumCategoryIds([]);
+    try {
+      await createDocument("forum_topics", {
+        title: forumTitle,
+        categoryIds: forumCategoryIds,
+        authorUid: user?.uid,
+        authorName: user?.displayName ||"Admin",
+        replyCount: 0,
+      });
+      setForumTitle("");
+      setForumCategoryIds([]);
+    } catch (err: any) {
+      console.error("Forum topic creation failed:", err);
+      alert(`Failed to create topic: ${err?.message || "Unknown error"}`);
+    }
   };
 
   const startEditEvent = (event: any) => {
@@ -433,14 +457,19 @@ export default function Admin() {
 
   const handleCreateSurvey = async () => {
     if (!surveyQuestion.trim() || surveyOptions.some(o => !o.trim())) return;
-    await createDocument("surveys", {
-      question: surveyQuestion,
-      options: surveyOptions.map(text => ({ text, votes: 0 })),
-      creatorUid: user?.uid,
-      totalVotes: 0,
-    });
-    setSurveyQuestion("");
-    setSurveyOptions(["", ""]);
+    try {
+      await createDocument("surveys", {
+        question: surveyQuestion,
+        options: surveyOptions.map(text => ({ text, votes: 0 })),
+        creatorUid: user?.uid,
+        totalVotes: 0,
+      });
+      setSurveyQuestion("");
+      setSurveyOptions(["", ""]);
+    } catch (err: any) {
+      console.error("Survey creation failed:", err);
+      alert(`Failed to create survey: ${err?.message || "Unknown error"}`);
+    }
   };
 
   const filteredMembers = members.filter(m => 
@@ -451,12 +480,17 @@ export default function Admin() {
 
   const handleCreateCategory = async () => {
     if (!newCategory.name) return;
-    await createDocument("company_categories", {
-      ...newCategory,
-      order: categories.filter((c: any) => c.level === newCategory.level && c.parentId === newCategory.parentId).length,
-      createdAt: serverTimestamp()
-    });
-    setNewCategory({ ...newCategory, name:"" });
+    try {
+      await createDocument("company_categories", {
+        ...newCategory,
+        order: categories.filter((c: any) => c.level === newCategory.level && c.parentId === newCategory.parentId).length,
+        createdAt: serverTimestamp()
+      });
+      setNewCategory({ ...newCategory, name:"" });
+    } catch (err: any) {
+      console.error("Category creation failed:", err);
+      alert(`Failed to create category: ${err?.message || "Unknown error"}`);
+    }
   };
 
   const handleDeleteCategory = async (cat: any) => {
@@ -624,15 +658,20 @@ const handleEditCompany = (company: any) => {
 };
 
   const handleResolveClaim = async (claim: any, approve: boolean) => {
-    if (approve) {
-      await updateDocument("companies", claim.companyId, {
-        ownerUid: claim.userUid,
-        isClaimed: true,
-        updatedAt: serverTimestamp()
-      });
-      await updateDocument("company_claims", claim.id, { status:"approved" });
-    } else {
-      await updateDocument("company_claims", claim.id, { status:"rejected" });
+    try {
+      if (approve) {
+        await updateDocument("companies", claim.companyId, {
+          ownerUid: claim.userUid,
+          isClaimed: true,
+          updatedAt: serverTimestamp()
+        });
+        await updateDocument("company_claims", claim.id, { status:"approved" });
+      } else {
+        await updateDocument("company_claims", claim.id, { status:"rejected" });
+      }
+    } catch (err: any) {
+      console.error("Claim resolution failed:", err);
+      alert(`Failed to ${approve ? "approve" : "reject"} claim: ${err?.message || "Unknown error"}`);
     }
   };
 
@@ -1034,7 +1073,14 @@ const handleEditCompany = (company: any) => {
                                  </td>
                                  <td className="px-6 py-4 text-right">
                                     <button 
-                                      onClick={() => removeDocument("resumes", resume.id)}
+                                      onClick={async () => {
+                                        if (!window.confirm("Delete this resume?")) return;
+                                        try {
+                                          await removeDocument("resumes", resume.id);
+                                        } catch (err: any) {
+                                          alert(`Failed to delete resume: ${err?.message || "Unknown error"}`);
+                                        }
+                                      }}
                                       className="p-2 text-text-body/30 hover:text-rust transition-colors"
                                     >
                                        <Trash2 className="w-4 h-4" />
@@ -1445,7 +1491,14 @@ const handleEditCompany = (company: any) => {
                             <Palette className="w-4 h-4" />
                           </button>
                           <button 
-                            onClick={() => removeDocument("companies", company.id)}
+                            onClick={async () => {
+                              if (!window.confirm(`Delete "${company.name}"? This cannot be undone.`)) return;
+                              try {
+                                await removeDocument("companies", company.id);
+                              } catch (err: any) {
+                                alert(`Failed to delete company: ${err?.message || "Unknown error"}`);
+                              }
+                            }}
                             className={`p-2 rounded-xl transition-all ${
                               company.isFeatured ? "hover:bg-red-500/20 text-white/50 hover:text-red-300" : "hover:bg-red-50 text-text-body/40 hover:text-rust"
                             }`}
@@ -1596,7 +1649,13 @@ const handleEditCompany = (company: any) => {
                         {report.status === 'pending' && (
                           <div className="flex items-center justify-end gap-2">
                              <button 
-                               onClick={() => updateDocument("reports", report.id, { status:"dismissed", updatedAt: serverTimestamp() })}
+                               onClick={async () => {
+                                 try {
+                                   await updateDocument("reports", report.id, { status:"dismissed", updatedAt: serverTimestamp() });
+                                 } catch (err: any) {
+                                   alert(`Failed to dismiss report: ${err?.message || "Unknown error"}`);
+                                 }
+                               }}
                                className="p-2 text-text-body/55 hover:text-text-body hover:bg-bg-main rounded-lg transition-all"
                                title="Dismiss Report"
                              >
@@ -1627,7 +1686,14 @@ const handleEditCompany = (company: any) => {
                         )}
                         {report.status !== 'pending' && (
                            <button 
-                              onClick={() => removeDocument("reports", report.id)}
+                              onClick={async () => {
+                                if (!window.confirm("Delete this report?")) return;
+                                try {
+                                  await removeDocument("reports", report.id);
+                                } catch (err: any) {
+                                  alert(`Failed to delete report: ${err?.message || "Unknown error"}`);
+                                }
+                              }}
                               className="p-2 text-text-body/30 hover:text-rust transition-all"
                            >
                               <Trash2 className="w-4 h-4" />
@@ -2170,7 +2236,14 @@ const handleEditCompany = (company: any) => {
                          >
                             <Layout className="w-5 h-5" />
                          </button>
-                         <button onClick={() => removeDocument("dynamic_pages", page.id)} className="p-3 text-text-body/30 hover:text-rust transition-colors">
+                         <button onClick={async () => {
+                           if (!window.confirm(`Delete "${page.title}"? This cannot be undone.`)) return;
+                           try {
+                             await removeDocument("dynamic_pages", page.id);
+                           } catch (err: any) {
+                             alert(`Failed to delete page: ${err?.message || "Unknown error"}`);
+                           }
+                         }} className="p-3 text-text-body/30 hover:text-rust transition-colors">
                             <Trash2 className="w-5 h-5" />
                          </button>
                       </div>
@@ -2231,7 +2304,14 @@ const handleEditCompany = (company: any) => {
                           <p className="text-[10px] text-text-body/55 uppercase">{item.source}</p>
                         </div>
                       </div>
-                      <button onClick={() => removeDocument("news", item.id)} className="p-2 text-text-body/40 hover:text-rust transition-colors">
+                      <button onClick={async () => {
+                        if (!window.confirm(`Delete "${item.title}"?`)) return;
+                        try {
+                          await removeDocument("news", item.id);
+                        } catch (err: any) {
+                          alert(`Failed to delete news item: ${err?.message || "Unknown error"}`);
+                        }
+                      }} className="p-2 text-text-body/40 hover:text-rust transition-colors">
                         <Trash2 className="w-4 h-4" />
                       </button>
                     </div>
@@ -2263,7 +2343,14 @@ const handleEditCompany = (company: any) => {
                     <p className="font-bold text-text-heading">{topic.title}</p>
                     <p className="text-[10px] text-text-body/55">{topic.category}</p>
                   </div>
-                  <button onClick={() => removeDocument("forum_topics", topic.id)} className="p-2 text-text-body/40 hover:text-rust transition-colors">
+                  <button onClick={async () => {
+                        if (!window.confirm(`Delete "${topic.title}"? Note: existing replies are not deleted and will become orphaned.`)) return;
+                        try {
+                          await removeDocument("forum_topics", topic.id);
+                        } catch (err: any) {
+                          alert(`Failed to delete topic: ${err?.message || "Unknown error"}`);
+                        }
+                      }} className="p-2 text-text-body/40 hover:text-rust transition-colors">
                     <Trash2 className="w-4 h-4" />
                   </button>
                 </div>
@@ -2414,7 +2501,14 @@ const handleEditCompany = (company: any) => {
                       <button onClick={() => startEditEvent(event)} className={`p-2 transition-colors ${editingEventId === event.id ? "text-accent" : "text-text-body/40 hover:text-accent"}`} title="Edit event">
                         <Edit className="w-4 h-4" />
                       </button>
-                      <button onClick={() => removeDocument("events", event.id)} className="p-2 text-text-body/40 hover:text-rust transition-colors" title="Delete event">
+                      <button onClick={async () => {
+                      if (!window.confirm(`Delete "${event.title}"? This cannot be undone.`)) return;
+                      try {
+                        await removeDocument("events", event.id);
+                      } catch (err: any) {
+                        alert(`Failed to delete event: ${err?.message || "Unknown error"}`);
+                      }
+                    }} className="p-2 text-text-body/40 hover:text-rust transition-colors" title="Delete event">
                         <Trash2 className="w-4 h-4" />
                       </button>
                     </div>
@@ -2463,7 +2557,14 @@ const handleEditCompany = (company: any) => {
                          <Clock className="w-3 h-3" /> {survey.createdAt?.seconds ? format(survey.createdAt.seconds * 1000, 'MMM d, yyyy') : '-'} • {survey.totalVotes || 0} TOTAL VOTES
                        </p>
                      </div>
-                     <button onClick={() => removeDocument("surveys", survey.id)} className="p-2 text-text-body/40 hover:text-rust transition-colors">
+                     <button onClick={async () => {
+                     if (!window.confirm(`Delete "${survey.question}"? Note: existing votes are not deleted and will become orphaned.`)) return;
+                     try {
+                       await removeDocument("surveys", survey.id);
+                     } catch (err: any) {
+                       alert(`Failed to delete survey: ${err?.message || "Unknown error"}`);
+                     }
+                   }} className="p-2 text-text-body/40 hover:text-rust transition-colors">
                        <Trash2 className="w-4 h-4" />
                      </button>
                    </div>
@@ -2640,7 +2741,13 @@ const handleEditCompany = (company: any) => {
                             <div className="flex items-center justify-end gap-2">
                                {group.status !== 'approved' && (
                                  <button 
-                                   onClick={() => updateDocument("groups", group.id, { status:"approved" })}
+                                   onClick={async () => {
+                                     try {
+                                       await updateDocument("groups", group.id, { status:"approved" });
+                                     } catch (err: any) {
+                                       alert(`Failed to approve group: ${err?.message || "Unknown error"}`);
+                                     }
+                                   }}
                                    className="p-2 bg-accent/10 text-accent hover:bg-emerald-600 hover:text-white rounded-xl transition-all"
                                    title="Approve"
                                  >
@@ -2648,7 +2755,14 @@ const handleEditCompany = (company: any) => {
                                  </button>
                                )}
                                <button 
-                                 onClick={() => removeDocument("groups", group.id)}
+                                 onClick={async () => {
+                                   if (!window.confirm(`Delete "${group.name}"? Note: existing posts and comments are not deleted and will become orphaned.`)) return;
+                                   try {
+                                     await removeDocument("groups", group.id);
+                                   } catch (err: any) {
+                                     alert(`Failed to delete group: ${err?.message || "Unknown error"}`);
+                                   }
+                                 }}
                                  className="p-2 bg-rust/5 text-rust hover:bg-rust hover:text-white rounded-xl transition-all"
                                  title="Delete"
                                >
