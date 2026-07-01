@@ -37,19 +37,21 @@ if (-not $firebaseCmd) {
     Write-Host "Install it with:  npm install -g firebase-tools"
     Write-Host "Then sign in:     firebase login"
     Write-Host ""
-    Write-Host "Or, deploy rules manually via the Firebase Console:"
+    Write-Host "Or, deploy rules + indexes manually via the Firebase Console:"
     Write-Host "  1. Open https://console.firebase.google.com/project/tankonomics/firestore/rules"
     Write-Host "  2. Paste the contents of .\firestore.rules"
     Write-Host "  3. Click Publish"
+    Write-Host "  4. For indexes, use the console's Indexes tab, or click the auto-generated"
+    Write-Host "     link that appears in the browser console when a query needs one."
     Write-Host ""
     Write-Host "Skipping rules deploy."
 }
 else {
     Write-Host ""
-    Write-Host "[1/2] Deploying Firestore rules..."
+    Write-Host "[1/2] Deploying Firestore rules + indexes..."
     Write-Host ""
 
-    firebase deploy --only firestore:rules --project tankonomics
+    firebase deploy --only firestore:rules,firestore:indexes --project tankonomics
 
     if ($LASTEXITCODE -ne 0) {
         Write-Host ""
@@ -58,7 +60,7 @@ else {
     }
 
     Write-Host ""
-    Write-Host "Rules published. Propagation usually completes within 30 seconds." -ForegroundColor Green
+    Write-Host "Rules + indexes published. Rules propagate within ~30s; new indexes may take a few minutes to build (watch the Firestore console)." -ForegroundColor Green
 }
 
 # ------------------------------------------------------------------------
