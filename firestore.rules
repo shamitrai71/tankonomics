@@ -230,7 +230,28 @@ service cloud.firestore {
              (!data.keys().contains('salary') || data.salary is string) &&
              (!data.keys().contains('type') || data.type in ["Full-time", "Part-time", "Contract", "Freelance", "Internship"]) &&
              (!data.keys().contains('status') || data.status in ["open", "closed"]) &&
-             (!data.keys().contains('createdAt') || data.createdAt == request.time);
+             (!data.keys().contains('categoryIds') || data.categoryIds is list) &&
+             (!data.keys().contains('createdAt') || data.createdAt is timestamp);
+    }
+
+    // Matches are admin-created suggestions linking a resume to a job.
+    // Individuals can accept/reject; company owners can mark hired/passed.
+    function isValidJobMatch(data) {
+      return data.keys().hasAll(['jobId', 'jobTitle', 'companyId', 'companyName', 'companyOwnerUid',
+                                  'resumeId', 'userUid', 'userName', 'status', 'adminUid', 'createdAt']) &&
+             data.jobId is string &&
+             data.jobTitle is string && data.jobTitle.size() <= 256 &&
+             data.companyId is string &&
+             data.companyName is string && data.companyName.size() <= 256 &&
+             data.companyOwnerUid is string &&
+             data.resumeId is string &&
+             data.userUid is string &&
+             data.userName is string && data.userName.size() <= 256 &&
+             data.status in ['suggested', 'accepted', 'rejected', 'hired', 'passed'] &&
+             data.adminUid is string &&
+             data.createdAt is timestamp &&
+             (!data.keys().contains('adminNote') || data.adminNote == null || data.adminNote is string) &&
+             (!data.keys().contains('updatedAt') || data.updatedAt is timestamp);
     }
 
     function isValidConnection(data) {
@@ -622,9 +643,38 @@ service cloud.firestore {
 
     match /jobs/{jobId} {
       allow read: if isSignedIn();
-      allow create: if isSignedIn() && isValidJob(incoming());
+      // Create restricted to admins OR owners of an admin-approved company.
+      // The UI gate (isCompanyOwner) is not sufficient on its own — the rules
+      // enforce it server-side so the API cannot be abused directly.
+      allow create: if isSignedIn() && isValidJob(incoming()) && (
+        isAdmin() ||
+        (incoming().companyId is string && incoming().companyId.size() > 0 &&
+         get(/databases/$(database)/documents/companies/$(incoming().companyId)).data.ownerUid == request.auth.uid &&
+         get(/databases/$(database)/documents/companies/$(incoming().companyId)).data.status == 'approved')
+      );
       allow update: if (isOwner(existing().creatorUid) && isValidJob(incoming())) || isAdmin();
       allow delete: if isOwner(existing().creatorUid) || isAdmin();
+    }
+
+    match /job_matches/{matchId} {
+      // Admin sees all. Individuals see matches where they are the candidate.
+      // Company owners see matches against their job listings.
+      allow read: if isAdmin() ||
+                  (isSignedIn() && resource.data.userUid == request.auth.uid) ||
+                  (isSignedIn() && resource.data.companyOwnerUid == request.auth.uid);
+      // Only admins can create matches.
+      allow create: if isAdmin() && isValidJobMatch(incoming());
+      // Individual can accept/reject their own suggestion.
+      // Company owner can mark a match hired/passed once individual has accepted.
+      // Admin can change anything.
+      allow update: if isAdmin() ||
+                    (isSignedIn() && resource.data.userUid == request.auth.uid &&
+                     incoming().diff(existing()).affectedKeys().hasOnly(['status', 'updatedAt']) &&
+                     incoming().status in ['accepted', 'rejected']) ||
+                    (isSignedIn() && resource.data.companyOwnerUid == request.auth.uid &&
+                     incoming().diff(existing()).affectedKeys().hasOnly(['status', 'updatedAt']) &&
+                     incoming().status in ['hired', 'passed']);
+      allow delete: if isAdmin();
     }
 
     match /notifications/{notificationId} {

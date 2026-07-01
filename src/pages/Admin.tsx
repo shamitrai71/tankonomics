@@ -65,7 +65,7 @@ import {
   Area
 } from "recharts";
 
-type Tab ="analytics" |"news" |"forums" |"events" |"surveys" |"members" |"theme" |"pages" |"moderation" |"companies" |"resumes" |"groups";
+type Tab ="analytics" |"news" |"forums" |"events" |"surveys" |"members" |"theme" |"pages" |"moderation" |"companies" |"resumes" |"groups" |"jobs";
 
 import { CategorySelector } from "../components/CategorySelector";
 import { uploadImage } from "../lib/uploadImage";
@@ -144,6 +144,12 @@ export default function Admin() {
 
   // Event State
   const [confirmDeleteCat, setConfirmDeleteCat] = useState<any>(null);
+  // Jobs tab state
+  const [matchingJob, setMatchingJob] = useState<any>(null);
+  const [confirmMatchResume, setConfirmMatchResume] = useState<any>(null);
+  const [matchNote, setMatchNote] = useState("");
+  const [jobStatusFilter, setJobStatusFilter] = useState<"all" | "open" | "closed">("all");
+  const [isCreatingMatch, setIsCreatingMatch] = useState(false);
   const [eventData, setEventData] = useState({ 
     title:"", 
     date:"", 
@@ -173,7 +179,7 @@ export default function Admin() {
   const { data: reports, loading: loadingReports } = useCollection<any>("reports", [orderBy("createdAt", "desc")], activeTab === "analytics" || activeTab === "moderation");
 
   // Resumes State
-  const { data: resumes, loading: loadingResumes } = useCollection<any>("resumes", [orderBy("createdAt", "desc")], activeTab === "resumes");
+  const { data: resumes, loading: loadingResumes } = useCollection<any>("resumes", [orderBy("createdAt", "desc")], activeTab === "resumes" || activeTab === "jobs");
   const [resumeFilter, setResumeFilter] = useState({ categoryId:"", subCategoryId:"" });
 
   // Companies & Categories State
@@ -186,6 +192,9 @@ export default function Admin() {
   const { data: companies, loading: loadingCompanies } = useCollection<any>("companies", [orderBy("createdAt", "desc")], activeTab === "analytics" || activeTab === "companies");
   const { data: claims, loading: loadingClaims } = useCollection<any>("company_claims", [orderBy("createdAt", "desc")], activeTab === "companies");
   const { data: groups, loading: loadingGroups } = useCollection<any>("groups", [orderBy("createdAt", "desc")], activeTab === "groups");
+  // Jobs tab: load all jobs + all matches. Resumes also needed for the matching panel.
+  const { data: adminJobs, loading: loadingAdminJobs } = useCollection<any>("jobs", [orderBy("createdAt", "desc")], activeTab === "jobs");
+  const { data: jobMatches, loading: loadingJobMatches } = useCollection<any>("job_matches", [orderBy("createdAt", "desc")], activeTab === "jobs");
 
   const [newCategory, setNewCategory] = useState({ name:"", parentId:"", level: 1 });
   const [newCompany, setNewCompany] = useState({ 
@@ -675,6 +684,66 @@ const handleEditCompany = (company: any) => {
     }
   };
 
+  // Jobs tab handlers
+  const handleToggleJobStatus = async (job: any) => {
+    const newStatus = job.status === "open" ? "closed" : "open";
+    try {
+      await updateDocument("jobs", job.id, { status: newStatus, updatedAt: serverTimestamp() });
+    } catch (err: any) {
+      console.error("Job status update failed:", err);
+      alert(`Failed to update job status: ${err?.message || "Unknown error"}`);
+    }
+  };
+
+  const handleDeleteJob = async (job: any) => {
+    if (!window.confirm(`Delete "${job.title}" from ${job.companyName}? This cannot be undone.`)) return;
+    try {
+      await removeDocument("jobs", job.id);
+      if (matchingJob?.id === job.id) setMatchingJob(null);
+    } catch (err: any) {
+      console.error("Job delete failed:", err);
+      alert(`Failed to delete job: ${err?.message || "Unknown error"}`);
+    }
+  };
+
+  const handleCreateMatch = async () => {
+    if (!matchingJob || !confirmMatchResume || isCreatingMatch) return;
+    setIsCreatingMatch(true);
+    try {
+      await createDocument("job_matches", {
+        jobId: matchingJob.id,
+        jobTitle: matchingJob.title,
+        companyId: matchingJob.companyId || "",
+        companyName: matchingJob.companyName,
+        companyOwnerUid: matchingJob.creatorUid,
+        resumeId: confirmMatchResume.id,
+        userUid: confirmMatchResume.userUid,
+        userName: confirmMatchResume.fullName,
+        status: "suggested",
+        adminUid: user?.uid,
+        adminNote: matchNote.trim() || null,
+        createdAt: serverTimestamp(),
+      });
+      setConfirmMatchResume(null);
+      setMatchNote("");
+    } catch (err: any) {
+      console.error("Match creation failed:", err);
+      alert(`Failed to create match: ${err?.message || "Unknown error"}`);
+    } finally {
+      setIsCreatingMatch(false);
+    }
+  };
+
+  const handleRemoveMatch = async (matchId: string) => {
+    if (!window.confirm("Remove this match suggestion?")) return;
+    try {
+      await removeDocument("job_matches", matchId);
+    } catch (err: any) {
+      console.error("Match removal failed:", err);
+      alert(`Failed to remove match: ${err?.message || "Unknown error"}`);
+    }
+  };
+
   // Analytics Helpers
   const getGrowthData = (data: any[], days: number = 7) => {
     const result = [];
@@ -729,6 +798,7 @@ const handleEditCompany = (company: any) => {
     { id:"members", label:"Members", icon: Users },
     { id:"companies", label:"Companies", icon: Building2 },
     { id:"groups", label:"Groups", icon: Users },
+    { id:"jobs", label:"Jobs", icon: Briefcase },
     { id:"moderation", label:"Moderation", icon: Shield },
     { id:"theme", label:"Branding", icon: Palette },
     { id:"pages", label:"Builder", icon: FileCode },
@@ -2776,6 +2846,249 @@ const handleEditCompany = (company: any) => {
                  </table>
                </div>
             </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+
+      <AnimatePresence>
+        {activeTab === "jobs" && (
+          <motion.div key="jobs" initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -10 }} className="space-y-6">
+            {/* Header */}
+            <div className="flex items-center justify-between">
+              <div>
+                <h2 className="font-display text-2xl text-text-heading">Job Board</h2>
+                <p className="text-xs text-text-body/55 mt-1 font-medium">{adminJobs.length} listing{adminJobs.length !== 1 ? "s" : ""}</p>
+              </div>
+              <div className="flex gap-2">
+                {(["all", "open", "closed"] as const).map(f => (
+                  <button key={f} onClick={() => setJobStatusFilter(f)}
+                    className={`px-3 py-1.5 eyebrow tabular rounded-xl transition-all ${
+                      jobStatusFilter === f ? "bg-text-heading text-bg-card" : "bg-bg-card border border-border-main text-text-body hover:text-text-heading"
+                    }`}>
+                    {f.charAt(0).toUpperCase() + f.slice(1)}
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            <div className="grid grid-cols-1 lg:grid-cols-5 gap-6">
+
+              {/* Job list — left 3 cols */}
+              <div className="lg:col-span-3 space-y-3">
+                {loadingAdminJobs ? (
+                  <div className="space-y-3">{[1,2,3].map(i => <div key={i} className="h-28 bg-bg-card border border-border-main rounded-2xl animate-pulse" />)}</div>
+                ) : adminJobs.filter(j => jobStatusFilter === "all" || j.status === jobStatusFilter).length === 0 ? (
+                  <div className="bg-bg-card border border-dashed border-border-main rounded-2xl p-12 text-center">
+                    <Briefcase className="w-10 h-10 text-text-body/25 mx-auto mb-3" />
+                    <p className="eyebrow tabular text-text-body/55">No listings yet</p>
+                  </div>
+                ) : (
+                  adminJobs.filter(j => jobStatusFilter === "all" || j.status === jobStatusFilter).map((job: any) => {
+                    const matchCount = jobMatches.filter((m: any) => m.jobId === job.id).length;
+                    const isMatching = matchingJob?.id === job.id;
+                    return (
+                      <div key={job.id} className={`bg-bg-card border rounded-2xl p-5 transition-all ${isMatching ? "border-accent shadow-md shadow-accent/10" : "border-border-main"}`}>
+                        <div className="flex items-start gap-4">
+                          <div className="w-10 h-10 bg-bg-main rounded-xl border border-border-main flex items-center justify-center shrink-0 overflow-hidden">
+                            {job.companyLogo ? <img src={job.companyLogo} className="w-full h-full object-contain" alt="" /> : <Building2 className="w-4 h-4 text-text-body/40" />}
+                          </div>
+                          <div className="flex-1 min-w-0">
+                            <div className="flex items-start justify-between gap-2">
+                              <div>
+                                <p className="font-bold text-text-heading leading-tight">{job.title}</p>
+                                <p className="text-xs text-text-body/55 mt-0.5">{job.companyName}</p>
+                              </div>
+                              <span className={`eyebrow tabular px-2 py-0.5 rounded-full shrink-0 ${
+                                job.status === "open" ? "bg-accent/10 text-accent" : "bg-bg-main text-text-body/55"
+                              }`}>
+                                {job.status || "open"}
+                              </span>
+                            </div>
+                            <div className="flex flex-wrap items-center gap-3 mt-2">
+                              {job.type && <span className="eyebrow tabular text-text-body/55">{job.type}</span>}
+                              {job.location && <span className="eyebrow tabular text-text-body/55 flex items-center gap-1"><MapPin className="w-3 h-3" />{job.location}</span>}
+                              {job.salary && <span className="eyebrow tabular text-text-body/55">{job.salary}</span>}
+                              {matchCount > 0 && (
+                                <span className="eyebrow tabular text-accent flex items-center gap-1">
+                                  <Users className="w-3 h-3" />{matchCount} matched
+                                </span>
+                              )}
+                            </div>
+                          </div>
+                        </div>
+                        <div className="flex items-center gap-2 mt-4 pt-4 border-t border-border-main">
+                          <button
+                            onClick={() => setMatchingJob(isMatching ? null : job)}
+                            className={`flex-1 inline-flex items-center justify-center gap-2 py-2 rounded-xl text-[13px] font-medium transition-all ${
+                              isMatching ? "bg-accent text-white" : "bg-accent/10 text-accent hover:bg-accent hover:text-white"
+                            }`}
+                          >
+                            <Users className="w-3.5 h-3.5" />
+                            {isMatching ? "Close panel" : "Match candidates"}
+                          </button>
+                          <button
+                            onClick={() => handleToggleJobStatus(job)}
+                            className="px-3 py-2 rounded-xl bg-bg-main border border-border-main text-text-body/55 hover:text-text-heading text-[12px] eyebrow tabular transition-all"
+                            title={job.status === "open" ? "Close listing" : "Reopen listing"}
+                          >
+                            {job.status === "open" ? "Close" : "Reopen"}
+                          </button>
+                          <button
+                            onClick={() => handleDeleteJob(job)}
+                            className="p-2 text-text-body/30 hover:text-rust hover:bg-rust/5 rounded-xl transition-all"
+                            title="Delete listing"
+                          >
+                            <Trash2 className="w-4 h-4" />
+                          </button>
+                        </div>
+                      </div>
+                    );
+                  })
+                )}
+              </div>
+
+              {/* Matching panel — right 2 cols */}
+              <div className="lg:col-span-2">
+                {matchingJob ? (
+                  <div className="bg-bg-card border border-border-main rounded-2xl overflow-hidden sticky top-6">
+                    <div className="p-4 bg-bg-main border-b border-border-main">
+                      <p className="eyebrow tabular text-accent mb-0.5">MATCHING FOR</p>
+                      <p className="font-bold text-text-heading leading-tight line-clamp-1">{matchingJob.title}</p>
+                      <p className="text-xs text-text-body/55">{matchingJob.companyName}</p>
+                    </div>
+
+                    {/* Candidate resumes filtered by job category */}
+                    <div className="p-4 space-y-3 max-h-[50vh] overflow-y-auto custom-scrollbar">
+                      <p className="eyebrow tabular text-text-body/55 mb-2">SUGGEST A CANDIDATE</p>
+                      {(() => {
+                        const jobCatIds: string[] = matchingJob.categoryIds || (matchingJob.categoryId ? [matchingJob.categoryId] : []);
+                        const alreadyMatchedUids = jobMatches.filter((m: any) => m.jobId === matchingJob.id).map((m: any) => m.userUid);
+                        const candidateResumes = resumes.filter((r: any) =>
+                          !alreadyMatchedUids.includes(r.userUid) &&
+                          (jobCatIds.length === 0 || jobCatIds.includes(r.categoryId) || jobCatIds.includes(r.subCategoryId))
+                        );
+                        if (resumes.length === 0) return (
+                          <p className="text-xs text-text-body/55 text-center py-4">Loading resumes…</p>
+                        );
+                        if (candidateResumes.length === 0) return (
+                          <div className="text-center py-6">
+                            <p className="eyebrow tabular text-text-body/45 mb-1">NO CANDIDATES</p>
+                            <p className="text-xs text-text-body/55">No unmatched resumes in this sector yet.</p>
+                          </div>
+                        );
+                        return candidateResumes.map((resume: any) => (
+                          <div key={resume.id} className="p-3 bg-bg-main rounded-xl border border-border-main">
+                            <div className="flex items-start gap-3">
+                              <div className="w-8 h-8 rounded-lg bg-primary/10 border border-border-main flex items-center justify-center shrink-0 overflow-hidden">
+                                {resume.photoUrl ? <img src={resume.photoUrl} className="w-full h-full object-cover" alt="" /> : <span className="text-[11px] font-bold text-text-heading">{resume.fullName?.charAt(0)}</span>}
+                              </div>
+                              <div className="flex-1 min-w-0">
+                                <p className="text-sm font-bold text-text-heading leading-tight">{resume.fullName}</p>
+                                {resume.currentJob?.title && (
+                                  <p className="text-xs text-text-body/55 truncate">{resume.currentJob.title}{resume.currentJob.company ? ` · ${resume.currentJob.company}` : ""}</p>
+                                )}
+                                <span className="eyebrow tabular text-accent text-[9px] mt-0.5 inline-block">{resume.categoryName}</span>
+                              </div>
+                              <button
+                                onClick={() => setConfirmMatchResume(resume)}
+                                className="shrink-0 px-2.5 py-1.5 bg-accent text-white rounded-lg text-[11px] eyebrow tabular hover:brightness-110 transition-all"
+                              >
+                                Suggest
+                              </button>
+                            </div>
+                            {resume.aboutMe && (
+                              <p className="text-[11px] text-text-body/55 mt-2 leading-relaxed line-clamp-2">{resume.aboutMe}</p>
+                            )}
+                          </div>
+                        ));
+                      })()}
+                    </div>
+
+                    {/* Existing matches for this job */}
+                    {jobMatches.filter((m: any) => m.jobId === matchingJob.id).length > 0 && (
+                      <div className="border-t border-border-main p-4">
+                        <p className="eyebrow tabular text-text-body/55 mb-3">EXISTING MATCHES</p>
+                        <div className="space-y-2">
+                          {jobMatches.filter((m: any) => m.jobId === matchingJob.id).map((match: any) => (
+                            <div key={match.id} className="flex items-center justify-between gap-2 p-2 bg-bg-main rounded-lg">
+                              <div>
+                                <p className="text-xs font-bold text-text-heading">{match.userName}</p>
+                                <span className={`eyebrow tabular text-[9px] px-1.5 py-0.5 rounded-full ${
+                                  match.status === "suggested" ? "bg-rust/10 text-rust" :
+                                  match.status === "accepted" ? "bg-accent/10 text-accent" :
+                                  match.status === "hired" ? "bg-emerald-100 text-emerald-700" :
+                                  "bg-bg-main text-text-body/55"
+                                }`}>{match.status}</span>
+                              </div>
+                              <button onClick={() => handleRemoveMatch(match.id)} className="p-1 text-text-body/30 hover:text-rust transition-colors">
+                                <X className="w-3.5 h-3.5" />
+                              </button>
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                ) : (
+                  <div className="bg-bg-card border border-dashed border-border-main rounded-2xl p-8 text-center sticky top-6">
+                    <div className="w-10 h-10 rounded-xl bg-bg-main border border-border-main flex items-center justify-center mx-auto mb-3">
+                      <Users className="w-5 h-5 text-text-body/30" />
+                    </div>
+                    <p className="eyebrow tabular text-text-body/45 mb-1">SELECT A JOB</p>
+                    <p className="text-xs text-text-body/55">Click "Match candidates" on any listing to browse and suggest profiles from the resume database.</p>
+                  </div>
+                )}
+              </div>
+            </div>
+
+            {/* Confirm match modal */}
+            <AnimatePresence>
+              {confirmMatchResume && matchingJob && (
+                <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
+                  <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} onClick={() => setConfirmMatchResume(null)} className="absolute inset-0 bg-ink/60 backdrop-blur-sm" />
+                  <motion.div
+                    initial={{ opacity: 0, scale: 0.96, y: 12 }}
+                    animate={{ opacity: 1, scale: 1, y: 0 }}
+                    exit={{ opacity: 0, scale: 0.96, y: 12 }}
+                    className="bg-bg-card border border-border-main rounded-2xl shadow-2xl w-full max-w-md relative z-10 overflow-hidden"
+                  >
+                    <div className="p-6 border-b border-border-main">
+                      <p className="eyebrow tabular text-accent mb-1">CONFIRM MATCH</p>
+                      <h3 className="font-display text-xl text-text-heading">Suggest {confirmMatchResume.fullName}?</h3>
+                      <p className="text-sm text-text-body/55 mt-1">For <span className="text-text-heading font-medium">{matchingJob.title}</span> at {matchingJob.companyName}</p>
+                    </div>
+                    <div className="p-6 space-y-4">
+                      <div>
+                        <label className="eyebrow tabular text-text-body/55 block mb-2">Note to both parties (optional)</label>
+                        <textarea
+                          value={matchNote}
+                          onChange={(e) => setMatchNote(e.target.value)}
+                          placeholder="e.g. Strong LNG background, 12 years terminal ops experience…"
+                          className="w-full p-3 bg-bg-main border border-border-main rounded-xl text-sm h-20 resize-none outline-none focus:border-text-heading transition-all"
+                        />
+                      </div>
+                      <p className="text-xs text-text-body/55 leading-relaxed">
+                        Both <span className="text-text-heading">{confirmMatchResume.fullName}</span> and <span className="text-text-heading">{matchingJob.companyName}</span> will see this suggestion. The candidate can accept or decline.
+                      </p>
+                    </div>
+                    <div className="p-4 bg-bg-main border-t border-border-main flex gap-3">
+                      <button onClick={() => setConfirmMatchResume(null)} className="flex-1 py-2.5 border border-border-main rounded-xl text-sm text-text-body hover:text-text-heading transition-all">
+                        Cancel
+                      </button>
+                      <button
+                        onClick={handleCreateMatch}
+                        disabled={isCreatingMatch}
+                        className="flex-1 py-2.5 bg-accent text-white rounded-xl text-sm font-medium hover:brightness-110 disabled:opacity-50 transition-all inline-flex items-center justify-center gap-2"
+                      >
+                        {isCreatingMatch ? <Loader2 className="w-4 h-4 animate-spin" /> : <Check className="w-4 h-4" />}
+                        Confirm suggestion
+                      </button>
+                    </div>
+                  </motion.div>
+                </div>
+              )}
+            </AnimatePresence>
           </motion.div>
         )}
       </AnimatePresence>

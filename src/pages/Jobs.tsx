@@ -10,7 +10,7 @@
 
 import { useState, useEffect } from "react";
 import { useCollection, createDocument, updateDocument } from "../hooks/useFirestore";
-import { orderBy, serverTimestamp } from "firebase/firestore";
+import { orderBy, serverTimestamp, where } from "firebase/firestore";
 import {
   Briefcase,
   MapPin,
@@ -27,6 +27,10 @@ import {
   Filter,
   Loader2,
   Info,
+  Sparkles,
+  UserCheck,
+  Check,
+  Users,
 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useAuth } from "../App";
@@ -54,6 +58,18 @@ export default function Jobs() {
 
   const { data: jobs, loading: loadingJobs } = useCollection<any>("jobs", [orderBy("createdAt", "desc")]);
   const { data: categories } = useCollection<any>("company_categories", [orderBy("level", "asc"), orderBy("order", "asc")]);
+  // Matches where the current user is the suggested candidate.
+  const { data: myMatches } = useCollection<any>(
+    "job_matches",
+    [where("userUid", "==", user?.uid || "__none__"), orderBy("createdAt", "desc")],
+    !!user
+  );
+  // Matches against this company owner's listings (shown on their job cards).
+  const { data: companyMatches } = useCollection<any>(
+    "job_matches",
+    [where("companyOwnerUid", "==", user?.uid || "__none__"), orderBy("createdAt", "desc")],
+    !!user && isCompanyOwner
+  );
 
   const [newJob, setNewJob] = useState({
     title: "",
@@ -163,6 +179,15 @@ export default function Jobs() {
     }
   };
 
+  const handleRespondToMatch = async (matchId: string, status: "accepted" | "rejected") => {
+    try {
+      await updateDocument("job_matches", matchId, { status, updatedAt: serverTimestamp() });
+    } catch (err: any) {
+      console.error("Match response failed:", err);
+      alert(`Failed to update match: ${err?.message || "Unknown error"}`);
+    }
+  };
+
   const filteredJobs = jobs.filter((job) => {
     const matchesSearch =
       job.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -202,7 +227,7 @@ export default function Jobs() {
               </p>
             </div>
           </div>
-          {(isAdmin || isCompanyOwner) && (
+          {(isAdmin || ownedCompanies.some((c: any) => c.status === "approved")) && (
             <button
               onClick={() => setShowPostModal(true)}
               className="inline-flex items-center justify-center gap-2 bg-text-heading text-bg-card px-5 py-3 rounded-xl text-[14px] font-medium hover:brightness-110 transition-all shrink-0"
@@ -304,6 +329,54 @@ export default function Jobs() {
 
           {/* Main — search + grid */}
           <div className="space-y-6">
+            {/* Suggested for You banner — shown when the current user has pending/accepted matches */}
+            {myMatches && myMatches.filter((m: any) => m.status === "suggested" || m.status === "accepted").length > 0 && (
+              <div className="bg-primary/5 border border-primary/20 rounded-2xl p-5">
+                <div className="flex items-center gap-2 mb-4">
+                  <Sparkles className="w-4 h-4 text-accent" strokeWidth={1.75} />
+                  <p className="eyebrow tabular text-accent">SUGGESTED FOR YOU</p>
+                </div>
+                <div className="space-y-3">
+                  {myMatches.filter((m: any) => m.status === "suggested" || m.status === "accepted").map((match: any) => (
+                    <div key={match.id} className="flex items-center gap-4 p-3 bg-bg-card border border-border-main rounded-xl">
+                      <div className="flex-1 min-w-0">
+                        <p className="font-bold text-text-heading text-sm leading-tight">{match.jobTitle}</p>
+                        <p className="text-xs text-text-body/55 mt-0.5">{match.companyName}</p>
+                        {match.adminNote && (
+                          <p className="text-xs text-text-body/70 mt-1 italic leading-relaxed">"{match.adminNote}"</p>
+                        )}
+                      </div>
+                      <div className="flex items-center gap-2 shrink-0">
+                        {match.status === "suggested" ? (
+                          <>
+                            <button
+                              onClick={() => handleRespondToMatch(match.id, "rejected")}
+                              className="p-2 border border-border-main rounded-xl text-text-body/55 hover:text-rust hover:border-rust transition-all"
+                              title="Decline"
+                            >
+                              <X className="w-4 h-4" />
+                            </button>
+                            <button
+                              onClick={() => handleRespondToMatch(match.id, "accepted")}
+                              className="px-3 py-2 bg-accent text-white rounded-xl text-[12px] eyebrow tabular hover:brightness-110 transition-all inline-flex items-center gap-1.5"
+                            >
+                              <Check className="w-3.5 h-3.5" />
+                              Accept
+                            </button>
+                          </>
+                        ) : (
+                          <span className="px-2.5 py-1 bg-accent/10 text-accent rounded-xl eyebrow tabular text-[11px] inline-flex items-center gap-1.5">
+                            <UserCheck className="w-3.5 h-3.5" />
+                            Accepted
+                          </span>
+                        )}
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+
             {/* Search bar + mobile filter toggle */}
             <div className="flex items-center gap-3">
               <button
@@ -368,6 +441,10 @@ export default function Jobs() {
                   {filteredJobs.map((job) => {
                     const isApplied = appliedJobs.includes(job.id);
                     const isSaved = (profile?.savedJobs || []).includes(job.id);
+                    const isMyCompanyJob = ownedCompanies.some((c: any) => c.id === job.companyId);
+                    const myJobMatchCount = isMyCompanyJob
+                      ? companyMatches.filter((m: any) => m.jobId === job.id).length
+                      : 0;
                     return (
                       <motion.div
                         key={job.id}
@@ -394,6 +471,12 @@ export default function Jobs() {
                               {job.categoryIds?.[0] && (
                                 <span className="eyebrow tabular text-accent bg-accent/10 px-1.5 py-0.5 rounded border border-accent/20">
                                   {categories.find((c: any) => c.id === job.categoryIds[0])?.name}
+                                </span>
+                              )}
+                              {myJobMatchCount > 0 && (
+                                <span className="eyebrow tabular text-emerald-700 bg-emerald-50 px-1.5 py-0.5 rounded border border-emerald-200 inline-flex items-center gap-1">
+                                  <Users className="w-3 h-3" />
+                                  {myJobMatchCount} matched
                                 </span>
                               )}
                             </div>
@@ -510,7 +593,7 @@ export default function Jobs() {
                   <div>
                     <span className="eyebrow tabular text-text-body/60 mb-2 block">Posting as</span>
                     <div className="flex flex-wrap gap-2">
-                      {ownedCompanies.map((company) => (
+                      {ownedCompanies.filter((c: any) => c.status === "approved").map((company) => (
                         <button
                           key={company.id}
                           onClick={() =>
