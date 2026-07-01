@@ -85,12 +85,13 @@ export default function Jobs() {
   });
 
   useEffect(() => {
-    if (showPostModal && ownedCompanies.length === 1 && !newJob.companyId) {
+    const approved = ownedCompanies.filter((c: any) => c.status === "approved");
+    if (showPostModal && approved.length === 1 && !newJob.companyId) {
       setNewJob((prev) => ({
         ...prev,
-        companyId: ownedCompanies[0].id || "",
-        companyName: ownedCompanies[0].name || "",
-        companyLogo: ownedCompanies[0].logo || "",
+        companyId: approved[0].id || "",
+        companyName: approved[0].name || "",
+        companyLogo: approved[0].logo || "",
       }));
     }
   }, [showPostModal, ownedCompanies]);
@@ -591,7 +592,7 @@ export default function Jobs() {
                   />
                 </label>
 
-                {ownedCompanies.length > 0 && (
+                {ownedCompanies.length > 0 && ownedCompanies.some((c: any) => c.status === "approved") && (
                   <div>
                     <span className="eyebrow tabular text-text-body/60 mb-2 block">Posting as</span>
                     <div className="flex flex-wrap gap-2">
@@ -622,6 +623,30 @@ export default function Jobs() {
                       ))}
                     </div>
                   </div>
+                )}
+
+                {/* Owner has companies but none are approved yet — explain why they can't post as them */}
+                {!isAdmin && ownedCompanies.length > 0 && !ownedCompanies.some((c: any) => c.status === "approved") && (
+                  <div className="px-4 py-3 bg-rust/5 border border-rust/20 rounded-xl flex items-start gap-3">
+                    <Info className="w-4 h-4 text-rust shrink-0 mt-0.5" strokeWidth={1.75} />
+                    <p className="text-[12px] text-text-body leading-relaxed">
+                      Your {ownedCompanies.length === 1 ? "company is" : "companies are"} still pending admin approval. Once approved, you'll be able to post listings on their behalf.
+                    </p>
+                  </div>
+                )}
+
+                {/* Admins can post on behalf of any company via free text */}
+                {isAdmin && (
+                  <label className="block">
+                    <span className="eyebrow tabular text-text-body/60 mb-2 block">Company name</span>
+                    <input
+                      type="text"
+                      value={newJob.companyName}
+                      onChange={(e) => setNewJob({ ...newJob, companyName: e.target.value })}
+                      placeholder="e.g. Esrai Group"
+                      className="w-full px-4 py-3 bg-bg-main border border-border-main rounded-xl text-[14px] text-text-heading placeholder:text-text-body/40 outline-none focus:border-text-heading transition-all"
+                    />
+                  </label>
                 )}
 
                 <div className="grid grid-cols-2 gap-3">
