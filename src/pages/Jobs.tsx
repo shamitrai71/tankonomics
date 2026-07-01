@@ -88,9 +88,9 @@ export default function Jobs() {
     if (showPostModal && ownedCompanies.length === 1 && !newJob.companyId) {
       setNewJob((prev) => ({
         ...prev,
-        companyId: ownedCompanies[0].id,
-        companyName: ownedCompanies[0].name,
-        companyLogo: ownedCompanies[0].logo,
+        companyId: ownedCompanies[0].id || "",
+        companyName: ownedCompanies[0].name || "",
+        companyLogo: ownedCompanies[0].logo || "",
       }));
     }
   }, [showPostModal, ownedCompanies]);
@@ -130,8 +130,9 @@ export default function Jobs() {
         salary: "",
         status: "open",
       });
-    } catch (err) {
+    } catch (err: any) {
       console.error("Error posting job:", err);
+      alert(`Failed to post job: ${err?.message || "Unknown error"}`);
     } finally {
       setIsPosting(false);
     }
@@ -172,8 +173,9 @@ export default function Jobs() {
           message: "",
         });
       }
-    } catch (err) {
+    } catch (err: any) {
       console.error("Error applying for job:", err);
+      alert(`Failed to submit application: ${err?.message || "Unknown error"}`);
     } finally {
       setApplyingJobId(null);
     }
@@ -599,9 +601,9 @@ export default function Jobs() {
                           onClick={() =>
                             setNewJob({
                               ...newJob,
-                              companyId: company.id,
-                              companyName: company.name,
-                              companyLogo: company.logo,
+                              companyId: company.id || "",
+                              companyName: company.name || "",
+                              companyLogo: company.logo || "",
                             })
                           }
                           className={`inline-flex items-center gap-1.5 px-3 py-2 rounded-xl text-[13px] font-medium border transition-all ${

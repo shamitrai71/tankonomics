@@ -224,13 +224,13 @@ service cloud.firestore {
              data.companyName is string && data.companyName.size() <= 256 &&
              data.creatorUid == request.auth.uid &&
              data.creatorEmail is string &&
-             (!data.keys().contains('companyId') || data.companyId is string) &&
-             (!data.keys().contains('companyLogo') || data.companyLogo is string) &&
-             (!data.keys().contains('location') || data.location is string) &&
-             (!data.keys().contains('salary') || data.salary is string) &&
+             (!data.keys().contains('companyId') || data.companyId == null || data.companyId is string) &&
+             (!data.keys().contains('companyLogo') || data.companyLogo == null || data.companyLogo is string) &&
+             (!data.keys().contains('location') || data.location == null || data.location is string) &&
+             (!data.keys().contains('salary') || data.salary == null || data.salary is string) &&
              (!data.keys().contains('type') || data.type in ["Full-time", "Part-time", "Contract", "Freelance", "Internship"]) &&
              (!data.keys().contains('status') || data.status in ["open", "closed"]) &&
-             (!data.keys().contains('categoryIds') || data.categoryIds is list) &&
+             (!data.keys().contains('categoryIds') || data.categoryIds == null || data.categoryIds is list) &&
              (!data.keys().contains('createdAt') || data.createdAt is timestamp);
     }
 
