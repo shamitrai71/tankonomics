@@ -87,7 +87,9 @@ service cloud.firestore {
              data.categoryId is string &&
              data.categoryName is string &&
              (!data.keys().contains('subCategoryId') || data.subCategoryId == null || data.subCategoryId is string) &&
-             (!data.keys().contains('subCategoryName') || data.subCategoryName == null || data.subCategoryName is string);
+             (!data.keys().contains('subCategoryName') || data.subCategoryName == null || data.subCategoryName is string) &&
+             (!data.keys().contains('currentCity') || data.currentCity == null || (data.currentCity is string && data.currentCity.size() <= 128)) &&
+             (!data.keys().contains('preferredLocations') || data.preferredLocations == null || data.preferredLocations is list);
     }
 
     function isValidNews(data) {
@@ -251,6 +253,7 @@ service cloud.firestore {
              data.adminUid is string &&
              data.createdAt is timestamp &&
              (!data.keys().contains('adminNote') || data.adminNote == null || data.adminNote is string) &&
+             (!data.keys().contains('score') || data.score == null || data.score is number) &&
              (!data.keys().contains('updatedAt') || data.updatedAt is timestamp);
     }
 

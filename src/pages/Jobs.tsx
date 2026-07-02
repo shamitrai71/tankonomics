@@ -278,7 +278,7 @@ export default function Jobs() {
             {/* Sectors */}
             <div className="bg-bg-card border border-border-main rounded-2xl p-5">
               <div className="flex items-center justify-between mb-4">
-                <p className="eyebrow tabular text-text-body/55">Sectors</p>
+                <p className="eyebrow tabular text-text-body/55">Domain Experience</p>
                 {selectedCategories.length > 0 && (
                   <button
                     onClick={() => setSelectedCategories([])}
@@ -692,7 +692,7 @@ export default function Jobs() {
                 </div>
 
                 <div>
-                  <span className="eyebrow tabular text-text-body/60 mb-2 block">Sectors</span>
+                  <span className="eyebrow tabular text-text-body/60 mb-2 block">Domain Experience</span>
                   <CategorySelector
                     categories={categories}
                     selectedIds={newJob.categoryIds}

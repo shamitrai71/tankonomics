@@ -51,6 +51,7 @@ import {
 import { motion } from "framer-motion";
 import { differenceInYears } from "date-fns";
 import { serverTimestamp, where } from "firebase/firestore";
+import { LOCATION_SUGGESTIONS } from "../lib/matchScore";
 
 export default function CreateResume() {
   const { user, profile } = useAuth();
@@ -62,6 +63,8 @@ export default function CreateResume() {
     fullName: profile?.displayName || user?.displayName || "",
     photoUrl: user?.photoURL || "",
     address: "",
+    currentCity: "",
+    preferredLocations: [] as string[],
     dateOfBirth: "",
     age: 0,
     mobile: "",
@@ -100,6 +103,8 @@ export default function CreateResume() {
         additionalCourses: resume.additionalCourses || [],
         additionalSkills: resume.additionalSkills || [],
         countriesTravelled: resume.countriesTravelled || [],
+        currentCity: resume.currentCity || "",
+        preferredLocations: resume.preferredLocations || [],
         hobbies: resume.hobbies || [],
       });
     }
@@ -266,16 +271,16 @@ export default function CreateResume() {
                 <span className="w-1.5 h-1.5 rounded-full bg-white" />
                 Required
               </span>
-              <p className="eyebrow tabular text-accent">INDUSTRY MATCHING</p>
+              <p className="eyebrow tabular text-accent">DOMAIN EXPERIENCE</p>
             </div>
-            <h3 className="font-display text-2xl text-text-heading mb-2 leading-tight">Categorise your discipline</h3>
+            <h3 className="font-display text-2xl text-text-heading mb-2 leading-tight">Domain experience</h3>
             <p className="text-[13px] text-text-body mb-6 max-w-xl leading-relaxed">
-              This drives every recruitment search on the platform. Be specific — employers filter by sector and sub-segment first.
+              This drives every recruitment search and job match on the platform. Be specific — employers filter by domain and specialisation first.
             </p>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <label className="block">
-                <span className="eyebrow tabular text-text-body/60 mb-2 block">Primary sector</span>
+                <span className="eyebrow tabular text-text-body/60 mb-2 block">Primary domain</span>
                 <select
                   value={formData.categoryId}
                   onChange={(e) => {
@@ -301,7 +306,7 @@ export default function CreateResume() {
                   <motion.input
                     initial={{ opacity: 0, y: -6 }}
                     animate={{ opacity: 1, y: 0 }}
-                    placeholder="Type your industry sector…"
+                    placeholder="Type your domain…"
                     value={formData.customCategory}
                     onChange={(e) => setFormData({ ...formData, customCategory: e.target.value, categoryName: e.target.value })}
                     className="w-full mt-2 p-3.5 bg-bg-main border border-accent/40 rounded-xl text-[14px] text-text-heading outline-none focus:border-accent transition-all"
@@ -310,7 +315,7 @@ export default function CreateResume() {
               </label>
 
               <label className="block">
-                <span className="eyebrow tabular text-text-body/60 mb-2 block">Sub-segment</span>
+                <span className="eyebrow tabular text-text-body/60 mb-2 block">Specialisation</span>
                 <select
                   value={formData.subCategoryId}
                   disabled={!formData.categoryId}
@@ -357,6 +362,49 @@ export default function CreateResume() {
             <div className="space-y-4">
               <TextField label="Full name" value={formData.fullName} onChange={(v) => setFormData({ ...formData, fullName: v })} placeholder="As shown on credentials" />
               <TextField label="Residential address" value={formData.address} onChange={(v) => setFormData({ ...formData, address: v })} placeholder="City, Country" icon={MapPin} />
+
+              <TextField label="Current city" value={formData.currentCity} onChange={(v) => setFormData({ ...formData, currentCity: v })} placeholder="e.g. Navi Mumbai" icon={MapPin} />
+
+              <div>
+                <div className="flex items-center justify-between mb-2">
+                  <span className="eyebrow tabular text-text-body/60">Preferred work locations</span>
+                  <button onClick={() => handleAddField("preferredLocations")} className="text-accent text-[11px] font-medium hover:underline inline-flex items-center gap-1">
+                    + Add location
+                  </button>
+                </div>
+                <p className="text-[11px] text-text-body/50 mb-2 leading-relaxed">
+                  Used for job matching — listings in these cities score higher for you.
+                </p>
+                <datalist id="location-suggestions">
+                  {LOCATION_SUGGESTIONS.map((city) => (
+                    <option key={city} value={city} />
+                  ))}
+                </datalist>
+                {formData.preferredLocations.length === 0 && (
+                  <button onClick={() => handleAddField("preferredLocations")} className="text-[13px] text-text-body/50 italic">
+                    e.g. Rotterdam, Singapore, Fujairah…
+                  </button>
+                )}
+                <div className="space-y-2">
+                  {formData.preferredLocations.map((loc: string, idx: number) => (
+                    <div key={idx} className="flex items-center gap-2">
+                      <input
+                        list="location-suggestions"
+                        value={loc}
+                        onChange={(e) => handleUpdateListItem("preferredLocations", idx, e.target.value)}
+                        placeholder="Start typing a city…"
+                        className="flex-1 p-3 bg-bg-main border border-border-main rounded-xl text-[14px] text-text-heading outline-none focus:border-text-heading transition-all"
+                      />
+                      <button
+                        onClick={() => handleRemoveField("preferredLocations", idx)}
+                        className="w-8 h-8 rounded-lg text-text-body/30 hover:text-rust hover:bg-rust/5 flex items-center justify-center transition-all shrink-0"
+                      >
+                        ×
+                      </button>
+                    </div>
+                  ))}
+                </div>
+              </div>
 
               <div className="grid grid-cols-2 gap-3">
                 <label className="block">

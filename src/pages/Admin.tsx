@@ -69,6 +69,7 @@ type Tab ="analytics" |"news" |"forums" |"events" |"surveys" |"members" |"theme"
 
 import { CategorySelector } from "../components/CategorySelector";
 import { uploadImage } from "../lib/uploadImage";
+import { scoreMatch } from "../lib/matchScore";
 
 export default function Admin() {
   const [activeTab, setActiveTab] = useState<Tab>("analytics");
@@ -723,6 +724,7 @@ const handleEditCompany = (company: any) => {
         status: "suggested",
         adminUid: user?.uid,
         adminNote: matchNote.trim() || null,
+        score: scoreMatch(matchingJob, confirmMatchResume).total,
         createdAt: serverTimestamp(),
       });
       setConfirmMatchResume(null);
@@ -2961,21 +2963,22 @@ const handleEditCompany = (company: any) => {
 
                     {/* Candidate resumes filtered by job category */}
                     <div className="p-4 space-y-3 max-h-[50vh] overflow-y-auto custom-scrollbar">
-                      <p className="eyebrow tabular text-text-body/55 mb-2">SUGGEST A CANDIDATE</p>
+                      <p className="eyebrow tabular text-text-body/55 mb-2">CANDIDATES · RANKED BY MATCH SCORE</p>
                       {(() => {
-                        const jobCatIds: string[] = matchingJob.categoryIds || (matchingJob.categoryId ? [matchingJob.categoryId] : []);
                         const alreadyMatchedUids = jobMatches.filter((m: any) => m.jobId === matchingJob.id).map((m: any) => m.userUid);
-                        const candidateResumes = resumes.filter((r: any) =>
-                          !alreadyMatchedUids.includes(r.userUid) &&
-                          (jobCatIds.length === 0 || jobCatIds.includes(r.categoryId) || jobCatIds.includes(r.subCategoryId))
-                        );
+                        // Score every unmatched resume against this job (10-point rubric:
+                        // domain 4, role 2, skills 2, location 1, credentials 1), best first.
+                        const candidateResumes = resumes
+                          .filter((r: any) => !alreadyMatchedUids.includes(r.userUid))
+                          .map((r: any) => ({ ...r, _match: scoreMatch(matchingJob, r) }))
+                          .sort((a: any, b: any) => b._match.total - a._match.total);
                         if (resumes.length === 0) return (
                           <p className="text-xs text-text-body/55 text-center py-4">Loading resumes…</p>
                         );
                         if (candidateResumes.length === 0) return (
                           <div className="text-center py-6">
                             <p className="eyebrow tabular text-text-body/45 mb-1">NO CANDIDATES</p>
-                            <p className="text-xs text-text-body/55">No unmatched resumes in this sector yet.</p>
+                            <p className="text-xs text-text-body/55">Every resume is already matched to this job, or none exist yet.</p>
                           </div>
                         );
                         return candidateResumes.map((resume: any) => (
@@ -2989,7 +2992,19 @@ const handleEditCompany = (company: any) => {
                                 {resume.currentJob?.title && (
                                   <p className="text-xs text-text-body/55 truncate">{resume.currentJob.title}{resume.currentJob.company ? ` · ${resume.currentJob.company}` : ""}</p>
                                 )}
-                                <span className="eyebrow tabular text-accent text-[9px] mt-0.5 inline-block">{resume.categoryName}</span>
+                                <div className="flex items-center gap-2 mt-0.5">
+                                  <span className="eyebrow tabular text-accent text-[9px]">{resume.categoryName}</span>
+                                  <span
+                                    className={`eyebrow tabular text-[9px] px-1.5 py-0.5 rounded-full ${
+                                      resume._match.total >= 7 ? "bg-emerald-100 text-emerald-700" :
+                                      resume._match.total >= 4 ? "bg-accent/10 text-accent" :
+                                      "bg-bg-main text-text-body/55"
+                                    }`}
+                                    title={`Domain ${resume._match.domain}/4 · Role ${resume._match.role}/2 · Skills ${resume._match.skills}/2 · Location ${resume._match.location}/1 · Credentials ${resume._match.credentials}/1`}
+                                  >
+                                    {resume._match.total}/10 match
+                                  </span>
+                                </div>
                               </div>
                               <button
                                 onClick={() => setConfirmMatchResume(resume)}
