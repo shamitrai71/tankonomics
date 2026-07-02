@@ -672,6 +672,7 @@ const handleEditCompany = (company: any) => {
         await updateDocument("companies", claim.companyId, {
           ownerUid: claim.userUid,
           isClaimed: true,
+          status: "approved",
           updatedAt: serverTimestamp()
         });
         await updateDocument("company_claims", claim.id, { status:"approved" });
