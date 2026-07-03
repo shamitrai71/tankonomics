@@ -1,0 +1,4204 @@
+{
+ "version": 1,
+ "generated": "phase-0",
+ "enums": {
+  "seniority": [
+   "Trainee",
+   "Junior",
+   "Mid-level",
+   "Senior",
+   "Lead",
+   "Manager",
+   "Senior Manager",
+   "Head / Director"
+  ],
+  "employmentType": [
+   "Permanent",
+   "Contract",
+   "Turnaround",
+   "Shutdown",
+   "Part-time",
+   "Internship"
+  ]
+ },
+ "nodes": [
+  {
+   "id": "ind-petroleum-liquid-fuels",
+   "type": "industry",
+   "name": "Petroleum & Liquid Fuels",
+   "parentId": null,
+   "level": 1,
+   "aliases": [],
+   "order": 0
+  },
+  {
+   "id": "ind-crude-oil",
+   "type": "industry",
+   "name": "Crude Oil",
+   "parentId": "ind-petroleum-liquid-fuels",
+   "level": 2,
+   "aliases": [],
+   "order": 0
+  },
+  {
+   "id": "ind-refined-products",
+   "type": "industry",
+   "name": "Refined Products",
+   "parentId": "ind-petroleum-liquid-fuels",
+   "level": 2,
+   "aliases": [],
+   "order": 1
+  },
+  {
+   "id": "ind-aviation-fuel",
+   "type": "industry",
+   "name": "Aviation Fuel",
+   "parentId": "ind-petroleum-liquid-fuels",
+   "level": 2,
+   "aliases": [],
+   "order": 2
+  },
+  {
+   "id": "ind-marine-fuels",
+   "type": "industry",
+   "name": "Marine Fuels",
+   "parentId": "ind-petroleum-liquid-fuels",
+   "level": 2,
+   "aliases": [],
+   "order": 3
+  },
+  {
+   "id": "ind-lubricants",
+   "type": "industry",
+   "name": "Lubricants",
+   "parentId": "ind-petroleum-liquid-fuels",
+   "level": 2,
+   "aliases": [],
+   "order": 4
+  },
+  {
+   "id": "ind-bitumen",
+   "type": "industry",
+   "name": "Bitumen",
+   "parentId": "ind-petroleum-liquid-fuels",
+   "level": 2,
+   "aliases": [],
+   "order": 5
+  },
+  {
+   "id": "ind-ethanol",
+   "type": "industry",
+   "name": "Ethanol",
+   "parentId": "ind-petroleum-liquid-fuels",
+   "level": 2,
+   "aliases": [],
+   "order": 6
+  },
+  {
+   "id": "ind-methanol",
+   "type": "industry",
+   "name": "Methanol",
+   "parentId": "ind-petroleum-liquid-fuels",
+   "level": 2,
+   "aliases": [],
+   "order": 7
+  },
+  {
+   "id": "ind-chemicals",
+   "type": "industry",
+   "name": "Chemicals",
+   "parentId": null,
+   "level": 1,
+   "aliases": [],
+   "order": 1
+  },
+  {
+   "id": "ind-petrochemicals",
+   "type": "industry",
+   "name": "Petrochemicals",
+   "parentId": "ind-chemicals",
+   "level": 2,
+   "aliases": [],
+   "order": 0
+  },
+  {
+   "id": "ind-specialty-chemicals",
+   "type": "industry",
+   "name": "Specialty Chemicals",
+   "parentId": "ind-chemicals",
+   "level": 2,
+   "aliases": [],
+   "order": 1
+  },
+  {
+   "id": "ind-industrial-chemicals",
+   "type": "industry",
+   "name": "Industrial Chemicals",
+   "parentId": "ind-chemicals",
+   "level": 2,
+   "aliases": [],
+   "order": 2
+  },
+  {
+   "id": "ind-solvents",
+   "type": "industry",
+   "name": "Solvents",
+   "parentId": "ind-chemicals",
+   "level": 2,
+   "aliases": [],
+   "order": 3
+  },
+  {
+   "id": "ind-acids",
+   "type": "industry",
+   "name": "Acids",
+   "parentId": "ind-chemicals",
+   "level": 2,
+   "aliases": [],
+   "order": 4
+  },
+  {
+   "id": "ind-alkalis",
+   "type": "industry",
+   "name": "Alkalis",
+   "parentId": "ind-chemicals",
+   "level": 2,
+   "aliases": [],
+   "order": 5
+  },
+  {
+   "id": "ind-fertilizers",
+   "type": "industry",
+   "name": "Fertilizers",
+   "parentId": "ind-chemicals",
+   "level": 2,
+   "aliases": [],
+   "order": 6
+  },
+  {
+   "id": "ind-polymers",
+   "type": "industry",
+   "name": "Polymers",
+   "parentId": "ind-chemicals",
+   "level": 2,
+   "aliases": [],
+   "order": 7
+  },
+  {
+   "id": "ind-resins",
+   "type": "industry",
+   "name": "Resins",
+   "parentId": "ind-chemicals",
+   "level": 2,
+   "aliases": [],
+   "order": 8
+  },
+  {
+   "id": "ind-bulk-chemical-storage",
+   "type": "industry",
+   "name": "Bulk Chemical Storage",
+   "parentId": "ind-chemicals",
+   "level": 2,
+   "aliases": [],
+   "order": 9
+  },
+  {
+   "id": "ind-lng-cryogenic",
+   "type": "industry",
+   "name": "LNG & Cryogenic",
+   "parentId": null,
+   "level": 1,
+   "aliases": [],
+   "order": 2
+  },
+  {
+   "id": "ind-lng-import",
+   "type": "industry",
+   "name": "LNG Import",
+   "parentId": "ind-lng-cryogenic",
+   "level": 2,
+   "aliases": [],
+   "order": 0
+  },
+  {
+   "id": "ind-lng-export",
+   "type": "industry",
+   "name": "LNG Export",
+   "parentId": "ind-lng-cryogenic",
+   "level": 2,
+   "aliases": [],
+   "order": 1
+  },
+  {
+   "id": "ind-lng-peak-shaving",
+   "type": "industry",
+   "name": "LNG Peak Shaving",
+   "parentId": "ind-lng-cryogenic",
+   "level": 2,
+   "aliases": [],
+   "order": 2
+  },
+  {
+   "id": "ind-lpg",
+   "type": "industry",
+   "name": "LPG",
+   "parentId": "ind-lng-cryogenic",
+   "level": 2,
+   "aliases": [],
+   "order": 3
+  },
+  {
+   "id": "ind-ammonia",
+   "type": "industry",
+   "name": "Ammonia",
+   "parentId": "ind-lng-cryogenic",
+   "level": 2,
+   "aliases": [],
+   "order": 4
+  },
+  {
+   "id": "ind-liquid-hydrogen",
+   "type": "industry",
+   "name": "Liquid Hydrogen",
+   "parentId": "ind-lng-cryogenic",
+   "level": 2,
+   "aliases": [
+    "LH2"
+   ],
+   "order": 5
+  },
+  {
+   "id": "ind-liquid-nitrogen",
+   "type": "industry",
+   "name": "Liquid Nitrogen",
+   "parentId": "ind-lng-cryogenic",
+   "level": 2,
+   "aliases": [],
+   "order": 6
+  },
+  {
+   "id": "ind-liquid-oxygen",
+   "type": "industry",
+   "name": "Liquid Oxygen",
+   "parentId": "ind-lng-cryogenic",
+   "level": 2,
+   "aliases": [],
+   "order": 7
+  },
+  {
+   "id": "ind-co2-storage",
+   "type": "industry",
+   "name": "CO2 Storage",
+   "parentId": "ind-lng-cryogenic",
+   "level": 2,
+   "aliases": [
+    "CO₂ Storage"
+   ],
+   "order": 8
+  },
+  {
+   "id": "ind-tank-storage",
+   "type": "industry",
+   "name": "Tank Storage",
+   "parentId": null,
+   "level": 1,
+   "aliases": [],
+   "order": 3
+  },
+  {
+   "id": "ind-independent-terminals",
+   "type": "industry",
+   "name": "Independent Terminals",
+   "parentId": "ind-tank-storage",
+   "level": 2,
+   "aliases": [],
+   "order": 0
+  },
+  {
+   "id": "ind-strategic-petroleum-reserves",
+   "type": "industry",
+   "name": "Strategic Petroleum Reserves",
+   "parentId": "ind-tank-storage",
+   "level": 2,
+   "aliases": [],
+   "order": 1
+  },
+  {
+   "id": "ind-inland-tank-farms",
+   "type": "industry",
+   "name": "Inland Tank Farms",
+   "parentId": "ind-tank-storage",
+   "level": 2,
+   "aliases": [],
+   "order": 2
+  },
+  {
+   "id": "ind-marine-terminals",
+   "type": "industry",
+   "name": "Marine Terminals",
+   "parentId": "ind-tank-storage",
+   "level": 2,
+   "aliases": [],
+   "order": 3
+  },
+  {
+   "id": "ind-distribution-terminals",
+   "type": "industry",
+   "name": "Distribution Terminals",
+   "parentId": "ind-tank-storage",
+   "level": 2,
+   "aliases": [],
+   "order": 4
+  },
+  {
+   "id": "ind-pipeline-tank-farms",
+   "type": "industry",
+   "name": "Pipeline Tank Farms",
+   "parentId": "ind-tank-storage",
+   "level": 2,
+   "aliases": [],
+   "order": 5
+  },
+  {
+   "id": "ind-ports-marine",
+   "type": "industry",
+   "name": "Ports & Marine",
+   "parentId": null,
+   "level": 1,
+   "aliases": [],
+   "order": 4
+  },
+  {
+   "id": "ind-port-authorities",
+   "type": "industry",
+   "name": "Port Authorities",
+   "parentId": "ind-ports-marine",
+   "level": 2,
+   "aliases": [],
+   "order": 0
+  },
+  {
+   "id": "ind-jetty-operations",
+   "type": "industry",
+   "name": "Jetty Operations",
+   "parentId": "ind-ports-marine",
+   "level": 2,
+   "aliases": [],
+   "order": 1
+  },
+  {
+   "id": "ind-berths",
+   "type": "industry",
+   "name": "Berths",
+   "parentId": "ind-ports-marine",
+   "level": 2,
+   "aliases": [],
+   "order": 2
+  },
+  {
+   "id": "ind-harbour-infrastructure",
+   "type": "industry",
+   "name": "Harbour Infrastructure",
+   "parentId": "ind-ports-marine",
+   "level": 2,
+   "aliases": [],
+   "order": 3
+  },
+  {
+   "id": "ind-bulk-liquid-ports",
+   "type": "industry",
+   "name": "Bulk Liquid Ports",
+   "parentId": "ind-ports-marine",
+   "level": 2,
+   "aliases": [],
+   "order": 4
+  },
+  {
+   "id": "ind-pipelines",
+   "type": "industry",
+   "name": "Pipelines",
+   "parentId": null,
+   "level": 1,
+   "aliases": [],
+   "order": 5
+  },
+  {
+   "id": "ind-cross-country-pipelines",
+   "type": "industry",
+   "name": "Cross-country Pipelines",
+   "parentId": "ind-pipelines",
+   "level": 2,
+   "aliases": [],
+   "order": 0
+  },
+  {
+   "id": "ind-gathering-pipelines",
+   "type": "industry",
+   "name": "Gathering Pipelines",
+   "parentId": "ind-pipelines",
+   "level": 2,
+   "aliases": [],
+   "order": 1
+  },
+  {
+   "id": "ind-distribution-pipelines",
+   "type": "industry",
+   "name": "Distribution Pipelines",
+   "parentId": "ind-pipelines",
+   "level": 2,
+   "aliases": [],
+   "order": 2
+  },
+  {
+   "id": "ind-product-pipelines",
+   "type": "industry",
+   "name": "Product Pipelines",
+   "parentId": "ind-pipelines",
+   "level": 2,
+   "aliases": [],
+   "order": 3
+  },
+  {
+   "id": "ind-gas-pipelines",
+   "type": "industry",
+   "name": "Gas Pipelines",
+   "parentId": "ind-pipelines",
+   "level": 2,
+   "aliases": [],
+   "order": 4
+  },
+  {
+   "id": "ind-hydrogen-pipelines",
+   "type": "industry",
+   "name": "Hydrogen Pipelines",
+   "parentId": "ind-pipelines",
+   "level": 2,
+   "aliases": [],
+   "order": 5
+  },
+  {
+   "id": "ind-renewables",
+   "type": "industry",
+   "name": "Renewables",
+   "parentId": null,
+   "level": 1,
+   "aliases": [],
+   "order": 6
+  },
+  {
+   "id": "ind-hydrogen",
+   "type": "industry",
+   "name": "Hydrogen",
+   "parentId": "ind-renewables",
+   "level": 2,
+   "aliases": [],
+   "order": 0
+  },
+  {
+   "id": "ind-green-ammonia",
+   "type": "industry",
+   "name": "Green Ammonia",
+   "parentId": "ind-renewables",
+   "level": 2,
+   "aliases": [],
+   "order": 1
+  },
+  {
+   "id": "ind-biofuels",
+   "type": "industry",
+   "name": "Biofuels",
+   "parentId": "ind-renewables",
+   "level": 2,
+   "aliases": [
+    "Biodiesel"
+   ],
+   "order": 2,
+   "note": "Canonical under Renewables (also relevant to Petroleum & Liquid Fuels)."
+  },
+  {
+   "id": "ind-renewable-diesel",
+   "type": "industry",
+   "name": "Renewable Diesel",
+   "parentId": "ind-renewables",
+   "level": 2,
+   "aliases": [],
+   "order": 3
+  },
+  {
+   "id": "ind-sustainable-aviation-fuel",
+   "type": "industry",
+   "name": "Sustainable Aviation Fuel",
+   "parentId": "ind-renewables",
+   "level": 2,
+   "aliases": [
+    "SAF"
+   ],
+   "order": 4,
+   "note": "Canonical under Renewables (also relevant to Aviation Fuel)."
+  },
+  {
+   "id": "ind-carbon-capture",
+   "type": "industry",
+   "name": "Carbon Capture",
+   "parentId": "ind-renewables",
+   "level": 2,
+   "aliases": [],
+   "order": 5
+  },
+  {
+   "id": "ind-carbon-storage",
+   "type": "industry",
+   "name": "Carbon Storage",
+   "parentId": "ind-renewables",
+   "level": 2,
+   "aliases": [],
+   "order": 6
+  },
+  {
+   "id": "ind-mining-bulk-liquids",
+   "type": "industry",
+   "name": "Mining & Bulk Liquids",
+   "parentId": null,
+   "level": 1,
+   "aliases": [],
+   "order": 7
+  },
+  {
+   "id": "ind-slurry",
+   "type": "industry",
+   "name": "Slurry",
+   "parentId": "ind-mining-bulk-liquids",
+   "level": 2,
+   "aliases": [],
+   "order": 0
+  },
+  {
+   "id": "ind-mining-chemicals",
+   "type": "industry",
+   "name": "Mining Chemicals",
+   "parentId": "ind-mining-bulk-liquids",
+   "level": 2,
+   "aliases": [],
+   "order": 1
+  },
+  {
+   "id": "ind-acid-storage",
+   "type": "industry",
+   "name": "Acid Storage",
+   "parentId": "ind-mining-bulk-liquids",
+   "level": 2,
+   "aliases": [],
+   "order": 2
+  },
+  {
+   "id": "ind-process-liquids",
+   "type": "industry",
+   "name": "Process Liquids",
+   "parentId": "ind-mining-bulk-liquids",
+   "level": 2,
+   "aliases": [],
+   "order": 3
+  },
+  {
+   "id": "ind-utilities",
+   "type": "industry",
+   "name": "Utilities",
+   "parentId": null,
+   "level": 1,
+   "aliases": [],
+   "order": 8
+  },
+  {
+   "id": "ind-water",
+   "type": "industry",
+   "name": "Water",
+   "parentId": "ind-utilities",
+   "level": 2,
+   "aliases": [],
+   "order": 0
+  },
+  {
+   "id": "ind-wastewater",
+   "type": "industry",
+   "name": "Wastewater",
+   "parentId": "ind-utilities",
+   "level": 2,
+   "aliases": [],
+   "order": 1
+  },
+  {
+   "id": "ind-fire-water",
+   "type": "industry",
+   "name": "Fire Water",
+   "parentId": "ind-utilities",
+   "level": 2,
+   "aliases": [],
+   "order": 2
+  },
+  {
+   "id": "ind-cooling-water",
+   "type": "industry",
+   "name": "Cooling Water",
+   "parentId": "ind-utilities",
+   "level": 2,
+   "aliases": [],
+   "order": 3
+  },
+  {
+   "id": "ind-industrial-water",
+   "type": "industry",
+   "name": "Industrial Water",
+   "parentId": "ind-utilities",
+   "level": 2,
+   "aliases": [],
+   "order": 4
+  },
+  {
+   "id": "vert-terminal-operators",
+   "type": "vertical",
+   "name": "Terminal Operators",
+   "parentId": null,
+   "level": 1,
+   "aliases": [
+    "Independent Storage Operator"
+   ],
+   "order": 0
+  },
+  {
+   "id": "vert-epc-contractors",
+   "type": "vertical",
+   "name": "EPC Contractors",
+   "parentId": null,
+   "level": 1,
+   "aliases": [
+    "Engineering Procurement Construction",
+    "EPC"
+   ],
+   "order": 1
+  },
+  {
+   "id": "vert-tank-manufacturers",
+   "type": "vertical",
+   "name": "Tank Manufacturers",
+   "parentId": null,
+   "level": 1,
+   "aliases": [
+    "Tank Builders",
+    "Fabricators",
+    "Floating Roof Specialists"
+   ],
+   "order": 2
+  },
+  {
+   "id": "vert-equipment-oems",
+   "type": "vertical",
+   "name": "Equipment OEMs",
+   "parentId": null,
+   "level": 1,
+   "aliases": [
+    "Original Equipment Manufacturer"
+   ],
+   "order": 3
+  },
+  {
+   "id": "vert-inspection-companies",
+   "type": "vertical",
+   "name": "Inspection Companies",
+   "parentId": null,
+   "level": 1,
+   "aliases": [
+    "API Inspection",
+    "RBI",
+    "NDT",
+    "Drone Inspection"
+   ],
+   "order": 4
+  },
+  {
+   "id": "vert-engineering-consultants",
+   "type": "vertical",
+   "name": "Engineering Consultants",
+   "parentId": null,
+   "level": 1,
+   "aliases": [
+    "FEED",
+    "Detailed Engineering",
+    "PMC"
+   ],
+   "order": 5
+  },
+  {
+   "id": "vert-maintenance-contractors",
+   "type": "vertical",
+   "name": "Maintenance Contractors",
+   "parentId": null,
+   "level": 1,
+   "aliases": [],
+   "order": 6
+  },
+  {
+   "id": "vert-logistics-companies",
+   "type": "vertical",
+   "name": "Logistics Companies",
+   "parentId": null,
+   "level": 1,
+   "aliases": [
+    "Bulk Liquid Logistics"
+   ],
+   "order": 7
+  },
+  {
+   "id": "vert-port-operators",
+   "type": "vertical",
+   "name": "Port Operators",
+   "parentId": null,
+   "level": 1,
+   "aliases": [],
+   "order": 8
+  },
+  {
+   "id": "vert-pipeline-operators",
+   "type": "vertical",
+   "name": "Pipeline Operators",
+   "parentId": null,
+   "level": 1,
+   "aliases": [],
+   "order": 9
+  },
+  {
+   "id": "vert-refineries",
+   "type": "vertical",
+   "name": "Refineries",
+   "parentId": null,
+   "level": 1,
+   "aliases": [],
+   "order": 10
+  },
+  {
+   "id": "vert-petrochemical-plants",
+   "type": "vertical",
+   "name": "Petrochemical Plants",
+   "parentId": null,
+   "level": 1,
+   "aliases": [],
+   "order": 11
+  },
+  {
+   "id": "vert-chemical-manufacturers",
+   "type": "vertical",
+   "name": "Chemical Manufacturers",
+   "parentId": null,
+   "level": 1,
+   "aliases": [],
+   "order": 12
+  },
+  {
+   "id": "vert-power-plants",
+   "type": "vertical",
+   "name": "Power Plants",
+   "parentId": null,
+   "level": 1,
+   "aliases": [],
+   "order": 13
+  },
+  {
+   "id": "vert-lng-operators",
+   "type": "vertical",
+   "name": "LNG Operators",
+   "parentId": null,
+   "level": 1,
+   "aliases": [],
+   "order": 14
+  },
+  {
+   "id": "vert-government-agencies",
+   "type": "vertical",
+   "name": "Government Agencies",
+   "parentId": null,
+   "level": 1,
+   "aliases": [],
+   "order": 15
+  },
+  {
+   "id": "vert-defence-storage",
+   "type": "vertical",
+   "name": "Defence Storage",
+   "parentId": null,
+   "level": 1,
+   "aliases": [],
+   "order": 16
+  },
+  {
+   "id": "vert-fire-safety-companies",
+   "type": "vertical",
+   "name": "Fire & Safety Companies",
+   "parentId": null,
+   "level": 1,
+   "aliases": [],
+   "order": 17
+  },
+  {
+   "id": "vert-environmental-companies",
+   "type": "vertical",
+   "name": "Environmental Companies",
+   "parentId": null,
+   "level": 1,
+   "aliases": [],
+   "order": 18
+  },
+  {
+   "id": "vert-software-vendors",
+   "type": "vertical",
+   "name": "Software Vendors",
+   "parentId": null,
+   "level": 1,
+   "aliases": [
+    "SCADA",
+    "Terminal Automation Software",
+    "Digital Twin",
+    "ERP"
+   ],
+   "order": 19
+  },
+  {
+   "id": "vert-equipment-suppliers",
+   "type": "vertical",
+   "name": "Equipment Suppliers",
+   "parentId": null,
+   "level": 1,
+   "aliases": [
+    "Spares",
+    "ASTSPARES"
+   ],
+   "order": 20
+  },
+  {
+   "id": "dom-operations",
+   "type": "domain",
+   "name": "Operations",
+   "parentId": null,
+   "level": 1,
+   "aliases": [],
+   "order": 0
+  },
+  {
+   "id": "dom-engineering",
+   "type": "domain",
+   "name": "Engineering",
+   "parentId": null,
+   "level": 1,
+   "aliases": [],
+   "order": 1
+  },
+  {
+   "id": "dom-engineering-mechanical",
+   "type": "domain",
+   "name": "Mechanical",
+   "parentId": "dom-engineering",
+   "level": 2,
+   "aliases": [],
+   "order": 0
+  },
+  {
+   "id": "dom-engineering-civil",
+   "type": "domain",
+   "name": "Civil",
+   "parentId": "dom-engineering",
+   "level": 2,
+   "aliases": [],
+   "order": 1
+  },
+  {
+   "id": "dom-engineering-electrical",
+   "type": "domain",
+   "name": "Electrical",
+   "parentId": "dom-engineering",
+   "level": 2,
+   "aliases": [],
+   "order": 2
+  },
+  {
+   "id": "dom-engineering-instrumentation",
+   "type": "domain",
+   "name": "Instrumentation",
+   "parentId": "dom-engineering",
+   "level": 2,
+   "aliases": [],
+   "order": 3
+  },
+  {
+   "id": "dom-engineering-automation",
+   "type": "domain",
+   "name": "Automation",
+   "parentId": "dom-engineering",
+   "level": 2,
+   "aliases": [],
+   "order": 4
+  },
+  {
+   "id": "dom-engineering-pipeline",
+   "type": "domain",
+   "name": "Pipeline",
+   "parentId": "dom-engineering",
+   "level": 2,
+   "aliases": [],
+   "order": 5
+  },
+  {
+   "id": "dom-engineering-marine",
+   "type": "domain",
+   "name": "Marine",
+   "parentId": "dom-engineering",
+   "level": 2,
+   "aliases": [],
+   "order": 6
+  },
+  {
+   "id": "dom-engineering-structural",
+   "type": "domain",
+   "name": "Structural",
+   "parentId": "dom-engineering",
+   "level": 2,
+   "aliases": [],
+   "order": 7
+  },
+  {
+   "id": "dom-engineering-process",
+   "type": "domain",
+   "name": "Process",
+   "parentId": "dom-engineering",
+   "level": 2,
+   "aliases": [],
+   "order": 8
+  },
+  {
+   "id": "dom-engineering-projects",
+   "type": "domain",
+   "name": "Projects",
+   "parentId": "dom-engineering",
+   "level": 2,
+   "aliases": [],
+   "order": 9
+  },
+  {
+   "id": "dom-engineering-reliability",
+   "type": "domain",
+   "name": "Reliability",
+   "parentId": "dom-engineering",
+   "level": 2,
+   "aliases": [],
+   "order": 10
+  },
+  {
+   "id": "dom-engineering-asset-integrity",
+   "type": "domain",
+   "name": "Asset Integrity",
+   "parentId": "dom-engineering",
+   "level": 2,
+   "aliases": [],
+   "order": 11
+  },
+  {
+   "id": "dom-engineering-rotating-equipment",
+   "type": "domain",
+   "name": "Rotating Equipment",
+   "parentId": "dom-engineering",
+   "level": 2,
+   "aliases": [],
+   "order": 12
+  },
+  {
+   "id": "dom-engineering-static-equipment",
+   "type": "domain",
+   "name": "Static Equipment",
+   "parentId": "dom-engineering",
+   "level": 2,
+   "aliases": [],
+   "order": 13
+  },
+  {
+   "id": "dom-engineering-corrosion",
+   "type": "domain",
+   "name": "Corrosion",
+   "parentId": "dom-engineering",
+   "level": 2,
+   "aliases": [],
+   "order": 14
+  },
+  {
+   "id": "dom-engineering-inspection",
+   "type": "domain",
+   "name": "Inspection",
+   "parentId": "dom-engineering",
+   "level": 2,
+   "aliases": [],
+   "order": 15
+  },
+  {
+   "id": "dom-maintenance",
+   "type": "domain",
+   "name": "Maintenance",
+   "parentId": null,
+   "level": 1,
+   "aliases": [],
+   "order": 2
+  },
+  {
+   "id": "dom-maintenance-mechanical",
+   "type": "domain",
+   "name": "Mechanical",
+   "parentId": "dom-maintenance",
+   "level": 2,
+   "aliases": [],
+   "order": 0
+  },
+  {
+   "id": "dom-maintenance-electrical",
+   "type": "domain",
+   "name": "Electrical",
+   "parentId": "dom-maintenance",
+   "level": 2,
+   "aliases": [],
+   "order": 1
+  },
+  {
+   "id": "dom-maintenance-instrumentation",
+   "type": "domain",
+   "name": "Instrumentation",
+   "parentId": "dom-maintenance",
+   "level": 2,
+   "aliases": [],
+   "order": 2
+  },
+  {
+   "id": "dom-maintenance-predictive",
+   "type": "domain",
+   "name": "Predictive",
+   "parentId": "dom-maintenance",
+   "level": 2,
+   "aliases": [],
+   "order": 3
+  },
+  {
+   "id": "dom-maintenance-preventive",
+   "type": "domain",
+   "name": "Preventive",
+   "parentId": "dom-maintenance",
+   "level": 2,
+   "aliases": [],
+   "order": 4
+  },
+  {
+   "id": "dom-maintenance-shutdown",
+   "type": "domain",
+   "name": "Shutdown",
+   "parentId": "dom-maintenance",
+   "level": 2,
+   "aliases": [],
+   "order": 5
+  },
+  {
+   "id": "dom-maintenance-turnaround",
+   "type": "domain",
+   "name": "Turnaround",
+   "parentId": "dom-maintenance",
+   "level": 2,
+   "aliases": [],
+   "order": 6
+  },
+  {
+   "id": "dom-maintenance-workshop",
+   "type": "domain",
+   "name": "Workshop",
+   "parentId": "dom-maintenance",
+   "level": 2,
+   "aliases": [],
+   "order": 7
+  },
+  {
+   "id": "dom-maintenance-reliability",
+   "type": "domain",
+   "name": "Reliability",
+   "parentId": "dom-maintenance",
+   "level": 2,
+   "aliases": [],
+   "order": 8
+  },
+  {
+   "id": "dom-maintenance-condition-monitoring",
+   "type": "domain",
+   "name": "Condition Monitoring",
+   "parentId": "dom-maintenance",
+   "level": 2,
+   "aliases": [],
+   "order": 9
+  },
+  {
+   "id": "dom-projects",
+   "type": "domain",
+   "name": "Projects",
+   "parentId": null,
+   "level": 1,
+   "aliases": [],
+   "order": 3
+  },
+  {
+   "id": "dom-projects-planning",
+   "type": "domain",
+   "name": "Planning",
+   "parentId": "dom-projects",
+   "level": 2,
+   "aliases": [],
+   "order": 0
+  },
+  {
+   "id": "dom-projects-construction",
+   "type": "domain",
+   "name": "Construction",
+   "parentId": "dom-projects",
+   "level": 2,
+   "aliases": [],
+   "order": 1
+  },
+  {
+   "id": "dom-projects-commissioning",
+   "type": "domain",
+   "name": "Commissioning",
+   "parentId": "dom-projects",
+   "level": 2,
+   "aliases": [],
+   "order": 2
+  },
+  {
+   "id": "dom-projects-start-up",
+   "type": "domain",
+   "name": "Start-up",
+   "parentId": "dom-projects",
+   "level": 2,
+   "aliases": [],
+   "order": 3
+  },
+  {
+   "id": "dom-projects-project-controls",
+   "type": "domain",
+   "name": "Project Controls",
+   "parentId": "dom-projects",
+   "level": 2,
+   "aliases": [],
+   "order": 4
+  },
+  {
+   "id": "dom-projects-cost-engineering",
+   "type": "domain",
+   "name": "Cost Engineering",
+   "parentId": "dom-projects",
+   "level": 2,
+   "aliases": [],
+   "order": 5
+  },
+  {
+   "id": "dom-projects-contracts",
+   "type": "domain",
+   "name": "Contracts",
+   "parentId": "dom-projects",
+   "level": 2,
+   "aliases": [],
+   "order": 6
+  },
+  {
+   "id": "dom-projects-pmc",
+   "type": "domain",
+   "name": "PMC",
+   "parentId": "dom-projects",
+   "level": 2,
+   "aliases": [],
+   "order": 7
+  },
+  {
+   "id": "dom-hse",
+   "type": "domain",
+   "name": "HSE",
+   "parentId": null,
+   "level": 1,
+   "aliases": [],
+   "order": 4
+  },
+  {
+   "id": "dom-hse-safety",
+   "type": "domain",
+   "name": "Safety",
+   "parentId": "dom-hse",
+   "level": 2,
+   "aliases": [],
+   "order": 0
+  },
+  {
+   "id": "dom-hse-fire",
+   "type": "domain",
+   "name": "Fire",
+   "parentId": "dom-hse",
+   "level": 2,
+   "aliases": [],
+   "order": 1
+  },
+  {
+   "id": "dom-hse-emergency-response",
+   "type": "domain",
+   "name": "Emergency Response",
+   "parentId": "dom-hse",
+   "level": 2,
+   "aliases": [],
+   "order": 2
+  },
+  {
+   "id": "dom-hse-environmental",
+   "type": "domain",
+   "name": "Environmental",
+   "parentId": "dom-hse",
+   "level": 2,
+   "aliases": [],
+   "order": 3
+  },
+  {
+   "id": "dom-hse-process-safety",
+   "type": "domain",
+   "name": "Process Safety",
+   "parentId": "dom-hse",
+   "level": 2,
+   "aliases": [],
+   "order": 4
+  },
+  {
+   "id": "dom-hse-risk",
+   "type": "domain",
+   "name": "Risk",
+   "parentId": "dom-hse",
+   "level": 2,
+   "aliases": [],
+   "order": 5
+  },
+  {
+   "id": "dom-hse-permit-to-work",
+   "type": "domain",
+   "name": "Permit to Work",
+   "parentId": "dom-hse",
+   "level": 2,
+   "aliases": [],
+   "order": 6
+  },
+  {
+   "id": "dom-inspection",
+   "type": "domain",
+   "name": "Inspection",
+   "parentId": null,
+   "level": 1,
+   "aliases": [],
+   "order": 5
+  },
+  {
+   "id": "dom-inspection-api-inspection",
+   "type": "domain",
+   "name": "API Inspection",
+   "parentId": "dom-inspection",
+   "level": 2,
+   "aliases": [],
+   "order": 0
+  },
+  {
+   "id": "dom-inspection-tank-inspection",
+   "type": "domain",
+   "name": "Tank Inspection",
+   "parentId": "dom-inspection",
+   "level": 2,
+   "aliases": [],
+   "order": 1
+  },
+  {
+   "id": "dom-inspection-pipeline-inspection",
+   "type": "domain",
+   "name": "Pipeline Inspection",
+   "parentId": "dom-inspection",
+   "level": 2,
+   "aliases": [],
+   "order": 2
+  },
+  {
+   "id": "dom-inspection-ndt",
+   "type": "domain",
+   "name": "NDT",
+   "parentId": "dom-inspection",
+   "level": 2,
+   "aliases": [],
+   "order": 3
+  },
+  {
+   "id": "dom-inspection-corrosion",
+   "type": "domain",
+   "name": "Corrosion",
+   "parentId": "dom-inspection",
+   "level": 2,
+   "aliases": [],
+   "order": 4
+  },
+  {
+   "id": "dom-inspection-fitness-for-service",
+   "type": "domain",
+   "name": "Fitness for Service",
+   "parentId": "dom-inspection",
+   "level": 2,
+   "aliases": [],
+   "order": 5
+  },
+  {
+   "id": "dom-inspection-rbi",
+   "type": "domain",
+   "name": "RBI",
+   "parentId": "dom-inspection",
+   "level": 2,
+   "aliases": [],
+   "order": 6
+  },
+  {
+   "id": "dom-integrity",
+   "type": "domain",
+   "name": "Integrity",
+   "parentId": null,
+   "level": 1,
+   "aliases": [],
+   "order": 6
+  },
+  {
+   "id": "dom-integrity-asset-integrity",
+   "type": "domain",
+   "name": "Asset Integrity",
+   "parentId": "dom-integrity",
+   "level": 2,
+   "aliases": [],
+   "order": 0
+  },
+  {
+   "id": "dom-integrity-mechanical-integrity",
+   "type": "domain",
+   "name": "Mechanical Integrity",
+   "parentId": "dom-integrity",
+   "level": 2,
+   "aliases": [],
+   "order": 1
+  },
+  {
+   "id": "dom-integrity-pipeline-integrity",
+   "type": "domain",
+   "name": "Pipeline Integrity",
+   "parentId": "dom-integrity",
+   "level": 2,
+   "aliases": [],
+   "order": 2
+  },
+  {
+   "id": "dom-integrity-tank-integrity",
+   "type": "domain",
+   "name": "Tank Integrity",
+   "parentId": "dom-integrity",
+   "level": 2,
+   "aliases": [],
+   "order": 3
+  },
+  {
+   "id": "dom-integrity-cathodic-protection",
+   "type": "domain",
+   "name": "Cathodic Protection",
+   "parentId": "dom-integrity",
+   "level": 2,
+   "aliases": [],
+   "order": 4
+  },
+  {
+   "id": "dom-integrity-corrosion",
+   "type": "domain",
+   "name": "Corrosion",
+   "parentId": "dom-integrity",
+   "level": 2,
+   "aliases": [],
+   "order": 5
+  },
+  {
+   "id": "dom-integrity-coatings",
+   "type": "domain",
+   "name": "Coatings",
+   "parentId": "dom-integrity",
+   "level": 2,
+   "aliases": [],
+   "order": 6
+  },
+  {
+   "id": "dom-automation",
+   "type": "domain",
+   "name": "Automation",
+   "parentId": null,
+   "level": 1,
+   "aliases": [],
+   "order": 7
+  },
+  {
+   "id": "dom-automation-scada",
+   "type": "domain",
+   "name": "SCADA",
+   "parentId": "dom-automation",
+   "level": 2,
+   "aliases": [],
+   "order": 0
+  },
+  {
+   "id": "dom-automation-plc",
+   "type": "domain",
+   "name": "PLC",
+   "parentId": "dom-automation",
+   "level": 2,
+   "aliases": [],
+   "order": 1
+  },
+  {
+   "id": "dom-automation-dcs",
+   "type": "domain",
+   "name": "DCS",
+   "parentId": "dom-automation",
+   "level": 2,
+   "aliases": [],
+   "order": 2
+  },
+  {
+   "id": "dom-automation-terminal-automation",
+   "type": "domain",
+   "name": "Terminal Automation",
+   "parentId": "dom-automation",
+   "level": 2,
+   "aliases": [],
+   "order": 3
+  },
+  {
+   "id": "dom-automation-cyber-security",
+   "type": "domain",
+   "name": "Cyber Security",
+   "parentId": "dom-automation",
+   "level": 2,
+   "aliases": [],
+   "order": 4
+  },
+  {
+   "id": "dom-automation-industrial-networks",
+   "type": "domain",
+   "name": "Industrial Networks",
+   "parentId": "dom-automation",
+   "level": 2,
+   "aliases": [],
+   "order": 5
+  },
+  {
+   "id": "dom-automation-iiot",
+   "type": "domain",
+   "name": "IIoT",
+   "parentId": "dom-automation",
+   "level": 2,
+   "aliases": [],
+   "order": 6
+  },
+  {
+   "id": "dom-automation-ai",
+   "type": "domain",
+   "name": "AI",
+   "parentId": "dom-automation",
+   "level": 2,
+   "aliases": [],
+   "order": 7
+  },
+  {
+   "id": "dom-automation-digital-twin",
+   "type": "domain",
+   "name": "Digital Twin",
+   "parentId": "dom-automation",
+   "level": 2,
+   "aliases": [],
+   "order": 8
+  },
+  {
+   "id": "dom-commercial",
+   "type": "domain",
+   "name": "Commercial",
+   "parentId": null,
+   "level": 1,
+   "aliases": [],
+   "order": 8
+  },
+  {
+   "id": "dom-commercial-sales",
+   "type": "domain",
+   "name": "Sales",
+   "parentId": "dom-commercial",
+   "level": 2,
+   "aliases": [],
+   "order": 0
+  },
+  {
+   "id": "dom-commercial-marketing",
+   "type": "domain",
+   "name": "Marketing",
+   "parentId": "dom-commercial",
+   "level": 2,
+   "aliases": [],
+   "order": 1
+  },
+  {
+   "id": "dom-commercial-business-development",
+   "type": "domain",
+   "name": "Business Development",
+   "parentId": "dom-commercial",
+   "level": 2,
+   "aliases": [],
+   "order": 2
+  },
+  {
+   "id": "dom-commercial-pricing",
+   "type": "domain",
+   "name": "Pricing",
+   "parentId": "dom-commercial",
+   "level": 2,
+   "aliases": [],
+   "order": 3
+  },
+  {
+   "id": "dom-commercial-tendering",
+   "type": "domain",
+   "name": "Tendering",
+   "parentId": "dom-commercial",
+   "level": 2,
+   "aliases": [],
+   "order": 4
+  },
+  {
+   "id": "dom-commercial-contracts",
+   "type": "domain",
+   "name": "Contracts",
+   "parentId": "dom-commercial",
+   "level": 2,
+   "aliases": [],
+   "order": 5
+  },
+  {
+   "id": "dom-commercial-estimating",
+   "type": "domain",
+   "name": "Estimating",
+   "parentId": "dom-commercial",
+   "level": 2,
+   "aliases": [],
+   "order": 6
+  },
+  {
+   "id": "dom-commercial-customer-success",
+   "type": "domain",
+   "name": "Customer Success",
+   "parentId": "dom-commercial",
+   "level": 2,
+   "aliases": [],
+   "order": 7
+  },
+  {
+   "id": "dom-commercial-key-accounts",
+   "type": "domain",
+   "name": "Key Accounts",
+   "parentId": "dom-commercial",
+   "level": 2,
+   "aliases": [],
+   "order": 8
+  },
+  {
+   "id": "dom-supply-chain",
+   "type": "domain",
+   "name": "Supply Chain",
+   "parentId": null,
+   "level": 1,
+   "aliases": [],
+   "order": 9
+  },
+  {
+   "id": "dom-supply-chain-procurement",
+   "type": "domain",
+   "name": "Procurement",
+   "parentId": "dom-supply-chain",
+   "level": 2,
+   "aliases": [],
+   "order": 0
+  },
+  {
+   "id": "dom-supply-chain-strategic-sourcing",
+   "type": "domain",
+   "name": "Strategic Sourcing",
+   "parentId": "dom-supply-chain",
+   "level": 2,
+   "aliases": [],
+   "order": 1
+  },
+  {
+   "id": "dom-supply-chain-warehouse",
+   "type": "domain",
+   "name": "Warehouse",
+   "parentId": "dom-supply-chain",
+   "level": 2,
+   "aliases": [],
+   "order": 2
+  },
+  {
+   "id": "dom-supply-chain-inventory",
+   "type": "domain",
+   "name": "Inventory",
+   "parentId": "dom-supply-chain",
+   "level": 2,
+   "aliases": [],
+   "order": 3
+  },
+  {
+   "id": "dom-supply-chain-materials",
+   "type": "domain",
+   "name": "Materials",
+   "parentId": "dom-supply-chain",
+   "level": 2,
+   "aliases": [],
+   "order": 4
+  },
+  {
+   "id": "dom-supply-chain-stores",
+   "type": "domain",
+   "name": "Stores",
+   "parentId": "dom-supply-chain",
+   "level": 2,
+   "aliases": [],
+   "order": 5
+  },
+  {
+   "id": "dom-supply-chain-vendor-development",
+   "type": "domain",
+   "name": "Vendor Development",
+   "parentId": "dom-supply-chain",
+   "level": 2,
+   "aliases": [],
+   "order": 6
+  },
+  {
+   "id": "dom-supply-chain-expediting",
+   "type": "domain",
+   "name": "Expediting",
+   "parentId": "dom-supply-chain",
+   "level": 2,
+   "aliases": [],
+   "order": 7
+  },
+  {
+   "id": "dom-supply-chain-logistics",
+   "type": "domain",
+   "name": "Logistics",
+   "parentId": "dom-supply-chain",
+   "level": 2,
+   "aliases": [],
+   "order": 8
+  },
+  {
+   "id": "dom-supply-chain-fleet",
+   "type": "domain",
+   "name": "Fleet",
+   "parentId": "dom-supply-chain",
+   "level": 2,
+   "aliases": [],
+   "order": 9
+  },
+  {
+   "id": "dom-supply-chain-shipping",
+   "type": "domain",
+   "name": "Shipping",
+   "parentId": "dom-supply-chain",
+   "level": 2,
+   "aliases": [],
+   "order": 10
+  },
+  {
+   "id": "dom-finance",
+   "type": "domain",
+   "name": "Finance",
+   "parentId": null,
+   "level": 1,
+   "aliases": [],
+   "order": 10
+  },
+  {
+   "id": "dom-finance-accounts",
+   "type": "domain",
+   "name": "Accounts",
+   "parentId": "dom-finance",
+   "level": 2,
+   "aliases": [],
+   "order": 0
+  },
+  {
+   "id": "dom-finance-audit",
+   "type": "domain",
+   "name": "Audit",
+   "parentId": "dom-finance",
+   "level": 2,
+   "aliases": [],
+   "order": 1
+  },
+  {
+   "id": "dom-finance-treasury",
+   "type": "domain",
+   "name": "Treasury",
+   "parentId": "dom-finance",
+   "level": 2,
+   "aliases": [],
+   "order": 2
+  },
+  {
+   "id": "dom-finance-tax",
+   "type": "domain",
+   "name": "Tax",
+   "parentId": "dom-finance",
+   "level": 2,
+   "aliases": [],
+   "order": 3
+  },
+  {
+   "id": "dom-finance-commercial-finance",
+   "type": "domain",
+   "name": "Commercial Finance",
+   "parentId": "dom-finance",
+   "level": 2,
+   "aliases": [],
+   "order": 4
+  },
+  {
+   "id": "dom-finance-fp-a",
+   "type": "domain",
+   "name": "FP&A",
+   "parentId": "dom-finance",
+   "level": 2,
+   "aliases": [
+    "Financial Planning & Analysis"
+   ],
+   "order": 5
+  },
+  {
+   "id": "dom-finance-payroll",
+   "type": "domain",
+   "name": "Payroll",
+   "parentId": "dom-finance",
+   "level": 2,
+   "aliases": [],
+   "order": 6,
+   "note": "Canonical under Finance (HR-run payroll maps here)."
+  },
+  {
+   "id": "dom-finance-cost-control",
+   "type": "domain",
+   "name": "Cost Control",
+   "parentId": "dom-finance",
+   "level": 2,
+   "aliases": [],
+   "order": 7
+  },
+  {
+   "id": "dom-human-resources",
+   "type": "domain",
+   "name": "Human Resources",
+   "parentId": null,
+   "level": 1,
+   "aliases": [],
+   "order": 11
+  },
+  {
+   "id": "dom-human-resources-recruitment",
+   "type": "domain",
+   "name": "Recruitment",
+   "parentId": "dom-human-resources",
+   "level": 2,
+   "aliases": [],
+   "order": 0
+  },
+  {
+   "id": "dom-human-resources-talent-acquisition",
+   "type": "domain",
+   "name": "Talent Acquisition",
+   "parentId": "dom-human-resources",
+   "level": 2,
+   "aliases": [],
+   "order": 1
+  },
+  {
+   "id": "dom-human-resources-learning-development",
+   "type": "domain",
+   "name": "Learning & Development",
+   "parentId": "dom-human-resources",
+   "level": 2,
+   "aliases": [
+    "L&D"
+   ],
+   "order": 2
+  },
+  {
+   "id": "dom-human-resources-industrial-relations",
+   "type": "domain",
+   "name": "Industrial Relations",
+   "parentId": "dom-human-resources",
+   "level": 2,
+   "aliases": [],
+   "order": 3
+  },
+  {
+   "id": "dom-human-resources-compensation",
+   "type": "domain",
+   "name": "Compensation",
+   "parentId": "dom-human-resources",
+   "level": 2,
+   "aliases": [],
+   "order": 4
+  },
+  {
+   "id": "dom-human-resources-hrbp",
+   "type": "domain",
+   "name": "HRBP",
+   "parentId": "dom-human-resources",
+   "level": 2,
+   "aliases": [],
+   "order": 5
+  },
+  {
+   "id": "dom-human-resources-training",
+   "type": "domain",
+   "name": "Training",
+   "parentId": "dom-human-resources",
+   "level": 2,
+   "aliases": [],
+   "order": 6
+  },
+  {
+   "id": "dom-quality",
+   "type": "domain",
+   "name": "Quality",
+   "parentId": null,
+   "level": 1,
+   "aliases": [],
+   "order": 12
+  },
+  {
+   "id": "dom-quality-qa",
+   "type": "domain",
+   "name": "QA",
+   "parentId": "dom-quality",
+   "level": 2,
+   "aliases": [],
+   "order": 0
+  },
+  {
+   "id": "dom-quality-qc",
+   "type": "domain",
+   "name": "QC",
+   "parentId": "dom-quality",
+   "level": 2,
+   "aliases": [],
+   "order": 1
+  },
+  {
+   "id": "dom-quality-iso",
+   "type": "domain",
+   "name": "ISO",
+   "parentId": "dom-quality",
+   "level": 2,
+   "aliases": [],
+   "order": 2
+  },
+  {
+   "id": "dom-quality-auditing",
+   "type": "domain",
+   "name": "Auditing",
+   "parentId": "dom-quality",
+   "level": 2,
+   "aliases": [],
+   "order": 3
+  },
+  {
+   "id": "dom-quality-documentation",
+   "type": "domain",
+   "name": "Documentation",
+   "parentId": "dom-quality",
+   "level": 2,
+   "aliases": [],
+   "order": 4
+  },
+  {
+   "id": "dom-it",
+   "type": "domain",
+   "name": "IT",
+   "parentId": null,
+   "level": 1,
+   "aliases": [],
+   "order": 13
+  },
+  {
+   "id": "dom-it-erp",
+   "type": "domain",
+   "name": "ERP",
+   "parentId": "dom-it",
+   "level": 2,
+   "aliases": [
+    "SAP",
+    "Oracle"
+   ],
+   "order": 0
+  },
+  {
+   "id": "dom-it-infrastructure",
+   "type": "domain",
+   "name": "Infrastructure",
+   "parentId": "dom-it",
+   "level": 2,
+   "aliases": [],
+   "order": 1
+  },
+  {
+   "id": "dom-it-networking",
+   "type": "domain",
+   "name": "Networking",
+   "parentId": "dom-it",
+   "level": 2,
+   "aliases": [],
+   "order": 2
+  },
+  {
+   "id": "dom-it-cybersecurity",
+   "type": "domain",
+   "name": "Cybersecurity",
+   "parentId": "dom-it",
+   "level": 2,
+   "aliases": [],
+   "order": 3
+  },
+  {
+   "id": "dom-it-data-analytics",
+   "type": "domain",
+   "name": "Data Analytics",
+   "parentId": "dom-it",
+   "level": 2,
+   "aliases": [],
+   "order": 4
+  },
+  {
+   "id": "dom-it-ai",
+   "type": "domain",
+   "name": "AI",
+   "parentId": "dom-it",
+   "level": 2,
+   "aliases": [],
+   "order": 5
+  },
+  {
+   "id": "dom-it-cloud",
+   "type": "domain",
+   "name": "Cloud",
+   "parentId": "dom-it",
+   "level": 2,
+   "aliases": [],
+   "order": 6
+  },
+  {
+   "id": "dom-legal",
+   "type": "domain",
+   "name": "Legal",
+   "parentId": null,
+   "level": 1,
+   "aliases": [],
+   "order": 14
+  },
+  {
+   "id": "dom-legal-contracts",
+   "type": "domain",
+   "name": "Contracts",
+   "parentId": "dom-legal",
+   "level": 2,
+   "aliases": [],
+   "order": 0
+  },
+  {
+   "id": "dom-legal-compliance",
+   "type": "domain",
+   "name": "Compliance",
+   "parentId": "dom-legal",
+   "level": 2,
+   "aliases": [],
+   "order": 1
+  },
+  {
+   "id": "dom-legal-corporate",
+   "type": "domain",
+   "name": "Corporate",
+   "parentId": "dom-legal",
+   "level": 2,
+   "aliases": [],
+   "order": 2
+  },
+  {
+   "id": "dom-legal-insurance",
+   "type": "domain",
+   "name": "Insurance",
+   "parentId": "dom-legal",
+   "level": 2,
+   "aliases": [],
+   "order": 3
+  },
+  {
+   "id": "dom-legal-claims",
+   "type": "domain",
+   "name": "Claims",
+   "parentId": "dom-legal",
+   "level": 2,
+   "aliases": [],
+   "order": 4
+  },
+  {
+   "id": "dom-administration",
+   "type": "domain",
+   "name": "Administration",
+   "parentId": null,
+   "level": 1,
+   "aliases": [],
+   "order": 15
+  },
+  {
+   "id": "dom-administration-facilities",
+   "type": "domain",
+   "name": "Facilities",
+   "parentId": "dom-administration",
+   "level": 2,
+   "aliases": [],
+   "order": 0
+  },
+  {
+   "id": "dom-administration-office-management",
+   "type": "domain",
+   "name": "Office Management",
+   "parentId": "dom-administration",
+   "level": 2,
+   "aliases": [],
+   "order": 1
+  },
+  {
+   "id": "dom-administration-travel",
+   "type": "domain",
+   "name": "Travel",
+   "parentId": "dom-administration",
+   "level": 2,
+   "aliases": [],
+   "order": 2
+  },
+  {
+   "id": "dom-administration-security",
+   "type": "domain",
+   "name": "Security",
+   "parentId": "dom-administration",
+   "level": 2,
+   "aliases": [],
+   "order": 3
+  },
+  {
+   "id": "dom-administration-reception",
+   "type": "domain",
+   "name": "Reception",
+   "parentId": "dom-administration",
+   "level": 2,
+   "aliases": [],
+   "order": 4
+  },
+  {
+   "id": "dom-administration-document-control",
+   "type": "domain",
+   "name": "Document Control",
+   "parentId": "dom-administration",
+   "level": 2,
+   "aliases": [],
+   "order": 5
+  },
+  {
+   "id": "fam-operations",
+   "type": "family",
+   "name": "Operations",
+   "parentId": null,
+   "level": 1,
+   "aliases": [],
+   "order": 0
+  },
+  {
+   "id": "role-terminal-operator",
+   "type": "role",
+   "name": "Terminal Operator",
+   "parentId": "fam-operations",
+   "level": 2,
+   "aliases": [],
+   "order": 0
+  },
+  {
+   "id": "role-control-room-operator",
+   "type": "role",
+   "name": "Control Room Operator",
+   "parentId": "fam-operations",
+   "level": 2,
+   "aliases": [],
+   "order": 1
+  },
+  {
+   "id": "role-loading-operator",
+   "type": "role",
+   "name": "Loading Operator",
+   "parentId": "fam-operations",
+   "level": 2,
+   "aliases": [],
+   "order": 2
+  },
+  {
+   "id": "role-jetty-operator",
+   "type": "role",
+   "name": "Jetty Operator",
+   "parentId": "fam-operations",
+   "level": 2,
+   "aliases": [],
+   "order": 3
+  },
+  {
+   "id": "role-tank-farm-operator",
+   "type": "role",
+   "name": "Tank Farm Operator",
+   "parentId": "fam-operations",
+   "level": 2,
+   "aliases": [],
+   "order": 4
+  },
+  {
+   "id": "role-shift-supervisor",
+   "type": "role",
+   "name": "Shift Supervisor",
+   "parentId": "fam-operations",
+   "level": 2,
+   "aliases": [
+    "Shift In-charge"
+   ],
+   "order": 5
+  },
+  {
+   "id": "role-operations-engineer",
+   "type": "role",
+   "name": "Operations Engineer",
+   "parentId": "fam-operations",
+   "level": 2,
+   "aliases": [],
+   "order": 6
+  },
+  {
+   "id": "role-operations-manager",
+   "type": "role",
+   "name": "Operations Manager",
+   "parentId": "fam-operations",
+   "level": 2,
+   "aliases": [],
+   "order": 7
+  },
+  {
+   "id": "role-terminal-manager",
+   "type": "role",
+   "name": "Terminal Manager",
+   "parentId": "fam-operations",
+   "level": 2,
+   "aliases": [],
+   "order": 8
+  },
+  {
+   "id": "role-regional-manager",
+   "type": "role",
+   "name": "Regional Manager",
+   "parentId": "fam-operations",
+   "level": 2,
+   "aliases": [],
+   "order": 9
+  },
+  {
+   "id": "fam-mechanical",
+   "type": "family",
+   "name": "Mechanical",
+   "parentId": null,
+   "level": 1,
+   "aliases": [],
+   "order": 1
+  },
+  {
+   "id": "role-mechanical-technician",
+   "type": "role",
+   "name": "Mechanical Technician",
+   "parentId": "fam-mechanical",
+   "level": 2,
+   "aliases": [
+    "Fitter"
+   ],
+   "order": 0
+  },
+  {
+   "id": "role-mechanical-engineer",
+   "type": "role",
+   "name": "Mechanical Engineer",
+   "parentId": "fam-mechanical",
+   "level": 2,
+   "aliases": [],
+   "order": 1
+  },
+  {
+   "id": "role-maintenance-manager",
+   "type": "role",
+   "name": "Maintenance Manager",
+   "parentId": "fam-mechanical",
+   "level": 2,
+   "aliases": [],
+   "order": 2
+  },
+  {
+   "id": "role-asset-manager",
+   "type": "role",
+   "name": "Asset Manager",
+   "parentId": "fam-mechanical",
+   "level": 2,
+   "aliases": [],
+   "order": 3
+  },
+  {
+   "id": "fam-electrical",
+   "type": "family",
+   "name": "Electrical",
+   "parentId": null,
+   "level": 1,
+   "aliases": [],
+   "order": 2
+  },
+  {
+   "id": "role-electrician",
+   "type": "role",
+   "name": "Electrician",
+   "parentId": "fam-electrical",
+   "level": 2,
+   "aliases": [],
+   "order": 0
+  },
+  {
+   "id": "role-electrical-technician",
+   "type": "role",
+   "name": "Electrical Technician",
+   "parentId": "fam-electrical",
+   "level": 2,
+   "aliases": [],
+   "order": 1
+  },
+  {
+   "id": "role-electrical-engineer",
+   "type": "role",
+   "name": "Electrical Engineer",
+   "parentId": "fam-electrical",
+   "level": 2,
+   "aliases": [],
+   "order": 2
+  },
+  {
+   "id": "role-electrical-manager",
+   "type": "role",
+   "name": "Electrical Manager",
+   "parentId": "fam-electrical",
+   "level": 2,
+   "aliases": [],
+   "order": 3
+  },
+  {
+   "id": "fam-instrumentation",
+   "type": "family",
+   "name": "Instrumentation",
+   "parentId": null,
+   "level": 1,
+   "aliases": [],
+   "order": 3
+  },
+  {
+   "id": "role-instrument-technician",
+   "type": "role",
+   "name": "Instrument Technician",
+   "parentId": "fam-instrumentation",
+   "level": 2,
+   "aliases": [],
+   "order": 0
+  },
+  {
+   "id": "role-calibration-engineer",
+   "type": "role",
+   "name": "Calibration Engineer",
+   "parentId": "fam-instrumentation",
+   "level": 2,
+   "aliases": [],
+   "order": 1
+  },
+  {
+   "id": "role-instrument-engineer",
+   "type": "role",
+   "name": "Instrument Engineer",
+   "parentId": "fam-instrumentation",
+   "level": 2,
+   "aliases": [],
+   "order": 2
+  },
+  {
+   "id": "role-instrumentation-manager",
+   "type": "role",
+   "name": "Instrumentation Manager",
+   "parentId": "fam-instrumentation",
+   "level": 2,
+   "aliases": [],
+   "order": 3
+  },
+  {
+   "id": "fam-civil",
+   "type": "family",
+   "name": "Civil",
+   "parentId": null,
+   "level": 1,
+   "aliases": [],
+   "order": 4
+  },
+  {
+   "id": "role-site-engineer",
+   "type": "role",
+   "name": "Site Engineer",
+   "parentId": "fam-civil",
+   "level": 2,
+   "aliases": [],
+   "order": 0
+  },
+  {
+   "id": "role-structural-engineer",
+   "type": "role",
+   "name": "Structural Engineer",
+   "parentId": "fam-civil",
+   "level": 2,
+   "aliases": [],
+   "order": 1
+  },
+  {
+   "id": "role-civil-engineer",
+   "type": "role",
+   "name": "Civil Engineer",
+   "parentId": "fam-civil",
+   "level": 2,
+   "aliases": [],
+   "order": 2
+  },
+  {
+   "id": "role-construction-manager",
+   "type": "role",
+   "name": "Construction Manager",
+   "parentId": "fam-civil",
+   "level": 2,
+   "aliases": [],
+   "order": 3
+  },
+  {
+   "id": "fam-inspection",
+   "type": "family",
+   "name": "Inspection",
+   "parentId": null,
+   "level": 1,
+   "aliases": [],
+   "order": 5
+  },
+  {
+   "id": "role-api-inspector",
+   "type": "role",
+   "name": "API Inspector",
+   "parentId": "fam-inspection",
+   "level": 2,
+   "aliases": [
+    "API 510 Inspector",
+    "API 570 Inspector",
+    "API 653 Inspector"
+   ],
+   "order": 0
+  },
+  {
+   "id": "role-tank-inspector",
+   "type": "role",
+   "name": "Tank Inspector",
+   "parentId": "fam-inspection",
+   "level": 2,
+   "aliases": [],
+   "order": 1
+  },
+  {
+   "id": "role-pipeline-inspector",
+   "type": "role",
+   "name": "Pipeline Inspector",
+   "parentId": "fam-inspection",
+   "level": 2,
+   "aliases": [],
+   "order": 2
+  },
+  {
+   "id": "role-ndt-technician",
+   "type": "role",
+   "name": "NDT Technician",
+   "parentId": "fam-inspection",
+   "level": 2,
+   "aliases": [
+    "NDT"
+   ],
+   "order": 3
+  },
+  {
+   "id": "role-corrosion-engineer",
+   "type": "role",
+   "name": "Corrosion Engineer",
+   "parentId": "fam-inspection",
+   "level": 2,
+   "aliases": [],
+   "order": 4
+  },
+  {
+   "id": "role-chief-inspector",
+   "type": "role",
+   "name": "Chief Inspector",
+   "parentId": "fam-inspection",
+   "level": 2,
+   "aliases": [],
+   "order": 5
+  },
+  {
+   "id": "role-integrity-manager",
+   "type": "role",
+   "name": "Integrity Manager",
+   "parentId": "fam-inspection",
+   "level": 2,
+   "aliases": [],
+   "order": 6
+  },
+  {
+   "id": "fam-fire-safety",
+   "type": "family",
+   "name": "Fire & Safety",
+   "parentId": null,
+   "level": 1,
+   "aliases": [],
+   "order": 6
+  },
+  {
+   "id": "role-fireman",
+   "type": "role",
+   "name": "Fireman",
+   "parentId": "fam-fire-safety",
+   "level": 2,
+   "aliases": [],
+   "order": 0
+  },
+  {
+   "id": "role-fire-officer",
+   "type": "role",
+   "name": "Fire Officer",
+   "parentId": "fam-fire-safety",
+   "level": 2,
+   "aliases": [],
+   "order": 1
+  },
+  {
+   "id": "role-fire-chief",
+   "type": "role",
+   "name": "Fire Chief",
+   "parentId": "fam-fire-safety",
+   "level": 2,
+   "aliases": [],
+   "order": 2
+  },
+  {
+   "id": "role-safety-officer",
+   "type": "role",
+   "name": "Safety Officer",
+   "parentId": "fam-fire-safety",
+   "level": 2,
+   "aliases": [],
+   "order": 3
+  },
+  {
+   "id": "role-hse-manager",
+   "type": "role",
+   "name": "HSE Manager",
+   "parentId": "fam-fire-safety",
+   "level": 2,
+   "aliases": [
+    "SHE Manager"
+   ],
+   "order": 4
+  },
+  {
+   "id": "role-emergency-response-manager",
+   "type": "role",
+   "name": "Emergency Response Manager",
+   "parentId": "fam-fire-safety",
+   "level": 2,
+   "aliases": [],
+   "order": 5
+  },
+  {
+   "id": "fam-process",
+   "type": "family",
+   "name": "Process",
+   "parentId": null,
+   "level": 1,
+   "aliases": [],
+   "order": 7
+  },
+  {
+   "id": "role-process-engineer",
+   "type": "role",
+   "name": "Process Engineer",
+   "parentId": "fam-process",
+   "level": 2,
+   "aliases": [],
+   "order": 0
+  },
+  {
+   "id": "role-technical-authority",
+   "type": "role",
+   "name": "Technical Authority",
+   "parentId": "fam-process",
+   "level": 2,
+   "aliases": [],
+   "order": 1
+  },
+  {
+   "id": "fam-marine",
+   "type": "family",
+   "name": "Marine",
+   "parentId": null,
+   "level": 1,
+   "aliases": [],
+   "order": 8
+  },
+  {
+   "id": "role-marine-pilot",
+   "type": "role",
+   "name": "Marine Pilot",
+   "parentId": "fam-marine",
+   "level": 2,
+   "aliases": [],
+   "order": 0
+  },
+  {
+   "id": "role-harbour-master",
+   "type": "role",
+   "name": "Harbour Master",
+   "parentId": "fam-marine",
+   "level": 2,
+   "aliases": [],
+   "order": 1
+  },
+  {
+   "id": "role-jetty-superintendent",
+   "type": "role",
+   "name": "Jetty Superintendent",
+   "parentId": "fam-marine",
+   "level": 2,
+   "aliases": [],
+   "order": 2
+  },
+  {
+   "id": "role-marine-coordinator",
+   "type": "role",
+   "name": "Marine Coordinator",
+   "parentId": "fam-marine",
+   "level": 2,
+   "aliases": [],
+   "order": 3
+  },
+  {
+   "id": "role-mooring-master",
+   "type": "role",
+   "name": "Mooring Master",
+   "parentId": "fam-marine",
+   "level": 2,
+   "aliases": [],
+   "order": 4
+  },
+  {
+   "id": "fam-projects",
+   "type": "family",
+   "name": "Projects",
+   "parentId": null,
+   "level": 1,
+   "aliases": [],
+   "order": 9
+  },
+  {
+   "id": "role-project-engineer",
+   "type": "role",
+   "name": "Project Engineer",
+   "parentId": "fam-projects",
+   "level": 2,
+   "aliases": [],
+   "order": 0
+  },
+  {
+   "id": "role-planning-engineer",
+   "type": "role",
+   "name": "Planning Engineer",
+   "parentId": "fam-projects",
+   "level": 2,
+   "aliases": [],
+   "order": 1
+  },
+  {
+   "id": "role-commissioning-engineer",
+   "type": "role",
+   "name": "Commissioning Engineer",
+   "parentId": "fam-projects",
+   "level": 2,
+   "aliases": [
+    "Start-up Engineer"
+   ],
+   "order": 2
+  },
+  {
+   "id": "role-project-controls-engineer",
+   "type": "role",
+   "name": "Project Controls Engineer",
+   "parentId": "fam-projects",
+   "level": 2,
+   "aliases": [],
+   "order": 3
+  },
+  {
+   "id": "role-cost-engineer",
+   "type": "role",
+   "name": "Cost Engineer",
+   "parentId": "fam-projects",
+   "level": 2,
+   "aliases": [],
+   "order": 4
+  },
+  {
+   "id": "role-contracts-engineer",
+   "type": "role",
+   "name": "Contracts Engineer",
+   "parentId": "fam-projects",
+   "level": 2,
+   "aliases": [],
+   "order": 5
+  },
+  {
+   "id": "role-project-manager",
+   "type": "role",
+   "name": "Project Manager",
+   "parentId": "fam-projects",
+   "level": 2,
+   "aliases": [
+    "PMC"
+   ],
+   "order": 6
+  },
+  {
+   "id": "fam-commercial",
+   "type": "family",
+   "name": "Commercial",
+   "parentId": null,
+   "level": 1,
+   "aliases": [],
+   "order": 10
+  },
+  {
+   "id": "role-sales-engineer",
+   "type": "role",
+   "name": "Sales Engineer",
+   "parentId": "fam-commercial",
+   "level": 2,
+   "aliases": [],
+   "order": 0
+  },
+  {
+   "id": "role-sales-manager",
+   "type": "role",
+   "name": "Sales Manager",
+   "parentId": "fam-commercial",
+   "level": 2,
+   "aliases": [],
+   "order": 1
+  },
+  {
+   "id": "role-business-development-manager",
+   "type": "role",
+   "name": "Business Development Manager",
+   "parentId": "fam-commercial",
+   "level": 2,
+   "aliases": [],
+   "order": 2
+  },
+  {
+   "id": "role-commercial-manager",
+   "type": "role",
+   "name": "Commercial Manager",
+   "parentId": "fam-commercial",
+   "level": 2,
+   "aliases": [],
+   "order": 3
+  },
+  {
+   "id": "role-key-account-manager",
+   "type": "role",
+   "name": "Key Account Manager",
+   "parentId": "fam-commercial",
+   "level": 2,
+   "aliases": [],
+   "order": 4
+  },
+  {
+   "id": "fam-procurement",
+   "type": "family",
+   "name": "Procurement",
+   "parentId": null,
+   "level": 1,
+   "aliases": [],
+   "order": 11
+  },
+  {
+   "id": "role-buyer",
+   "type": "role",
+   "name": "Buyer",
+   "parentId": "fam-procurement",
+   "level": 2,
+   "aliases": [],
+   "order": 0
+  },
+  {
+   "id": "role-category-manager",
+   "type": "role",
+   "name": "Category Manager",
+   "parentId": "fam-procurement",
+   "level": 2,
+   "aliases": [],
+   "order": 1
+  },
+  {
+   "id": "role-procurement-manager",
+   "type": "role",
+   "name": "Procurement Manager",
+   "parentId": "fam-procurement",
+   "level": 2,
+   "aliases": [],
+   "order": 2
+  },
+  {
+   "id": "role-strategic-sourcing-specialist",
+   "type": "role",
+   "name": "Strategic Sourcing Specialist",
+   "parentId": "fam-procurement",
+   "level": 2,
+   "aliases": [],
+   "order": 3
+  },
+  {
+   "id": "fam-warehouse",
+   "type": "family",
+   "name": "Warehouse",
+   "parentId": null,
+   "level": 1,
+   "aliases": [],
+   "order": 12
+  },
+  {
+   "id": "role-storekeeper",
+   "type": "role",
+   "name": "Storekeeper",
+   "parentId": "fam-warehouse",
+   "level": 2,
+   "aliases": [],
+   "order": 0
+  },
+  {
+   "id": "role-warehouse-executive",
+   "type": "role",
+   "name": "Warehouse Executive",
+   "parentId": "fam-warehouse",
+   "level": 2,
+   "aliases": [],
+   "order": 1
+  },
+  {
+   "id": "role-inventory-controller",
+   "type": "role",
+   "name": "Inventory Controller",
+   "parentId": "fam-warehouse",
+   "level": 2,
+   "aliases": [],
+   "order": 2
+  },
+  {
+   "id": "role-warehouse-manager",
+   "type": "role",
+   "name": "Warehouse Manager",
+   "parentId": "fam-warehouse",
+   "level": 2,
+   "aliases": [],
+   "order": 3
+  },
+  {
+   "id": "fam-logistics",
+   "type": "family",
+   "name": "Logistics",
+   "parentId": null,
+   "level": 1,
+   "aliases": [],
+   "order": 13
+  },
+  {
+   "id": "role-fleet-coordinator",
+   "type": "role",
+   "name": "Fleet Coordinator",
+   "parentId": "fam-logistics",
+   "level": 2,
+   "aliases": [],
+   "order": 0
+  },
+  {
+   "id": "role-transport-planner",
+   "type": "role",
+   "name": "Transport Planner",
+   "parentId": "fam-logistics",
+   "level": 2,
+   "aliases": [],
+   "order": 1
+  },
+  {
+   "id": "role-logistics-manager",
+   "type": "role",
+   "name": "Logistics Manager",
+   "parentId": "fam-logistics",
+   "level": 2,
+   "aliases": [],
+   "order": 2
+  },
+  {
+   "id": "role-shipping-manager",
+   "type": "role",
+   "name": "Shipping Manager",
+   "parentId": "fam-logistics",
+   "level": 2,
+   "aliases": [],
+   "order": 3
+  },
+  {
+   "id": "fam-digital",
+   "type": "family",
+   "name": "Digital",
+   "parentId": null,
+   "level": 1,
+   "aliases": [],
+   "order": 14
+  },
+  {
+   "id": "role-scada-engineer",
+   "type": "role",
+   "name": "SCADA Engineer",
+   "parentId": "fam-digital",
+   "level": 2,
+   "aliases": [],
+   "order": 0
+  },
+  {
+   "id": "role-plc-engineer",
+   "type": "role",
+   "name": "PLC Engineer",
+   "parentId": "fam-digital",
+   "level": 2,
+   "aliases": [],
+   "order": 1
+  },
+  {
+   "id": "role-automation-engineer",
+   "type": "role",
+   "name": "Automation Engineer",
+   "parentId": "fam-digital",
+   "level": 2,
+   "aliases": [],
+   "order": 2
+  },
+  {
+   "id": "role-cybersecurity-engineer",
+   "type": "role",
+   "name": "Cybersecurity Engineer",
+   "parentId": "fam-digital",
+   "level": 2,
+   "aliases": [],
+   "order": 3
+  },
+  {
+   "id": "role-data-scientist",
+   "type": "role",
+   "name": "Data Scientist",
+   "parentId": "fam-digital",
+   "level": 2,
+   "aliases": [],
+   "order": 4
+  },
+  {
+   "id": "role-ai-engineer",
+   "type": "role",
+   "name": "AI Engineer",
+   "parentId": "fam-digital",
+   "level": 2,
+   "aliases": [],
+   "order": 5
+  },
+  {
+   "id": "role-digital-transformation-manager",
+   "type": "role",
+   "name": "Digital Transformation Manager",
+   "parentId": "fam-digital",
+   "level": 2,
+   "aliases": [],
+   "order": 6
+  },
+  {
+   "id": "disc-api-650",
+   "type": "discipline",
+   "name": "API 650",
+   "parentId": null,
+   "level": 1,
+   "aliases": [],
+   "order": 0
+  },
+  {
+   "id": "disc-api-653",
+   "type": "discipline",
+   "name": "API 653",
+   "parentId": null,
+   "level": 1,
+   "aliases": [],
+   "order": 1
+  },
+  {
+   "id": "disc-api-620",
+   "type": "discipline",
+   "name": "API 620",
+   "parentId": null,
+   "level": 1,
+   "aliases": [],
+   "order": 2
+  },
+  {
+   "id": "disc-api-2610",
+   "type": "discipline",
+   "name": "API 2610",
+   "parentId": null,
+   "level": 1,
+   "aliases": [],
+   "order": 3
+  },
+  {
+   "id": "disc-api-2350",
+   "type": "discipline",
+   "name": "API 2350",
+   "parentId": null,
+   "level": 1,
+   "aliases": [],
+   "order": 4
+  },
+  {
+   "id": "disc-api-510",
+   "type": "discipline",
+   "name": "API 510",
+   "parentId": null,
+   "level": 1,
+   "aliases": [],
+   "order": 5
+  },
+  {
+   "id": "disc-api-570",
+   "type": "discipline",
+   "name": "API 570",
+   "parentId": null,
+   "level": 1,
+   "aliases": [],
+   "order": 6
+  },
+  {
+   "id": "disc-api-580",
+   "type": "discipline",
+   "name": "API 580",
+   "parentId": null,
+   "level": 1,
+   "aliases": [],
+   "order": 7
+  },
+  {
+   "id": "disc-api-581",
+   "type": "discipline",
+   "name": "API 581",
+   "parentId": null,
+   "level": 1,
+   "aliases": [],
+   "order": 8
+  },
+  {
+   "id": "disc-asme",
+   "type": "discipline",
+   "name": "ASME",
+   "parentId": null,
+   "level": 1,
+   "aliases": [],
+   "order": 9
+  },
+  {
+   "id": "disc-nfpa",
+   "type": "discipline",
+   "name": "NFPA",
+   "parentId": null,
+   "level": 1,
+   "aliases": [],
+   "order": 10
+  },
+  {
+   "id": "disc-iec",
+   "type": "discipline",
+   "name": "IEC",
+   "parentId": null,
+   "level": 1,
+   "aliases": [],
+   "order": 11
+  },
+  {
+   "id": "disc-atex",
+   "type": "discipline",
+   "name": "ATEX",
+   "parentId": null,
+   "level": 1,
+   "aliases": [],
+   "order": 12
+  },
+  {
+   "id": "disc-sil",
+   "type": "discipline",
+   "name": "SIL",
+   "parentId": null,
+   "level": 1,
+   "aliases": [],
+   "order": 13
+  },
+  {
+   "id": "disc-hazop",
+   "type": "discipline",
+   "name": "HAZOP",
+   "parentId": null,
+   "level": 1,
+   "aliases": [],
+   "order": 14
+  },
+  {
+   "id": "disc-lopa",
+   "type": "discipline",
+   "name": "LOPA",
+   "parentId": null,
+   "level": 1,
+   "aliases": [],
+   "order": 15
+  },
+  {
+   "id": "disc-rbi",
+   "type": "discipline",
+   "name": "RBI",
+   "parentId": null,
+   "level": 1,
+   "aliases": [],
+   "order": 16
+  },
+  {
+   "id": "disc-fitness-for-service",
+   "type": "discipline",
+   "name": "Fitness for Service",
+   "parentId": null,
+   "level": 1,
+   "aliases": [
+    "FFS"
+   ],
+   "order": 17
+  },
+  {
+   "id": "disc-iso-9001",
+   "type": "discipline",
+   "name": "ISO 9001",
+   "parentId": null,
+   "level": 1,
+   "aliases": [],
+   "order": 18
+  },
+  {
+   "id": "disc-iso-14001",
+   "type": "discipline",
+   "name": "ISO 14001",
+   "parentId": null,
+   "level": 1,
+   "aliases": [],
+   "order": 19
+  },
+  {
+   "id": "disc-iso-45001",
+   "type": "discipline",
+   "name": "ISO 45001",
+   "parentId": null,
+   "level": 1,
+   "aliases": [],
+   "order": 20
+  },
+  {
+   "id": "disc-floating-roof",
+   "type": "discipline",
+   "name": "Floating Roof",
+   "parentId": null,
+   "level": 1,
+   "aliases": [],
+   "order": 21
+  },
+  {
+   "id": "disc-internal-floating-roof",
+   "type": "discipline",
+   "name": "Internal Floating Roof",
+   "parentId": null,
+   "level": 1,
+   "aliases": [],
+   "order": 22
+  },
+  {
+   "id": "disc-external-floating-roof",
+   "type": "discipline",
+   "name": "External Floating Roof",
+   "parentId": null,
+   "level": 1,
+   "aliases": [],
+   "order": 23
+  },
+  {
+   "id": "disc-cone-roof",
+   "type": "discipline",
+   "name": "Cone Roof",
+   "parentId": null,
+   "level": 1,
+   "aliases": [],
+   "order": 24
+  },
+  {
+   "id": "disc-dome-roof",
+   "type": "discipline",
+   "name": "Dome Roof",
+   "parentId": null,
+   "level": 1,
+   "aliases": [],
+   "order": 25
+  },
+  {
+   "id": "disc-cryogenic-tanks",
+   "type": "discipline",
+   "name": "Cryogenic Tanks",
+   "parentId": null,
+   "level": 1,
+   "aliases": [],
+   "order": 26
+  },
+  {
+   "id": "disc-lng",
+   "type": "discipline",
+   "name": "LNG",
+   "parentId": null,
+   "level": 1,
+   "aliases": [],
+   "order": 27
+  },
+  {
+   "id": "disc-lpg",
+   "type": "discipline",
+   "name": "LPG",
+   "parentId": null,
+   "level": 1,
+   "aliases": [],
+   "order": 28
+  },
+  {
+   "id": "disc-jet-fuel",
+   "type": "discipline",
+   "name": "Jet Fuel",
+   "parentId": null,
+   "level": 1,
+   "aliases": [],
+   "order": 29
+  },
+  {
+   "id": "disc-hydrogen",
+   "type": "discipline",
+   "name": "Hydrogen",
+   "parentId": null,
+   "level": 1,
+   "aliases": [],
+   "order": 30
+  },
+  {
+   "id": "disc-ammonia",
+   "type": "discipline",
+   "name": "Ammonia",
+   "parentId": null,
+   "level": 1,
+   "aliases": [],
+   "order": 31
+  },
+  {
+   "id": "disc-cathodic-protection",
+   "type": "discipline",
+   "name": "Cathodic Protection",
+   "parentId": null,
+   "level": 1,
+   "aliases": [],
+   "order": 32
+  },
+  {
+   "id": "disc-tank-calibration",
+   "type": "discipline",
+   "name": "Tank Calibration",
+   "parentId": null,
+   "level": 1,
+   "aliases": [],
+   "order": 33
+  },
+  {
+   "id": "disc-custody-transfer",
+   "type": "discipline",
+   "name": "Custody Transfer",
+   "parentId": null,
+   "level": 1,
+   "aliases": [],
+   "order": 34
+  },
+  {
+   "id": "disc-metering",
+   "type": "discipline",
+   "name": "Metering",
+   "parentId": null,
+   "level": 1,
+   "aliases": [],
+   "order": 35
+  },
+  {
+   "id": "disc-tank-gauging",
+   "type": "discipline",
+   "name": "Tank Gauging",
+   "parentId": null,
+   "level": 1,
+   "aliases": [],
+   "order": 36
+  },
+  {
+   "id": "disc-vapour-recovery",
+   "type": "discipline",
+   "name": "Vapour Recovery",
+   "parentId": null,
+   "level": 1,
+   "aliases": [
+    "VRU",
+    "Vapor Recovery"
+   ],
+   "order": 37
+  },
+  {
+   "id": "disc-floating-suction",
+   "type": "discipline",
+   "name": "Floating Suction",
+   "parentId": null,
+   "level": 1,
+   "aliases": [],
+   "order": 38
+  },
+  {
+   "id": "disc-marine-loading-arms",
+   "type": "discipline",
+   "name": "Marine Loading Arms",
+   "parentId": null,
+   "level": 1,
+   "aliases": [
+    "MLA"
+   ],
+   "order": 39
+  },
+  {
+   "id": "disc-pigging",
+   "type": "discipline",
+   "name": "Pigging",
+   "parentId": null,
+   "level": 1,
+   "aliases": [],
+   "order": 40
+  },
+  {
+   "id": "disc-pipeline-commissioning",
+   "type": "discipline",
+   "name": "Pipeline Commissioning",
+   "parentId": null,
+   "level": 1,
+   "aliases": [],
+   "order": 41
+  },
+  {
+   "id": "disc-tank-cleaning",
+   "type": "discipline",
+   "name": "Tank Cleaning",
+   "parentId": null,
+   "level": 1,
+   "aliases": [],
+   "order": 42
+  },
+  {
+   "id": "disc-tank-inspection",
+   "type": "discipline",
+   "name": "Tank Inspection",
+   "parentId": null,
+   "level": 1,
+   "aliases": [],
+   "order": 43
+  },
+  {
+   "id": "disc-shutdown",
+   "type": "discipline",
+   "name": "Shutdown",
+   "parentId": null,
+   "level": 1,
+   "aliases": [],
+   "order": 44
+  },
+  {
+   "id": "disc-turnaround",
+   "type": "discipline",
+   "name": "Turnaround",
+   "parentId": null,
+   "level": 1,
+   "aliases": [],
+   "order": 45
+  },
+  {
+   "id": "disc-commissioning",
+   "type": "discipline",
+   "name": "Commissioning",
+   "parentId": null,
+   "level": 1,
+   "aliases": [],
+   "order": 46
+  },
+  {
+   "id": "disc-decommissioning",
+   "type": "discipline",
+   "name": "Decommissioning",
+   "parentId": null,
+   "level": 1,
+   "aliases": [],
+   "order": 47
+  },
+  {
+   "id": "disc-brownfield",
+   "type": "discipline",
+   "name": "Brownfield",
+   "parentId": null,
+   "level": 1,
+   "aliases": [],
+   "order": 48
+  },
+  {
+   "id": "disc-greenfield",
+   "type": "discipline",
+   "name": "Greenfield",
+   "parentId": null,
+   "level": 1,
+   "aliases": [],
+   "order": 49
+  },
+  {
+   "id": "cert-api-510",
+   "type": "certification",
+   "name": "API 510",
+   "parentId": null,
+   "level": 1,
+   "aliases": [],
+   "order": 0
+  },
+  {
+   "id": "cert-api-570",
+   "type": "certification",
+   "name": "API 570",
+   "parentId": null,
+   "level": 1,
+   "aliases": [],
+   "order": 1
+  },
+  {
+   "id": "cert-api-653",
+   "type": "certification",
+   "name": "API 653",
+   "parentId": null,
+   "level": 1,
+   "aliases": [],
+   "order": 2
+  },
+  {
+   "id": "cert-api-580",
+   "type": "certification",
+   "name": "API 580",
+   "parentId": null,
+   "level": 1,
+   "aliases": [],
+   "order": 3
+  },
+  {
+   "id": "cert-api-936",
+   "type": "certification",
+   "name": "API 936",
+   "parentId": null,
+   "level": 1,
+   "aliases": [],
+   "order": 4
+  },
+  {
+   "id": "cert-nebosh",
+   "type": "certification",
+   "name": "NEBOSH",
+   "parentId": null,
+   "level": 1,
+   "aliases": [],
+   "order": 5
+  },
+  {
+   "id": "cert-iosh",
+   "type": "certification",
+   "name": "IOSH",
+   "parentId": null,
+   "level": 1,
+   "aliases": [],
+   "order": 6
+  },
+  {
+   "id": "cert-hazop-leader",
+   "type": "certification",
+   "name": "HAZOP Leader",
+   "parentId": null,
+   "level": 1,
+   "aliases": [],
+   "order": 7
+  },
+  {
+   "id": "cert-ampp-cathodic-protection",
+   "type": "certification",
+   "name": "AMPP Cathodic Protection",
+   "parentId": null,
+   "level": 1,
+   "aliases": [
+    "NACE CP"
+   ],
+   "order": 8
+  },
+  {
+   "id": "cert-asnt-ndt-level-ii",
+   "type": "certification",
+   "name": "ASNT NDT Level II",
+   "parentId": null,
+   "level": 1,
+   "aliases": [],
+   "order": 9
+  },
+  {
+   "id": "cert-asnt-ndt-level-iii",
+   "type": "certification",
+   "name": "ASNT NDT Level III",
+   "parentId": null,
+   "level": 1,
+   "aliases": [],
+   "order": 10
+  },
+  {
+   "id": "equip-storage-equipment",
+   "type": "equipment",
+   "name": "Storage Equipment",
+   "parentId": null,
+   "level": 1,
+   "aliases": [],
+   "order": 0
+  },
+  {
+   "id": "equip-above-ground-storage-tanks",
+   "type": "equipment",
+   "name": "Above-ground Storage Tanks",
+   "parentId": "equip-storage-equipment",
+   "level": 2,
+   "aliases": [
+    "AST"
+   ],
+   "order": 0
+  },
+  {
+   "id": "equip-underground-storage-tanks",
+   "type": "equipment",
+   "name": "Underground Storage Tanks",
+   "parentId": "equip-storage-equipment",
+   "level": 2,
+   "aliases": [
+    "UST"
+   ],
+   "order": 1
+  },
+  {
+   "id": "equip-cryogenic-tanks",
+   "type": "equipment",
+   "name": "Cryogenic Tanks",
+   "parentId": "equip-storage-equipment",
+   "level": 2,
+   "aliases": [],
+   "order": 2
+  },
+  {
+   "id": "equip-pressure-vessels",
+   "type": "equipment",
+   "name": "Pressure Vessels",
+   "parentId": "equip-storage-equipment",
+   "level": 2,
+   "aliases": [],
+   "order": 3
+  },
+  {
+   "id": "equip-spheres-and-bullets",
+   "type": "equipment",
+   "name": "Spheres and Bullets",
+   "parentId": "equip-storage-equipment",
+   "level": 2,
+   "aliases": [],
+   "order": 4
+  },
+  {
+   "id": "equip-silos-and-hoppers",
+   "type": "equipment",
+   "name": "Silos and Hoppers",
+   "parentId": "equip-storage-equipment",
+   "level": 2,
+   "aliases": [],
+   "order": 5
+  },
+  {
+   "id": "equip-tank-components",
+   "type": "equipment",
+   "name": "Tank Components",
+   "parentId": null,
+   "level": 1,
+   "aliases": [],
+   "order": 1
+  },
+  {
+   "id": "equip-floating-roof-systems",
+   "type": "equipment",
+   "name": "Floating Roof Systems",
+   "parentId": "equip-tank-components",
+   "level": 2,
+   "aliases": [],
+   "order": 0
+  },
+  {
+   "id": "equip-rim-seals",
+   "type": "equipment",
+   "name": "Rim Seals",
+   "parentId": "equip-tank-components",
+   "level": 2,
+   "aliases": [],
+   "order": 1
+  },
+  {
+   "id": "equip-gauge-hatches",
+   "type": "equipment",
+   "name": "Gauge Hatches",
+   "parentId": "equip-tank-components",
+   "level": 2,
+   "aliases": [],
+   "order": 2
+  },
+  {
+   "id": "equip-roof-drains",
+   "type": "equipment",
+   "name": "Roof Drains",
+   "parentId": "equip-tank-components",
+   "level": 2,
+   "aliases": [],
+   "order": 3
+  },
+  {
+   "id": "equip-foam-systems",
+   "type": "equipment",
+   "name": "Foam Systems",
+   "parentId": "equip-tank-components",
+   "level": 2,
+   "aliases": [],
+   "order": 4
+  },
+  {
+   "id": "equip-manways",
+   "type": "equipment",
+   "name": "Manways",
+   "parentId": "equip-tank-components",
+   "level": 2,
+   "aliases": [],
+   "order": 5
+  },
+  {
+   "id": "equip-nozzles",
+   "type": "equipment",
+   "name": "Nozzles",
+   "parentId": "equip-tank-components",
+   "level": 2,
+   "aliases": [],
+   "order": 6
+  },
+  {
+   "id": "equip-shell-plates",
+   "type": "equipment",
+   "name": "Shell Plates",
+   "parentId": "equip-tank-components",
+   "level": 2,
+   "aliases": [],
+   "order": 7
+  },
+  {
+   "id": "equip-stairways-and-platforms",
+   "type": "equipment",
+   "name": "Stairways and Platforms",
+   "parentId": "equip-tank-components",
+   "level": 2,
+   "aliases": [],
+   "order": 8
+  },
+  {
+   "id": "equip-valves-flow-control",
+   "type": "equipment",
+   "name": "Valves & Flow Control",
+   "parentId": null,
+   "level": 1,
+   "aliases": [],
+   "order": 2
+  },
+  {
+   "id": "equip-pressure-vacuum-vents",
+   "type": "equipment",
+   "name": "Pressure/Vacuum Vents",
+   "parentId": "equip-valves-flow-control",
+   "level": 2,
+   "aliases": [],
+   "order": 0
+  },
+  {
+   "id": "equip-flame-arresters",
+   "type": "equipment",
+   "name": "Flame Arresters",
+   "parentId": "equip-valves-flow-control",
+   "level": 2,
+   "aliases": [],
+   "order": 1
+  },
+  {
+   "id": "equip-emergency-vents",
+   "type": "equipment",
+   "name": "Emergency Vents",
+   "parentId": "equip-valves-flow-control",
+   "level": 2,
+   "aliases": [],
+   "order": 2
+  },
+  {
+   "id": "equip-control-valves",
+   "type": "equipment",
+   "name": "Control Valves",
+   "parentId": "equip-valves-flow-control",
+   "level": 2,
+   "aliases": [],
+   "order": 3
+  },
+  {
+   "id": "equip-isolation-valves",
+   "type": "equipment",
+   "name": "Isolation Valves",
+   "parentId": "equip-valves-flow-control",
+   "level": 2,
+   "aliases": [],
+   "order": 4
+  },
+  {
+   "id": "equip-relief-valves",
+   "type": "equipment",
+   "name": "Relief Valves",
+   "parentId": "equip-valves-flow-control",
+   "level": 2,
+   "aliases": [],
+   "order": 5
+  },
+  {
+   "id": "equip-check-valves",
+   "type": "equipment",
+   "name": "Check Valves",
+   "parentId": "equip-valves-flow-control",
+   "level": 2,
+   "aliases": [],
+   "order": 6
+  },
+  {
+   "id": "equip-measurement-instrumentation",
+   "type": "equipment",
+   "name": "Measurement & Instrumentation",
+   "parentId": null,
+   "level": 1,
+   "aliases": [],
+   "order": 3
+  },
+  {
+   "id": "equip-radar-level-gauges",
+   "type": "equipment",
+   "name": "Radar Level Gauges",
+   "parentId": "equip-measurement-instrumentation",
+   "level": 2,
+   "aliases": [],
+   "order": 0
+  },
+  {
+   "id": "equip-servo-gauges",
+   "type": "equipment",
+   "name": "Servo Gauges",
+   "parentId": "equip-measurement-instrumentation",
+   "level": 2,
+   "aliases": [],
+   "order": 1
+  },
+  {
+   "id": "equip-temperature-systems",
+   "type": "equipment",
+   "name": "Temperature Systems",
+   "parentId": "equip-measurement-instrumentation",
+   "level": 2,
+   "aliases": [],
+   "order": 2
+  },
+  {
+   "id": "equip-pressure-transmitters",
+   "type": "equipment",
+   "name": "Pressure Transmitters",
+   "parentId": "equip-measurement-instrumentation",
+   "level": 2,
+   "aliases": [],
+   "order": 3
+  },
+  {
+   "id": "equip-flow-meters",
+   "type": "equipment",
+   "name": "Flow Meters",
+   "parentId": "equip-measurement-instrumentation",
+   "level": 2,
+   "aliases": [],
+   "order": 4
+  },
+  {
+   "id": "equip-tank-gauging-systems",
+   "type": "equipment",
+   "name": "Tank Gauging Systems",
+   "parentId": "equip-measurement-instrumentation",
+   "level": 2,
+   "aliases": [],
+   "order": 5
+  },
+  {
+   "id": "equip-overfill-prevention-systems",
+   "type": "equipment",
+   "name": "Overfill Prevention Systems",
+   "parentId": "equip-measurement-instrumentation",
+   "level": 2,
+   "aliases": [],
+   "order": 6
+  },
+  {
+   "id": "equip-leak-detection-systems",
+   "type": "equipment",
+   "name": "Leak Detection Systems",
+   "parentId": "equip-measurement-instrumentation",
+   "level": 2,
+   "aliases": [],
+   "order": 7
+  },
+  {
+   "id": "equip-loading-transfer",
+   "type": "equipment",
+   "name": "Loading & Transfer",
+   "parentId": null,
+   "level": 1,
+   "aliases": [],
+   "order": 4
+  },
+  {
+   "id": "equip-marine-loading-arms",
+   "type": "equipment",
+   "name": "Marine Loading Arms",
+   "parentId": "equip-loading-transfer",
+   "level": 2,
+   "aliases": [],
+   "order": 0
+  },
+  {
+   "id": "equip-loading-skids",
+   "type": "equipment",
+   "name": "Loading Skids",
+   "parentId": "equip-loading-transfer",
+   "level": 2,
+   "aliases": [],
+   "order": 1
+  },
+  {
+   "id": "equip-bottom-loading-systems",
+   "type": "equipment",
+   "name": "Bottom Loading Systems",
+   "parentId": "equip-loading-transfer",
+   "level": 2,
+   "aliases": [],
+   "order": 2
+  },
+  {
+   "id": "equip-top-loading-systems",
+   "type": "equipment",
+   "name": "Top Loading Systems",
+   "parentId": "equip-loading-transfer",
+   "level": 2,
+   "aliases": [],
+   "order": 3
+  },
+  {
+   "id": "equip-hoses-and-couplings",
+   "type": "equipment",
+   "name": "Hoses and Couplings",
+   "parentId": "equip-loading-transfer",
+   "level": 2,
+   "aliases": [],
+   "order": 4
+  },
+  {
+   "id": "equip-swivel-joints",
+   "type": "equipment",
+   "name": "Swivel Joints",
+   "parentId": "equip-loading-transfer",
+   "level": 2,
+   "aliases": [],
+   "order": 5
+  },
+  {
+   "id": "equip-dry-disconnect-couplings",
+   "type": "equipment",
+   "name": "Dry Disconnect Couplings",
+   "parentId": "equip-loading-transfer",
+   "level": 2,
+   "aliases": [],
+   "order": 6
+  },
+  {
+   "id": "equip-pumps-rotating-equipment",
+   "type": "equipment",
+   "name": "Pumps & Rotating Equipment",
+   "parentId": null,
+   "level": 1,
+   "aliases": [],
+   "order": 5
+  },
+  {
+   "id": "equip-centrifugal-pumps",
+   "type": "equipment",
+   "name": "Centrifugal Pumps",
+   "parentId": "equip-pumps-rotating-equipment",
+   "level": 2,
+   "aliases": [],
+   "order": 0
+  },
+  {
+   "id": "equip-positive-displacement-pumps",
+   "type": "equipment",
+   "name": "Positive Displacement Pumps",
+   "parentId": "equip-pumps-rotating-equipment",
+   "level": 2,
+   "aliases": [],
+   "order": 1
+  },
+  {
+   "id": "equip-compressors",
+   "type": "equipment",
+   "name": "Compressors",
+   "parentId": "equip-pumps-rotating-equipment",
+   "level": 2,
+   "aliases": [],
+   "order": 2
+  },
+  {
+   "id": "equip-blowers",
+   "type": "equipment",
+   "name": "Blowers",
+   "parentId": "equip-pumps-rotating-equipment",
+   "level": 2,
+   "aliases": [],
+   "order": 3
+  },
+  {
+   "id": "equip-gearboxes",
+   "type": "equipment",
+   "name": "Gearboxes",
+   "parentId": "equip-pumps-rotating-equipment",
+   "level": 2,
+   "aliases": [],
+   "order": 4
+  },
+  {
+   "id": "equip-mechanical-seals",
+   "type": "equipment",
+   "name": "Mechanical Seals",
+   "parentId": "equip-pumps-rotating-equipment",
+   "level": 2,
+   "aliases": [],
+   "order": 5
+  },
+  {
+   "id": "equip-piping-systems",
+   "type": "equipment",
+   "name": "Piping Systems",
+   "parentId": null,
+   "level": 1,
+   "aliases": [],
+   "order": 6
+  },
+  {
+   "id": "equip-pipelines",
+   "type": "equipment",
+   "name": "Pipelines",
+   "parentId": "equip-piping-systems",
+   "level": 2,
+   "aliases": [],
+   "order": 0
+  },
+  {
+   "id": "equip-manifolds",
+   "type": "equipment",
+   "name": "Manifolds",
+   "parentId": "equip-piping-systems",
+   "level": 2,
+   "aliases": [],
+   "order": 1
+  },
+  {
+   "id": "equip-pig-launchers-and-receivers",
+   "type": "equipment",
+   "name": "Pig Launchers and Receivers",
+   "parentId": "equip-piping-systems",
+   "level": 2,
+   "aliases": [],
+   "order": 2
+  },
+  {
+   "id": "equip-expansion-joints",
+   "type": "equipment",
+   "name": "Expansion Joints",
+   "parentId": "equip-piping-systems",
+   "level": 2,
+   "aliases": [],
+   "order": 3
+  },
+  {
+   "id": "equip-strainers",
+   "type": "equipment",
+   "name": "Strainers",
+   "parentId": "equip-piping-systems",
+   "level": 2,
+   "aliases": [],
+   "order": 4
+  },
+  {
+   "id": "equip-heat-exchangers",
+   "type": "equipment",
+   "name": "Heat Exchangers",
+   "parentId": "equip-piping-systems",
+   "level": 2,
+   "aliases": [],
+   "order": 5
+  },
+  {
+   "id": "equip-fire-protection-safety",
+   "type": "equipment",
+   "name": "Fire Protection & Safety",
+   "parentId": null,
+   "level": 1,
+   "aliases": [],
+   "order": 7
+  },
+  {
+   "id": "equip-foam-chambers",
+   "type": "equipment",
+   "name": "Foam Chambers",
+   "parentId": "equip-fire-protection-safety",
+   "level": 2,
+   "aliases": [],
+   "order": 0
+  },
+  {
+   "id": "equip-foam-pourers",
+   "type": "equipment",
+   "name": "Foam Pourers",
+   "parentId": "equip-fire-protection-safety",
+   "level": 2,
+   "aliases": [],
+   "order": 1
+  },
+  {
+   "id": "equip-deluge-systems",
+   "type": "equipment",
+   "name": "Deluge Systems",
+   "parentId": "equip-fire-protection-safety",
+   "level": 2,
+   "aliases": [],
+   "order": 2
+  },
+  {
+   "id": "equip-fire-monitors",
+   "type": "equipment",
+   "name": "Fire Monitors",
+   "parentId": "equip-fire-protection-safety",
+   "level": 2,
+   "aliases": [],
+   "order": 3
+  },
+  {
+   "id": "equip-hydrants",
+   "type": "equipment",
+   "name": "Hydrants",
+   "parentId": "equip-fire-protection-safety",
+   "level": 2,
+   "aliases": [],
+   "order": 4
+  },
+  {
+   "id": "equip-gas-detectors",
+   "type": "equipment",
+   "name": "Gas Detectors",
+   "parentId": "equip-fire-protection-safety",
+   "level": 2,
+   "aliases": [],
+   "order": 5
+  },
+  {
+   "id": "equip-flame-detectors",
+   "type": "equipment",
+   "name": "Flame Detectors",
+   "parentId": "equip-fire-protection-safety",
+   "level": 2,
+   "aliases": [],
+   "order": 6
+  },
+  {
+   "id": "equip-emergency-shutdown-systems",
+   "type": "equipment",
+   "name": "Emergency Shutdown Systems",
+   "parentId": "equip-fire-protection-safety",
+   "level": 2,
+   "aliases": [
+    "ESD"
+   ],
+   "order": 7
+  },
+  {
+   "id": "equip-fire-alarm-systems",
+   "type": "equipment",
+   "name": "Fire Alarm Systems",
+   "parentId": "equip-fire-protection-safety",
+   "level": 2,
+   "aliases": [],
+   "order": 8
+  },
+  {
+   "id": "equip-electrical-automation",
+   "type": "equipment",
+   "name": "Electrical & Automation",
+   "parentId": null,
+   "level": 1,
+   "aliases": [],
+   "order": 8
+  },
+  {
+   "id": "equip-plcs",
+   "type": "equipment",
+   "name": "PLCs",
+   "parentId": "equip-electrical-automation",
+   "level": 2,
+   "aliases": [],
+   "order": 0
+  },
+  {
+   "id": "equip-dcs",
+   "type": "equipment",
+   "name": "DCS",
+   "parentId": "equip-electrical-automation",
+   "level": 2,
+   "aliases": [],
+   "order": 1
+  },
+  {
+   "id": "equip-scada",
+   "type": "equipment",
+   "name": "SCADA",
+   "parentId": "equip-electrical-automation",
+   "level": 2,
+   "aliases": [],
+   "order": 2
+  },
+  {
+   "id": "equip-motor-control-centers",
+   "type": "equipment",
+   "name": "Motor Control Centers",
+   "parentId": "equip-electrical-automation",
+   "level": 2,
+   "aliases": [
+    "MCC"
+   ],
+   "order": 3
+  },
+  {
+   "id": "equip-variable-frequency-drives",
+   "type": "equipment",
+   "name": "Variable Frequency Drives",
+   "parentId": "equip-electrical-automation",
+   "level": 2,
+   "aliases": [
+    "VFD"
+   ],
+   "order": 4
+  },
+  {
+   "id": "equip-industrial-networking-equipment",
+   "type": "equipment",
+   "name": "Industrial Networking Equipment",
+   "parentId": "equip-electrical-automation",
+   "level": 2,
+   "aliases": [],
+   "order": 5
+  },
+  {
+   "id": "equip-hazardous-area-electrical-equipment",
+   "type": "equipment",
+   "name": "Hazardous-area Electrical Equipment",
+   "parentId": "equip-electrical-automation",
+   "level": 2,
+   "aliases": [],
+   "order": 6
+  }
+ ]
+}
