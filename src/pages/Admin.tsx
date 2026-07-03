@@ -2701,6 +2701,7 @@ const handleEditCompany = (company: any) => {
                       <th className="px-6 py-4">Affiliation</th>
                       <th className="px-6 py-4">Industry Segment</th>
                       <th className="px-6 py-4">Bio / Summary</th>
+                      <th className="px-6 py-4">Tier</th>
                       <th className="px-6 py-4">Auth Metadata</th>
                     </tr>
                   </thead>
@@ -2730,6 +2731,27 @@ const handleEditCompany = (company: any) => {
                         </td>
                         <td className="px-6 py-4">
                            <p className="text-xs text-text-body max-w-xs truncate italic">{member.bio ||"No biography provided."}</p>
+                        </td>
+                        <td className="px-6 py-4">
+                           <button
+                             onClick={async () => {
+                               const grant = !member.isPro;
+                               if (!window.confirm(`${grant ? "Grant" : "Revoke"} Pro for ${member.displayName || member.email}?`)) return;
+                               try {
+                                 await updateDocument("users", member.id, { isPro: grant, updatedAt: serverTimestamp() });
+                               } catch (err: any) {
+                                 alert(`Failed to update Pro status: ${err?.message || "Unknown error"}`);
+                               }
+                             }}
+                             className={`eyebrow tabular px-2.5 py-1 rounded-full border transition-all ${
+                               member.isPro
+                                 ? "bg-accent/10 text-accent border-accent/30 hover:bg-rust/10 hover:text-rust hover:border-rust/30"
+                                 : "bg-bg-main text-text-body/45 border-border-main hover:text-accent hover:border-accent/30"
+                             }`}
+                             title={member.isPro ? "Click to revoke Pro" : "Click to grant Pro"}
+                           >
+                             {member.isPro ? "PRO" : "Free"}
+                           </button>
                         </td>
                         <td className="px-6 py-4">
                            <div className="flex flex-col gap-1">

@@ -735,7 +735,6 @@ export default function Profile() {
         company: formData.company || "",
         companyId: formData.companyId || "",
         jobTitle: formData.jobTitle || "",
-        isPro: !!formData.isPro,
         isPublic: !!formData.isPublic,
         skills: Array.isArray(formData.skills) ? formData.skills : [],
         badges: Array.isArray(formData.badges) ? formData.badges.filter((b: any) => b.title?.trim()) : [],
@@ -850,7 +849,7 @@ export default function Profile() {
   const handleMessage = async () => {
     if (!user || !targetId || isOwner || messageloading) return;
     if (!currentUserProfile?.isPro) {
-      alert("Messaging is a Pro feature. Upgrade to start direct conversations.");
+      alert("Direct messaging is a Pro feature. Contact the platform administrators to enable Pro on your account.");
       return;
     }
     if (!isConnected) {
@@ -1218,19 +1217,7 @@ export default function Profile() {
                   <BadgesEditor badges={formData.badges} onChange={(b) => setFormData({ ...formData, badges: b })} />
                 </EditSection>
 
-                <EditSection title="Recognition" description="Pro tier & visibility" icon={ShieldCheck}>
-                  <label className="flex items-start gap-3 cursor-pointer p-3 bg-bg-main rounded-xl border border-border-main">
-                    <input
-                      type="checkbox"
-                      checked={!!formData.isPro}
-                      onChange={(e) => setFormData({ ...formData, isPro: e.target.checked })}
-                      className="mt-1 w-4 h-4 accent-accent"
-                    />
-                    <div>
-                      <p className="text-[14px] font-medium text-text-heading">Premium identity</p>
-                      <p className="text-[12px] text-text-body/70 mt-0.5">Unlocks AI technical insights and direct messaging.</p>
-                    </div>
-                  </label>
+                <EditSection title="Visibility" description="Directory visibility" icon={ShieldCheck}>
                   <label className="flex items-start gap-3 cursor-pointer p-3 bg-bg-main rounded-xl border border-border-main">
                     <input
                       type="checkbox"
@@ -1492,23 +1479,6 @@ export default function Profile() {
               <p className="eyebrow tabular text-text-body/55 mb-4">Connections</p>
               <ConnectionsList targetUid={targetId || ""} />
             </div>
-
-            {isOwner && (
-              <div className="bg-primary text-white rounded-2xl p-6 grain relative overflow-hidden">
-                <div className="absolute inset-0 bp-grid pointer-events-none opacity-40" />
-                <div className="relative">
-                  <p className="eyebrow tabular text-white/55 mb-2">Premium feature</p>
-                  <h3 className="font-display text-2xl mb-2">Technical Headhunting</h3>
-                  <p className="text-white/70 text-[13px] leading-relaxed mb-5">
-                    Connect with top site operators and logistics heads globally.
-                  </p>
-                  <button className="inline-flex items-center gap-2 bg-accent text-white px-4 py-2.5 rounded-xl text-[13px] font-medium hover:brightness-110">
-                    Upgrade access
-                    <ChevronRight className="w-4 h-4" />
-                  </button>
-                </div>
-              </div>
-            )}
 
             {isOwner && (
               <div className="bg-bg-card border border-border-main rounded-2xl p-6">

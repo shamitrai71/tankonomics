@@ -543,7 +543,7 @@ service cloud.firestore {
       allow update: if isValidId(userId) && (
                     (isOwner(userId) && 
                       isValidUser(incoming()) && 
-                      incoming().diff(existing()).affectedKeys().hasOnly(['displayName', 'photoURL', 'bio', 'industrySegment', 'company', 'companyId', 'jobTitle', 'isPro', 'aiUsage', 'isPublic', 'skills', 'profileLabels', 'socialLinks', 'updatedAt', 'email', 'uid', 'savedJobs', 'badges'])) ||
+                      incoming().diff(existing()).affectedKeys().hasOnly(['displayName', 'photoURL', 'bio', 'industrySegment', 'company', 'companyId', 'jobTitle', 'aiUsage', 'isPublic', 'skills', 'profileLabels', 'socialLinks', 'updatedAt', 'email', 'uid', 'savedJobs', 'badges'])) ||
                     (isCompanyOwner(existing().companyId) && 
                       incoming().diff(existing()).affectedKeys().hasOnly(['isVerifiedByCompany', 'verifiedByCompanyId', 'verifiedByCompanyName', 'verifiedAt', 'verifiedByUid'])) ||
                     isAdmin()
