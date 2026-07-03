@@ -76,8 +76,19 @@ Single `taxonomy` collection, one doc per node, mirroring the proven
 Doc IDs = the stable slugs from the seed (`role-terminal-operator`), so references
 in resumes/jobs are human-readable and rename-safe (renames touch `name` only, never
 the ID). Composite index: `taxonomy(type ASC, order ASC)`. Admin CRUD extends the
-existing category-manager pattern. `company_categories` stays untouched for now;
-migrating companies onto the taxonomy is a later, separate decision.
+existing category-manager pattern.
+
+**`company_categories` is permanently separate from the taxonomy — by design, not
+deferral.** They answer different questions: `company_categories` = what products/
+services a company *sells* (commercial directory axis); the taxonomy = career and
+matching concepts. A company carries both without conflict — e.g. categories
+"Tank Seals, Rim Seals" *and* taxonomy vertical "Equipment OEMs". In Phase 2 the
+Jobs/Blueprint "Domain Experience" pickers move from `company_categories` to the
+taxonomy; the company directory keeps `company_categories` untouched.
+
+**Extensibility rule:** adding nodes/aliases and renaming display names is always
+safe (IDs never change). Deleting or merging nodes after resumes/jobs reference
+them requires a data migration — add freely, delete carefully.
 
 Rubric weights move to `settings/matching` (admin-editable). "Authorised partners"
 editing parameters = a third permission tier that doesn't exist yet — explicitly
@@ -87,5 +98,5 @@ deferred, not forgotten.
 
 Multi-parent nodes (single parent + aliases instead) · semantic/embedding matching
 (exact-tag first; revisit only if tag matching proves insufficient) · partner
-permission tier · migrating `company_categories` into `taxonomy` · example company
-names as vertical aliases (Vopak etc. are examples, not synonyms).
+permission tier · example company names as vertical aliases (Vopak etc. are
+examples, not synonyms).
