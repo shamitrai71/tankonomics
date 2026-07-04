@@ -257,6 +257,22 @@ service cloud.firestore {
              (!data.keys().contains('updatedAt') || data.updatedAt is timestamp);
     }
 
+    // Talent Bank taxonomy nodes (docs/TALENT_BANK_PHASE0.md).
+    // Doc IDs are stable slugs (e.g. role-terminal-operator); referenced by
+    // resumes and jobs, so deletes are admin-only and should be rare.
+    function isValidTaxonomyNode(data) {
+      return data.keys().hasAll(['type', 'name', 'level', 'order']) &&
+             data.type in ['industry', 'vertical', 'domain', 'family', 'role', 'discipline', 'certification', 'equipment'] &&
+             data.name is string && data.name.size() > 0 && data.name.size() <= 128 &&
+             data.level is number && (data.level == 1 || data.level == 2) &&
+             data.order is number &&
+             (!data.keys().contains('id') || data.id == null || data.id is string) &&
+             (!data.keys().contains('parentId') || data.parentId == null || data.parentId is string) &&
+             (!data.keys().contains('aliases') || data.aliases == null || data.aliases is list) &&
+             (!data.keys().contains('note') || data.note == null || data.note is string) &&
+             (!data.keys().contains('updatedAt') || data.updatedAt is timestamp);
+    }
+
     function isValidConnection(data) {
       return data.keys().hasAll(['userIds', 'status', 'requesterId', 'createdAt']) &&
              data.userIds is list && data.userIds.size() == 2 &&
@@ -498,6 +514,12 @@ service cloud.firestore {
       allow read: if isAdmin();
       allow create: if isSignedIn() && isValidReport(incoming());
       allow update: if isAdmin();
+      allow delete: if isAdmin();
+    }
+
+    match /taxonomy/{nodeId} {
+      allow read: if isSignedIn();
+      allow create, update: if isAdmin() && isValidTaxonomyNode(incoming());
       allow delete: if isAdmin();
     }
 

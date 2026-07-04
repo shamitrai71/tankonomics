@@ -43,7 +43,7 @@ import {
 import axios from "axios";
 import { createDocument, useCollection, removeDocument, updateDocument } from "../hooks/useFirestore";
 import { useAuth, useTheme } from "../App";
-import { orderBy, serverTimestamp, doc, getDoc, setDoc } from "firebase/firestore";
+import { orderBy, serverTimestamp, doc, getDoc, setDoc, writeBatch, deleteDoc } from "firebase/firestore";
 import { db, auth } from "../firebase";
 import { format, subDays, isWithinInterval, startOfDay, endOfDay } from "date-fns";
 import { motion, AnimatePresence } from "framer-motion";
@@ -65,11 +65,13 @@ import {
   Area
 } from "recharts";
 
-type Tab ="analytics" |"news" |"forums" |"events" |"surveys" |"members" |"theme" |"pages" |"moderation" |"companies" |"resumes" |"groups" |"jobs";
+type Tab ="analytics" |"news" |"forums" |"events" |"surveys" |"members" |"theme" |"pages" |"moderation" |"companies" |"resumes" |"groups" |"jobs" |"taxonomy";
 
 import { CategorySelector } from "../components/CategorySelector";
 import { uploadImage } from "../lib/uploadImage";
 import { scoreMatch } from "../lib/matchScore";
+import { TAXONOMY_SEED } from "../lib/taxonomySeed";
+import { Layers } from "lucide-react";
 
 export default function Admin() {
   const [activeTab, setActiveTab] = useState<Tab>("analytics");
@@ -151,6 +153,11 @@ export default function Admin() {
   const [matchNote, setMatchNote] = useState("");
   const [jobStatusFilter, setJobStatusFilter] = useState<"all" | "open" | "closed">("all");
   const [isCreatingMatch, setIsCreatingMatch] = useState(false);
+  // Taxonomy tab state
+  const [taxType, setTaxType] = useState("industry");
+  const [newTaxNode, setNewTaxNode] = useState({ name: "", parentId: "", aliases: "" });
+  const [editingTaxNode, setEditingTaxNode] = useState<any>(null);
+  const [isSeedingTax, setIsSeedingTax] = useState(false);
   const [eventData, setEventData] = useState({ 
     title:"", 
     date:"", 
@@ -196,6 +203,8 @@ export default function Admin() {
   // Jobs tab: load all jobs + all matches. Resumes also needed for the matching panel.
   const { data: adminJobs, loading: loadingAdminJobs } = useCollection<any>("jobs", [orderBy("createdAt", "desc")], activeTab === "jobs");
   const { data: jobMatches, loading: loadingJobMatches } = useCollection<any>("job_matches", [orderBy("createdAt", "desc")], activeTab === "jobs");
+  // Taxonomy tab: all nodes in one subscription (~455 docs), sorted client-side.
+  const { data: taxonomyNodes, loading: loadingTaxonomy } = useCollection<any>("taxonomy", [], activeTab === "taxonomy");
 
   const [newCategory, setNewCategory] = useState({ name:"", parentId:"", level: 1 });
   const [newCompany, setNewCompany] = useState({ 
@@ -747,6 +756,87 @@ const handleEditCompany = (company: any) => {
     }
   };
 
+  // Taxonomy tab handlers
+  const TAX_PREFIX: Record<string, string> = { industry: "ind", vertical: "vert", domain: "dom", family: "fam", role: "role", discipline: "disc", certification: "cert", equipment: "equip" };
+
+  const handleSeedTaxonomy = async () => {
+    if (!window.confirm(`Upload ${TAXONOMY_SEED.length} taxonomy nodes from the bundled seed?\n\nNodes with matching IDs are overwritten to the seed version; nodes you added yourself are untouched.`)) return;
+    setIsSeedingTax(true);
+    try {
+      // setDoc with stable slug IDs makes this idempotent — safe to re-run.
+      for (let i = 0; i < TAXONOMY_SEED.length; i += 400) {
+        const batch = writeBatch(db);
+        TAXONOMY_SEED.slice(i, i + 400).forEach((node: any) => {
+          batch.set(doc(db, "taxonomy", node.id), { ...node, updatedAt: serverTimestamp() });
+        });
+        await batch.commit();
+      }
+      alert(`Seeded ${TAXONOMY_SEED.length} taxonomy nodes.`);
+    } catch (err: any) {
+      console.error("Taxonomy seed failed:", err);
+      alert(`Seeding failed: ${err?.message || "Unknown error"}`);
+    } finally {
+      setIsSeedingTax(false);
+    }
+  };
+
+  const handleAddTaxNode = async () => {
+    if (!newTaxNode.name.trim()) return;
+    const slugify = (s: string) => s.normalize("NFKD").replace(/[^a-zA-Z0-9]+/g, "-").replace(/^-+|-+$/g, "").toLowerCase();
+    let id = `${TAX_PREFIX[taxType]}-${slugify(newTaxNode.name)}`;
+    if (taxonomyNodes.some((n: any) => n.id === id)) id = `${id}-${Date.now().toString(36)}`;
+    const level = newTaxNode.parentId ? 2 : 1;
+    const siblings = taxonomyNodes.filter((n: any) => n.type === taxType && (n.parentId || "") === (newTaxNode.parentId || ""));
+    try {
+      await setDoc(doc(db, "taxonomy", id), {
+        id,
+        type: taxType,
+        name: newTaxNode.name.trim(),
+        parentId: newTaxNode.parentId || null,
+        level,
+        aliases: newTaxNode.aliases.split(",").map(a => a.trim()).filter(Boolean),
+        order: siblings.length,
+        updatedAt: serverTimestamp(),
+      });
+      setNewTaxNode({ name: "", parentId: "", aliases: "" });
+    } catch (err: any) {
+      console.error("Taxonomy node create failed:", err);
+      alert(`Failed to add node: ${err?.message || "Unknown error"}`);
+    }
+  };
+
+  const handleSaveTaxNode = async () => {
+    if (!editingTaxNode?.name?.trim()) return;
+    try {
+      await updateDocument("taxonomy", editingTaxNode.id, {
+        name: editingTaxNode.name.trim(),
+        aliases: (typeof editingTaxNode.aliases === "string"
+          ? editingTaxNode.aliases.split(",").map((a: string) => a.trim()).filter(Boolean)
+          : editingTaxNode.aliases) || [],
+        updatedAt: serverTimestamp(),
+      });
+      setEditingTaxNode(null);
+    } catch (err: any) {
+      console.error("Taxonomy node update failed:", err);
+      alert(`Failed to save node: ${err?.message || "Unknown error"}`);
+    }
+  };
+
+  const handleDeleteTaxNode = async (node: any) => {
+    const children = taxonomyNodes.filter((n: any) => n.parentId === node.id);
+    if (children.length > 0) {
+      alert(`"${node.name}" has ${children.length} child node${children.length > 1 ? "s" : ""}. Delete or re-parent them first.`);
+      return;
+    }
+    if (!window.confirm(`Delete "${node.name}" (${node.id})?\n\nAny resumes or jobs referencing this ID will lose the label. Renaming is usually safer than deleting.`)) return;
+    try {
+      await deleteDoc(doc(db, "taxonomy", node.id));
+    } catch (err: any) {
+      console.error("Taxonomy node delete failed:", err);
+      alert(`Failed to delete node: ${err?.message || "Unknown error"}`);
+    }
+  };
+
   // Analytics Helpers
   const getGrowthData = (data: any[], days: number = 7) => {
     const result = [];
@@ -802,6 +892,7 @@ const handleEditCompany = (company: any) => {
     { id:"companies", label:"Companies", icon: Building2 },
     { id:"groups", label:"Groups", icon: Users },
     { id:"jobs", label:"Jobs", icon: Briefcase },
+    { id:"taxonomy", label:"Taxonomy", icon: Layers },
     { id:"moderation", label:"Moderation", icon: Shield },
     { id:"theme", label:"Branding", icon: Palette },
     { id:"pages", label:"Builder", icon: FileCode },
@@ -3127,6 +3218,121 @@ const handleEditCompany = (company: any) => {
                 </div>
               )}
             </AnimatePresence>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+
+      <AnimatePresence>
+        {activeTab === "taxonomy" && (
+          <motion.div key="taxonomy" initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -10 }} className="space-y-6">
+            <div className="flex items-center justify-between flex-wrap gap-3">
+              <div>
+                <h2 className="font-display text-2xl text-text-heading">Talent Bank Taxonomy</h2>
+                <p className="text-xs text-text-body/55 mt-1 font-medium">
+                  {taxonomyNodes.length} nodes · powers job–resume matching · see docs/TALENT_BANK_PHASE0.md
+                </p>
+              </div>
+              <button
+                onClick={handleSeedTaxonomy}
+                disabled={isSeedingTax}
+                className="inline-flex items-center gap-2 bg-text-heading text-bg-card px-4 py-2.5 rounded-xl text-[13px] font-medium hover:opacity-90 disabled:opacity-50 transition-all"
+              >
+                {isSeedingTax ? <Loader2 className="w-4 h-4 animate-spin" /> : <Layers className="w-4 h-4" />}
+                {taxonomyNodes.length === 0 ? `Seed ${TAXONOMY_SEED.length} nodes` : "Re-sync from seed"}
+              </button>
+            </div>
+
+            {/* Type filter chips */}
+            <div className="flex flex-wrap gap-2">
+              {Object.keys(TAX_PREFIX).map((t) => {
+                const count = taxonomyNodes.filter((n: any) => n.type === t).length;
+                return (
+                  <button key={t} onClick={() => { setTaxType(t); setEditingTaxNode(null); }}
+                    className={`px-3 py-1.5 eyebrow tabular rounded-xl transition-all ${
+                      taxType === t ? "bg-text-heading text-bg-card" : "bg-bg-card border border-border-main text-text-body hover:text-text-heading"
+                    }`}>
+                    {t.charAt(0).toUpperCase() + t.slice(1)}{count > 0 ? ` · ${count}` : ""}
+                  </button>
+                );
+              })}
+            </div>
+
+            {/* Add node */}
+            <div className="bg-bg-card border border-border-main rounded-2xl p-5">
+              <p className="eyebrow tabular text-text-body/55 mb-3">ADD {taxType.toUpperCase()} NODE</p>
+              <div className="grid grid-cols-1 md:grid-cols-4 gap-3">
+                <input value={newTaxNode.name} onChange={(e) => setNewTaxNode({ ...newTaxNode, name: e.target.value })}
+                  placeholder="Name" className="p-3 bg-bg-main border border-border-main rounded-xl text-sm outline-none focus:border-text-heading" />
+                <select value={newTaxNode.parentId} onChange={(e) => setNewTaxNode({ ...newTaxNode, parentId: e.target.value })}
+                  className="p-3 bg-bg-main border border-border-main rounded-xl text-sm outline-none">
+                  <option value="">No parent (top level)</option>
+                  {taxonomyNodes.filter((n: any) => n.type === taxType && n.level === 1).sort((a: any, b: any) => a.order - b.order).map((n: any) => (
+                    <option key={n.id} value={n.id}>{n.name}</option>
+                  ))}
+                </select>
+                <input value={newTaxNode.aliases} onChange={(e) => setNewTaxNode({ ...newTaxNode, aliases: e.target.value })}
+                  placeholder="Aliases (comma-separated)" className="p-3 bg-bg-main border border-border-main rounded-xl text-sm outline-none focus:border-text-heading" />
+                <button onClick={handleAddTaxNode} disabled={!newTaxNode.name.trim()}
+                  className="bg-accent text-white rounded-xl text-sm font-medium hover:brightness-110 disabled:opacity-40 transition-all">
+                  Add node
+                </button>
+              </div>
+            </div>
+
+            {/* Node list, grouped by parent */}
+            <div className="bg-bg-card border border-border-main rounded-2xl p-5">
+              {loadingTaxonomy ? (
+                <div className="space-y-2">{[1,2,3,4].map(i => <div key={i} className="h-10 bg-bg-main rounded-xl animate-pulse" />)}</div>
+              ) : taxonomyNodes.filter((n: any) => n.type === taxType).length === 0 ? (
+                <div className="text-center py-10">
+                  <Layers className="w-10 h-10 text-text-body/25 mx-auto mb-3" />
+                  <p className="eyebrow tabular text-text-body/55">No {taxType} nodes yet — use "Seed" above to load the v1 vocabulary.</p>
+                </div>
+              ) : (
+                <div className="space-y-1">
+                  {taxonomyNodes
+                    .filter((n: any) => n.type === taxType && n.level === 1)
+                    .sort((a: any, b: any) => a.order - b.order)
+                    .map((parent: any) => {
+                      const children = taxonomyNodes.filter((n: any) => n.parentId === parent.id).sort((a: any, b: any) => a.order - b.order);
+                      const renderRow = (node: any, indent: boolean) => (
+                        <div key={node.id} className={`flex items-center gap-2 py-1.5 px-2 rounded-lg hover:bg-bg-main group ${indent ? "ml-6" : ""}`}>
+                          {editingTaxNode?.id === node.id ? (
+                            <>
+                              <input value={editingTaxNode.name} onChange={(e) => setEditingTaxNode({ ...editingTaxNode, name: e.target.value })}
+                                className="flex-1 p-1.5 bg-bg-main border border-accent rounded-lg text-sm outline-none" autoFocus />
+                              <input value={typeof editingTaxNode.aliases === "string" ? editingTaxNode.aliases : (editingTaxNode.aliases || []).join(", ")}
+                                onChange={(e) => setEditingTaxNode({ ...editingTaxNode, aliases: e.target.value })}
+                                placeholder="Aliases" className="flex-1 p-1.5 bg-bg-main border border-border-main rounded-lg text-sm outline-none" />
+                              <button onClick={handleSaveTaxNode} className="px-2.5 py-1.5 bg-accent text-white rounded-lg text-[11px] eyebrow tabular">Save</button>
+                              <button onClick={() => setEditingTaxNode(null)} className="px-2 py-1.5 text-text-body/55 text-[11px]">Cancel</button>
+                            </>
+                          ) : (
+                            <>
+                              <span className={`flex-1 text-sm ${indent ? "text-text-body" : "font-bold text-text-heading"}`}>{node.name}</span>
+                              {(node.aliases || []).length > 0 && (
+                                <span className="eyebrow tabular text-text-body/40 text-[9px] truncate max-w-[200px]">{node.aliases.join(" · ")}</span>
+                              )}
+                              <span className="eyebrow tabular text-text-body/30 text-[9px] hidden md:inline">{node.id}</span>
+                              <button onClick={() => setEditingTaxNode({ ...node })} className="opacity-0 group-hover:opacity-100 px-2 py-1 text-[11px] text-accent transition-opacity">Edit</button>
+                              <button onClick={() => handleDeleteTaxNode(node)} className="opacity-0 group-hover:opacity-100 p-1 text-text-body/30 hover:text-rust transition-all">
+                                <Trash2 className="w-3.5 h-3.5" />
+                              </button>
+                            </>
+                          )}
+                        </div>
+                      );
+                      return (
+                        <div key={parent.id} className="mb-2">
+                          {renderRow(parent, false)}
+                          {children.map((c: any) => renderRow(c, true))}
+                        </div>
+                      );
+                    })}
+                </div>
+              )}
+            </div>
           </motion.div>
         )}
       </AnimatePresence>
