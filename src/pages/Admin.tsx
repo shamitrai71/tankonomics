@@ -91,6 +91,7 @@ export default function Admin() {
     sidebarFocusColor:"#0f172a",
     sidebarFocusTextColor:"#ffffff",
     logoUrl:"",
+    logoUrlDark:"",
     siteName:"Tankonomics",
     siteTagline:"Verified Network Identity",
     displayMode:"both" as"image_only" |"text_only" |"both"
@@ -471,7 +472,7 @@ export default function Admin() {
     }
   };
 
-  const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>, field:"logo" |"heroImage" |"themeLogo" |"eventImage") => {
+  const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>, field:"logo" |"heroImage" |"themeLogo" |"themeLogoDark" |"eventImage") => {
     const file = e.target.files?.[0];
     if (!file) return;
     if (!file.type.startsWith("image/")) {
@@ -486,16 +487,18 @@ export default function Admin() {
     // (Previously this base64-encoded the file straight into the document,
     //  which broke on anything bigger than a tiny thumbnail.)
     try {
-      if (field === "themeLogo") setIsLogoUploading(true);
+      if (field === "themeLogo" || field === "themeLogoDark") setIsLogoUploading(true);
       if (field === "eventImage") setIsEventUploading(true);
 
-      const folder = field === "themeLogo" ? "logos"
+      const folder = (field === "themeLogo" || field === "themeLogoDark") ? "logos"
                    : field === "eventImage" ? "events"
                    : "companies";
       const url = await uploadImage(file, { folder });
 
       if (field === "themeLogo") {
         setThemeData(prev => ({ ...prev, logoUrl: url }));
+      } else if (field === "themeLogoDark") {
+        setThemeData(prev => ({ ...prev, logoUrlDark: url }));
       } else if (field === "eventImage") {
         setEventData(prev => ({ ...prev, imageUrl: url }));
       } else {
@@ -505,7 +508,7 @@ export default function Admin() {
       console.error("Image upload error:", err);
       alert(`Failed to upload image: ${err?.message || err}`);
     } finally {
-      if (field === "themeLogo") setIsLogoUploading(false);
+      if (field === "themeLogo" || field === "themeLogoDark") setIsLogoUploading(false);
       if (field === "eventImage") setIsEventUploading(false);
     }
   };
@@ -2058,6 +2061,56 @@ const handleEditCompany = (company: any) => {
                           placeholder="https://yourbrand.com/logo.png"
                           value={themeData.logoUrl}
                           onChange={(e) => setThemeData({...themeData, logoUrl: e.target.value})}
+                          className="w-full pl-12 pr-4 py-4 bg-bg-main border border-border-main rounded-2xl outline-none focus:border-text-heading transition-all font-medium"
+                        />
+                      </div>
+                    </div>
+
+                    {/* Dark-background logo — a light/white version shown on dark
+                        surfaces (splash, login panel). The primary logo above is
+                        for light surfaces (nav on paper); a single logo can't
+                        serve both, so this is the second variant. */}
+                    <div className="flex items-center gap-6 p-6 bg-primary border border-border-main rounded-2xl mb-4 group transition-all relative overflow-hidden">
+                       <div className="w-16 h-16 bg-primary border border-white/20 rounded-2xl flex items-center justify-center p-2 shadow-sm overflow-hidden relative z-10 group/logod">
+                         {isLogoUploading ? (
+                           <Loader2 className="w-6 h-6 animate-spin text-white" />
+                         ) : themeData.logoUrlDark ? (
+                           <img src={themeData.logoUrlDark} className="w-full h-full object-contain" alt="Dark-bg Logo Preview" />
+                         ) : (
+                           <Building2 className="w-8 h-8 text-white/30" />
+                         )}
+                         <input 
+                           type="file" 
+                           accept="image/*"
+                           onChange={(e) => handleFileUpload(e, "themeLogoDark")}
+                           className="absolute inset-0 opacity-0 cursor-pointer z-20"
+                         />
+                         <div className="absolute inset-0 bg-black/40 opacity-0 group-hover/logod:opacity-100 flex items-center justify-center transition-opacity z-10">
+                            <Plus className="w-6 h-6 text-white" />
+                         </div>
+                       </div>
+                       <div className="flex-1 space-y-1 relative z-10">
+                          <p className="eyebrow tabular text-white uppercase">Dark-Background Logo</p>
+                          <p className="text-[9px] text-white/60 uppercase leading-relaxed">
+                            The <span className="text-white">light / white</span> version of your logo.<br/>
+                            Shown on the splash screen and login panel.<br/>
+                            Upload your white PNG here.
+                          </p>
+                          <div className="mt-2 eyebrow tabular text-accent uppercase">
+                            Click logo area to upload
+                          </div>
+                       </div>
+                    </div>
+
+                    <div className="relative mb-6">
+                      <label className="eyebrow tabular text-text-body/55 mb-2 block">Or Use Remote Dark-Logo URL</label>
+                      <div className="relative">
+                        <LinkIcon className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-text-body/55" />
+                        <input 
+                          type="url" 
+                          placeholder="https://yourbrand.com/logo-white.png"
+                          value={themeData.logoUrlDark || ""}
+                          onChange={(e) => setThemeData({...themeData, logoUrlDark: e.target.value})}
                           className="w-full pl-12 pr-4 py-4 bg-bg-main border border-border-main rounded-2xl outline-none focus:border-text-heading transition-all font-medium"
                         />
                       </div>

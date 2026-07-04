@@ -975,19 +975,26 @@ function GoogleGlyph() {
 
 function Splash() {
   // Splash renders before auth/theme context is ready, so it fetches the
-  // branding logo directly. Falls back to the built-in BrandMark if none set.
+  // branding logo directly. Prefers the dark-background (light/white) logo,
+  // since the splash sits on a dark surface. `logoReady` gates the mark so we
+  // don't flash the BrandMark fallback before the fetch resolves.
   const [logoUrl, setLogoUrl] = useState<string>("");
-  // Drives the one-time "color settles" moment: the petroleum overlay lightens
-  // slightly a beat after mount, letting the tank-farm photo emerge faintly.
+  const [logoReady, setLogoReady] = useState(false);
+  // Drives the one-time "color settles" moment: the overlay lightens slightly
+  // a beat after mount, letting the tank-farm photo emerge faintly.
   const [settled, setSettled] = useState(false);
 
   useEffect(() => {
     let alive = true;
     getDoc(doc(db, "settings", "theme"))
       .then((snap) => {
-        if (alive && snap.exists() && snap.data()?.logoUrl) setLogoUrl(snap.data().logoUrl);
+        if (!alive) return;
+        const d = snap.exists() ? snap.data() : null;
+        if (d?.logoUrlDark) setLogoUrl(d.logoUrlDark);
+        else if (d?.logoUrl) setLogoUrl(d.logoUrl);
       })
-      .catch(() => {});
+      .catch(() => {})
+      .finally(() => { if (alive) setLogoReady(true); });
     const t = setTimeout(() => alive && setSettled(true), 1400);
     return () => {
       alive = false;
@@ -1076,15 +1083,17 @@ function Splash() {
           />
         </svg>
 
-        {logoUrl ? (
-          <img
-            src={logoUrl}
-            alt="Tankonomics"
-            className="w-[132px] h-[132px] object-contain"
-            style={{ filter: "drop-shadow(0 2px 16px rgba(11,27,43,0.5))" }}
-          />
-        ) : (
-          <BrandMark size={132} tone="light" />
+        {logoReady && (
+          logoUrl ? (
+            <img
+              src={logoUrl}
+              alt="Tankonomics"
+              className="w-[132px] h-[132px] object-contain"
+              style={{ filter: "drop-shadow(0 2px 16px rgba(11,27,43,0.5))" }}
+            />
+          ) : (
+            <BrandMark size={132} tone="light" />
+          )
         )}
       </motion.div>
 
