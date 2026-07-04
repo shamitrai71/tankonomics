@@ -8,7 +8,7 @@
  *     and the "Share insight" submit button (replacing the heavy purple pill)
  *
  * What's preserved verbatim from the previous version:
- *   - Every data hook (useCollection for posts, news, dynamic_pages)
+ *   - Every data hook (useCollection for posts, news)
  *   - The image upload pipeline (uploadImage helper, blob preview, base64 migration)
  *   - handlePost, handleImageUpload, clearPostImage, handleTechnicalTip
  *   - CommentsModal, RepostModal, ReactionPicker subcomponents (restyled)
@@ -19,9 +19,8 @@
 import { useState, ChangeEvent, useMemo, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { useAuth } from "../App";
-import { DynamicContent } from "../components/DynamicContent";
 import { useCollection, createDocument, updateDocument, removeDocument } from "../hooks/useFirestore";
-import { orderBy, where, serverTimestamp } from "firebase/firestore";
+import { orderBy, serverTimestamp } from "firebase/firestore";
 import { uploadImage, isInlineImage, migrateDataUrlToStorage } from "../lib/uploadImage";
 import ReportModal from "../components/ReportModal";
 import { GoogleGenAI } from "@google/genai";
@@ -474,8 +473,6 @@ export default function Home() {
 
   const { data: posts, loading: loadingPosts } = useCollection<any>("posts", postConstraints);
   const { data: news, loading: loadingNews } = useCollection<any>("news", newsConstraints);
-  const { data: homeOverrides } = useCollection<any>("dynamic_pages", [where("slug", "==", "home"), where("published", "==", true)]);
-  const homeOverride = homeOverrides[0];
 
   const loading = loadingPosts || loadingNews;
 
@@ -647,13 +644,7 @@ export default function Home() {
   return (
     <div className="max-w-3xl mx-auto py-6 md:py-10 px-4">
       {/* Page heading */}
-      {homeOverride ? (
-        <motion.div initial={{ opacity: 0, y: -20 }} animate={{ opacity: 1, y: 0 }} className="mb-10">
-          <h1 className="font-display text-4xl md:text-5xl text-text-heading mb-3">{homeOverride.title}</h1>
-          <DynamicContent content={homeOverride.content} />
-          <div className="h-px w-full bg-border-main my-8" />
-        </motion.div>
-      ) : (
+      {(
         <div className="mb-8 md:mb-10">
           <div className="eyebrow tabular text-accent inline-flex items-center gap-2 mb-3">
             <span className="inline-block w-1.5 h-1.5 rounded-full bg-accent soft-pulse" />

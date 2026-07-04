@@ -169,15 +169,6 @@ service cloud.firestore {
       return data.keys().hasAny(['primaryColor', 'secondaryColor', 'accentColor', 'logoUrl', 'siteName', 'displayMode', 'updatedAt']);
     }
 
-    function isValidDynamicPage(data) {
-      return data.keys().hasAll(['slug', 'title', 'content']) &&
-             data.slug is string && data.slug.size() <= 128 &&
-             data.title is string && data.title.size() <= 256 &&
-             data.content is string && data.content.size() <= 100000 &&
-             (!data.keys().contains('published') || data.published is bool) &&
-             (!data.keys().contains('updatedAt') || data.updatedAt == request.time);
-    }
-
     function isValidReport(data) {
       return data.keys().hasAll(['targetId', 'targetType', 'reason', 'reporterUid', 'createdAt']) &&
              data.targetId is string &&
@@ -264,8 +255,8 @@ service cloud.firestore {
       return data.keys().hasAll(['type', 'name', 'level', 'order']) &&
              data.type in ['industry', 'vertical', 'domain', 'family', 'role', 'discipline', 'certification', 'equipment'] &&
              data.name is string && data.name.size() > 0 && data.name.size() <= 128 &&
-             data.level is number && (data.level == 1 || data.level == 2) &&
-             data.order is number &&
+             data.level is number && data.level >= 1 && data.level <= 3 &&
+             data.order is number && data.order >= 0 &&
              (!data.keys().contains('id') || data.id == null || data.id is string) &&
              (!data.keys().contains('parentId') || data.parentId == null || data.parentId is string) &&
              (!data.keys().contains('aliases') || data.aliases == null || data.aliases is list) &&
@@ -542,11 +533,6 @@ service cloud.firestore {
     match /settings/{settingId} {
       allow read: if true; // Public for branding
       allow write: if isAdmin() && isValidSettings(incoming());
-    }
-
-    match /dynamic_pages/{pageId} {
-      allow read: if isSignedIn();
-      allow write: if isAdmin() && isValidDynamicPage(incoming());
     }
 
     match /admins/{userId} {

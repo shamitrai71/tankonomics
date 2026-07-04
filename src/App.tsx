@@ -55,7 +55,6 @@ import {
   ChevronRight,
   Zap,
   Plus,
-  FileCode,
   Building2,
   Briefcase,
   Loader2,
@@ -75,7 +74,6 @@ import EventDetail from "./pages/EventDetail";
 import Surveys from "./pages/Surveys";
 import Profile from "./pages/Profile";
 import Admin from "./pages/Admin";
-import DynamicPage from "./pages/DynamicPage";
 import Companies from "./pages/Companies";
 import CompanyProfile from "./pages/CompanyProfile";
 import CreateResume from "./pages/CreateResume";
@@ -383,7 +381,6 @@ function Navbar({ onMenuToggle, theme }: { onMenuToggle: () => void, theme: any 
 function Sidebar({ isOpen, onClose, theme }: { isOpen: boolean; onClose: () => void, theme: any }) {
   const { user, isAdmin, logout } = useAuth();
   const location = useLocation();
-  const { data: dynamicPages } = useCollection<any>("dynamic_pages", [orderBy("createdAt", "asc")]);
 
   const navItems = [
     { name: "Home", icon: LayoutDashboard, path: "/" },
@@ -483,33 +480,6 @@ function Sidebar({ isOpen, onClose, theme }: { isOpen: boolean; onClose: () => v
             })}
           </div>
 
-          {dynamicPages.length > 0 && (
-            <div className="mt-8">
-              <p className="px-4 eyebrow tabular text-text-body/45 mb-3">Custom pages</p>
-              <div className="space-y-0.5">
-                {dynamicPages.filter(p => p.published).map((page) => {
-                  const path = `/page/${page.slug}`;
-                  const active = location.pathname === path;
-                  return (
-                    <Link
-                      key={page.id}
-                      to={path}
-                      onClick={onClose}
-                      className={`relative flex items-center gap-3 px-4 py-2.5 rounded-lg text-[13px] transition-all group ${
-                        active
-                          ? "bg-bg-main text-text-heading font-medium"
-                          : "text-text-body hover:bg-bg-main hover:text-text-heading"
-                      }`}
-                    >
-                      {active && <span className="absolute left-0 top-1.5 bottom-1.5 w-0.5 rounded-full bg-accent" />}
-                      <FileCode className="w-4 h-4 shrink-0 text-text-body/55 group-hover:text-text-heading" strokeWidth={1.75} />
-                      <span className="truncate">{page.title}</span>
-                    </Link>
-                  );
-                })}
-              </div>
-            </div>
-          )}
         </div>
 
         <div className="mt-auto px-6 pb-6 pt-4 border-t border-border-main">
@@ -1480,7 +1450,6 @@ export default function App() {
                       <Route path="/profile" element={<Profile />} />
                       <Route path="/profile/:id" element={<Profile />} />
                       <Route path="/create-resume" element={<CreateResume />} />
-                      <Route path="/page/:slug" element={<DynamicPage />} />
                       <Route path="/admin" element={isAdmin ? <Admin /> : <Navigate to="/" />} />
                       <Route path="/directory" element={<Companies />} />
                       <Route path="/jobs" element={<Jobs />} />

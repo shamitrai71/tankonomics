@@ -65,7 +65,7 @@ import {
   Area
 } from "recharts";
 
-type Tab ="analytics" |"news" |"forums" |"events" |"surveys" |"members" |"theme" |"pages" |"moderation" |"companies" |"resumes" |"groups" |"jobs" |"taxonomy";
+type Tab ="analytics" |"news" |"forums" |"events" |"surveys" |"members" |"theme" |"moderation" |"companies" |"resumes" |"groups" |"jobs" |"taxonomy";
 
 import { CategorySelector } from "../components/CategorySelector";
 import { uploadImage } from "../lib/uploadImage";
@@ -101,37 +101,11 @@ export default function Admin() {
   const [isEventUploading, setIsEventUploading] = useState(false);
 
   // Pages State
-  const [newPage, setNewPage] = useState({ title:"", slug:"", content:"", published: true });
-  const [editingPageId, setEditingPageId] = useState<string | null>(null);
   // Each collection below only subscribes while a tab that actually needs it
   // is open. Previously these were always-on, meaning every admin session
   // ran 11 simultaneous live listeners across the whole dataset regardless
   // of which tab was visible.
-  const { data: dynamicPages, loading: loadingPages } = useCollection<any>("dynamic_pages", [orderBy("createdAt", "desc")], activeTab === "pages");
 
-  const SYSTEM_PAGES = [
-    { title:"Home Dashboard", slug:"home", id:"sys-home" },
-    { title:"Global Directory", slug:"directory", id:"sys-directory" },
-    { title:"Network News", slug:"news", id:"sys-news" },
-    { title:"Job Board", slug:"jobs", id:"sys-jobs" },
-    { title:"Events Calendar", slug:"events", id:"sys-events" }
-  ];
-
-  const WIDGETS = [
-    { name:"News Feed", token:"[[WIDGET_NEWS]]", description:"Displays latest industry news" },
-    { name:"Upcoming Events", token:"[[WIDGET_EVENTS]]", description:"Displays upcoming calendar events" },
-    { name:"Active Surveys", token:"[[WIDGET_SURVEYS]]", description:"Displays current pulse polls" },
-    { name:"Featured Companies", token:"[[WIDGET_COMPANIES]]", description:"Highlights spotlight partners" },
-    { name:"Talent Feed", token:"[[WIDGET_RESUMES]]", description:"Displays recent professional reports" },
-    { name:"Forum Pulse", token:"[[WIDGET_FORUMS]]", description:"Displays active discussion topics" }
-  ];
-
-  const insertWidget = (token: string) => {
-    setNewPage(prev => ({
-      ...prev,
-      content: prev.content +"\n" + token +"\n"
-    }));
-  };
 
   // News State
   const [url, setUrl] = useState("");
@@ -275,53 +249,6 @@ export default function Admin() {
       console.error(err);
     } finally {
       setSavingTheme(false);
-    }
-  };
-
-  const handleCreatePage = async () => {
-    if (!newPage.title || !newPage.slug) return;
-
-    try {
-      if (editingPageId) {
-        await updateDocument("dynamic_pages", editingPageId, {
-          ...newPage,
-          updatedAt: serverTimestamp()
-        });
-        setEditingPageId(null);
-      } else {
-        await createDocument("dynamic_pages", {
-          ...newPage,
-          authorUid: user?.uid,
-          createdAt: serverTimestamp(),
-          updatedAt: serverTimestamp()
-        });
-      }
-      setNewPage({ title:"", slug:"", content:"", published: true });
-    } catch (err: any) {
-      console.error("Page save failed:", err);
-      alert(`Failed to save page: ${err?.message || "Unknown error"}`);
-    }
-  };
-
-  const handleEditPage = (page: any) => {
-    setNewPage({ 
-      title: page.title, 
-      slug: page.slug, 
-      content: page.content,
-      published: page.published ?? true
-    });
-    setEditingPageId(page.id);
-  };
-
-  const handleTogglePublish = async (page: any) => {
-    try {
-      await updateDocument("dynamic_pages", page.id, {
-        published: !page.published,
-        updatedAt: serverTimestamp()
-      });
-    } catch (err: any) {
-      console.error("Toggle publish failed:", err);
-      alert(`Failed to update page: ${err?.message || "Unknown error"}`);
     }
   };
 
@@ -908,7 +835,6 @@ const handleEditCompany = (company: any) => {
     { id:"taxonomy", label:"Taxonomy", icon: Layers },
     { id:"moderation", label:"Moderation", icon: Shield },
     { id:"theme", label:"Branding", icon: Palette },
-    { id:"pages", label:"Builder", icon: FileCode },
   ];
 
   return (
@@ -2244,198 +2170,6 @@ const handleEditCompany = (company: any) => {
           </motion.div>
         )}
 
-        {activeTab === "pages" && (
-          <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -10 }} key="pages" className="space-y-10">
-            {/* System Pages Quick Actions */}
-            <div className="bg-primary p-8 rounded-2xl text-white shadow-md relative overflow-hidden">
-               <div className="relative z-10">
-                  <div className="flex items-center gap-3 mb-6">
-                     <LayoutDashboard className="w-6 h-6 text-indigo-400" />
-                     <h3 className="text-sm font-medium uppercase tracking-[0.2em]">System Page Overrides</h3>
-                  </div>
-                  <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
-                     {SYSTEM_PAGES.map(page => {
-                       const existing = dynamicPages.find(p => p.slug === page.slug);
-                       return (
-                         <button 
-                           key={page.id}
-                           onClick={() => {
-                             if (existing) {
-                               handleEditPage(existing);
-                             } else {
-                               setNewPage({ title: page.title, slug: page.slug, content: `# ${page.title}\n\nStart customizing this system page...`, published: true });
-                               setEditingPageId(null);
-                             }
-                           }}
-                           className={`p-4 rounded-2xl border transition-all text-left group ${
-                             existing 
-                               ? "bg-bg-card/10 border-indigo-500/30 hover:bg-bg-card/20" 
-                               : "bg-black/20 border-white/5 hover:border-white/20"
-                           }`}
-                         >
-                            <p className="eyebrow tabular mb-1 line-clamp-1">{page.title}</p>
-                            <div className="flex items-center justify-between">
-                               <span className="text-[8px] font-mono text-white/40">/{page.slug}</span>
-                               {existing ? <Check className="w-3 h-3 text-emerald-400" /> : <Plus className="w-3 h-3 text-white/20 group-hover:text-white" />}
-                            </div>
-                         </button>
-                       );
-                     })}
-                  </div>
-               </div>
-               <div className="absolute top-0 right-0 p-12 opacity-5 pointer-events-none">
-                  <FileCode className="w-64 h-64" />
-               </div>
-            </div>
-
-            <div className="grid grid-cols-1 lg:grid-cols-3 gap-10">
-              <div className="lg:col-span-1 space-y-6">
-                <div className="bg-bg-card p-8 rounded-2xl border border-border-main shadow-sm sticky top-24">
-                   <h2 className="font-display text-2xl text-text-heading mb-6 flex items-center gap-2">
-                      <Layout className="w-5 h-5 text-primary" /> {editingPageId ? "Edit Page Structure" : "New Page Concept"}
-                   </h2>
-                  <div className="space-y-4">
-                     <div>
-                       <label className="eyebrow tabular text-text-body/55 mb-1.5 block">Internal Title</label>
-                       <input 
-                         placeholder="e.g. Terms of Service" 
-                         value={newPage.title} 
-                         onChange={(e) => setNewPage({...newPage, title: e.target.value})} 
-                         className="w-full p-4 bg-bg-main border border-border-main rounded-2xl outline-none focus:border-text-heading transition-all" 
-                       />
-                     </div>
-                     <div>
-                       <label className="eyebrow tabular text-text-body/55 mb-1.5 block">URL Slug</label>
-                       <div className="flex items-center gap-2 bg-bg-main border border-border-main rounded-2xl px-4 py-4">
-                          <span className="text-text-body/55 font-mono text-sm">/page/</span>
-                          <input 
-                            placeholder="terms" 
-                            value={newPage.slug} 
-                            onChange={(e) => setNewPage({...newPage, slug: e.target.value.toLowerCase().replace(/\s+/g, '-')})} 
-                            className="flex-1 bg-transparent border-none outline-none font-mono text-sm p-0 focus:ring-0" 
-                          />
-                       </div>
-                     </div>
-
-                     <div>
-                        <div className="flex items-center justify-between mb-2">
-                          <label className="eyebrow tabular text-text-body/55">Insert Dynamic Blocks</label>
-                        </div>
-                        <div className="grid grid-cols-2 gap-2">
-                           {WIDGETS.map(widget => (
-                             <button 
-                               key={widget.token}
-                               onClick={() => insertWidget(widget.token)}
-                               className="p-3 bg-bg-main border border-border-main rounded-xl hover:border-indigo-600 transition-all text-left group"
-                               title={widget.description}
-                             >
-                                <p className="eyebrow tabular text-text-heading uppercase line-clamp-1">{widget.name}</p>
-                                <Plus className="w-3 h-3 text-text-body/40 group-hover:text-accent mt-1" />
-                             </button>
-                           ))}
-                        </div>
-                     </div>
-
-                     <div>
-                       <label className="eyebrow tabular text-text-body/55 mb-1.5 block">Content Environment (Markdown)</label>
-                       <textarea 
-                         placeholder="# Your Page Header..." 
-                         value={newPage.content} 
-                         onChange={(e) => setNewPage({...newPage, content: e.target.value})} 
-                         className="w-full p-4 bg-bg-main border border-border-main rounded-2xl h-64 outline-none focus:border-text-heading transition-all text-sm font-medium resize-none shadow-inner" 
-                       />
-                     </div>
-                     <div className="flex items-center justify-between p-4 bg-bg-main border border-border-main rounded-2xl">
-                        <span className="eyebrow tabular text-text-body/55">Page Status</span>
-                        <button 
-                          onClick={() => setNewPage({...newPage, published: !newPage.published})}
-                          className={`px-4 py-2 rounded-xl eyebrow tabular transition-all ${
-                            newPage.published ? "bg-accent/10 text-accent" : "bg-slate-200 text-text-body"
-                          }`}
-                        >
-                           {newPage.published ? "Published" : "Draft"}
-                        </button>
-                     </div>
-                     <div className="flex gap-3">
-                        {editingPageId && (
-                          <button 
-                            onClick={() => {
-                              setEditingPageId(null);
-                              setNewPage({ title:"", slug:"", content:"", published: true });
-                            }}
-                            className="flex-1 py-4 bg-bg-card border border-border-main text-text-body/55 font-medium rounded-2xl hover:text-text-body transition-all text-[10px]"
-                          >
-                            Cancel
-                          </button>
-                        )}
-                        <button 
-                          onClick={handleCreatePage} 
-                          className="flex-[2] bg-primary text-white font-medium py-4 rounded-2xl shadow-sm hover:brightness-110 transition-all flex items-center justify-center gap-3 active:scale-95 text-xs"
-                        >
-                          <Save className="w-5 h-5" /> {editingPageId ? "Sync Changes" : "Deploy Logic"}
-                        </button>
-                     </div>
-                  </div>
-                </div>
-              </div>
-
-              <div className="lg:col-span-2 space-y-4">
-                 {dynamicPages.map(page => (
-                   <div key={page.id} className="bg-bg-card p-6 rounded-2xl border border-border-main shadow-sm flex items-center justify-between group hover:shadow-md transition-all">
-                      <div className="flex items-center gap-4">
-                         <div className="w-12 h-12 bg-bg-main rounded-2xl flex items-center justify-center text-text-body/55 group-hover:bg-accent/10 group-hover:text-accent transition-colors">
-                            <FileCode className="w-6 h-6" />
-                         </div>
-                         <div>
-                            <p className="font-bold text-text-heading">{page.title}</p>
-                            <div className="flex items-center gap-2 mt-1">
-                               <span className="text-[10px] font-mono text-text-body/55 bg-bg-main px-2 py-0.5 rounded">/page/{page.slug}</span>
-                               <span className={`eyebrow tabular px-1.5 py-0.5 rounded ${page.published ? "bg-accent/10 text-accent" : "bg-bg-main text-text-body/55"}`}>
-                                  {page.published ? "Live" : "Draft"}
-                               </span>
-                            </div>
-                         </div>
-                      </div>
-                      <div className="flex items-center gap-2">
-                         <button 
-                           onClick={() => handleTogglePublish(page)}
-                           className={`p-3 transition-colors ${page.published ? "text-accent hover:text-text-body/55" : "text-text-body/40 hover:text-accent"}`}
-                           title={page.published ? "Unpublish" : "Publish"}
-                         >
-                            {page.published ? <Check className="w-5 h-5" /> : <Globe className="w-5 h-5" />}
-                         </button>
-                         <Link to={`/page/${page.slug}`} target="_blank" className="p-3 text-text-body/55 hover:text-text-body transition-colors">
-                            <ChevronRight className="w-5 h-5" />
-                         </Link>
-                         <button 
-                           onClick={() => handleEditPage(page)}
-                           className="p-3 text-text-body/55 hover:text-accent transition-colors"
-                         >
-                            <Layout className="w-5 h-5" />
-                         </button>
-                         <button onClick={async () => {
-                           if (!window.confirm(`Delete "${page.title}"? This cannot be undone.`)) return;
-                           try {
-                             await removeDocument("dynamic_pages", page.id);
-                           } catch (err: any) {
-                             alert(`Failed to delete page: ${err?.message || "Unknown error"}`);
-                           }
-                         }} className="p-3 text-text-body/30 hover:text-rust transition-colors">
-                            <Trash2 className="w-5 h-5" />
-                         </button>
-                      </div>
-                   </div>
-                 ))}
-                 {dynamicPages.length === 0 && (
-                   <div className="p-20 text-center border-4 border-dashed border-border-main rounded-2xl">
-                      <Layout className="w-12 h-12 text-text-body/30 mx-auto mb-4" />
-                      <p className="text-text-body/55">No dynamic pages found. Start building above.</p>
-                   </div>
-                 )}
-              </div>
-            </div>
-          </motion.div>
-        )}
 
 
         {activeTab === "news" && (
