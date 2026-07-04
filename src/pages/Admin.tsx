@@ -43,7 +43,7 @@ import {
 import axios from "axios";
 import { createDocument, useCollection, removeDocument, updateDocument } from "../hooks/useFirestore";
 import { useAuth, useTheme } from "../App";
-import { orderBy, serverTimestamp, doc, getDoc, setDoc, writeBatch, deleteDoc } from "firebase/firestore";
+import { orderBy, serverTimestamp, doc, getDoc, setDoc, deleteDoc } from "firebase/firestore";
 import { db, auth } from "../firebase";
 import { format, subDays, isWithinInterval, startOfDay, endOfDay } from "date-fns";
 import { motion, AnimatePresence } from "framer-motion";
@@ -763,15 +763,28 @@ const handleEditCompany = (company: any) => {
     if (!window.confirm(`Upload ${TAXONOMY_SEED.length} taxonomy nodes from the bundled seed?\n\nNodes with matching IDs are overwritten to the seed version; nodes you added yourself are untouched.`)) return;
     setIsSeedingTax(true);
     try {
-      // setDoc with stable slug IDs makes this idempotent — safe to re-run.
-      for (let i = 0; i < TAXONOMY_SEED.length; i += 400) {
-        const batch = writeBatch(db);
-        TAXONOMY_SEED.slice(i, i + 400).forEach((node: any) => {
-          batch.set(doc(db, "taxonomy", node.id), { ...node, updatedAt: serverTimestamp() });
-        });
-        await batch.commit();
+      // Individual setDoc calls (not writeBatch): batched writes share a hard
+      // ~20-document-access budget for rules evaluation, and isAdmin()'s
+      // exists() lookup per operation can blow that limit on large batches.
+      // Per-doc writes each get their own budget. Stable slug IDs keep this
+      // idempotent — safe to re-run.
+      let done = 0;
+      for (let i = 0; i < TAXONOMY_SEED.length; i += 25) {
+        const chunk = TAXONOMY_SEED.slice(i, i + 25);
+        const results = await Promise.allSettled(
+          chunk.map((node: any) =>
+            setDoc(doc(db, "taxonomy", node.id), { ...node, updatedAt: serverTimestamp() })
+          )
+        );
+        const failed = results
+          .map((r, idx) => (r.status === "rejected" ? { id: chunk[idx].id, reason: (r as any).reason?.message } : null))
+          .filter(Boolean) as { id: string; reason: string }[];
+        if (failed.length > 0) {
+          throw new Error(`${failed.length} node(s) rejected, first: ${failed[0].id} — ${failed[0].reason}`);
+        }
+        done += chunk.length;
       }
-      alert(`Seeded ${TAXONOMY_SEED.length} taxonomy nodes.`);
+      alert(`Seeded ${done} taxonomy nodes.`);
     } catch (err: any) {
       console.error("Taxonomy seed failed:", err);
       alert(`Seeding failed: ${err?.message || "Unknown error"}`);

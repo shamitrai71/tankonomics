@@ -269,8 +269,7 @@ service cloud.firestore {
              (!data.keys().contains('id') || data.id == null || data.id is string) &&
              (!data.keys().contains('parentId') || data.parentId == null || data.parentId is string) &&
              (!data.keys().contains('aliases') || data.aliases == null || data.aliases is list) &&
-             (!data.keys().contains('note') || data.note == null || data.note is string) &&
-             (!data.keys().contains('updatedAt') || data.updatedAt is timestamp);
+             (!data.keys().contains('note') || data.note == null || data.note is string);
     }
 
     function isValidConnection(data) {
