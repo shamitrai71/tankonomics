@@ -974,19 +974,62 @@ function GoogleGlyph() {
 }
 
 function Splash() {
+  // Splash renders before auth/theme context is ready, so it fetches the
+  // branding logo directly. Falls back to the built-in BrandMark if none set.
+  const [logoUrl, setLogoUrl] = useState<string>("");
+  // Drives the one-time "color settles" moment: the petroleum overlay lightens
+  // slightly a beat after mount, letting the tank-farm photo emerge faintly.
+  const [settled, setSettled] = useState(false);
+
+  useEffect(() => {
+    let alive = true;
+    getDoc(doc(db, "settings", "theme"))
+      .then((snap) => {
+        if (alive && snap.exists() && snap.data()?.logoUrl) setLogoUrl(snap.data().logoUrl);
+      })
+      .catch(() => {});
+    const t = setTimeout(() => alive && setSettled(true), 1400);
+    return () => {
+      alive = false;
+      clearTimeout(t);
+    };
+  }, []);
+
   return (
     <div className="fixed inset-0 z-[1000] bg-primary text-white flex flex-col items-center justify-center overflow-hidden grain">
-      {/* Blueprint coordinate grid */}
-      <div className="absolute inset-0 bp-grid pointer-events-none" />
+      {/* Tank-farm photo background — drop a compressed image at public/tank-farm.webp.
+          If the file is absent the <img> hides itself and the petroleum background
+          shows through, so the splash still works without it. */}
+      <img
+        src="/tank-farm.webp"
+        alt=""
+        aria-hidden="true"
+        className="absolute inset-0 w-full h-full object-cover pointer-events-none select-none"
+        style={{
+          transform: settled ? "scale(1.06)" : "scale(1.0)",
+          transition: "transform 6s ease-out",
+        }}
+        onError={(e) => { (e.currentTarget as HTMLImageElement).style.display = "none"; }}
+      />
 
-      {/* Atmospheric radial wash from top-left */}
+      {/* Petroleum overlay + color-tint — keeps the photo atmospheric and the
+          brand palette intact. Lightens once when `settled` flips. */}
       <div
-        className="absolute inset-0 pointer-events-none opacity-90"
+        className="absolute inset-0 pointer-events-none"
         style={{
           background:
-            "radial-gradient(ellipse at 20% 0%, rgba(30,74,114,0.55) 0%, rgba(11,27,43,0) 55%)",
+            "radial-gradient(ellipse at 50% 45%, rgba(11,27,43,0.55) 0%, rgba(11,27,43,0.86) 68%, rgba(11,27,43,0.95) 100%)",
+          opacity: settled ? 0.82 : 1,
+          transition: "opacity 1.6s ease",
         }}
       />
+      <div
+        className="absolute inset-0 pointer-events-none"
+        style={{ background: "#0b1b2b", mixBlendMode: "color", opacity: 0.5 }}
+      />
+
+      {/* Blueprint coordinate grid */}
+      <div className="absolute inset-0 bp-grid pointer-events-none" />
 
       {/* Corner registration marks — like an engineering drawing */}
       <CornerTicks />
@@ -1033,7 +1076,16 @@ function Splash() {
           />
         </svg>
 
-        <BrandMark size={132} tone="light" />
+        {logoUrl ? (
+          <img
+            src={logoUrl}
+            alt="Tankonomics"
+            className="w-[132px] h-[132px] object-contain"
+            style={{ filter: "drop-shadow(0 2px 16px rgba(11,27,43,0.5))" }}
+          />
+        ) : (
+          <BrandMark size={132} tone="light" />
+        )}
       </motion.div>
 
       {/* Wordmark */}
@@ -1043,7 +1095,10 @@ function Splash() {
         transition={{ delay: 0.35, duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
         className="mt-12 text-center px-6"
       >
-        <h1 className="font-display text-5xl sm:text-6xl text-white leading-[0.95]">
+        <h1
+          className="font-display text-5xl sm:text-6xl text-white leading-[0.95]"
+          style={{ textShadow: "0 2px 24px rgba(11,27,43,0.55)" }}
+        >
           Tankonomics
         </h1>
         <div className="mt-3 flex items-center justify-center gap-3 text-white/50">
