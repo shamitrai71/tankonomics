@@ -3304,12 +3304,17 @@ const handleEditCompany = (company: any) => {
                 </div>
               ) : (
                 <div className="space-y-1">
-                  {taxonomyNodes
-                    .filter((n: any) => n.type === taxType && n.level === 1)
-                    .sort((a: any, b: any) => a.order - b.order)
-                    .map((parent: any) => {
-                      const children = taxonomyNodes.filter((n: any) => n.parentId === parent.id).sort((a: any, b: any) => a.order - b.order);
-                      const renderRow = (node: any, indent: boolean) => (
+                  {(() => {
+                    const ofType = taxonomyNodes.filter((n: any) => n.type === taxType);
+                    // A node is a "root" for display if its parent is not itself
+                    // of this type (covers: true top-level nodes, AND child-only
+                    // types like Role whose parents are Families of another type).
+                    const idsOfType = new Set(ofType.map((n: any) => n.id));
+                    const roots = ofType
+                      .filter((n: any) => !n.parentId || !idsOfType.has(n.parentId))
+                      .sort((a: any, b: any) => a.order - b.order);
+
+                    const renderRow = (node: any, indent: boolean) => (
                         <div key={node.id} className={`flex items-center gap-2 py-1.5 px-2 rounded-lg hover:bg-bg-main group ${indent ? "ml-6" : ""}`}>
                           {editingTaxNode?.id === node.id ? (
                             <>
@@ -3336,13 +3341,41 @@ const handleEditCompany = (company: any) => {
                           )}
                         </div>
                       );
+
+                    // For child-only types (Role), group under the parent's name
+                    // as a non-editable header so the hierarchy stays legible.
+                    const parentHeader = (node: any) => {
+                      const p = taxonomyNodes.find((n: any) => n.id === node.parentId);
+                      return p ? p.name : null;
+                    };
+                    const rootsHaveForeignParents = roots.some((r: any) => r.parentId);
+
+                    if (rootsHaveForeignParents) {
+                      // Group roots by their (foreign-type) parent, e.g. roles by family.
+                      const groups: Record<string, any[]> = {};
+                      roots.forEach((r: any) => {
+                        const key = parentHeader(r) || "Ungrouped";
+                        (groups[key] = groups[key] || []).push(r);
+                      });
+                      return Object.keys(groups).sort().map((groupName) => (
+                        <div key={groupName} className="mb-3">
+                          <p className="eyebrow tabular text-text-body/45 px-2 mb-1">{groupName}</p>
+                          {groups[groupName].map((n: any) => renderRow(n, true))}
+                        </div>
+                      ));
+                    }
+
+                    // Standard case: roots of this type with their same-type children.
+                    return roots.map((parent: any) => {
+                      const children = taxonomyNodes.filter((n: any) => n.parentId === parent.id).sort((a: any, b: any) => a.order - b.order);
                       return (
                         <div key={parent.id} className="mb-2">
                           {renderRow(parent, false)}
                           {children.map((c: any) => renderRow(c, true))}
                         </div>
                       );
-                    })}
+                    });
+                  })()}
                 </div>
               )}
             </div>
