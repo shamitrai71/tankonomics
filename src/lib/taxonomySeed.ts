@@ -21,6 +21,11 @@ export const TAXONOMY_ENUMS = {
     "Shutdown",
     "Part-time",
     "Internship"
+  ],
+  "requirementStrength": [
+    "required",
+    "preferred",
+    "nice-to-have"
   ]
 } as const;
 
@@ -567,6 +572,24 @@ export const TAXONOMY_SEED: TaxonomyNode[] = [
   "level": 2,
   "aliases": [],
   "order": 6
+ },
+ {
+  "id": "ind-battery-energy-storage",
+  "type": "industry",
+  "name": "Battery Energy Storage",
+  "parentId": "ind-renewables",
+  "level": 2,
+  "aliases": [],
+  "order": 7
+ },
+ {
+  "id": "ind-carbon-markets",
+  "type": "industry",
+  "name": "Carbon Markets",
+  "parentId": "ind-renewables",
+  "level": 2,
+  "aliases": [],
+  "order": 8
  },
  {
   "id": "ind-mining-bulk-liquids",
@@ -2644,6 +2667,15 @@ export const TAXONOMY_SEED: TaxonomyNode[] = [
   "order": 4
  },
  {
+  "id": "role-loading-master",
+  "type": "role",
+  "name": "Loading Master",
+  "parentId": "fam-marine",
+  "level": 2,
+  "aliases": [],
+  "order": 5
+ },
+ {
   "id": "fam-projects",
   "type": "family",
   "name": "Projects",
@@ -2981,468 +3013,1724 @@ export const TAXONOMY_SEED: TaxonomyNode[] = [
   "order": 6
  },
  {
-  "id": "disc-api-650",
-  "type": "discipline",
-  "name": "API 650",
+  "id": "std-grp-engineering-standards",
+  "type": "standard",
+  "name": "Engineering Standards",
   "parentId": null,
   "level": 1,
   "aliases": [],
   "order": 0
  },
  {
+  "id": "disc-api-650",
+  "type": "standard",
+  "name": "API 650",
+  "parentId": "std-grp-engineering-standards",
+  "level": 2,
+  "aliases": [],
+  "order": 0
+ },
+ {
+  "id": "disc-api-620",
+  "type": "standard",
+  "name": "API 620",
+  "parentId": "std-grp-engineering-standards",
+  "level": 2,
+  "aliases": [],
+  "order": 1
+ },
+ {
   "id": "disc-api-653",
-  "type": "discipline",
+  "type": "standard",
   "name": "API 653",
+  "parentId": "std-grp-engineering-standards",
+  "level": 2,
+  "aliases": [],
+  "order": 2
+ },
+ {
+  "id": "disc-api-2610",
+  "type": "standard",
+  "name": "API 2610",
+  "parentId": "std-grp-engineering-standards",
+  "level": 2,
+  "aliases": [],
+  "order": 3
+ },
+ {
+  "id": "disc-api-2350",
+  "type": "standard",
+  "name": "API 2350",
+  "parentId": "std-grp-engineering-standards",
+  "level": 2,
+  "aliases": [
+   "Overfill Prevention",
+   "API RP 2350"
+  ],
+  "order": 4
+ },
+ {
+  "id": "disc-api-510",
+  "type": "standard",
+  "name": "API 510",
+  "parentId": "std-grp-engineering-standards",
+  "level": 2,
+  "aliases": [],
+  "order": 5
+ },
+ {
+  "id": "disc-api-570",
+  "type": "standard",
+  "name": "API 570",
+  "parentId": "std-grp-engineering-standards",
+  "level": 2,
+  "aliases": [],
+  "order": 6
+ },
+ {
+  "id": "disc-api-580",
+  "type": "standard",
+  "name": "API 580",
+  "parentId": "std-grp-engineering-standards",
+  "level": 2,
+  "aliases": [],
+  "order": 7
+ },
+ {
+  "id": "disc-api-581",
+  "type": "standard",
+  "name": "API 581",
+  "parentId": "std-grp-engineering-standards",
+  "level": 2,
+  "aliases": [],
+  "order": 8
+ },
+ {
+  "id": "std-api-571-damage-mechanisms",
+  "type": "standard",
+  "name": "API 571 Damage Mechanisms",
+  "parentId": "std-grp-engineering-standards",
+  "level": 2,
+  "aliases": [],
+  "order": 9
+ },
+ {
+  "id": "std-api-682-mechanical-seals",
+  "type": "standard",
+  "name": "API 682 Mechanical Seals",
+  "parentId": "std-grp-engineering-standards",
+  "level": 2,
+  "aliases": [],
+  "order": 10
+ },
+ {
+  "id": "std-api-610-centrifugal-pumps",
+  "type": "standard",
+  "name": "API 610 Centrifugal Pumps",
+  "parentId": "std-grp-engineering-standards",
+  "level": 2,
+  "aliases": [],
+  "order": 11
+ },
+ {
+  "id": "std-api-674-675-pd-metering-pumps",
+  "type": "standard",
+  "name": "API 674/675 PD & Metering Pumps",
+  "parentId": "std-grp-engineering-standards",
+  "level": 2,
+  "aliases": [],
+  "order": 12
+ },
+ {
+  "id": "std-api-686-machinery-installation",
+  "type": "standard",
+  "name": "API 686 Machinery Installation",
+  "parentId": "std-grp-engineering-standards",
+  "level": 2,
+  "aliases": [],
+  "order": 13
+ },
+ {
+  "id": "std-api-2000-tank-venting",
+  "type": "standard",
+  "name": "API 2000 Tank Venting",
+  "parentId": "std-grp-engineering-standards",
+  "level": 2,
+  "aliases": [],
+  "order": 14
+ },
+ {
+  "id": "std-api-rp-2003-static-electricity",
+  "type": "standard",
+  "name": "API RP 2003 Static Electricity",
+  "parentId": "std-grp-engineering-standards",
+  "level": 2,
+  "aliases": [],
+  "order": 15
+ },
+ {
+  "id": "std-api-rp-2218-safe-tank-entry",
+  "type": "standard",
+  "name": "API RP 2218 Safe Tank Entry",
+  "parentId": "std-grp-engineering-standards",
+  "level": 2,
+  "aliases": [],
+  "order": 16
+ },
+ {
+  "id": "std-api-rp-752-753-facility-siting",
+  "type": "standard",
+  "name": "API RP 752/753 Facility Siting",
+  "parentId": "std-grp-engineering-standards",
+  "level": 2,
+  "aliases": [],
+  "order": 17
+ },
+ {
+  "id": "std-api-rp-754-process-safety-kpis",
+  "type": "standard",
+  "name": "API RP 754 Process Safety KPIs",
+  "parentId": "std-grp-engineering-standards",
+  "level": 2,
+  "aliases": [],
+  "order": 18
+ },
+ {
+  "id": "disc-asme",
+  "type": "standard",
+  "name": "ASME",
+  "parentId": "std-grp-engineering-standards",
+  "level": 2,
+  "aliases": [],
+  "order": 19
+ },
+ {
+  "id": "std-asme-bpvc-section-viii",
+  "type": "standard",
+  "name": "ASME BPVC Section VIII",
+  "parentId": "std-grp-engineering-standards",
+  "level": 2,
+  "aliases": [],
+  "order": 20
+ },
+ {
+  "id": "std-asme-section-ix",
+  "type": "standard",
+  "name": "ASME Section IX",
+  "parentId": "std-grp-engineering-standards",
+  "level": 2,
+  "aliases": [],
+  "order": 21
+ },
+ {
+  "id": "std-asme-b31-3-process-piping",
+  "type": "standard",
+  "name": "ASME B31.3 Process Piping",
+  "parentId": "std-grp-engineering-standards",
+  "level": 2,
+  "aliases": [],
+  "order": 22
+ },
+ {
+  "id": "std-asme-b31-4",
+  "type": "standard",
+  "name": "ASME B31.4",
+  "parentId": "std-grp-engineering-standards",
+  "level": 2,
+  "aliases": [],
+  "order": 23
+ },
+ {
+  "id": "std-asme-b31-8",
+  "type": "standard",
+  "name": "ASME B31.8",
+  "parentId": "std-grp-engineering-standards",
+  "level": 2,
+  "aliases": [],
+  "order": 24
+ },
+ {
+  "id": "std-asme-pcc-1",
+  "type": "standard",
+  "name": "ASME PCC-1",
+  "parentId": "std-grp-engineering-standards",
+  "level": 2,
+  "aliases": [],
+  "order": 25
+ },
+ {
+  "id": "std-asme-pcc-2",
+  "type": "standard",
+  "name": "ASME PCC-2",
+  "parentId": "std-grp-engineering-standards",
+  "level": 2,
+  "aliases": [],
+  "order": 26
+ },
+ {
+  "id": "std-astm-material-testing",
+  "type": "standard",
+  "name": "ASTM Material Testing",
+  "parentId": "std-grp-engineering-standards",
+  "level": 2,
+  "aliases": [
+   "ASTM"
+  ],
+  "order": 27
+ },
+ {
+  "id": "std-iso-13623-pipeline",
+  "type": "standard",
+  "name": "ISO 13623 Pipeline",
+  "parentId": "std-grp-engineering-standards",
+  "level": 2,
+  "aliases": [],
+  "order": 28
+ },
+ {
+  "id": "std-iso-19900-series-offshore-structures",
+  "type": "standard",
+  "name": "ISO 19900-series Offshore Structures",
+  "parentId": "std-grp-engineering-standards",
+  "level": 2,
+  "aliases": [
+   "ISO 19901",
+   "ISO 19902",
+   "ISO 19904"
+  ],
+  "order": 29
+ },
+ {
+  "id": "std-grp-fire-hazardous-area-standards",
+  "type": "standard",
+  "name": "Fire & Hazardous Area Standards",
   "parentId": null,
   "level": 1,
   "aliases": [],
   "order": 1
  },
  {
-  "id": "disc-api-620",
-  "type": "discipline",
-  "name": "API 620",
+  "id": "disc-nfpa",
+  "type": "standard",
+  "name": "NFPA",
+  "parentId": "std-grp-fire-hazardous-area-standards",
+  "level": 2,
+  "aliases": [],
+  "order": 0
+ },
+ {
+  "id": "disc-iec",
+  "type": "standard",
+  "name": "IEC",
+  "parentId": "std-grp-fire-hazardous-area-standards",
+  "level": 2,
+  "aliases": [],
+  "order": 1
+ },
+ {
+  "id": "disc-atex",
+  "type": "standard",
+  "name": "ATEX",
+  "parentId": "std-grp-fire-hazardous-area-standards",
+  "level": 2,
+  "aliases": [],
+  "order": 2
+ },
+ {
+  "id": "std-nfpa-11-foam",
+  "type": "standard",
+  "name": "NFPA 11 Foam",
+  "parentId": "std-grp-fire-hazardous-area-standards",
+  "level": 2,
+  "aliases": [],
+  "order": 3
+ },
+ {
+  "id": "std-nfpa-13-sprinklers",
+  "type": "standard",
+  "name": "NFPA 13 Sprinklers",
+  "parentId": "std-grp-fire-hazardous-area-standards",
+  "level": 2,
+  "aliases": [],
+  "order": 4
+ },
+ {
+  "id": "std-nfpa-15-water-spray",
+  "type": "standard",
+  "name": "NFPA 15 Water Spray",
+  "parentId": "std-grp-fire-hazardous-area-standards",
+  "level": 2,
+  "aliases": [],
+  "order": 5
+ },
+ {
+  "id": "std-nfpa-20-fire-pumps",
+  "type": "standard",
+  "name": "NFPA 20 Fire Pumps",
+  "parentId": "std-grp-fire-hazardous-area-standards",
+  "level": 2,
+  "aliases": [],
+  "order": 6
+ },
+ {
+  "id": "std-nfpa-24-underground-fire-mains",
+  "type": "standard",
+  "name": "NFPA 24 Underground Fire Mains",
+  "parentId": "std-grp-fire-hazardous-area-standards",
+  "level": 2,
+  "aliases": [],
+  "order": 7
+ },
+ {
+  "id": "std-nfpa-30-flammable-liquids",
+  "type": "standard",
+  "name": "NFPA 30 Flammable Liquids",
+  "parentId": "std-grp-fire-hazardous-area-standards",
+  "level": 2,
+  "aliases": [],
+  "order": 8
+ },
+ {
+  "id": "std-nfpa-72-fire-alarm",
+  "type": "standard",
+  "name": "NFPA 72 Fire Alarm",
+  "parentId": "std-grp-fire-hazardous-area-standards",
+  "level": 2,
+  "aliases": [],
+  "order": 9
+ },
+ {
+  "id": "std-nfpa-70",
+  "type": "standard",
+  "name": "NFPA 70",
+  "parentId": "std-grp-fire-hazardous-area-standards",
+  "level": 2,
+  "aliases": [
+   "NEC"
+  ],
+  "order": 10
+ },
+ {
+  "id": "std-nfpa-101-life-safety",
+  "type": "standard",
+  "name": "NFPA 101 Life Safety",
+  "parentId": "std-grp-fire-hazardous-area-standards",
+  "level": 2,
+  "aliases": [],
+  "order": 11
+ },
+ {
+  "id": "std-nfpa-25-fire-system-inspection",
+  "type": "standard",
+  "name": "NFPA 25 Fire System Inspection",
+  "parentId": "std-grp-fire-hazardous-area-standards",
+  "level": 2,
+  "aliases": [],
+  "order": 12
+ },
+ {
+  "id": "std-iec-61508",
+  "type": "standard",
+  "name": "IEC 61508",
+  "parentId": "std-grp-fire-hazardous-area-standards",
+  "level": 2,
+  "aliases": [],
+  "order": 13
+ },
+ {
+  "id": "std-iec-61511",
+  "type": "standard",
+  "name": "IEC 61511",
+  "parentId": "std-grp-fire-hazardous-area-standards",
+  "level": 2,
+  "aliases": [
+   "SIS"
+  ],
+  "order": 14
+ },
+ {
+  "id": "std-grp-management-system-standards",
+  "type": "standard",
+  "name": "Management System Standards",
   "parentId": null,
   "level": 1,
   "aliases": [],
   "order": 2
  },
  {
-  "id": "disc-api-2610",
-  "type": "discipline",
-  "name": "API 2610",
+  "id": "disc-iso-9001",
+  "type": "standard",
+  "name": "ISO 9001",
+  "parentId": "std-grp-management-system-standards",
+  "level": 2,
+  "aliases": [],
+  "order": 0
+ },
+ {
+  "id": "disc-iso-14001",
+  "type": "standard",
+  "name": "ISO 14001",
+  "parentId": "std-grp-management-system-standards",
+  "level": 2,
+  "aliases": [],
+  "order": 1
+ },
+ {
+  "id": "disc-iso-45001",
+  "type": "standard",
+  "name": "ISO 45001",
+  "parentId": "std-grp-management-system-standards",
+  "level": 2,
+  "aliases": [],
+  "order": 2
+ },
+ {
+  "id": "std-iso-50001",
+  "type": "standard",
+  "name": "ISO 50001",
+  "parentId": "std-grp-management-system-standards",
+  "level": 2,
+  "aliases": [],
+  "order": 3
+ },
+ {
+  "id": "std-iso-31000",
+  "type": "standard",
+  "name": "ISO 31000",
+  "parentId": "std-grp-management-system-standards",
+  "level": 2,
+  "aliases": [],
+  "order": 4
+ },
+ {
+  "id": "std-iso-55001",
+  "type": "standard",
+  "name": "ISO 55001",
+  "parentId": "std-grp-management-system-standards",
+  "level": 2,
+  "aliases": [],
+  "order": 5
+ },
+ {
+  "id": "std-iso-27001",
+  "type": "standard",
+  "name": "ISO 27001",
+  "parentId": "std-grp-management-system-standards",
+  "level": 2,
+  "aliases": [],
+  "order": 6
+ },
+ {
+  "id": "std-iso-17025",
+  "type": "standard",
+  "name": "ISO 17025",
+  "parentId": "std-grp-management-system-standards",
+  "level": 2,
+  "aliases": [],
+  "order": 7
+ },
+ {
+  "id": "std-grp-welding-standards",
+  "type": "standard",
+  "name": "Welding Standards",
   "parentId": null,
   "level": 1,
   "aliases": [],
   "order": 3
  },
  {
-  "id": "disc-api-2350",
-  "type": "discipline",
-  "name": "API 2350",
+  "id": "std-aws-d1-1-structural-welding",
+  "type": "standard",
+  "name": "AWS D1.1 Structural Welding",
+  "parentId": "std-grp-welding-standards",
+  "level": 2,
+  "aliases": [],
+  "order": 0
+ },
+ {
+  "id": "std-iso-3834-welding-quality",
+  "type": "standard",
+  "name": "ISO 3834 Welding Quality",
+  "parentId": "std-grp-welding-standards",
+  "level": 2,
+  "aliases": [],
+  "order": 1
+ },
+ {
+  "id": "std-iso-9606-welder-qualification",
+  "type": "standard",
+  "name": "ISO 9606 Welder Qualification",
+  "parentId": "std-grp-welding-standards",
+  "level": 2,
+  "aliases": [],
+  "order": 2
+ },
+ {
+  "id": "std-grp-indian-regulatory-codes",
+  "type": "standard",
+  "name": "Indian Regulatory & Codes",
   "parentId": null,
   "level": 1,
   "aliases": [],
   "order": 4
  },
  {
-  "id": "disc-api-510",
-  "type": "discipline",
-  "name": "API 510",
+  "id": "std-oisd-standards",
+  "type": "standard",
+  "name": "OISD Standards",
+  "parentId": "std-grp-indian-regulatory-codes",
+  "level": 2,
+  "aliases": [
+   "Oil Industry Safety Directorate"
+  ],
+  "order": 0
+ },
+ {
+  "id": "std-oisd-std-117-fire-protection",
+  "type": "standard",
+  "name": "OISD-STD-117 Fire Protection",
+  "parentId": "std-grp-indian-regulatory-codes",
+  "level": 2,
+  "aliases": [],
+  "order": 1,
+  "note": "Verify standard number against the official OISD catalogue before exposing in pickers (F5)."
+ },
+ {
+  "id": "std-oisd-std-118-facility-layouts",
+  "type": "standard",
+  "name": "OISD-STD-118 Facility Layouts",
+  "parentId": "std-grp-indian-regulatory-codes",
+  "level": 2,
+  "aliases": [],
+  "order": 2,
+  "note": "Verify standard number against the official OISD catalogue before exposing in pickers (F5)."
+ },
+ {
+  "id": "std-oisd-std-129-storage-tank-inspection",
+  "type": "standard",
+  "name": "OISD-STD-129 Storage Tank Inspection",
+  "parentId": "std-grp-indian-regulatory-codes",
+  "level": 2,
+  "aliases": [],
+  "order": 3,
+  "note": "Verify standard number against the official OISD catalogue before exposing in pickers (F5)."
+ },
+ {
+  "id": "std-peso-petroleum-rules-2002",
+  "type": "standard",
+  "name": "PESO / Petroleum Rules 2002",
+  "parentId": "std-grp-indian-regulatory-codes",
+  "level": 2,
+  "aliases": [
+   "CCOE"
+  ],
+  "order": 4
+ },
+ {
+  "id": "std-smpv-rules-2016",
+  "type": "standard",
+  "name": "SMPV Rules 2016",
+  "parentId": "std-grp-indian-regulatory-codes",
+  "level": 2,
+  "aliases": [
+   "Static & Mobile Pressure Vessels"
+  ],
+  "order": 5
+ },
+ {
+  "id": "std-gas-cylinder-rules-2016",
+  "type": "standard",
+  "name": "Gas Cylinder Rules 2016",
+  "parentId": "std-grp-indian-regulatory-codes",
+  "level": 2,
+  "aliases": [],
+  "order": 6
+ },
+ {
+  "id": "std-indian-boiler-regulations",
+  "type": "standard",
+  "name": "Indian Boiler Regulations",
+  "parentId": "std-grp-indian-regulatory-codes",
+  "level": 2,
+  "aliases": [
+   "IBR"
+  ],
+  "order": 7
+ },
+ {
+  "id": "std-is-803-ms-storage-tanks",
+  "type": "standard",
+  "name": "IS 803 MS Storage Tanks",
+  "parentId": "std-grp-indian-regulatory-codes",
+  "level": 2,
+  "aliases": [],
+  "order": 8
+ },
+ {
+  "id": "std-is-1893-seismic-design",
+  "type": "standard",
+  "name": "IS 1893 Seismic Design",
+  "parentId": "std-grp-indian-regulatory-codes",
+  "level": 2,
+  "aliases": [],
+  "order": 9,
+  "note": "Verify standard number against the official OISD catalogue before exposing in pickers (F5)."
+ },
+ {
+  "id": "std-bis-standards",
+  "type": "standard",
+  "name": "BIS Standards",
+  "parentId": "std-grp-indian-regulatory-codes",
+  "level": 2,
+  "aliases": [
+   "Bureau of Indian Standards"
+  ],
+  "order": 10
+ },
+ {
+  "id": "std-grp-labour-statutory-compliance",
+  "type": "standard",
+  "name": "Labour & Statutory Compliance",
   "parentId": null,
   "level": 1,
   "aliases": [],
   "order": 5
  },
  {
-  "id": "disc-api-570",
-  "type": "discipline",
-  "name": "API 570",
+  "id": "std-factories-act-1948",
+  "type": "standard",
+  "name": "Factories Act 1948",
+  "parentId": "std-grp-labour-statutory-compliance",
+  "level": 2,
+  "aliases": [],
+  "order": 0
+ },
+ {
+  "id": "std-contract-labour-r-a-act-1970",
+  "type": "standard",
+  "name": "Contract Labour (R&A) Act 1970",
+  "parentId": "std-grp-labour-statutory-compliance",
+  "level": 2,
+  "aliases": [
+   "CLRA"
+  ],
+  "order": 1
+ },
+ {
+  "id": "std-bocw-act-1996",
+  "type": "standard",
+  "name": "BOCW Act 1996",
+  "parentId": "std-grp-labour-statutory-compliance",
+  "level": 2,
+  "aliases": [],
+  "order": 2
+ },
+ {
+  "id": "std-code-on-wages-2019",
+  "type": "standard",
+  "name": "Code on Wages 2019",
+  "parentId": "std-grp-labour-statutory-compliance",
+  "level": 2,
+  "aliases": [],
+  "order": 3
+ },
+ {
+  "id": "std-industrial-relations-code-2020",
+  "type": "standard",
+  "name": "Industrial Relations Code 2020",
+  "parentId": "std-grp-labour-statutory-compliance",
+  "level": 2,
+  "aliases": [],
+  "order": 4
+ },
+ {
+  "id": "std-osh-working-conditions-code-2020",
+  "type": "standard",
+  "name": "OSH & Working Conditions Code 2020",
+  "parentId": "std-grp-labour-statutory-compliance",
+  "level": 2,
+  "aliases": [],
+  "order": 5
+ },
+ {
+  "id": "std-code-on-social-security-2020",
+  "type": "standard",
+  "name": "Code on Social Security 2020",
+  "parentId": "std-grp-labour-statutory-compliance",
+  "level": 2,
+  "aliases": [],
+  "order": 6
+ },
+ {
+  "id": "std-epf-esi-compliance",
+  "type": "standard",
+  "name": "EPF & ESI Compliance",
+  "parentId": "std-grp-labour-statutory-compliance",
+  "level": 2,
+  "aliases": [],
+  "order": 7
+ },
+ {
+  "id": "std-ilo-conventions",
+  "type": "standard",
+  "name": "ILO Conventions",
+  "parentId": "std-grp-labour-statutory-compliance",
+  "level": 2,
+  "aliases": [],
+  "order": 8
+ },
+ {
+  "id": "comp-grp-storage-terminal-operations",
+  "type": "competency",
+  "name": "Storage & Terminal Operations",
+  "parentId": null,
+  "level": 1,
+  "aliases": [],
+  "order": 0
+ },
+ {
+  "id": "disc-floating-roof",
+  "type": "competency",
+  "name": "Floating Roof",
+  "parentId": "comp-grp-storage-terminal-operations",
+  "level": 2,
+  "aliases": [
+   "Floating Roof Inspection"
+  ],
+  "order": 0
+ },
+ {
+  "id": "disc-internal-floating-roof",
+  "type": "competency",
+  "name": "Internal Floating Roof",
+  "parentId": "comp-grp-storage-terminal-operations",
+  "level": 2,
+  "aliases": [],
+  "order": 1
+ },
+ {
+  "id": "disc-external-floating-roof",
+  "type": "competency",
+  "name": "External Floating Roof",
+  "parentId": "comp-grp-storage-terminal-operations",
+  "level": 2,
+  "aliases": [],
+  "order": 2
+ },
+ {
+  "id": "disc-cone-roof",
+  "type": "competency",
+  "name": "Cone Roof",
+  "parentId": "comp-grp-storage-terminal-operations",
+  "level": 2,
+  "aliases": [],
+  "order": 3
+ },
+ {
+  "id": "disc-dome-roof",
+  "type": "competency",
+  "name": "Dome Roof",
+  "parentId": "comp-grp-storage-terminal-operations",
+  "level": 2,
+  "aliases": [],
+  "order": 4
+ },
+ {
+  "id": "disc-cryogenic-tanks",
+  "type": "competency",
+  "name": "Cryogenic Tanks",
+  "parentId": "comp-grp-storage-terminal-operations",
+  "level": 2,
+  "aliases": [],
+  "order": 5
+ },
+ {
+  "id": "disc-tank-calibration",
+  "type": "competency",
+  "name": "Tank Calibration",
+  "parentId": "comp-grp-storage-terminal-operations",
+  "level": 2,
+  "aliases": [],
+  "order": 6
+ },
+ {
+  "id": "disc-custody-transfer",
+  "type": "competency",
+  "name": "Custody Transfer",
+  "parentId": "comp-grp-storage-terminal-operations",
+  "level": 2,
+  "aliases": [],
+  "order": 7
+ },
+ {
+  "id": "disc-metering",
+  "type": "competency",
+  "name": "Metering",
+  "parentId": "comp-grp-storage-terminal-operations",
+  "level": 2,
+  "aliases": [],
+  "order": 8
+ },
+ {
+  "id": "disc-tank-gauging",
+  "type": "competency",
+  "name": "Tank Gauging",
+  "parentId": "comp-grp-storage-terminal-operations",
+  "level": 2,
+  "aliases": [],
+  "order": 9
+ },
+ {
+  "id": "disc-vapour-recovery",
+  "type": "competency",
+  "name": "Vapour Recovery",
+  "parentId": "comp-grp-storage-terminal-operations",
+  "level": 2,
+  "aliases": [
+   "VRU",
+   "Vapor Recovery"
+  ],
+  "order": 10
+ },
+ {
+  "id": "disc-floating-suction",
+  "type": "competency",
+  "name": "Floating Suction",
+  "parentId": "comp-grp-storage-terminal-operations",
+  "level": 2,
+  "aliases": [],
+  "order": 11
+ },
+ {
+  "id": "disc-marine-loading-arms",
+  "type": "competency",
+  "name": "Marine Loading Arms",
+  "parentId": "comp-grp-storage-terminal-operations",
+  "level": 2,
+  "aliases": [
+   "MLA",
+   "Loading Arm Operations"
+  ],
+  "order": 12
+ },
+ {
+  "id": "disc-tank-cleaning",
+  "type": "competency",
+  "name": "Tank Cleaning",
+  "parentId": "comp-grp-storage-terminal-operations",
+  "level": 2,
+  "aliases": [],
+  "order": 13
+ },
+ {
+  "id": "disc-tank-inspection",
+  "type": "competency",
+  "name": "Tank Inspection",
+  "parentId": "comp-grp-storage-terminal-operations",
+  "level": 2,
+  "aliases": [],
+  "order": 14
+ },
+ {
+  "id": "comp-tank-farm-operations",
+  "type": "competency",
+  "name": "Tank Farm Operations",
+  "parentId": "comp-grp-storage-terminal-operations",
+  "level": 2,
+  "aliases": [],
+  "order": 15
+ },
+ {
+  "id": "comp-terminal-operations",
+  "type": "competency",
+  "name": "Terminal Operations",
+  "parentId": "comp-grp-storage-terminal-operations",
+  "level": 2,
+  "aliases": [],
+  "order": 16
+ },
+ {
+  "id": "comp-marine-terminal-operations",
+  "type": "competency",
+  "name": "Marine Terminal Operations",
+  "parentId": "comp-grp-storage-terminal-operations",
+  "level": 2,
+  "aliases": [],
+  "order": 17
+ },
+ {
+  "id": "comp-lng-terminal-operations",
+  "type": "competency",
+  "name": "LNG Terminal Operations",
+  "parentId": "comp-grp-storage-terminal-operations",
+  "level": 2,
+  "aliases": [],
+  "order": 18
+ },
+ {
+  "id": "comp-tank-settlement-analysis",
+  "type": "competency",
+  "name": "Tank Settlement Analysis",
+  "parentId": "comp-grp-storage-terminal-operations",
+  "level": 2,
+  "aliases": [],
+  "order": 19
+ },
+ {
+  "id": "comp-loading-master-operations",
+  "type": "competency",
+  "name": "Loading Master Operations",
+  "parentId": "comp-grp-storage-terminal-operations",
+  "level": 2,
+  "aliases": [
+   "Ship-Shore Loading"
+  ],
+  "order": 20
+ },
+ {
+  "id": "comp-grp-product-cargo-knowledge",
+  "type": "competency",
+  "name": "Product & Cargo Knowledge",
+  "parentId": null,
+  "level": 1,
+  "aliases": [],
+  "order": 1
+ },
+ {
+  "id": "disc-lng",
+  "type": "competency",
+  "name": "LNG",
+  "parentId": "comp-grp-product-cargo-knowledge",
+  "level": 2,
+  "aliases": [],
+  "order": 0
+ },
+ {
+  "id": "disc-lpg",
+  "type": "competency",
+  "name": "LPG",
+  "parentId": "comp-grp-product-cargo-knowledge",
+  "level": 2,
+  "aliases": [],
+  "order": 1
+ },
+ {
+  "id": "disc-jet-fuel",
+  "type": "competency",
+  "name": "Jet Fuel",
+  "parentId": "comp-grp-product-cargo-knowledge",
+  "level": 2,
+  "aliases": [],
+  "order": 2
+ },
+ {
+  "id": "disc-hydrogen",
+  "type": "competency",
+  "name": "Hydrogen",
+  "parentId": "comp-grp-product-cargo-knowledge",
+  "level": 2,
+  "aliases": [],
+  "order": 3
+ },
+ {
+  "id": "disc-ammonia",
+  "type": "competency",
+  "name": "Ammonia",
+  "parentId": "comp-grp-product-cargo-knowledge",
+  "level": 2,
+  "aliases": [
+   "Ammonia Handling"
+  ],
+  "order": 4
+ },
+ {
+  "id": "comp-grp-process-safety-risk",
+  "type": "competency",
+  "name": "Process Safety & Risk",
+  "parentId": null,
+  "level": 1,
+  "aliases": [],
+  "order": 2
+ },
+ {
+  "id": "disc-sil",
+  "type": "competency",
+  "name": "SIL",
+  "parentId": "comp-grp-process-safety-risk",
+  "level": 2,
+  "aliases": [
+   "SIL Verification"
+  ],
+  "order": 0
+ },
+ {
+  "id": "disc-hazop",
+  "type": "competency",
+  "name": "HAZOP",
+  "parentId": "comp-grp-process-safety-risk",
+  "level": 2,
+  "aliases": [],
+  "order": 1
+ },
+ {
+  "id": "disc-lopa",
+  "type": "competency",
+  "name": "LOPA",
+  "parentId": "comp-grp-process-safety-risk",
+  "level": 2,
+  "aliases": [],
+  "order": 2
+ },
+ {
+  "id": "comp-hazid",
+  "type": "competency",
+  "name": "HAZID",
+  "parentId": "comp-grp-process-safety-risk",
+  "level": 2,
+  "aliases": [],
+  "order": 3
+ },
+ {
+  "id": "comp-bowtie-analysis",
+  "type": "competency",
+  "name": "BowTie Analysis",
+  "parentId": "comp-grp-process-safety-risk",
+  "level": 2,
+  "aliases": [],
+  "order": 4
+ },
+ {
+  "id": "comp-process-safety-management",
+  "type": "competency",
+  "name": "Process Safety Management",
+  "parentId": "comp-grp-process-safety-risk",
+  "level": 2,
+  "aliases": [
+   "PSM"
+  ],
+  "order": 5
+ },
+ {
+  "id": "comp-incident-investigation",
+  "type": "competency",
+  "name": "Incident Investigation",
+  "parentId": "comp-grp-process-safety-risk",
+  "level": 2,
+  "aliases": [],
+  "order": 6
+ },
+ {
+  "id": "comp-root-cause-analysis",
+  "type": "competency",
+  "name": "Root Cause Analysis",
+  "parentId": "comp-grp-process-safety-risk",
+  "level": 2,
+  "aliases": [
+   "RCA"
+  ],
+  "order": 7
+ },
+ {
+  "id": "comp-hazardous-area-classification",
+  "type": "competency",
+  "name": "Hazardous Area Classification",
+  "parentId": "comp-grp-process-safety-risk",
+  "level": 2,
+  "aliases": [],
+  "order": 8
+ },
+ {
+  "id": "comp-grp-inspection-integrity",
+  "type": "competency",
+  "name": "Inspection & Integrity",
+  "parentId": null,
+  "level": 1,
+  "aliases": [],
+  "order": 3
+ },
+ {
+  "id": "disc-rbi",
+  "type": "competency",
+  "name": "RBI",
+  "parentId": "comp-grp-inspection-integrity",
+  "level": 2,
+  "aliases": [],
+  "order": 0
+ },
+ {
+  "id": "disc-fitness-for-service",
+  "type": "competency",
+  "name": "Fitness for Service",
+  "parentId": "comp-grp-inspection-integrity",
+  "level": 2,
+  "aliases": [
+   "FFS",
+   "API 579"
+  ],
+  "order": 1
+ },
+ {
+  "id": "disc-cathodic-protection",
+  "type": "competency",
+  "name": "Cathodic Protection",
+  "parentId": "comp-grp-inspection-integrity",
+  "level": 2,
+  "aliases": [],
+  "order": 2
+ },
+ {
+  "id": "comp-internal-corrosion",
+  "type": "competency",
+  "name": "Internal Corrosion",
+  "parentId": "comp-grp-inspection-integrity",
+  "level": 2,
+  "aliases": [],
+  "order": 3
+ },
+ {
+  "id": "comp-pipeline-corrosion",
+  "type": "competency",
+  "name": "Pipeline Corrosion",
+  "parentId": "comp-grp-inspection-integrity",
+  "level": 2,
+  "aliases": [],
+  "order": 4
+ },
+ {
+  "id": "comp-tank-bottom-corrosion",
+  "type": "competency",
+  "name": "Tank Bottom Corrosion",
+  "parentId": "comp-grp-inspection-integrity",
+  "level": 2,
+  "aliases": [],
+  "order": 5
+ },
+ {
+  "id": "comp-corrosion-assessment",
+  "type": "competency",
+  "name": "Corrosion Assessment",
+  "parentId": "comp-grp-inspection-integrity",
+  "level": 2,
+  "aliases": [],
+  "order": 6
+ },
+ {
+  "id": "comp-radiographic-testing",
+  "type": "competency",
+  "name": "Radiographic Testing",
+  "parentId": "comp-grp-inspection-integrity",
+  "level": 2,
+  "aliases": [
+   "RT"
+  ],
+  "order": 7
+ },
+ {
+  "id": "comp-ultrasonic-testing",
+  "type": "competency",
+  "name": "Ultrasonic Testing",
+  "parentId": "comp-grp-inspection-integrity",
+  "level": 2,
+  "aliases": [
+   "UT",
+   "UT Thickness"
+  ],
+  "order": 8
+ },
+ {
+  "id": "comp-phased-array-ut",
+  "type": "competency",
+  "name": "Phased Array UT",
+  "parentId": "comp-grp-inspection-integrity",
+  "level": 2,
+  "aliases": [
+   "PAUT"
+  ],
+  "order": 9
+ },
+ {
+  "id": "comp-time-of-flight-diffraction",
+  "type": "competency",
+  "name": "Time of Flight Diffraction",
+  "parentId": "comp-grp-inspection-integrity",
+  "level": 2,
+  "aliases": [
+   "TOFD"
+  ],
+  "order": 10
+ },
+ {
+  "id": "comp-magnetic-particle-testing",
+  "type": "competency",
+  "name": "Magnetic Particle Testing",
+  "parentId": "comp-grp-inspection-integrity",
+  "level": 2,
+  "aliases": [
+   "MT"
+  ],
+  "order": 11
+ },
+ {
+  "id": "comp-penetrant-testing",
+  "type": "competency",
+  "name": "Penetrant Testing",
+  "parentId": "comp-grp-inspection-integrity",
+  "level": 2,
+  "aliases": [
+   "PT"
+  ],
+  "order": 12
+ },
+ {
+  "id": "comp-visual-testing",
+  "type": "competency",
+  "name": "Visual Testing",
+  "parentId": "comp-grp-inspection-integrity",
+  "level": 2,
+  "aliases": [
+   "VT"
+  ],
+  "order": 13
+ },
+ {
+  "id": "comp-eddy-current-testing",
+  "type": "competency",
+  "name": "Eddy Current Testing",
+  "parentId": "comp-grp-inspection-integrity",
+  "level": 2,
+  "aliases": [
+   "ET"
+  ],
+  "order": 14
+ },
+ {
+  "id": "comp-acoustic-emission",
+  "type": "competency",
+  "name": "Acoustic Emission",
+  "parentId": "comp-grp-inspection-integrity",
+  "level": 2,
+  "aliases": [
+   "AE"
+  ],
+  "order": 15
+ },
+ {
+  "id": "comp-marine-classification-rules",
+  "type": "competency",
+  "name": "Marine Classification Rules",
+  "parentId": "comp-grp-inspection-integrity",
+  "level": 2,
+  "aliases": [
+   "DNV",
+   "Lloyd's Register",
+   "ABS"
+  ],
+  "order": 16
+ },
+ {
+  "id": "comp-grp-pipeline-operations",
+  "type": "competency",
+  "name": "Pipeline Operations",
+  "parentId": null,
+  "level": 1,
+  "aliases": [],
+  "order": 4
+ },
+ {
+  "id": "disc-pigging",
+  "type": "competency",
+  "name": "Pigging",
+  "parentId": "comp-grp-pipeline-operations",
+  "level": 2,
+  "aliases": [],
+  "order": 0
+ },
+ {
+  "id": "disc-pipeline-commissioning",
+  "type": "competency",
+  "name": "Pipeline Commissioning",
+  "parentId": "comp-grp-pipeline-operations",
+  "level": 2,
+  "aliases": [],
+  "order": 1
+ },
+ {
+  "id": "comp-grp-project-execution",
+  "type": "competency",
+  "name": "Project Execution",
+  "parentId": null,
+  "level": 1,
+  "aliases": [],
+  "order": 5
+ },
+ {
+  "id": "disc-shutdown",
+  "type": "competency",
+  "name": "Shutdown",
+  "parentId": "comp-grp-project-execution",
+  "level": 2,
+  "aliases": [],
+  "order": 0
+ },
+ {
+  "id": "disc-turnaround",
+  "type": "competency",
+  "name": "Turnaround",
+  "parentId": "comp-grp-project-execution",
+  "level": 2,
+  "aliases": [],
+  "order": 1
+ },
+ {
+  "id": "disc-commissioning",
+  "type": "competency",
+  "name": "Commissioning",
+  "parentId": "comp-grp-project-execution",
+  "level": 2,
+  "aliases": [],
+  "order": 2
+ },
+ {
+  "id": "disc-decommissioning",
+  "type": "competency",
+  "name": "Decommissioning",
+  "parentId": "comp-grp-project-execution",
+  "level": 2,
+  "aliases": [],
+  "order": 3
+ },
+ {
+  "id": "disc-brownfield",
+  "type": "competency",
+  "name": "Brownfield",
+  "parentId": "comp-grp-project-execution",
+  "level": 2,
+  "aliases": [],
+  "order": 4
+ },
+ {
+  "id": "disc-greenfield",
+  "type": "competency",
+  "name": "Greenfield",
+  "parentId": "comp-grp-project-execution",
+  "level": 2,
+  "aliases": [],
+  "order": 5
+ },
+ {
+  "id": "comp-grp-welding-fabrication",
+  "type": "competency",
+  "name": "Welding & Fabrication",
   "parentId": null,
   "level": 1,
   "aliases": [],
   "order": 6
  },
  {
-  "id": "disc-api-580",
-  "type": "discipline",
-  "name": "API 580",
+  "id": "comp-wps-pqr-development",
+  "type": "competency",
+  "name": "WPS/PQR Development",
+  "parentId": "comp-grp-welding-fabrication",
+  "level": 2,
+  "aliases": [],
+  "order": 0
+ },
+ {
+  "id": "comp-grp-digital-automation-platforms",
+  "type": "competency",
+  "name": "Digital & Automation Platforms",
   "parentId": null,
   "level": 1,
   "aliases": [],
   "order": 7
  },
  {
-  "id": "disc-api-581",
-  "type": "discipline",
-  "name": "API 581",
+  "id": "comp-honeywell-experion",
+  "type": "competency",
+  "name": "Honeywell Experion",
+  "parentId": "comp-grp-digital-automation-platforms",
+  "level": 2,
+  "aliases": [],
+  "order": 0
+ },
+ {
+  "id": "comp-yokogawa-centum",
+  "type": "competency",
+  "name": "Yokogawa CENTUM",
+  "parentId": "comp-grp-digital-automation-platforms",
+  "level": 2,
+  "aliases": [],
+  "order": 1
+ },
+ {
+  "id": "comp-emerson-deltav",
+  "type": "competency",
+  "name": "Emerson DeltaV",
+  "parentId": "comp-grp-digital-automation-platforms",
+  "level": 2,
+  "aliases": [],
+  "order": 2
+ },
+ {
+  "id": "comp-siemens-pcs7",
+  "type": "competency",
+  "name": "Siemens PCS7",
+  "parentId": "comp-grp-digital-automation-platforms",
+  "level": 2,
+  "aliases": [],
+  "order": 3
+ },
+ {
+  "id": "comp-abb-800xa",
+  "type": "competency",
+  "name": "ABB 800xA",
+  "parentId": "comp-grp-digital-automation-platforms",
+  "level": 2,
+  "aliases": [],
+  "order": 4
+ },
+ {
+  "id": "comp-ics-cybersecurity",
+  "type": "competency",
+  "name": "ICS Cybersecurity",
+  "parentId": "comp-grp-digital-automation-platforms",
+  "level": 2,
+  "aliases": [
+   "OT Security"
+  ],
+  "order": 5
+ },
+ {
+  "id": "comp-sap-mm",
+  "type": "competency",
+  "name": "SAP MM",
+  "parentId": "comp-grp-digital-automation-platforms",
+  "level": 2,
+  "aliases": [],
+  "order": 6
+ },
+ {
+  "id": "comp-sap-ewm-wm",
+  "type": "competency",
+  "name": "SAP EWM/WM",
+  "parentId": "comp-grp-digital-automation-platforms",
+  "level": 2,
+  "aliases": [],
+  "order": 7
+ },
+ {
+  "id": "comp-sap-pm",
+  "type": "competency",
+  "name": "SAP PM",
+  "parentId": "comp-grp-digital-automation-platforms",
+  "level": 2,
+  "aliases": [],
+  "order": 8
+ },
+ {
+  "id": "comp-ibm-maximo",
+  "type": "competency",
+  "name": "IBM Maximo",
+  "parentId": "comp-grp-digital-automation-platforms",
+  "level": 2,
+  "aliases": [
+   "Maximo"
+  ],
+  "order": 9
+ },
+ {
+  "id": "comp-infor-eam",
+  "type": "competency",
+  "name": "Infor EAM",
+  "parentId": "comp-grp-digital-automation-platforms",
+  "level": 2,
+  "aliases": [],
+  "order": 10
+ },
+ {
+  "id": "comp-osisoft-pi-system",
+  "type": "competency",
+  "name": "OSIsoft PI System",
+  "parentId": "comp-grp-digital-automation-platforms",
+  "level": 2,
+  "aliases": [
+   "PI System"
+  ],
+  "order": 11
+ },
+ {
+  "id": "comp-autocad",
+  "type": "competency",
+  "name": "AutoCAD",
+  "parentId": "comp-grp-digital-automation-platforms",
+  "level": 2,
+  "aliases": [],
+  "order": 12
+ },
+ {
+  "id": "comp-navisworks",
+  "type": "competency",
+  "name": "Navisworks",
+  "parentId": "comp-grp-digital-automation-platforms",
+  "level": 2,
+  "aliases": [],
+  "order": 13
+ },
+ {
+  "id": "comp-aveva",
+  "type": "competency",
+  "name": "Aveva",
+  "parentId": "comp-grp-digital-automation-platforms",
+  "level": 2,
+  "aliases": [
+   "E3D",
+   "PDMS"
+  ],
+  "order": 14
+ },
+ {
+  "id": "comp-hexagon",
+  "type": "competency",
+  "name": "Hexagon",
+  "parentId": "comp-grp-digital-automation-platforms",
+  "level": 2,
+  "aliases": [
+   "SmartPlant"
+  ],
+  "order": 15
+ },
+ {
+  "id": "comp-grp-logistics-trade-compliance",
+  "type": "competency",
+  "name": "Logistics & Trade Compliance",
   "parentId": null,
   "level": 1,
   "aliases": [],
   "order": 8
  },
  {
-  "id": "disc-asme",
-  "type": "discipline",
-  "name": "ASME",
+  "id": "comp-dangerous-goods-handling",
+  "type": "competency",
+  "name": "Dangerous Goods Handling",
+  "parentId": "comp-grp-logistics-trade-compliance",
+  "level": 2,
+  "aliases": [
+   "DG"
+  ],
+  "order": 0
+ },
+ {
+  "id": "comp-incoterms",
+  "type": "competency",
+  "name": "Incoterms",
+  "parentId": "comp-grp-logistics-trade-compliance",
+  "level": 2,
+  "aliases": [],
+  "order": 1
+ },
+ {
+  "id": "comp-customs-compliance",
+  "type": "competency",
+  "name": "Customs Compliance",
+  "parentId": "comp-grp-logistics-trade-compliance",
+  "level": 2,
+  "aliases": [],
+  "order": 2
+ },
+ {
+  "id": "comp-grp-hse-practices",
+  "type": "competency",
+  "name": "HSE Practices",
   "parentId": null,
   "level": 1,
   "aliases": [],
   "order": 9
  },
  {
-  "id": "disc-nfpa",
-  "type": "discipline",
-  "name": "NFPA",
+  "id": "comp-lockout-tagout",
+  "type": "competency",
+  "name": "Lockout Tagout",
+  "parentId": "comp-grp-hse-practices",
+  "level": 2,
+  "aliases": [
+   "LOTO"
+  ],
+  "order": 0
+ },
+ {
+  "id": "comp-grp-energy-transition",
+  "type": "competency",
+  "name": "Energy Transition",
   "parentId": null,
   "level": 1,
   "aliases": [],
   "order": 10
  },
  {
-  "id": "disc-iec",
-  "type": "discipline",
-  "name": "IEC",
-  "parentId": null,
-  "level": 1,
+  "id": "comp-hydrogen-safety",
+  "type": "competency",
+  "name": "Hydrogen Safety",
+  "parentId": "comp-grp-energy-transition",
+  "level": 2,
   "aliases": [],
-  "order": 11
+  "order": 0
  },
  {
-  "id": "disc-atex",
-  "type": "discipline",
-  "name": "ATEX",
-  "parentId": null,
-  "level": 1,
+  "id": "comp-cryogenic-safety",
+  "type": "competency",
+  "name": "Cryogenic Safety",
+  "parentId": "comp-grp-energy-transition",
+  "level": 2,
   "aliases": [],
-  "order": 12
+  "order": 1
  },
  {
-  "id": "disc-sil",
-  "type": "discipline",
-  "name": "SIL",
-  "parentId": null,
-  "level": 1,
-  "aliases": [],
-  "order": 13
- },
- {
-  "id": "disc-hazop",
-  "type": "discipline",
-  "name": "HAZOP",
-  "parentId": null,
-  "level": 1,
-  "aliases": [],
-  "order": 14
- },
- {
-  "id": "disc-lopa",
-  "type": "discipline",
-  "name": "LOPA",
-  "parentId": null,
-  "level": 1,
-  "aliases": [],
-  "order": 15
- },
- {
-  "id": "disc-rbi",
-  "type": "discipline",
-  "name": "RBI",
-  "parentId": null,
-  "level": 1,
-  "aliases": [],
-  "order": 16
- },
- {
-  "id": "disc-fitness-for-service",
-  "type": "discipline",
-  "name": "Fitness for Service",
-  "parentId": null,
-  "level": 1,
+  "id": "comp-carbon-capture-storage",
+  "type": "competency",
+  "name": "Carbon Capture & Storage",
+  "parentId": "comp-grp-energy-transition",
+  "level": 2,
   "aliases": [
-   "FFS"
+   "CCS",
+   "CCUS"
   ],
-  "order": 17
+  "order": 2
  },
  {
-  "id": "disc-iso-9001",
-  "type": "discipline",
-  "name": "ISO 9001",
-  "parentId": null,
-  "level": 1,
-  "aliases": [],
-  "order": 18
- },
- {
-  "id": "disc-iso-14001",
-  "type": "discipline",
-  "name": "ISO 14001",
-  "parentId": null,
-  "level": 1,
-  "aliases": [],
-  "order": 19
- },
- {
-  "id": "disc-iso-45001",
-  "type": "discipline",
-  "name": "ISO 45001",
-  "parentId": null,
-  "level": 1,
-  "aliases": [],
-  "order": 20
- },
- {
-  "id": "disc-floating-roof",
-  "type": "discipline",
-  "name": "Floating Roof",
-  "parentId": null,
-  "level": 1,
-  "aliases": [],
-  "order": 21
- },
- {
-  "id": "disc-internal-floating-roof",
-  "type": "discipline",
-  "name": "Internal Floating Roof",
-  "parentId": null,
-  "level": 1,
-  "aliases": [],
-  "order": 22
- },
- {
-  "id": "disc-external-floating-roof",
-  "type": "discipline",
-  "name": "External Floating Roof",
-  "parentId": null,
-  "level": 1,
-  "aliases": [],
-  "order": 23
- },
- {
-  "id": "disc-cone-roof",
-  "type": "discipline",
-  "name": "Cone Roof",
-  "parentId": null,
-  "level": 1,
-  "aliases": [],
-  "order": 24
- },
- {
-  "id": "disc-dome-roof",
-  "type": "discipline",
-  "name": "Dome Roof",
-  "parentId": null,
-  "level": 1,
-  "aliases": [],
-  "order": 25
- },
- {
-  "id": "disc-cryogenic-tanks",
-  "type": "discipline",
-  "name": "Cryogenic Tanks",
-  "parentId": null,
-  "level": 1,
-  "aliases": [],
-  "order": 26
- },
- {
-  "id": "disc-lng",
-  "type": "discipline",
-  "name": "LNG",
-  "parentId": null,
-  "level": 1,
-  "aliases": [],
-  "order": 27
- },
- {
-  "id": "disc-lpg",
-  "type": "discipline",
-  "name": "LPG",
-  "parentId": null,
-  "level": 1,
-  "aliases": [],
-  "order": 28
- },
- {
-  "id": "disc-jet-fuel",
-  "type": "discipline",
-  "name": "Jet Fuel",
-  "parentId": null,
-  "level": 1,
-  "aliases": [],
-  "order": 29
- },
- {
-  "id": "disc-hydrogen",
-  "type": "discipline",
-  "name": "Hydrogen",
-  "parentId": null,
-  "level": 1,
-  "aliases": [],
-  "order": 30
- },
- {
-  "id": "disc-ammonia",
-  "type": "discipline",
-  "name": "Ammonia",
-  "parentId": null,
-  "level": 1,
-  "aliases": [],
-  "order": 31
- },
- {
-  "id": "disc-cathodic-protection",
-  "type": "discipline",
-  "name": "Cathodic Protection",
-  "parentId": null,
-  "level": 1,
-  "aliases": [],
-  "order": 32
- },
- {
-  "id": "disc-tank-calibration",
-  "type": "discipline",
-  "name": "Tank Calibration",
-  "parentId": null,
-  "level": 1,
-  "aliases": [],
-  "order": 33
- },
- {
-  "id": "disc-custody-transfer",
-  "type": "discipline",
-  "name": "Custody Transfer",
-  "parentId": null,
-  "level": 1,
-  "aliases": [],
-  "order": 34
- },
- {
-  "id": "disc-metering",
-  "type": "discipline",
-  "name": "Metering",
-  "parentId": null,
-  "level": 1,
-  "aliases": [],
-  "order": 35
- },
- {
-  "id": "disc-tank-gauging",
-  "type": "discipline",
-  "name": "Tank Gauging",
-  "parentId": null,
-  "level": 1,
-  "aliases": [],
-  "order": 36
- },
- {
-  "id": "disc-vapour-recovery",
-  "type": "discipline",
-  "name": "Vapour Recovery",
-  "parentId": null,
-  "level": 1,
+  "id": "comp-battery-energy-storage-systems",
+  "type": "competency",
+  "name": "Battery Energy Storage Systems",
+  "parentId": "comp-grp-energy-transition",
+  "level": 2,
   "aliases": [
-   "VRU",
-   "Vapor Recovery"
+   "BESS"
   ],
-  "order": 37
+  "order": 3
  },
  {
-  "id": "disc-floating-suction",
-  "type": "discipline",
-  "name": "Floating Suction",
+  "id": "comp-biofuel-operations",
+  "type": "competency",
+  "name": "Biofuel Operations",
+  "parentId": "comp-grp-energy-transition",
+  "level": 2,
+  "aliases": [],
+  "order": 4
+ },
+ {
+  "id": "cert-grp-api-personnel-certifications",
+  "type": "certification",
+  "name": "API Personnel Certifications",
   "parentId": null,
   "level": 1,
   "aliases": [],
-  "order": 38
- },
- {
-  "id": "disc-marine-loading-arms",
-  "type": "discipline",
-  "name": "Marine Loading Arms",
-  "parentId": null,
-  "level": 1,
-  "aliases": [
-   "MLA"
-  ],
-  "order": 39
- },
- {
-  "id": "disc-pigging",
-  "type": "discipline",
-  "name": "Pigging",
-  "parentId": null,
-  "level": 1,
-  "aliases": [],
-  "order": 40
- },
- {
-  "id": "disc-pipeline-commissioning",
-  "type": "discipline",
-  "name": "Pipeline Commissioning",
-  "parentId": null,
-  "level": 1,
-  "aliases": [],
-  "order": 41
- },
- {
-  "id": "disc-tank-cleaning",
-  "type": "discipline",
-  "name": "Tank Cleaning",
-  "parentId": null,
-  "level": 1,
-  "aliases": [],
-  "order": 42
- },
- {
-  "id": "disc-tank-inspection",
-  "type": "discipline",
-  "name": "Tank Inspection",
-  "parentId": null,
-  "level": 1,
-  "aliases": [],
-  "order": 43
- },
- {
-  "id": "disc-shutdown",
-  "type": "discipline",
-  "name": "Shutdown",
-  "parentId": null,
-  "level": 1,
-  "aliases": [],
-  "order": 44
- },
- {
-  "id": "disc-turnaround",
-  "type": "discipline",
-  "name": "Turnaround",
-  "parentId": null,
-  "level": 1,
-  "aliases": [],
-  "order": 45
- },
- {
-  "id": "disc-commissioning",
-  "type": "discipline",
-  "name": "Commissioning",
-  "parentId": null,
-  "level": 1,
-  "aliases": [],
-  "order": 46
- },
- {
-  "id": "disc-decommissioning",
-  "type": "discipline",
-  "name": "Decommissioning",
-  "parentId": null,
-  "level": 1,
-  "aliases": [],
-  "order": 47
- },
- {
-  "id": "disc-brownfield",
-  "type": "discipline",
-  "name": "Brownfield",
-  "parentId": null,
-  "level": 1,
-  "aliases": [],
-  "order": 48
- },
- {
-  "id": "disc-greenfield",
-  "type": "discipline",
-  "name": "Greenfield",
-  "parentId": null,
-  "level": 1,
-  "aliases": [],
-  "order": 49
+  "order": 0
  },
  {
   "id": "cert-api-510",
   "type": "certification",
   "name": "API 510",
-  "parentId": null,
-  "level": 1,
+  "parentId": "cert-grp-api-personnel-certifications",
+  "level": 2,
   "aliases": [],
   "order": 0
  },
@@ -3450,8 +4738,8 @@ export const TAXONOMY_SEED: TaxonomyNode[] = [
   "id": "cert-api-570",
   "type": "certification",
   "name": "API 570",
-  "parentId": null,
-  "level": 1,
+  "parentId": "cert-grp-api-personnel-certifications",
+  "level": 2,
   "aliases": [],
   "order": 1
  },
@@ -3459,8 +4747,8 @@ export const TAXONOMY_SEED: TaxonomyNode[] = [
   "id": "cert-api-653",
   "type": "certification",
   "name": "API 653",
-  "parentId": null,
-  "level": 1,
+  "parentId": "cert-grp-api-personnel-certifications",
+  "level": 2,
   "aliases": [],
   "order": 2
  },
@@ -3468,8 +4756,8 @@ export const TAXONOMY_SEED: TaxonomyNode[] = [
   "id": "cert-api-580",
   "type": "certification",
   "name": "API 580",
-  "parentId": null,
-  "level": 1,
+  "parentId": "cert-grp-api-personnel-certifications",
+  "level": 2,
   "aliases": [],
   "order": 3
  },
@@ -3477,6 +4765,258 @@ export const TAXONOMY_SEED: TaxonomyNode[] = [
   "id": "cert-api-936",
   "type": "certification",
   "name": "API 936",
+  "parentId": "cert-grp-api-personnel-certifications",
+  "level": 2,
+  "aliases": [],
+  "order": 4
+ },
+ {
+  "id": "cert-api-571-specialist",
+  "type": "certification",
+  "name": "API 571 Specialist",
+  "parentId": "cert-grp-api-personnel-certifications",
+  "level": 2,
+  "aliases": [],
+  "order": 5
+ },
+ {
+  "id": "cert-api-577-welding-inspector",
+  "type": "certification",
+  "name": "API 577 Welding Inspector",
+  "parentId": "cert-grp-api-personnel-certifications",
+  "level": 2,
+  "aliases": [],
+  "order": 6
+ },
+ {
+  "id": "cert-api-sife-source-inspector",
+  "type": "certification",
+  "name": "API SIFE Source Inspector",
+  "parentId": "cert-grp-api-personnel-certifications",
+  "level": 2,
+  "aliases": [],
+  "order": 7
+ },
+ {
+  "id": "cert-api-1169-pipeline-inspector",
+  "type": "certification",
+  "name": "API 1169 Pipeline Inspector",
+  "parentId": "cert-grp-api-personnel-certifications",
+  "level": 2,
+  "aliases": [],
+  "order": 8
+ },
+ {
+  "id": "cert-grp-welding-certifications",
+  "type": "certification",
+  "name": "Welding Certifications",
+  "parentId": null,
+  "level": 1,
+  "aliases": [],
+  "order": 1
+ },
+ {
+  "id": "cert-aws-cwi",
+  "type": "certification",
+  "name": "AWS CWI",
+  "parentId": "cert-grp-welding-certifications",
+  "level": 2,
+  "aliases": [
+   "Certified Welding Inspector"
+  ],
+  "order": 0
+ },
+ {
+  "id": "cert-aws-senior-cwi",
+  "type": "certification",
+  "name": "AWS Senior CWI",
+  "parentId": "cert-grp-welding-certifications",
+  "level": 2,
+  "aliases": [],
+  "order": 1
+ },
+ {
+  "id": "cert-certified-welding-supervisor",
+  "type": "certification",
+  "name": "Certified Welding Supervisor",
+  "parentId": "cert-grp-welding-certifications",
+  "level": 2,
+  "aliases": [],
+  "order": 2
+ },
+ {
+  "id": "cert-certified-welding-educator",
+  "type": "certification",
+  "name": "Certified Welding Educator",
+  "parentId": "cert-grp-welding-certifications",
+  "level": 2,
+  "aliases": [],
+  "order": 3
+ },
+ {
+  "id": "cert-iiw-international-welding-engineer",
+  "type": "certification",
+  "name": "IIW International Welding Engineer",
+  "parentId": "cert-grp-welding-certifications",
+  "level": 2,
+  "aliases": [
+   "IWE"
+  ],
+  "order": 4
+ },
+ {
+  "id": "cert-iiw-welding-technologist",
+  "type": "certification",
+  "name": "IIW Welding Technologist",
+  "parentId": "cert-grp-welding-certifications",
+  "level": 2,
+  "aliases": [
+   "IWT"
+  ],
+  "order": 5
+ },
+ {
+  "id": "cert-iiw-welding-specialist",
+  "type": "certification",
+  "name": "IIW Welding Specialist",
+  "parentId": "cert-grp-welding-certifications",
+  "level": 2,
+  "aliases": [
+   "IWS"
+  ],
+  "order": 6
+ },
+ {
+  "id": "cert-iiw-welding-practitioner",
+  "type": "certification",
+  "name": "IIW Welding Practitioner",
+  "parentId": "cert-grp-welding-certifications",
+  "level": 2,
+  "aliases": [
+   "IWP"
+  ],
+  "order": 7
+ },
+ {
+  "id": "cert-cswip-3-1",
+  "type": "certification",
+  "name": "CSWIP 3.1",
+  "parentId": "cert-grp-welding-certifications",
+  "level": 2,
+  "aliases": [],
+  "order": 8
+ },
+ {
+  "id": "cert-cswip-3-2",
+  "type": "certification",
+  "name": "CSWIP 3.2",
+  "parentId": "cert-grp-welding-certifications",
+  "level": 2,
+  "aliases": [],
+  "order": 9
+ },
+ {
+  "id": "cert-ibr-certified-welder",
+  "type": "certification",
+  "name": "IBR Certified Welder",
+  "parentId": "cert-grp-welding-certifications",
+  "level": 2,
+  "aliases": [],
+  "order": 10
+ },
+ {
+  "id": "cert-grp-ndt-certifications",
+  "type": "certification",
+  "name": "NDT Certifications",
+  "parentId": null,
+  "level": 1,
+  "aliases": [],
+  "order": 2
+ },
+ {
+  "id": "cert-asnt-ndt-level-i",
+  "type": "certification",
+  "name": "ASNT NDT Level I",
+  "parentId": "cert-grp-ndt-certifications",
+  "level": 2,
+  "aliases": [],
+  "order": 0
+ },
+ {
+  "id": "cert-asnt-ndt-level-ii",
+  "type": "certification",
+  "name": "ASNT NDT Level II",
+  "parentId": "cert-grp-ndt-certifications",
+  "level": 2,
+  "aliases": [],
+  "order": 1
+ },
+ {
+  "id": "cert-asnt-ndt-level-iii",
+  "type": "certification",
+  "name": "ASNT NDT Level III",
+  "parentId": "cert-grp-ndt-certifications",
+  "level": 2,
+  "aliases": [],
+  "order": 2
+ },
+ {
+  "id": "cert-iso-9712-pcn-ndt",
+  "type": "certification",
+  "name": "ISO 9712 / PCN NDT",
+  "parentId": "cert-grp-ndt-certifications",
+  "level": 2,
+  "aliases": [
+   "PCN"
+  ],
+  "order": 3
+ },
+ {
+  "id": "cert-grp-corrosion-coatings",
+  "type": "certification",
+  "name": "Corrosion & Coatings",
+  "parentId": null,
+  "level": 1,
+  "aliases": [],
+  "order": 3
+ },
+ {
+  "id": "cert-ampp-cathodic-protection",
+  "type": "certification",
+  "name": "AMPP Cathodic Protection",
+  "parentId": "cert-grp-corrosion-coatings",
+  "level": 2,
+  "aliases": [
+   "NACE CP",
+   "CP Level 1-4"
+  ],
+  "order": 0
+ },
+ {
+  "id": "cert-ampp-coating-inspector",
+  "type": "certification",
+  "name": "AMPP Coating Inspector",
+  "parentId": "cert-grp-corrosion-coatings",
+  "level": 2,
+  "aliases": [
+   "CIP Levels 1-3",
+   "Marine Coating Inspector"
+  ],
+  "order": 1
+ },
+ {
+  "id": "cert-ampp-corrosion-technician",
+  "type": "certification",
+  "name": "AMPP Corrosion Technician",
+  "parentId": "cert-grp-corrosion-coatings",
+  "level": 2,
+  "aliases": [],
+  "order": 2
+ },
+ {
+  "id": "cert-grp-hse-occupational",
+  "type": "certification",
+  "name": "HSE & Occupational",
   "parentId": null,
   "level": 1,
   "aliases": [],
@@ -3486,57 +5026,403 @@ export const TAXONOMY_SEED: TaxonomyNode[] = [
   "id": "cert-nebosh",
   "type": "certification",
   "name": "NEBOSH",
+  "parentId": "cert-grp-hse-occupational",
+  "level": 2,
+  "aliases": [],
+  "order": 0
+ },
+ {
+  "id": "cert-iosh",
+  "type": "certification",
+  "name": "IOSH",
+  "parentId": "cert-grp-hse-occupational",
+  "level": 2,
+  "aliases": [],
+  "order": 1
+ },
+ {
+  "id": "cert-nebosh-igc",
+  "type": "certification",
+  "name": "NEBOSH IGC",
+  "parentId": "cert-grp-hse-occupational",
+  "level": 2,
+  "aliases": [],
+  "order": 2
+ },
+ {
+  "id": "cert-nebosh-oil-gas",
+  "type": "certification",
+  "name": "NEBOSH Oil & Gas",
+  "parentId": "cert-grp-hse-occupational",
+  "level": 2,
+  "aliases": [
+   "IOGC"
+  ],
+  "order": 3
+ },
+ {
+  "id": "cert-osha-30-hour",
+  "type": "certification",
+  "name": "OSHA 30 Hour",
+  "parentId": "cert-grp-hse-occupational",
+  "level": 2,
+  "aliases": [],
+  "order": 4
+ },
+ {
+  "id": "cert-osha-10-hour",
+  "type": "certification",
+  "name": "OSHA 10 Hour",
+  "parentId": "cert-grp-hse-occupational",
+  "level": 2,
+  "aliases": [],
+  "order": 5
+ },
+ {
+  "id": "cert-confined-space-entry",
+  "type": "certification",
+  "name": "Confined Space Entry",
+  "parentId": "cert-grp-hse-occupational",
+  "level": 2,
+  "aliases": [],
+  "order": 6
+ },
+ {
+  "id": "cert-working-at-height",
+  "type": "certification",
+  "name": "Working at Height",
+  "parentId": "cert-grp-hse-occupational",
+  "level": 2,
+  "aliases": [],
+  "order": 7
+ },
+ {
+  "id": "cert-authorised-gas-tester",
+  "type": "certification",
+  "name": "Authorised Gas Tester",
+  "parentId": "cert-grp-hse-occupational",
+  "level": 2,
+  "aliases": [],
+  "order": 8
+ },
+ {
+  "id": "cert-first-aid",
+  "type": "certification",
+  "name": "First Aid",
+  "parentId": "cert-grp-hse-occupational",
+  "level": 2,
+  "aliases": [],
+  "order": 9
+ },
+ {
+  "id": "cert-h2s-training",
+  "type": "certification",
+  "name": "H2S Training",
+  "parentId": "cert-grp-hse-occupational",
+  "level": 2,
+  "aliases": [
+   "H2S Awareness",
+   "H2S Supervisor"
+  ],
+  "order": 10
+ },
+ {
+  "id": "cert-grp-process-functional-safety",
+  "type": "certification",
+  "name": "Process & Functional Safety",
   "parentId": null,
   "level": 1,
   "aliases": [],
   "order": 5
  },
  {
-  "id": "cert-iosh",
+  "id": "cert-hazop-leader",
   "type": "certification",
-  "name": "IOSH",
+  "name": "HAZOP Leader",
+  "parentId": "cert-grp-process-functional-safety",
+  "level": 2,
+  "aliases": [],
+  "order": 0
+ },
+ {
+  "id": "cert-tuv-functional-safety-engineer",
+  "type": "certification",
+  "name": "TUV Functional Safety Engineer",
+  "parentId": "cert-grp-process-functional-safety",
+  "level": 2,
+  "aliases": [
+   "TUV FS Engineer"
+  ],
+  "order": 1
+ },
+ {
+  "id": "cert-tuv-functional-safety-professional",
+  "type": "certification",
+  "name": "TUV Functional Safety Professional",
+  "parentId": "cert-grp-process-functional-safety",
+  "level": 2,
+  "aliases": [],
+  "order": 2
+ },
+ {
+  "id": "cert-compex",
+  "type": "certification",
+  "name": "CompEx",
+  "parentId": "cert-grp-process-functional-safety",
+  "level": 2,
+  "aliases": [],
+  "order": 3
+ },
+ {
+  "id": "cert-iecex-copc",
+  "type": "certification",
+  "name": "IECEx CoPC",
+  "parentId": "cert-grp-process-functional-safety",
+  "level": 2,
+  "aliases": [],
+  "order": 4
+ },
+ {
+  "id": "cert-grp-offshore-opito",
+  "type": "certification",
+  "name": "Offshore (OPITO)",
   "parentId": null,
   "level": 1,
   "aliases": [],
   "order": 6
  },
  {
-  "id": "cert-hazop-leader",
+  "id": "cert-bosiet",
   "type": "certification",
-  "name": "HAZOP Leader",
+  "name": "BOSIET",
+  "parentId": "cert-grp-offshore-opito",
+  "level": 2,
+  "aliases": [
+   "T-BOSIET"
+  ],
+  "order": 0
+ },
+ {
+  "id": "cert-foet",
+  "type": "certification",
+  "name": "FOET",
+  "parentId": "cert-grp-offshore-opito",
+  "level": 2,
+  "aliases": [],
+  "order": 1
+ },
+ {
+  "id": "cert-huet",
+  "type": "certification",
+  "name": "HUET",
+  "parentId": "cert-grp-offshore-opito",
+  "level": 2,
+  "aliases": [],
+  "order": 2
+ },
+ {
+  "id": "cert-mist",
+  "type": "certification",
+  "name": "MIST",
+  "parentId": "cert-grp-offshore-opito",
+  "level": 2,
+  "aliases": [],
+  "order": 3
+ },
+ {
+  "id": "cert-banksman-slinger",
+  "type": "certification",
+  "name": "Banksman & Slinger",
+  "parentId": "cert-grp-offshore-opito",
+  "level": 2,
+  "aliases": [],
+  "order": 4
+ },
+ {
+  "id": "cert-rigger",
+  "type": "certification",
+  "name": "Rigger",
+  "parentId": "cert-grp-offshore-opito",
+  "level": 2,
+  "aliases": [],
+  "order": 5
+ },
+ {
+  "id": "cert-crane-operator",
+  "type": "certification",
+  "name": "Crane Operator",
+  "parentId": "cert-grp-offshore-opito",
+  "level": 2,
+  "aliases": [],
+  "order": 6
+ },
+ {
+  "id": "cert-helideck-operations",
+  "type": "certification",
+  "name": "Helideck Operations",
+  "parentId": "cert-grp-offshore-opito",
+  "level": 2,
+  "aliases": [],
+  "order": 7
+ },
+ {
+  "id": "cert-grp-maritime-stcw",
+  "type": "certification",
+  "name": "Maritime (STCW)",
   "parentId": null,
   "level": 1,
   "aliases": [],
   "order": 7
  },
  {
-  "id": "cert-ampp-cathodic-protection",
+  "id": "cert-stcw-basic-safety-training",
   "type": "certification",
-  "name": "AMPP Cathodic Protection",
+  "name": "STCW Basic Safety Training",
+  "parentId": "cert-grp-maritime-stcw",
+  "level": 2,
+  "aliases": [
+   "BST"
+  ],
+  "order": 0
+ },
+ {
+  "id": "cert-stcw-advanced-fire-fighting",
+  "type": "certification",
+  "name": "STCW Advanced Fire Fighting",
+  "parentId": "cert-grp-maritime-stcw",
+  "level": 2,
+  "aliases": [
+   "AFF"
+  ],
+  "order": 1
+ },
+ {
+  "id": "cert-tanker-familiarization",
+  "type": "certification",
+  "name": "Tanker Familiarization",
+  "parentId": "cert-grp-maritime-stcw",
+  "level": 2,
+  "aliases": [],
+  "order": 2
+ },
+ {
+  "id": "cert-advanced-oil-tanker-operations",
+  "type": "certification",
+  "name": "Advanced Oil Tanker Operations",
+  "parentId": "cert-grp-maritime-stcw",
+  "level": 2,
+  "aliases": [],
+  "order": 3
+ },
+ {
+  "id": "cert-advanced-chemical-tanker-operations",
+  "type": "certification",
+  "name": "Advanced Chemical Tanker Operations",
+  "parentId": "cert-grp-maritime-stcw",
+  "level": 2,
+  "aliases": [],
+  "order": 4
+ },
+ {
+  "id": "cert-advanced-gas-lng-tanker-operations",
+  "type": "certification",
+  "name": "Advanced Gas/LNG Tanker Operations",
+  "parentId": "cert-grp-maritime-stcw",
+  "level": 2,
+  "aliases": [],
+  "order": 5
+ },
+ {
+  "id": "cert-grp-dangerous-goods",
+  "type": "certification",
+  "name": "Dangerous Goods",
   "parentId": null,
   "level": 1,
-  "aliases": [
-   "NACE CP"
-  ],
+  "aliases": [],
   "order": 8
  },
  {
-  "id": "cert-asnt-ndt-level-ii",
+  "id": "cert-imdg-code",
   "type": "certification",
-  "name": "ASNT NDT Level II",
+  "name": "IMDG Code",
+  "parentId": "cert-grp-dangerous-goods",
+  "level": 2,
+  "aliases": [],
+  "order": 0
+ },
+ {
+  "id": "cert-iata-dgr",
+  "type": "certification",
+  "name": "IATA DGR",
+  "parentId": "cert-grp-dangerous-goods",
+  "level": 2,
+  "aliases": [
+   "IATA Dangerous Goods"
+  ],
+  "order": 1
+ },
+ {
+  "id": "cert-adr-rid",
+  "type": "certification",
+  "name": "ADR/RID",
+  "parentId": "cert-grp-dangerous-goods",
+  "level": 2,
+  "aliases": [],
+  "order": 2
+ },
+ {
+  "id": "cert-grp-auditing-quality",
+  "type": "certification",
+  "name": "Auditing & Quality",
   "parentId": null,
   "level": 1,
   "aliases": [],
   "order": 9
  },
  {
-  "id": "cert-asnt-ndt-level-iii",
+  "id": "cert-iso-9001-lead-auditor",
   "type": "certification",
-  "name": "ASNT NDT Level III",
-  "parentId": null,
-  "level": 1,
+  "name": "ISO 9001 Lead Auditor",
+  "parentId": "cert-grp-auditing-quality",
+  "level": 2,
   "aliases": [],
-  "order": 10
+  "order": 0
+ },
+ {
+  "id": "cert-iso-14001-lead-auditor",
+  "type": "certification",
+  "name": "ISO 14001 Lead Auditor",
+  "parentId": "cert-grp-auditing-quality",
+  "level": 2,
+  "aliases": [],
+  "order": 1
+ },
+ {
+  "id": "cert-iso-45001-lead-auditor",
+  "type": "certification",
+  "name": "ISO 45001 Lead Auditor",
+  "parentId": "cert-grp-auditing-quality",
+  "level": 2,
+  "aliases": [],
+  "order": 2
+ },
+ {
+  "id": "cert-iso-50001-lead-auditor",
+  "type": "certification",
+  "name": "ISO 50001 Lead Auditor",
+  "parentId": "cert-grp-auditing-quality",
+  "level": 2,
+  "aliases": [],
+  "order": 3
+ },
+ {
+  "id": "cert-iso-27001-lead-auditor",
+  "type": "certification",
+  "name": "ISO 27001 Lead Auditor",
+  "parentId": "cert-grp-auditing-quality",
+  "level": 2,
+  "aliases": [],
+  "order": 4
  },
  {
   "id": "equip-storage-equipment",

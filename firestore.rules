@@ -253,7 +253,7 @@ service cloud.firestore {
     // resumes and jobs, so deletes are admin-only and should be rare.
     function isValidTaxonomyNode(data) {
       return data.keys().hasAll(['type', 'name', 'level', 'order']) &&
-             data.type in ['industry', 'vertical', 'domain', 'family', 'role', 'discipline', 'certification', 'equipment'] &&
+             data.type in ['industry', 'vertical', 'domain', 'family', 'role', 'standard', 'competency', 'certification', 'equipment'] &&
              data.name is string && data.name.size() > 0 && data.name.size() <= 128 &&
              data.level is number && data.level >= 1 && data.level <= 3 &&
              data.order is number && data.order >= 0 &&

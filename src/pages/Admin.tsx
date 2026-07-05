@@ -687,7 +687,7 @@ const handleEditCompany = (company: any) => {
   };
 
   // Taxonomy tab handlers
-  const TAX_PREFIX: Record<string, string> = { industry: "ind", vertical: "vert", domain: "dom", family: "fam", role: "role", discipline: "disc", certification: "cert", equipment: "equip" };
+  const TAX_PREFIX: Record<string, string> = { industry: "ind", vertical: "vert", domain: "dom", family: "fam", role: "role", standard: "std", competency: "comp", certification: "cert", equipment: "equip" };
 
   const handleSeedTaxonomy = async () => {
     if (!window.confirm(`Upload ${TAXONOMY_SEED.length} taxonomy nodes from the bundled seed?\n\nNodes with matching IDs are overwritten to the seed version; nodes you added yourself are untouched.`)) return;
