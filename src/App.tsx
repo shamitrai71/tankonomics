@@ -677,8 +677,8 @@ function AuthPanel({ onSignIn, theme }: { onSignIn: (provider: string) => Promis
         {/* Top row: logo + locator */}
         <div className="relative flex items-start justify-between">
           <Link to="/" className="flex items-center gap-3">
-            {theme?.logoUrl ? (
-              <img src={theme.logoUrl} className="h-12 w-auto" alt={siteName} />
+            {theme?.logoUrlDark || theme?.logoUrl ? (
+              <img src={theme.logoUrlDark || theme.logoUrl} className="h-12 w-auto" alt={siteName} />
             ) : (
               <BrandMark size={48} tone="light" />
             )}
@@ -976,10 +976,8 @@ function GoogleGlyph() {
 function Splash() {
   // Splash renders before auth/theme context is ready, so it fetches the
   // branding logo directly. Prefers the dark-background (light/white) logo,
-  // since the splash sits on a dark surface. `logoReady` gates the mark so we
-  // don't flash the BrandMark fallback before the fetch resolves.
+  // since the splash sits on a dark surface.
   const [logoUrl, setLogoUrl] = useState<string>("");
-  const [logoReady, setLogoReady] = useState(false);
   // Drives the one-time "color settles" moment: the overlay lightens slightly
   // a beat after mount, letting the tank-farm photo emerge faintly.
   const [settled, setSettled] = useState(false);
@@ -993,8 +991,8 @@ function Splash() {
         if (d?.logoUrlDark) setLogoUrl(d.logoUrlDark);
         else if (d?.logoUrl) setLogoUrl(d.logoUrl);
       })
-      .catch(() => {})
-      .finally(() => { if (alive) setLogoReady(true); });
+      .catch(() => {});
+
     const t = setTimeout(() => alive && setSettled(true), 1400);
     return () => {
       alive = false;
@@ -1083,18 +1081,32 @@ function Splash() {
           />
         </svg>
 
-        {logoReady && (
-          logoUrl ? (
+        {/* BrandMark shows instantly (no empty pause); the real logo cross-fades
+            in on top once the theme fetch resolves and the image loads. */}
+        <div className="relative w-[132px] h-[132px] flex items-center justify-center">
+          <div
+            style={{
+              opacity: logoUrl ? 0 : 1,
+              transition: "opacity .5s ease",
+              position: "absolute",
+            }}
+          >
+            <BrandMark size={132} tone="light" />
+          </div>
+          {logoUrl && (
             <img
               src={logoUrl}
               alt="Tankonomics"
-              className="w-[132px] h-[132px] object-contain"
-              style={{ filter: "drop-shadow(0 2px 16px rgba(11,27,43,0.5))" }}
+              className="w-[132px] h-[132px] object-contain absolute inset-0"
+              style={{
+                filter: "drop-shadow(0 2px 16px rgba(11,27,43,0.5))",
+                opacity: 0,
+                transition: "opacity .5s ease",
+              }}
+              onLoad={(e) => { (e.currentTarget as HTMLImageElement).style.opacity = "1"; }}
             />
-          ) : (
-            <BrandMark size={132} tone="light" />
-          )
-        )}
+          )}
+        </div>
       </motion.div>
 
       {/* Wordmark */}
@@ -1106,7 +1118,16 @@ function Splash() {
       >
         <h1
           className="font-display text-5xl sm:text-6xl text-white leading-[0.95]"
-          style={{ textShadow: "0 2px 24px rgba(11,27,43,0.55)" }}
+          style={{
+            textShadow: "0 2px 24px rgba(11,27,43,0.55)",
+            // Fixed height reserves space so the fallback-serif -> Instrument
+            // Serif font swap (display=swap) can't visibly shift this line —
+            // most noticeable on mobile, where the font arrives later.
+            height: "1.1em",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+          }}
         >
           Tankonomics
         </h1>
@@ -1184,7 +1205,7 @@ export default function App() {
   useEffect(() => {
     const timer = setTimeout(() => {
       setIsSplashing(false);
-    }, 2500);
+    }, 6000);
     return () => clearTimeout(timer);
   }, []);
 
@@ -1467,6 +1488,12 @@ export default function App() {
 
   const logout = async () => {
     await signOut(auth);
+    // Reset the URL to root. logout() lives outside the Router, so useNavigate
+    // isn't available here; a root replace also guarantees a clean slate
+    // (clears any route-scoped state) for the next sign-in.
+    if (window.location.pathname !== "/") {
+      window.location.assign("/");
+    }
   };
 
   if (isSplashing) {
