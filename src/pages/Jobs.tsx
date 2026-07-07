@@ -47,6 +47,7 @@ export default function Jobs() {
   const [showPostModal, setShowPostModal] = useState(false);
   const [showFilters, setShowFilters] = useState(false);
   const [showApplyModal, setShowApplyModal] = useState(false);
+  const [showDetailModal, setShowDetailModal] = useState(false);
   const [selectedJob, setSelectedJob] = useState<any>(null);
   const [applyingJobId, setApplyingJobId] = useState<string | null>(null);
   const [appliedJobs, setAppliedJobs] = useState<string[]>([]);
@@ -563,6 +564,15 @@ export default function Jobs() {
                           <button
                             onClick={() => {
                               setSelectedJob(job);
+                              setShowDetailModal(true);
+                            }}
+                            className="px-4 py-2.5 rounded-xl text-[13px] font-medium border border-border-main text-text-body hover:text-text-heading hover:border-text-heading transition-all"
+                          >
+                            View details
+                          </button>
+                          <button
+                            onClick={() => {
+                              setSelectedJob(job);
                               setShowApplyModal(true);
                             }}
                             disabled={isApplied}
@@ -882,6 +892,108 @@ export default function Jobs() {
                 >
                   {isPosting ? <Loader2 className="w-4 h-4 animate-spin" /> : <Plus className="w-4 h-4" strokeWidth={1.75} />}
                   Publish listing
+                </button>
+              </div>
+            </motion.div>
+          </div>
+        )}
+      </AnimatePresence>
+
+      {/* Job Detail Modal */}
+      <AnimatePresence>
+        {showDetailModal && selectedJob && (
+          <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
+            <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} onClick={() => setShowDetailModal(false)} className="absolute inset-0 bg-ink/60 backdrop-blur-sm" />
+            <motion.div
+              initial={{ opacity: 0, scale: 0.96, y: 12 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              exit={{ opacity: 0, scale: 0.96, y: 12 }}
+              className="bg-bg-card border border-border-main rounded-2xl shadow-2xl w-full max-w-2xl relative z-10 overflow-hidden max-h-[88vh] flex flex-col"
+            >
+              <div className="p-6 border-b border-border-main flex items-start justify-between gap-4">
+                <div>
+                  <div className="flex items-center gap-2 mb-1">
+                    <span className="eyebrow tabular text-text-body/55">{selectedJob.type || "Full-time"}</span>
+                    {selectedJob.taxSeniority && <span className="eyebrow tabular text-accent">· {selectedJob.taxSeniority}</span>}
+                  </div>
+                  <h2 className="font-display text-2xl text-text-heading leading-tight">{selectedJob.title}</h2>
+                  <p className="text-sm text-text-body/70 mt-0.5">{selectedJob.companyName}</p>
+                  <div className="flex flex-wrap items-center gap-3 mt-2">
+                    {selectedJob.location && <span className="eyebrow tabular text-text-body/55 flex items-center gap-1"><MapPin className="w-3 h-3" />{selectedJob.location}</span>}
+                    {selectedJob.salary && <span className="eyebrow tabular text-text-body/55">{selectedJob.salary}</span>}
+                  </div>
+                </div>
+                <button onClick={() => setShowDetailModal(false)} className="p-1.5 text-text-body/40 hover:text-text-heading transition-colors shrink-0"><X className="w-5 h-5" /></button>
+              </div>
+
+              <div className="p-6 space-y-5 overflow-y-auto custom-scrollbar">
+                {selectedJob.description && (
+                  <div>
+                    <p className="eyebrow tabular text-text-body/55 mb-2">DESCRIPTION</p>
+                    <p className="text-[14px] text-text-body leading-relaxed whitespace-pre-wrap">{selectedJob.description}</p>
+                  </div>
+                )}
+
+                {/* Minimums */}
+                {(selectedJob.minEducation || selectedJob.minYearsExperience != null) && (
+                  <div className="flex flex-wrap gap-4">
+                    {selectedJob.minEducation && (
+                      <div><p className="eyebrow tabular text-text-body/55 mb-1">MIN. EDUCATION</p><p className="text-[14px] text-text-heading font-medium">{selectedJob.minEducation}</p></div>
+                    )}
+                    {selectedJob.minYearsExperience != null && (
+                      <div><p className="eyebrow tabular text-text-body/55 mb-1">MIN. EXPERIENCE</p><p className="text-[14px] text-text-heading font-medium">{selectedJob.minYearsExperience}+ years</p></div>
+                    )}
+                  </div>
+                )}
+
+                {/* Taxonomy requirement groups */}
+                {(() => {
+                  const nameOf = (id: string) => taxonomy.find((n: any) => n.id === id)?.name || id;
+                  const mustHave = new Set<string>(selectedJob.taxMustHaveIds || []);
+                  const groups: { label: string; ids: string[] }[] = [
+                    { label: "Industries", ids: selectedJob.taxIndustryIds || [] },
+                    { label: "Standards & codes", ids: selectedJob.taxStandardIds || [] },
+                    { label: "Certifications", ids: selectedJob.taxCertificationIds || [] },
+                    { label: "Competencies", ids: selectedJob.taxCompetencyIds || [] },
+                    { label: "Equipment", ids: selectedJob.taxEquipmentIds || [] },
+                  ].filter((g) => g.ids.length > 0);
+                  if (groups.length === 0 && !selectedJob.taxRole && !selectedJob.taxDomainId) return null;
+                  return (
+                    <div className="space-y-4">
+                      {(selectedJob.taxRole || selectedJob.taxDomainId) && (
+                        <div className="flex flex-wrap gap-4">
+                          {selectedJob.taxDomainId && <div><p className="eyebrow tabular text-text-body/55 mb-1">DOMAIN</p><p className="text-[14px] text-text-heading font-medium">{nameOf(selectedJob.taxDomainId)}</p></div>}
+                          {selectedJob.taxRole && <div><p className="eyebrow tabular text-text-body/55 mb-1">ROLE</p><p className="text-[14px] text-text-heading font-medium">{nameOf(selectedJob.taxRole)}</p></div>}
+                        </div>
+                      )}
+                      {groups.map((g) => (
+                        <div key={g.label}>
+                          <p className="eyebrow tabular text-text-body/55 mb-2">{g.label.toUpperCase()}</p>
+                          <div className="flex flex-wrap gap-1.5">
+                            {g.ids.map((id) => (
+                              <span key={id} className={`inline-flex items-center gap-1 px-2.5 py-1 rounded-lg text-[12px] font-medium ${
+                                mustHave.has(id) ? "bg-rust/10 text-rust border border-rust/30" : "bg-bg-main text-text-body border border-border-main"
+                              }`}>
+                                {mustHave.has(id) && <span className="text-[10px]">★</span>}{nameOf(id)}
+                              </span>
+                            ))}
+                          </div>
+                        </div>
+                      ))}
+                      {mustHave.size > 0 && <p className="text-[11px] text-text-body/45">★ = must-have (non-negotiable requirement)</p>}
+                    </div>
+                  );
+                })()}
+              </div>
+
+              <div className="p-4 bg-bg-main border-t border-border-main flex gap-3">
+                <button onClick={() => setShowDetailModal(false)} className="flex-1 py-2.5 border border-border-main rounded-xl text-sm text-text-body hover:text-text-heading transition-all">Close</button>
+                <button
+                  onClick={() => { setShowDetailModal(false); setShowApplyModal(true); }}
+                  disabled={appliedJobs.includes(selectedJob.id)}
+                  className="flex-1 py-2.5 bg-text-heading text-bg-card rounded-xl text-sm font-medium hover:brightness-110 disabled:opacity-50 transition-all inline-flex items-center justify-center gap-2"
+                >
+                  {appliedJobs.includes(selectedJob.id) ? "Already applied" : <>Apply<ChevronRight className="w-4 h-4" /></>}
                 </button>
               </div>
             </motion.div>
