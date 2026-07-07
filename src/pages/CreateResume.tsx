@@ -2,8 +2,8 @@
  * CreateResume — the career blueprint editor.
  *
  * Restyled. All data wiring preserved verbatim:
- *   - useCollection resumes (lookup by userUid) + categories
- *   - handleSave creates or updates Firestore doc with mandatory categoryId/Name
+ *   - useCollection resumes (lookup by userUid) + taxonomy
+ *   - handleSave creates or updates Firestore doc with mandatory taxonomy fields
  *   - All array helpers (handleAddField / handleRemoveField / handleUpdateListItem)
  *   - Age auto-calc from dateOfBirth
  *   - Custom "other" sector entry path
@@ -52,12 +52,23 @@ import { motion } from "framer-motion";
 import { differenceInYears } from "date-fns";
 import { serverTimestamp, where } from "firebase/firestore";
 import { LOCATION_SUGGESTIONS } from "../lib/matchScore";
+import { TaxonomyMultiSelect } from "../components/TaxonomyMultiSelect";
+const SENIORITY = ["Trainee","Junior","Mid-level","Senior","Lead","Manager","Senior Manager","Head / Director"];
 
 export default function CreateResume() {
   const { user, profile } = useAuth();
   const navigate = useNavigate();
   const { data: existingResumes, loading: loadingCheck } = useCollection<any>("resumes", [where("userUid", "==", user?.uid || "")]);
-  const { data: categories } = useCollection<any>("company_categories");
+  const { data: taxonomy } = useCollection<any>("taxonomy");
+  // Build grouped option lists per type, resolving parent names for group labels.
+  const taxByType = (t: string) => {
+    const nameById: Record<string, string> = {};
+    taxonomy.forEach((n: any) => { nameById[n.id] = n.name; });
+    return taxonomy
+      .filter((n: any) => n.type === t)
+      .map((n: any) => ({ id: n.id, name: n.name, parentName: n.parentId ? nameById[n.parentId] : undefined, aliases: n.aliases }))
+      .sort((a: any, b: any) => a.name.localeCompare(b.name));
+  };
 
   const [formData, setFormData] = useState<any>({
     fullName: profile?.displayName || user?.displayName || "",
@@ -81,12 +92,15 @@ export default function CreateResume() {
     countriesTravelled: [],
     hobbies: [],
     isLocked: false,
-    categoryId: "",
-    categoryName: "",
-    subCategoryId: "",
-    subCategoryName: "",
-    customCategory: "",
-    customSubCategory: "",
+    taxRole: "",
+    taxFamilyId: "",
+    taxDomainId: "",
+    taxSeniority: "",
+    taxIndustryIds: [] as string[],
+    taxStandardIds: [] as string[],
+    taxCompetencyIds: [] as string[],
+    taxCertificationIds: [] as string[],
+    taxEquipmentIds: [] as string[],
   });
 
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -105,6 +119,15 @@ export default function CreateResume() {
         countriesTravelled: resume.countriesTravelled || [],
         currentCity: resume.currentCity || "",
         preferredLocations: resume.preferredLocations || [],
+        taxRole: resume.taxRole || "",
+        taxFamilyId: resume.taxFamilyId || "",
+        taxDomainId: resume.taxDomainId || "",
+        taxSeniority: resume.taxSeniority || "",
+        taxIndustryIds: resume.taxIndustryIds || [],
+        taxStandardIds: resume.taxStandardIds || [],
+        taxCompetencyIds: resume.taxCompetencyIds || [],
+        taxCertificationIds: resume.taxCertificationIds || [],
+        taxEquipmentIds: resume.taxEquipmentIds || [],
         hobbies: resume.hobbies || [],
       });
     }
@@ -147,14 +170,14 @@ export default function CreateResume() {
   };
 
   const handleSave = async () => {
-    if (!formData.categoryId || !formData.categoryName) {
-      alert("Please select or type an industry category — this is required so employers can find you.");
+    if (!formData.taxIndustryIds?.length || !formData.taxDomainId || !formData.taxRole) {
+      alert("Please select at least one Industry, a Functional domain, and a Role — these are required so employers can match you.");
       return;
     }
 
     setIsSubmitting(true);
     try {
-      const { customCategory, customSubCategory, ...dataForStorage } = formData;
+      const dataForStorage = formData;
       const payload = {
         ...dataForStorage,
         userUid: user?.uid,
@@ -279,77 +302,105 @@ export default function CreateResume() {
             </p>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div>
+                <TaxonomyMultiSelect
+                  label="Industries worked in *"
+                  options={taxByType("industry")}
+                  selectedIds={formData.taxIndustryIds}
+                  onChange={(ids) => setFormData({ ...formData, taxIndustryIds: ids })}
+                  placeholder="e.g. LNG, Crude Oil, Petrochemicals…"
+                  hint="Commodities and markets you've worked in. Pick all that apply."
+                />
+              </div>
+
               <label className="block">
-                <span className="eyebrow tabular text-text-body/60 mb-2 block">Primary domain</span>
+                <span className="eyebrow tabular text-text-body/60 mb-2 block">Functional domain *</span>
                 <select
-                  value={formData.categoryId}
+                  value={formData.taxDomainId}
+                  onChange={(e) => setFormData({ ...formData, taxDomainId: e.target.value })}
+                  className="w-full p-3.5 bg-bg-main border border-border-main rounded-xl text-[14px] text-text-heading outline-none focus:border-text-heading transition-all"
+                >
+                  <option value="">Select your department…</option>
+                  {taxByType("domain").filter((d: any) => !d.parentName).map((d: any) => (
+                    <option key={d.id} value={d.id}>{d.name}</option>
+                  ))}
+                </select>
+              </label>
+
+              <label className="block">
+                <span className="eyebrow tabular text-text-body/60 mb-2 block">Role *</span>
+                <select
+                  value={formData.taxRole}
                   onChange={(e) => {
-                    const cat = (categories || []).find((c: any) => c.id === e.target.value);
-                    setFormData({
-                      ...formData,
-                      categoryId: e.target.value,
-                      categoryName: cat?.name || (e.target.value === "other" ? (formData.customCategory || "Other") : ""),
-                      subCategoryId: "",
-                      subCategoryName: "",
-                    });
+                    const node = taxonomy.find((n: any) => n.id === e.target.value);
+                    setFormData({ ...formData, taxRole: e.target.value, taxFamilyId: node?.parentId || "" });
                   }}
                   className="w-full p-3.5 bg-bg-main border border-border-main rounded-xl text-[14px] text-text-heading outline-none focus:border-text-heading transition-all"
                 >
-                  <option value="">Select industry vertical…</option>
-                  {(categories || []).filter((c: any) => c.level === 1).map((cat: any) => (
-                    <option key={cat.id} value={cat.id}>{cat.name}</option>
+                  <option value="">Select your role…</option>
+                  {taxByType("role").map((r: any) => (
+                    <option key={r.id} value={r.id}>{r.name}{r.parentName ? ` · ${r.parentName}` : ""}</option>
                   ))}
-                  <option value="other">Other (manual entry)</option>
                 </select>
-
-                {formData.categoryId === "other" && (
-                  <motion.input
-                    initial={{ opacity: 0, y: -6 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    placeholder="Type your domain…"
-                    value={formData.customCategory}
-                    onChange={(e) => setFormData({ ...formData, customCategory: e.target.value, categoryName: e.target.value })}
-                    className="w-full mt-2 p-3.5 bg-bg-main border border-accent/40 rounded-xl text-[14px] text-text-heading outline-none focus:border-accent transition-all"
-                  />
-                )}
               </label>
 
               <label className="block">
-                <span className="eyebrow tabular text-text-body/60 mb-2 block">Specialisation</span>
+                <span className="eyebrow tabular text-text-body/60 mb-2 block">Seniority</span>
                 <select
-                  value={formData.subCategoryId}
-                  disabled={!formData.categoryId}
-                  onChange={(e) => {
-                    const sub = (categories || []).find((c: any) => c.id === e.target.value);
-                    setFormData({
-                      ...formData,
-                      subCategoryId: e.target.value,
-                      subCategoryName: sub?.name || (e.target.value === "other" ? (formData.customSubCategory || "Other") : ""),
-                    });
-                  }}
-                  className="w-full p-3.5 bg-bg-main border border-border-main rounded-xl text-[14px] text-text-heading outline-none focus:border-text-heading disabled:opacity-50 transition-all"
+                  value={formData.taxSeniority}
+                  onChange={(e) => setFormData({ ...formData, taxSeniority: e.target.value })}
+                  className="w-full p-3.5 bg-bg-main border border-border-main rounded-xl text-[14px] text-text-heading outline-none focus:border-text-heading transition-all"
                 >
-                  <option value="">Select technical segment…</option>
-                  {(categories || [])
-                    .filter((c: any) => c.level === 2 && c.parentId === formData.categoryId)
-                    .map((sub: any) => (
-                      <option key={sub.id} value={sub.id}>{sub.name}</option>
-                    ))}
-                  {formData.categoryId && <option value="other">Other (manual entry)</option>}
+                  <option value="">Select level…</option>
+                  {SENIORITY.map((s) => <option key={s} value={s}>{s}</option>)}
                 </select>
-
-                {formData.subCategoryId === "other" && (
-                  <motion.input
-                    initial={{ opacity: 0, y: -6 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    placeholder="Type your specific sub-segment…"
-                    value={formData.customSubCategory}
-                    onChange={(e) => setFormData({ ...formData, customSubCategory: e.target.value, subCategoryName: e.target.value })}
-                    className="w-full mt-2 p-3.5 bg-bg-main border border-accent/40 rounded-xl text-[14px] text-text-heading outline-none focus:border-accent transition-all"
-                  />
-                )}
               </label>
             </div>
+          </div>
+        </section>
+
+        {/* Technical Profile — optional multi-selects that improve match score */}
+        <section className="bg-bg-card border border-border-main rounded-2xl p-6 md:p-7 mb-8">
+          <div className="mb-6">
+            <p className="eyebrow tabular text-accent mb-2">TECHNICAL PROFILE</p>
+            <h3 className="font-display text-2xl text-text-heading mb-2 leading-tight">Standards, skills & equipment</h3>
+            <p className="text-[13px] text-text-body max-w-xl leading-relaxed">
+              Optional, but every item you add sharpens your job matches. Employers search on these directly.
+            </p>
+          </div>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+            <TaxonomyMultiSelect
+              label="Standards & codes"
+              options={taxByType("standard")}
+              selectedIds={formData.taxStandardIds}
+              onChange={(ids) => setFormData({ ...formData, taxStandardIds: ids })}
+              placeholder="e.g. API 653, NFPA 30, OISD…"
+              hint="Codes and standards you know and work to."
+            />
+            <TaxonomyMultiSelect
+              label="Competencies"
+              options={taxByType("competency")}
+              selectedIds={formData.taxCompetencyIds}
+              onChange={(ids) => setFormData({ ...formData, taxCompetencyIds: ids })}
+              placeholder="e.g. Tank Cleaning, HAZOP, SAP PM…"
+              hint="Activities and technical skills you perform."
+            />
+            <TaxonomyMultiSelect
+              label="Certifications held"
+              options={taxByType("certification")}
+              selectedIds={formData.taxCertificationIds}
+              onChange={(ids) => setFormData({ ...formData, taxCertificationIds: ids })}
+              placeholder="e.g. API 653, CSWIP 3.1, NEBOSH…"
+              hint="Credentials you currently hold."
+            />
+            <TaxonomyMultiSelect
+              label="Equipment experience"
+              options={taxByType("equipment")}
+              selectedIds={formData.taxEquipmentIds}
+              onChange={(ids) => setFormData({ ...formData, taxEquipmentIds: ids })}
+              placeholder="e.g. Floating Roof, Loading Arms…"
+              hint="Hardware and systems you've worked on."
+            />
           </div>
         </section>
 

@@ -41,26 +41,26 @@ service cloud.firestore {
              data.uid is string && data.uid.size() <= 128 &&
              data.email is string && data.email.size() <= 256 &&
              data.displayName is string && data.displayName.size() <= 128 &&
-             (!data.keys().contains('photoURL') || data.photoURL == null || (data.photoURL is string && data.photoURL.size() <= 2097152)) &&
-             (!data.keys().contains('bio') || data.bio == null || (data.bio is string && data.bio.size() <= 5000)) &&
-             (!data.keys().contains('industrySegment') || data.industrySegment == null || (data.industrySegment is string && data.industrySegment.size() <= 128)) &&
-             (!data.keys().contains('company') || data.company == null || (data.company is string && data.company.size() <= 256)) &&
-             (!data.keys().contains('jobTitle') || data.jobTitle == null || (data.jobTitle is string && data.jobTitle.size() <= 256)) &&
-             (!data.keys().contains('companyId') || data.companyId == null || (data.companyId is string && data.companyId.size() <= 128)) &&
-             (!data.keys().contains('isPro') || data.isPro is bool) &&
-             (!data.keys().contains('isPublic') || data.isPublic is bool) &&
-             (!data.keys().contains('aiUsage') || data.aiUsage is map) &&
-             (!data.keys().contains('skills') || data.skills is list) &&
-             (!data.keys().contains('badges') || data.badges is list) &&
-             (!data.keys().contains('profileLabels') || data.profileLabels is map) &&
-             (!data.keys().contains('socialLinks') || data.socialLinks is map) &&
-             (!data.keys().contains('savedJobs') || data.savedJobs is list) &&
-             (!data.keys().contains('isVerifiedByCompany') || data.isVerifiedByCompany is bool) &&
-             (!data.keys().contains('verifiedByCompanyId') || data.verifiedByCompanyId is string) &&
-             (!data.keys().contains('verifiedByCompanyName') || data.verifiedByCompanyName is string) &&
-             (!data.keys().contains('verifiedByUid') || data.verifiedByUid is string) &&
-             (!data.keys().contains('verifiedAt') || data.verifiedAt is timestamp || data.verifiedAt == null) &&
-             (!data.keys().contains('updatedAt') || data.updatedAt is timestamp || data.updatedAt == null) &&
+             (!('photoURL' in data.keys()) || data.photoURL == null || (data.photoURL is string && data.photoURL.size() <= 2097152)) &&
+             (!('bio' in data.keys()) || data.bio == null || (data.bio is string && data.bio.size() <= 5000)) &&
+             (!('industrySegment' in data.keys()) || data.industrySegment == null || (data.industrySegment is string && data.industrySegment.size() <= 128)) &&
+             (!('company' in data.keys()) || data.company == null || (data.company is string && data.company.size() <= 256)) &&
+             (!('jobTitle' in data.keys()) || data.jobTitle == null || (data.jobTitle is string && data.jobTitle.size() <= 256)) &&
+             (!('companyId' in data.keys()) || data.companyId == null || (data.companyId is string && data.companyId.size() <= 128)) &&
+             (!('isPro' in data.keys()) || data.isPro is bool) &&
+             (!('isPublic' in data.keys()) || data.isPublic is bool) &&
+             (!('aiUsage' in data.keys()) || data.aiUsage is map) &&
+             (!('skills' in data.keys()) || data.skills is list) &&
+             (!('badges' in data.keys()) || data.badges is list) &&
+             (!('profileLabels' in data.keys()) || data.profileLabels is map) &&
+             (!('socialLinks' in data.keys()) || data.socialLinks is map) &&
+             (!('savedJobs' in data.keys()) || data.savedJobs is list) &&
+             (!('isVerifiedByCompany' in data.keys()) || data.isVerifiedByCompany is bool) &&
+             (!('verifiedByCompanyId' in data.keys()) || data.verifiedByCompanyId is string) &&
+             (!('verifiedByCompanyName' in data.keys()) || data.verifiedByCompanyName is string) &&
+             (!('verifiedByUid' in data.keys()) || data.verifiedByUid is string) &&
+             (!('verifiedAt' in data.keys()) || data.verifiedAt is timestamp || data.verifiedAt == null) &&
+             (!('updatedAt' in data.keys()) || data.updatedAt is timestamp || data.updatedAt == null) &&
              data.uid == request.auth.uid; // Identity Integrity
     }
 
@@ -81,15 +81,26 @@ service cloud.firestore {
     }
 
     function isValidResume(data) {
-      return data.keys().hasAll(['userUid', 'fullName', 'categoryId', 'categoryName']) &&
+      return data.keys().hasAll(['userUid', 'fullName']) &&
              data.userUid == request.auth.uid &&
              data.fullName is string && data.fullName.size() <= 256 &&
-             data.categoryId is string &&
-             data.categoryName is string &&
-             (!data.keys().contains('subCategoryId') || data.subCategoryId == null || data.subCategoryId is string) &&
-             (!data.keys().contains('subCategoryName') || data.subCategoryName == null || data.subCategoryName is string) &&
-             (!data.keys().contains('currentCity') || data.currentCity == null || (data.currentCity is string && data.currentCity.size() <= 128)) &&
-             (!data.keys().contains('preferredLocations') || data.preferredLocations == null || data.preferredLocations is list);
+             // Legacy category fields — optional now (taxonomy replaces them).
+             (!('categoryId' in data.keys()) || data.categoryId == null || data.categoryId is string) &&
+             (!('categoryName' in data.keys()) || data.categoryName == null || data.categoryName is string) &&
+             (!('subCategoryId' in data.keys()) || data.subCategoryId == null || data.subCategoryId is string) &&
+             (!('subCategoryName' in data.keys()) || data.subCategoryName == null || data.subCategoryName is string) &&
+             // Taxonomy fields (Phase 2a). IDs reference /taxonomy nodes.
+             (!('taxRole' in data.keys()) || data.taxRole == null || data.taxRole is string) &&
+             (!('taxFamilyId' in data.keys()) || data.taxFamilyId == null || data.taxFamilyId is string) &&
+             (!('taxDomainId' in data.keys()) || data.taxDomainId == null || data.taxDomainId is string) &&
+             (!('taxSeniority' in data.keys()) || data.taxSeniority == null || data.taxSeniority is string) &&
+             (!('taxIndustryIds' in data.keys()) || data.taxIndustryIds == null || data.taxIndustryIds is list) &&
+             (!('taxStandardIds' in data.keys()) || data.taxStandardIds == null || data.taxStandardIds is list) &&
+             (!('taxCompetencyIds' in data.keys()) || data.taxCompetencyIds == null || data.taxCompetencyIds is list) &&
+             (!('taxCertificationIds' in data.keys()) || data.taxCertificationIds == null || data.taxCertificationIds is list) &&
+             (!('taxEquipmentIds' in data.keys()) || data.taxEquipmentIds == null || data.taxEquipmentIds is list) &&
+             (!('currentCity' in data.keys()) || data.currentCity == null || (data.currentCity is string && data.currentCity.size() <= 128)) &&
+             (!('preferredLocations' in data.keys()) || data.preferredLocations == null || data.preferredLocations is list);
     }
 
     function isValidNews(data) {
@@ -97,10 +108,10 @@ service cloud.firestore {
              data.url is string && data.url.size() <= 2048 &&
              data.title is string && data.title.size() <= 512 &&
              data.createdAt == request.time &&
-             (!data.keys().contains('description') || data.description == null || (data.description is string && data.description.size() <= 2000)) &&
-             (!data.keys().contains('image') || data.image == null || (data.image is string && data.image.size() <= 2048)) &&
-             (!data.keys().contains('source') || data.source == null || (data.source is string && data.source.size() <= 128)) &&
-             (!data.keys().contains('authorUid') || data.authorUid == null || (data.authorUid is string && data.authorUid.size() <= 128));
+             (!('description' in data.keys()) || data.description == null || (data.description is string && data.description.size() <= 2000)) &&
+             (!('image' in data.keys()) || data.image == null || (data.image is string && data.image.size() <= 2048)) &&
+             (!('source' in data.keys()) || data.source == null || (data.source is string && data.source.size() <= 128)) &&
+             (!('authorUid' in data.keys()) || data.authorUid == null || (data.authorUid is string && data.authorUid.size() <= 128));
     }
 
     function isValidPost(data) {
@@ -108,45 +119,45 @@ service cloud.firestore {
              data.content is string && data.content.size() <= 10000 &&
              data.authorUid == request.auth.uid &&
              (data.createdAt == request.time || data.createdAt is string) &&
-             (!data.keys().contains('authorName') || data.authorName == null || (data.authorName is string && data.authorName.size() <= 512)) &&
-             (!data.keys().contains('authorPhoto') || data.authorPhoto == null || (data.authorPhoto is string && data.authorPhoto.size() <= 2097152)) &&
-             (!data.keys().contains('authorJobTitle') || data.authorJobTitle == null || (data.authorJobTitle is string && data.authorJobTitle.size() <= 512)) &&
-             (!data.keys().contains('authorEmail') || data.authorEmail == null || (data.authorEmail is string && data.authorEmail.size() <= 512)) &&
-             (!data.keys().contains('image') || data.image == null || (data.image is string && data.image.size() <= 10485760)) &&
-             (!data.keys().contains('likesCount') || data.likesCount is number) &&
-             (!data.keys().contains('commentsCount') || data.commentsCount is number) &&
-             (!data.keys().contains('isRepost') || data.isRepost is bool) &&
-             (!data.keys().contains('originalAuthor') || data.originalAuthor == null || (data.originalAuthor is string && data.originalAuthor.size() <= 512)) &&
-             (!data.keys().contains('companyId') || data.companyId == null || (data.companyId is string && data.companyId.size() <= 128)) &&
-             (!data.keys().contains('companyName') || data.companyName == null || (data.companyName is string && data.companyName.size() <= 512)) &&
-             (!data.keys().contains('companyLogo') || data.companyLogo == null || (data.companyLogo is string && data.companyLogo.size() <= 2097152)) &&
-             (!data.keys().contains('video') || data.video == null || (data.video is map)) &&
-             (!data.keys().contains('reactions') || data.reactions is map) &&
-             (!data.keys().contains('updatedAt') || data.updatedAt == request.time);
+             (!('authorName' in data.keys()) || data.authorName == null || (data.authorName is string && data.authorName.size() <= 512)) &&
+             (!('authorPhoto' in data.keys()) || data.authorPhoto == null || (data.authorPhoto is string && data.authorPhoto.size() <= 2097152)) &&
+             (!('authorJobTitle' in data.keys()) || data.authorJobTitle == null || (data.authorJobTitle is string && data.authorJobTitle.size() <= 512)) &&
+             (!('authorEmail' in data.keys()) || data.authorEmail == null || (data.authorEmail is string && data.authorEmail.size() <= 512)) &&
+             (!('image' in data.keys()) || data.image == null || (data.image is string && data.image.size() <= 10485760)) &&
+             (!('likesCount' in data.keys()) || data.likesCount is number) &&
+             (!('commentsCount' in data.keys()) || data.commentsCount is number) &&
+             (!('isRepost' in data.keys()) || data.isRepost is bool) &&
+             (!('originalAuthor' in data.keys()) || data.originalAuthor == null || (data.originalAuthor is string && data.originalAuthor.size() <= 512)) &&
+             (!('companyId' in data.keys()) || data.companyId == null || (data.companyId is string && data.companyId.size() <= 128)) &&
+             (!('companyName' in data.keys()) || data.companyName == null || (data.companyName is string && data.companyName.size() <= 512)) &&
+             (!('companyLogo' in data.keys()) || data.companyLogo == null || (data.companyLogo is string && data.companyLogo.size() <= 2097152)) &&
+             (!('video' in data.keys()) || data.video == null || (data.video is map)) &&
+             (!('reactions' in data.keys()) || data.reactions is map) &&
+             (!('updatedAt' in data.keys()) || data.updatedAt == request.time);
     }
 
     function isValidEvent(data) {
       return data.keys().hasAll(['title', 'date', 'organizerUid']) &&
              data.title is string && data.title.size() <= 512 &&
              data.organizerUid == request.auth.uid &&
-             (!data.keys().contains('description') || data.description == null || data.description is string) &&
-             (!data.keys().contains('location') || data.location == null || data.location is string) &&
-             (!data.keys().contains('type') || data.type == null || data.type is string) &&
-             (!data.keys().contains('time') || data.time == null || data.time is string) &&
-             (!data.keys().contains('endDate') || data.endDate == null || data.endDate is string) &&
-             (!data.keys().contains('endTime') || data.endTime == null || data.endTime is string) &&
-             (!data.keys().contains('categoryId') || data.categoryId == null || data.categoryId is string) &&
-             (!data.keys().contains('categoryName') || data.categoryName == null || data.categoryName is string) &&
-             (!data.keys().contains('categoryIds') || data.categoryIds == null || data.categoryIds is list) &&
-             (!data.keys().contains('image') || data.image == null || data.image is string) &&
-             (!data.keys().contains('imageUrl') || data.imageUrl == null || data.imageUrl is string) &&
-             (!data.keys().contains('ctaText') || data.ctaText == null || data.ctaText is string) &&
-             (!data.keys().contains('ctaUrl') || data.ctaUrl == null || data.ctaUrl is string) &&
-             (!data.keys().contains('companyId') || data.companyId == null || data.companyId is string) &&
-             (!data.keys().contains('companyName') || data.companyName == null || data.companyName is string) &&
-             (!data.keys().contains('companyLogo') || data.companyLogo == null || data.companyLogo is string) &&
-             (!data.keys().contains('isFeatured') || data.isFeatured == null || data.isFeatured is bool) &&
-             (!data.keys().contains('createdAt') || data.createdAt is timestamp);
+             (!('description' in data.keys()) || data.description == null || data.description is string) &&
+             (!('location' in data.keys()) || data.location == null || data.location is string) &&
+             (!('type' in data.keys()) || data.type == null || data.type is string) &&
+             (!('time' in data.keys()) || data.time == null || data.time is string) &&
+             (!('endDate' in data.keys()) || data.endDate == null || data.endDate is string) &&
+             (!('endTime' in data.keys()) || data.endTime == null || data.endTime is string) &&
+             (!('categoryId' in data.keys()) || data.categoryId == null || data.categoryId is string) &&
+             (!('categoryName' in data.keys()) || data.categoryName == null || data.categoryName is string) &&
+             (!('categoryIds' in data.keys()) || data.categoryIds == null || data.categoryIds is list) &&
+             (!('image' in data.keys()) || data.image == null || data.image is string) &&
+             (!('imageUrl' in data.keys()) || data.imageUrl == null || data.imageUrl is string) &&
+             (!('ctaText' in data.keys()) || data.ctaText == null || data.ctaText is string) &&
+             (!('ctaUrl' in data.keys()) || data.ctaUrl == null || data.ctaUrl is string) &&
+             (!('companyId' in data.keys()) || data.companyId == null || data.companyId is string) &&
+             (!('companyName' in data.keys()) || data.companyName == null || data.companyName is string) &&
+             (!('companyLogo' in data.keys()) || data.companyLogo == null || data.companyLogo is string) &&
+             (!('isFeatured' in data.keys()) || data.isFeatured == null || data.isFeatured is bool) &&
+             (!('createdAt' in data.keys()) || data.createdAt is timestamp);
     }
 
     function isValidComment(data) {
@@ -154,10 +165,10 @@ service cloud.firestore {
              data.content is string && data.content.size() <= 5000 &&
              data.authorUid == request.auth.uid &&
              (data.createdAt == request.time || data.createdAt is string) &&
-             (!data.keys().contains('authorJobTitle') || data.authorJobTitle == null || (data.authorJobTitle is string && data.authorJobTitle.size() <= 512)) &&
-             (!data.keys().contains('authorName') || data.authorName == null || (data.authorName is string && data.authorName.size() <= 512)) &&
-             (!data.keys().contains('authorPhoto') || data.authorPhoto == null || (data.authorPhoto is string && data.authorPhoto.size() <= 2097152)) &&
-             (!data.keys().contains('quote') || data.quote == null || (
+             (!('authorJobTitle' in data.keys()) || data.authorJobTitle == null || (data.authorJobTitle is string && data.authorJobTitle.size() <= 512)) &&
+             (!('authorName' in data.keys()) || data.authorName == null || (data.authorName is string && data.authorName.size() <= 512)) &&
+             (!('authorPhoto' in data.keys()) || data.authorPhoto == null || (data.authorPhoto is string && data.authorPhoto.size() <= 2097152)) &&
+             (!('quote' in data.keys()) || data.quote == null || (
                data.quote is map && 
                data.quote.keys().hasAll(['authorName', 'content']) &&
                data.quote.authorName is string &&
@@ -190,11 +201,11 @@ service cloud.firestore {
       return data.keys().hasAll(['name', 'categoryId']) &&
              data.name is string && data.name.size() <= 256 &&
              data.categoryId is string &&
-             (!data.keys().contains('aboutUs') || data.aboutUs is string) &&
-             (!data.keys().contains('address') || data.address is string) &&
-             (!data.keys().contains('heroImage') || data.heroImage is string) &&
-             (!data.keys().contains('isFeatured') || data.isFeatured is bool) &&
-             (!data.keys().contains('products') || data.products is list);
+             (!('aboutUs' in data.keys()) || data.aboutUs is string) &&
+             (!('address' in data.keys()) || data.address is string) &&
+             (!('heroImage' in data.keys()) || data.heroImage is string) &&
+             (!('isFeatured' in data.keys()) || data.isFeatured is bool) &&
+             (!('products' in data.keys()) || data.products is list);
     }
 
     function isValidCompanyCategory(data) {
@@ -217,14 +228,14 @@ service cloud.firestore {
              data.companyName is string && data.companyName.size() <= 256 &&
              data.creatorUid == request.auth.uid &&
              data.creatorEmail is string &&
-             (!data.keys().contains('companyId') || data.companyId == null || data.companyId is string) &&
-             (!data.keys().contains('companyLogo') || data.companyLogo == null || data.companyLogo is string) &&
-             (!data.keys().contains('location') || data.location == null || data.location is string) &&
-             (!data.keys().contains('salary') || data.salary == null || data.salary is string) &&
-             (!data.keys().contains('type') || data.type in ["Full-time", "Part-time", "Contract", "Freelance", "Internship"]) &&
-             (!data.keys().contains('status') || data.status in ["open", "closed"]) &&
-             (!data.keys().contains('categoryIds') || data.categoryIds == null || data.categoryIds is list) &&
-             (!data.keys().contains('createdAt') || data.createdAt is timestamp);
+             (!('companyId' in data.keys()) || data.companyId == null || data.companyId is string) &&
+             (!('companyLogo' in data.keys()) || data.companyLogo == null || data.companyLogo is string) &&
+             (!('location' in data.keys()) || data.location == null || data.location is string) &&
+             (!('salary' in data.keys()) || data.salary == null || data.salary is string) &&
+             (!('type' in data.keys()) || data.type in ["Full-time", "Part-time", "Contract", "Freelance", "Internship"]) &&
+             (!('status' in data.keys()) || data.status in ["open", "closed"]) &&
+             (!('categoryIds' in data.keys()) || data.categoryIds == null || data.categoryIds is list) &&
+             (!('createdAt' in data.keys()) || data.createdAt is timestamp);
     }
 
     // Matches are admin-created suggestions linking a resume to a job.
@@ -243,9 +254,9 @@ service cloud.firestore {
              data.status in ['suggested', 'accepted', 'rejected', 'hired', 'passed'] &&
              data.adminUid is string &&
              data.createdAt is timestamp &&
-             (!data.keys().contains('adminNote') || data.adminNote == null || data.adminNote is string) &&
-             (!data.keys().contains('score') || data.score == null || data.score is number) &&
-             (!data.keys().contains('updatedAt') || data.updatedAt is timestamp);
+             (!('adminNote' in data.keys()) || data.adminNote == null || data.adminNote is string) &&
+             (!('score' in data.keys()) || data.score == null || data.score is number) &&
+             (!('updatedAt' in data.keys()) || data.updatedAt is timestamp);
     }
 
     // Talent Bank taxonomy nodes (docs/TALENT_BANK_PHASE0.md).
@@ -257,10 +268,10 @@ service cloud.firestore {
              data.name is string && data.name.size() > 0 && data.name.size() <= 128 &&
              data.level is number && data.level >= 1 && data.level <= 3 &&
              data.order is number && data.order >= 0 &&
-             (!data.keys().contains('id') || data.id == null || data.id is string) &&
-             (!data.keys().contains('parentId') || data.parentId == null || data.parentId is string) &&
-             (!data.keys().contains('aliases') || data.aliases == null || data.aliases is list) &&
-             (!data.keys().contains('note') || data.note == null || data.note is string);
+             (!('id' in data.keys()) || data.id == null || data.id is string) &&
+             (!('parentId' in data.keys()) || data.parentId == null || data.parentId is string) &&
+             (!('aliases' in data.keys()) || data.aliases == null || data.aliases is list) &&
+             (!('note' in data.keys()) || data.note == null || data.note is string);
     }
 
     function isValidConnection(data) {
@@ -284,14 +295,14 @@ service cloud.firestore {
              data.name is string && data.name.size() <= 128 &&
              data.creatorUid == request.auth.uid &&
              data.createdAt is timestamp &&
-             (!data.keys().contains('description') || data.description is string) &&
-             (!data.keys().contains('iconUrl') || data.iconUrl is string) &&
-             (!data.keys().contains('coverUrl') || data.coverUrl is string) &&
-             (!data.keys().contains('admins') || data.admins is list) &&
-             (!data.keys().contains('creatorName') || data.creatorName is string) &&
-             (!data.keys().contains('memberCount') || data.memberCount is number) &&
-             (!data.keys().contains('status') || data.status in ['pending', 'approved', 'rejected']) &&
-             (!data.keys().contains('isPrivate') || data.isPrivate is bool);
+             (!('description' in data.keys()) || data.description is string) &&
+             (!('iconUrl' in data.keys()) || data.iconUrl is string) &&
+             (!('coverUrl' in data.keys()) || data.coverUrl is string) &&
+             (!('admins' in data.keys()) || data.admins is list) &&
+             (!('creatorName' in data.keys()) || data.creatorName is string) &&
+             (!('memberCount' in data.keys()) || data.memberCount is number) &&
+             (!('status' in data.keys()) || data.status in ['pending', 'approved', 'rejected']) &&
+             (!('isPrivate' in data.keys()) || data.isPrivate is bool);
     }
 
     function isValidGroupPost(data) {
@@ -300,16 +311,16 @@ service cloud.firestore {
              data.content is string && data.content.size() <= 10000 &&
              data.authorUid == request.auth.uid &&
              (data.createdAt == request.time || data.createdAt is string) &&
-             (!data.keys().contains('authorName') || data.authorName == null || (data.authorName is string && data.authorName.size() <= 512)) &&
-             (!data.keys().contains('authorPhoto') || data.authorPhoto == null || (data.authorPhoto is string && data.authorPhoto.size() <= 2097152)) &&
-             (!data.keys().contains('authorJobTitle') || data.authorJobTitle == null || (data.authorJobTitle is string && data.authorJobTitle.size() <= 512)) &&
-             (!data.keys().contains('likesCount') || data.likesCount is number) &&
-             (!data.keys().contains('commentsCount') || data.commentsCount is number) &&
-             (!data.keys().contains('companyId') || data.companyId == null || (data.companyId is string && data.companyId.size() <= 128)) &&
-             (!data.keys().contains('companyName') || data.companyName == null || (data.companyName is string && data.companyName.size() <= 512)) &&
-             (!data.keys().contains('companyLogo') || data.companyLogo == null || (data.companyLogo is string && data.companyLogo.size() <= 2097152)) &&
-             (!data.keys().contains('video') || data.video is map) &&
-             (!data.keys().contains('image') || data.image is string);
+             (!('authorName' in data.keys()) || data.authorName == null || (data.authorName is string && data.authorName.size() <= 512)) &&
+             (!('authorPhoto' in data.keys()) || data.authorPhoto == null || (data.authorPhoto is string && data.authorPhoto.size() <= 2097152)) &&
+             (!('authorJobTitle' in data.keys()) || data.authorJobTitle == null || (data.authorJobTitle is string && data.authorJobTitle.size() <= 512)) &&
+             (!('likesCount' in data.keys()) || data.likesCount is number) &&
+             (!('commentsCount' in data.keys()) || data.commentsCount is number) &&
+             (!('companyId' in data.keys()) || data.companyId == null || (data.companyId is string && data.companyId.size() <= 128)) &&
+             (!('companyName' in data.keys()) || data.companyName == null || (data.companyName is string && data.companyName.size() <= 512)) &&
+             (!('companyLogo' in data.keys()) || data.companyLogo == null || (data.companyLogo is string && data.companyLogo.size() <= 2097152)) &&
+             (!('video' in data.keys()) || data.video is map) &&
+             (!('image' in data.keys()) || data.image is string);
     }
 
     function isValidGroupMember(data) {
@@ -318,11 +329,11 @@ service cloud.firestore {
              data.userUid is string &&
              data.role in ['member', 'admin', 'creator', 'pending'] &&
              data.joinedAt is timestamp &&
-             (!data.keys().contains('status') || data.status in ['pending', 'approved', 'rejected']) &&
-             (!data.keys().contains('userName') || data.userName == null || data.userName is string) &&
-             (!data.keys().contains('userPhoto') || data.userPhoto == null || data.userPhoto is string) &&
-             (!data.keys().contains('userJobTitle') || data.userJobTitle == null || data.userJobTitle is string) &&
-             (!data.keys().contains('userCompany') || data.userCompany == null || data.userCompany is string);
+             (!('status' in data.keys()) || data.status in ['pending', 'approved', 'rejected']) &&
+             (!('userName' in data.keys()) || data.userName == null || data.userName is string) &&
+             (!('userPhoto' in data.keys()) || data.userPhoto == null || data.userPhoto is string) &&
+             (!('userJobTitle' in data.keys()) || data.userJobTitle == null || data.userJobTitle is string) &&
+             (!('userCompany' in data.keys()) || data.userCompany == null || data.userCompany is string);
     }
 
     function isValidForumTopic(data) {
@@ -331,8 +342,8 @@ service cloud.firestore {
              data.authorUid == request.auth.uid &&
              data.createdAt == request.time &&
              data.categoryIds is list &&
-             (!data.keys().contains('authorName') || data.authorName is string) &&
-             (!data.keys().contains('replyCount') || data.replyCount is number);
+             (!('authorName' in data.keys()) || data.authorName is string) &&
+             (!('replyCount' in data.keys()) || data.replyCount is number);
     }
 
     function isValidForumPost(data) {
@@ -341,19 +352,19 @@ service cloud.firestore {
              data.content is string && data.content.size() <= 10000 &&
              data.authorUid == request.auth.uid &&
              (data.createdAt == request.time || data.createdAt is string) &&
-             (!data.keys().contains('authorName') || data.authorName == null || (data.authorName is string && data.authorName.size() <= 512)) &&
-             (!data.keys().contains('authorPhoto') || data.authorPhoto == null || (data.authorPhoto is string && data.authorPhoto.size() <= 2097152));
+             (!('authorName' in data.keys()) || data.authorName == null || (data.authorName is string && data.authorName.size() <= 512)) &&
+             (!('authorPhoto' in data.keys()) || data.authorPhoto == null || (data.authorPhoto is string && data.authorPhoto.size() <= 2097152));
     }
 
     function isValidEventAttendee(data) {
       return data.keys().hasAll(['eventId', 'userUid']) &&
              data.eventId is string &&
              data.userUid == request.auth.uid &&
-             (!data.keys().contains('userName') || data.userName is string) &&
-             (!data.keys().contains('userPhoto') || data.userPhoto is string) &&
-             (!data.keys().contains('companyName') || data.companyName is string) &&
-             (!data.keys().contains('status') || data.status in ['confirmed', 'interested']) &&
-             (!data.keys().contains('timestamp') || data.timestamp == request.time);
+             (!('userName' in data.keys()) || data.userName is string) &&
+             (!('userPhoto' in data.keys()) || data.userPhoto is string) &&
+             (!('companyName' in data.keys()) || data.companyName is string) &&
+             (!('status' in data.keys()) || data.status in ['confirmed', 'interested']) &&
+             (!('timestamp' in data.keys()) || data.timestamp == request.time);
     }
 
 
