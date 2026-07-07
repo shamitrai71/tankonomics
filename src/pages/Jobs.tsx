@@ -11,6 +11,8 @@
 import { useState, useEffect } from "react";
 import { useCollection, createDocument, updateDocument } from "../hooks/useFirestore";
 import { orderBy, serverTimestamp, where } from "firebase/firestore";
+import { TaxonomyMultiSelect } from "../components/TaxonomyMultiSelect";
+const JOB_SENIORITY = ["Trainee","Junior","Mid-level","Senior","Lead","Manager","Senior Manager","Head / Director"];
 import {
   Briefcase,
   MapPin,
@@ -35,7 +37,6 @@ import {
 import { motion, AnimatePresence } from "framer-motion";
 import { useAuth } from "../App";
 import { formatDistanceToNow } from "date-fns";
-import { CategorySelector } from "../components/CategorySelector";
 
 export default function Jobs() {
   const { user, profile, isAdmin, isCompanyOwner, ownedCompanies } = useAuth();
@@ -58,6 +59,15 @@ export default function Jobs() {
 
   const { data: jobs, loading: loadingJobs } = useCollection<any>("jobs", [orderBy("createdAt", "desc")]);
   const { data: categories } = useCollection<any>("company_categories", [orderBy("level", "asc"), orderBy("order", "asc")]);
+  const { data: taxonomy } = useCollection<any>("taxonomy");
+  const taxByType = (t: string) => {
+    const nameById: Record<string, string> = {};
+    taxonomy.forEach((n: any) => { nameById[n.id] = n.name; });
+    return taxonomy
+      .filter((n: any) => n.type === t)
+      .map((n: any) => ({ id: n.id, name: n.name, parentName: n.parentId ? nameById[n.parentId] : undefined, aliases: n.aliases }))
+      .sort((a: any, b: any) => a.name.localeCompare(b.name));
+  };
   // Matches where the current user is the suggested candidate.
   const { data: myMatches } = useCollection<any>(
     "job_matches",
@@ -75,6 +85,15 @@ export default function Jobs() {
     title: "",
     description: "",
     categoryIds: [] as string[],
+    taxRole: "",
+    taxDomainId: "",
+    taxSeniority: "",
+    taxIndustryIds: [] as string[],
+    taxStandardIds: [] as string[],
+    taxCompetencyIds: [] as string[],
+    taxCertificationIds: [] as string[],
+    taxEquipmentIds: [] as string[],
+    taxMustHaveIds: [] as string[],
     companyId: "",
     companyName: "",
     companyLogo: "",
@@ -123,6 +142,15 @@ export default function Jobs() {
         title: "",
         description: "",
         categoryIds: [],
+        taxRole: "",
+        taxDomainId: "",
+        taxSeniority: "",
+        taxIndustryIds: [],
+        taxStandardIds: [],
+        taxCompetencyIds: [],
+        taxCertificationIds: [],
+        taxEquipmentIds: [],
+        taxMustHaveIds: [],
         companyId: "",
         companyName: "",
         companyLogo: "",
@@ -199,6 +227,7 @@ export default function Jobs() {
     const matchesType = typeFilter === "all" || job.type === typeFilter;
     const matchesCategory =
       selectedCategories.length === 0 ||
+      (job.taxDomainId && selectedCategories.includes(job.taxDomainId)) ||
       (job.categoryIds && job.categoryIds.some((id: string) => selectedCategories.includes(id)));
     return matchesSearch && matchesType && matchesCategory;
   });
@@ -208,7 +237,7 @@ export default function Jobs() {
   };
 
   const jobTypes = ["Full-time", "Part-time", "Contract", "Freelance", "Internship"];
-  const mainCategories = categories.filter((c: any) => c.level === 1);
+  const mainCategories = taxonomy.filter((c: any) => c.type === "domain" && !c.parentId).sort((a: any, b: any) => a.name.localeCompare(b.name));
 
   return (
     <div className="min-h-screen bg-bg-main">
@@ -471,9 +500,10 @@ export default function Jobs() {
                               <span className="eyebrow tabular text-text-body/55 bg-bg-main px-1.5 py-0.5 rounded">
                                 {job.type || "Full-time"}
                               </span>
-                              {job.categoryIds?.[0] && (
+                              {(job.taxRole || job.taxDomainId || job.categoryIds?.[0]) && (
                                 <span className="eyebrow tabular text-accent bg-accent/10 px-1.5 py-0.5 rounded border border-accent/20">
-                                  {categories.find((c: any) => c.id === job.categoryIds[0])?.name}
+                                  {taxonomy.find((n: any) => n.id === (job.taxRole || job.taxDomainId))?.name
+                                    || categories.find((c: any) => c.id === job.categoryIds?.[0])?.name}
                                 </span>
                               )}
                               {myJobMatchCount > 0 && (
@@ -691,14 +721,115 @@ export default function Jobs() {
                   </div>
                 </div>
 
-                <div>
-                  <span className="eyebrow tabular text-text-body/60 mb-2 block">Domain Experience</span>
-                  <CategorySelector
-                    categories={categories}
-                    selectedIds={newJob.categoryIds}
-                    onChange={(ids) => setNewJob({ ...newJob, categoryIds: ids })}
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  <div className="sm:col-span-2">
+                    <TaxonomyMultiSelect
+                      label="Industries"
+                      options={taxByType("industry")}
+                      selectedIds={newJob.taxIndustryIds}
+                      onChange={(ids) => setNewJob({ ...newJob, taxIndustryIds: ids })}
+                      placeholder="e.g. LNG, Crude Oil…"
+                      hint="Commodities/markets this role serves."
+                    />
+                  </div>
+                  <label className="block">
+                    <span className="eyebrow tabular text-text-body/60 mb-2 block">Functional domain</span>
+                    <select
+                      value={newJob.taxDomainId}
+                      onChange={(e) => setNewJob({ ...newJob, taxDomainId: e.target.value })}
+                      className="w-full p-3 bg-bg-main border border-border-main rounded-xl text-[14px] text-text-heading outline-none focus:border-text-heading transition-all"
+                    >
+                      <option value="">Select department…</option>
+                      {taxByType("domain").filter((d: any) => !d.parentName).map((d: any) => (
+                        <option key={d.id} value={d.id}>{d.name}</option>
+                      ))}
+                    </select>
+                  </label>
+                  <label className="block">
+                    <span className="eyebrow tabular text-text-body/60 mb-2 block">Role</span>
+                    <select
+                      value={newJob.taxRole}
+                      onChange={(e) => setNewJob({ ...newJob, taxRole: e.target.value })}
+                      className="w-full p-3 bg-bg-main border border-border-main rounded-xl text-[14px] text-text-heading outline-none focus:border-text-heading transition-all"
+                    >
+                      <option value="">Select role…</option>
+                      {taxByType("role").map((r: any) => (
+                        <option key={r.id} value={r.id}>{r.name}{r.parentName ? ` · ${r.parentName}` : ""}</option>
+                      ))}
+                    </select>
+                  </label>
+                  <label className="block">
+                    <span className="eyebrow tabular text-text-body/60 mb-2 block">Seniority sought</span>
+                    <select
+                      value={newJob.taxSeniority}
+                      onChange={(e) => setNewJob({ ...newJob, taxSeniority: e.target.value })}
+                      className="w-full p-3 bg-bg-main border border-border-main rounded-xl text-[14px] text-text-heading outline-none focus:border-text-heading transition-all"
+                    >
+                      <option value="">Any level…</option>
+                      {JOB_SENIORITY.map((s) => <option key={s} value={s}>{s}</option>)}
+                    </select>
+                  </label>
+                </div>
+
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-1">
+                  <TaxonomyMultiSelect
+                    label="Required standards"
+                    options={taxByType("standard")}
+                    selectedIds={newJob.taxStandardIds}
+                    onChange={(ids) => setNewJob({ ...newJob, taxStandardIds: ids, taxMustHaveIds: newJob.taxMustHaveIds.filter((m) => ids.includes(m) || newJob.taxCertificationIds.includes(m)) })}
+                    placeholder="e.g. API 653, NFPA 30…"
+                  />
+                  <TaxonomyMultiSelect
+                    label="Required certifications"
+                    options={taxByType("certification")}
+                    selectedIds={newJob.taxCertificationIds}
+                    onChange={(ids) => setNewJob({ ...newJob, taxCertificationIds: ids, taxMustHaveIds: newJob.taxMustHaveIds.filter((m) => ids.includes(m) || newJob.taxStandardIds.includes(m)) })}
+                    placeholder="e.g. API 653, CSWIP 3.1…"
+                  />
+                  <TaxonomyMultiSelect
+                    label="Competencies"
+                    options={taxByType("competency")}
+                    selectedIds={newJob.taxCompetencyIds}
+                    onChange={(ids) => setNewJob({ ...newJob, taxCompetencyIds: ids })}
+                    placeholder="e.g. Tank Cleaning, HAZOP…"
+                  />
+                  <TaxonomyMultiSelect
+                    label="Equipment"
+                    options={taxByType("equipment")}
+                    selectedIds={newJob.taxEquipmentIds}
+                    onChange={(ids) => setNewJob({ ...newJob, taxEquipmentIds: ids })}
+                    placeholder="e.g. Floating Roof…"
                   />
                 </div>
+
+                {/* Must-have marking — only for selected standards + certs */}
+                {(newJob.taxStandardIds.length > 0 || newJob.taxCertificationIds.length > 0) && (
+                  <div className="p-3 bg-bg-main/50 border border-border-main rounded-xl">
+                    <p className="eyebrow tabular text-text-body/55 mb-2">MARK MUST-HAVES (non-negotiable)</p>
+                    <div className="flex flex-wrap gap-1.5">
+                      {[...newJob.taxStandardIds, ...newJob.taxCertificationIds].map((id) => {
+                        const node = taxonomy.find((n: any) => n.id === id);
+                        if (!node) return null;
+                        const on = newJob.taxMustHaveIds.includes(id);
+                        return (
+                          <button
+                            key={id}
+                            onClick={() => setNewJob({
+                              ...newJob,
+                              taxMustHaveIds: on ? newJob.taxMustHaveIds.filter((m) => m !== id) : [...newJob.taxMustHaveIds, id],
+                            })}
+                            className={`px-2.5 py-1 rounded-lg text-[12px] font-medium border transition-all ${
+                              on ? "bg-rust text-white border-rust" : "bg-bg-card text-text-body/60 border-border-main hover:border-rust/40"
+                            }`}
+                          >
+                            {on ? "★ " : ""}{node.name}
+                          </button>
+                        );
+                      })}
+                    </div>
+                    <p className="text-[11px] text-text-body/45 mt-2">Starred items are treated as hard requirements when matching candidates.</p>
+                  </div>
+                )}
 
                 <label className="block">
                   <span className="eyebrow tabular text-text-body/60 mb-2 block">Job description</span>

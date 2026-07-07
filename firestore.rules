@@ -235,6 +235,15 @@ service cloud.firestore {
              (!('type' in data.keys()) || data.type in ["Full-time", "Part-time", "Contract", "Freelance", "Internship"]) &&
              (!('status' in data.keys()) || data.status in ["open", "closed"]) &&
              (!('categoryIds' in data.keys()) || data.categoryIds == null || data.categoryIds is list) &&
+             (!('taxRole' in data.keys()) || data.taxRole == null || data.taxRole is string) &&
+             (!('taxDomainId' in data.keys()) || data.taxDomainId == null || data.taxDomainId is string) &&
+             (!('taxSeniority' in data.keys()) || data.taxSeniority == null || data.taxSeniority is string) &&
+             (!('taxIndustryIds' in data.keys()) || data.taxIndustryIds == null || data.taxIndustryIds is list) &&
+             (!('taxStandardIds' in data.keys()) || data.taxStandardIds == null || data.taxStandardIds is list) &&
+             (!('taxCompetencyIds' in data.keys()) || data.taxCompetencyIds == null || data.taxCompetencyIds is list) &&
+             (!('taxCertificationIds' in data.keys()) || data.taxCertificationIds == null || data.taxCertificationIds is list) &&
+             (!('taxEquipmentIds' in data.keys()) || data.taxEquipmentIds == null || data.taxEquipmentIds is list) &&
+             (!('taxMustHaveIds' in data.keys()) || data.taxMustHaveIds == null || data.taxMustHaveIds is list) &&
              (!('createdAt' in data.keys()) || data.createdAt is timestamp);
     }
 
