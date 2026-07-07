@@ -51,7 +51,7 @@ import {
 import { motion } from "framer-motion";
 import { differenceInYears } from "date-fns";
 import { serverTimestamp, where } from "firebase/firestore";
-import { LOCATION_SUGGESTIONS } from "../lib/matchScore";
+import { LOCATION_SUGGESTIONS, EDUCATION_LEVELS } from "../lib/matchScore";
 import { TaxonomyMultiSelect } from "../components/TaxonomyMultiSelect";
 const SENIORITY = ["Trainee","Junior","Mid-level","Senior","Lead","Manager","Senior Manager","Head / Director"];
 
@@ -101,6 +101,8 @@ export default function CreateResume() {
     taxCompetencyIds: [] as string[],
     taxCertificationIds: [] as string[],
     taxEquipmentIds: [] as string[],
+    educationLevel: "",
+    yearsExperience: "",
   });
 
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -128,6 +130,8 @@ export default function CreateResume() {
         taxCompetencyIds: resume.taxCompetencyIds || [],
         taxCertificationIds: resume.taxCertificationIds || [],
         taxEquipmentIds: resume.taxEquipmentIds || [],
+        educationLevel: resume.educationLevel || "",
+        yearsExperience: resume.yearsExperience != null ? String(resume.yearsExperience) : "",
         hobbies: resume.hobbies || [],
       });
     }
@@ -182,6 +186,8 @@ export default function CreateResume() {
         ...dataForStorage,
         userUid: user?.uid,
         fullName: formData.fullName,
+        // Store years as a number (or null) so the scorer can compare numerically.
+        yearsExperience: formData.yearsExperience === "" ? null : Number(formData.yearsExperience),
         updatedAt: serverTimestamp(),
       };
 
@@ -354,6 +360,31 @@ export default function CreateResume() {
                   <option value="">Select level…</option>
                   {SENIORITY.map((s) => <option key={s} value={s}>{s}</option>)}
                 </select>
+              </label>
+
+              <label className="block">
+                <span className="eyebrow tabular text-text-body/60 mb-2 block">Highest education</span>
+                <select
+                  value={formData.educationLevel}
+                  onChange={(e) => setFormData({ ...formData, educationLevel: e.target.value })}
+                  className="w-full p-3.5 bg-bg-main border border-border-main rounded-xl text-[14px] text-text-heading outline-none focus:border-text-heading transition-all"
+                >
+                  <option value="">Select level…</option>
+                  {EDUCATION_LEVELS.map((e) => <option key={e} value={e}>{e}</option>)}
+                </select>
+              </label>
+
+              <label className="block">
+                <span className="eyebrow tabular text-text-body/60 mb-2 block">Total years of experience</span>
+                <input
+                  type="number"
+                  min="0"
+                  max="60"
+                  value={formData.yearsExperience}
+                  onChange={(e) => setFormData({ ...formData, yearsExperience: e.target.value })}
+                  placeholder="e.g. 8"
+                  className="w-full p-3.5 bg-bg-main border border-border-main rounded-xl text-[14px] text-text-heading outline-none focus:border-text-heading transition-all"
+                />
               </label>
             </div>
           </div>

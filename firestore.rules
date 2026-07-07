@@ -99,6 +99,8 @@ service cloud.firestore {
              (!('taxCompetencyIds' in data.keys()) || data.taxCompetencyIds == null || data.taxCompetencyIds is list) &&
              (!('taxCertificationIds' in data.keys()) || data.taxCertificationIds == null || data.taxCertificationIds is list) &&
              (!('taxEquipmentIds' in data.keys()) || data.taxEquipmentIds == null || data.taxEquipmentIds is list) &&
+             (!('educationLevel' in data.keys()) || data.educationLevel == null || data.educationLevel is string) &&
+             (!('yearsExperience' in data.keys()) || data.yearsExperience == null || data.yearsExperience is number) &&
              (!('currentCity' in data.keys()) || data.currentCity == null || (data.currentCity is string && data.currentCity.size() <= 128)) &&
              (!('preferredLocations' in data.keys()) || data.preferredLocations == null || data.preferredLocations is list);
     }
@@ -244,6 +246,8 @@ service cloud.firestore {
              (!('taxCertificationIds' in data.keys()) || data.taxCertificationIds == null || data.taxCertificationIds is list) &&
              (!('taxEquipmentIds' in data.keys()) || data.taxEquipmentIds == null || data.taxEquipmentIds is list) &&
              (!('taxMustHaveIds' in data.keys()) || data.taxMustHaveIds == null || data.taxMustHaveIds is list) &&
+             (!('minEducation' in data.keys()) || data.minEducation == null || data.minEducation is string) &&
+             (!('minYearsExperience' in data.keys()) || data.minYearsExperience == null || data.minYearsExperience is number) &&
              (!('createdAt' in data.keys()) || data.createdAt is timestamp);
     }
 

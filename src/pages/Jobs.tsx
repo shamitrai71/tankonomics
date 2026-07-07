@@ -12,6 +12,7 @@ import { useState, useEffect } from "react";
 import { useCollection, createDocument, updateDocument } from "../hooks/useFirestore";
 import { orderBy, serverTimestamp, where } from "firebase/firestore";
 import { TaxonomyMultiSelect } from "../components/TaxonomyMultiSelect";
+import { EDUCATION_LEVELS } from "../lib/matchScore";
 const JOB_SENIORITY = ["Trainee","Junior","Mid-level","Senior","Lead","Manager","Senior Manager","Head / Director"];
 import {
   Briefcase,
@@ -94,6 +95,8 @@ export default function Jobs() {
     taxCertificationIds: [] as string[],
     taxEquipmentIds: [] as string[],
     taxMustHaveIds: [] as string[],
+    minEducation: "",
+    minYearsExperience: "",
     companyId: "",
     companyName: "",
     companyLogo: "",
@@ -133,6 +136,7 @@ export default function Jobs() {
     try {
       await createDocument("jobs", {
         ...newJob,
+        minYearsExperience: newJob.minYearsExperience === "" ? null : Number(newJob.minYearsExperience),
         creatorUid: user?.uid,
         creatorEmail: user?.email,
         createdAt: serverTimestamp(),
@@ -151,6 +155,8 @@ export default function Jobs() {
         taxCertificationIds: [],
         taxEquipmentIds: [],
         taxMustHaveIds: [],
+        minEducation: "",
+        minYearsExperience: "",
         companyId: "",
         companyName: "",
         companyLogo: "",
@@ -768,6 +774,29 @@ export default function Jobs() {
                       <option value="">Any level…</option>
                       {JOB_SENIORITY.map((s) => <option key={s} value={s}>{s}</option>)}
                     </select>
+                  </label>
+                  <label className="block">
+                    <span className="eyebrow tabular text-text-body/60 mb-2 block">Minimum education</span>
+                    <select
+                      value={newJob.minEducation}
+                      onChange={(e) => setNewJob({ ...newJob, minEducation: e.target.value })}
+                      className="w-full p-3 bg-bg-main border border-border-main rounded-xl text-[14px] text-text-heading outline-none focus:border-text-heading transition-all"
+                    >
+                      <option value="">No minimum…</option>
+                      {EDUCATION_LEVELS.map((e) => <option key={e} value={e}>{e}</option>)}
+                    </select>
+                  </label>
+                  <label className="block">
+                    <span className="eyebrow tabular text-text-body/60 mb-2 block">Minimum years of experience</span>
+                    <input
+                      type="number"
+                      min="0"
+                      max="60"
+                      value={newJob.minYearsExperience}
+                      onChange={(e) => setNewJob({ ...newJob, minYearsExperience: e.target.value })}
+                      placeholder="e.g. 5"
+                      className="w-full p-3 bg-bg-main border border-border-main rounded-xl text-[14px] text-text-heading outline-none focus:border-text-heading transition-all"
+                    />
                   </label>
                 </div>
 

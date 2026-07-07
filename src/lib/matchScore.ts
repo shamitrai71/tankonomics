@@ -92,6 +92,21 @@ export function scoreMatch(job: any, resume: any): MatchBreakdown {
 
 /** Suggested cities for the Blueprint's preferred-locations auto-suggest.
  *  Major tank & terminal industry hubs; free text is always allowed. */
+/** Education levels, ordinal (index = rank). Resume picks highest attained;
+ *  job picks minimum required; match compares by index. */
+export const EDUCATION_LEVELS = [
+  "10th / SSC",
+  "12th / HSC",
+  "ITI",
+  "Diploma",
+  "Bachelor's Degree",
+  "Master's Degree",
+  "Doctorate",
+];
+
+export const educationRank = (label: string): number =>
+  EDUCATION_LEVELS.indexOf(label); // -1 if unset/unknown
+
 export const LOCATION_SUGGESTIONS = [
   "Rotterdam", "Antwerp", "Amsterdam", "Hamburg", "Marseille",
   "Houston", "New Orleans", "Corpus Christi", "Long Beach", "New York",
