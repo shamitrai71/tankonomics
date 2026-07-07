@@ -163,7 +163,7 @@ export default function Admin() {
 
   // Resumes State
   const { data: resumes, loading: loadingResumes } = useCollection<any>("resumes", [orderBy("createdAt", "desc")], activeTab === "resumes" || activeTab === "jobs");
-  const [resumeFilter, setResumeFilter] = useState({ categoryId:"", subCategoryId:"" });
+  const [resumeFilter, setResumeFilter] = useState({ taxDomainId:"", taxRole:"" });
 
   // Companies & Categories State
   // categories feeds: the analytics distribution chart, the companies tab's
@@ -179,7 +179,7 @@ export default function Admin() {
   const { data: adminJobs, loading: loadingAdminJobs } = useCollection<any>("jobs", [orderBy("createdAt", "desc")], activeTab === "jobs");
   const { data: jobMatches, loading: loadingJobMatches } = useCollection<any>("job_matches", [orderBy("createdAt", "desc")], activeTab === "jobs");
   // Taxonomy tab: all nodes in one subscription (~455 docs), sorted client-side.
-  const { data: taxonomyNodes, loading: loadingTaxonomy } = useCollection<any>("taxonomy", [], activeTab === "taxonomy");
+  const { data: taxonomyNodes, loading: loadingTaxonomy } = useCollection<any>("taxonomy", [], activeTab === "taxonomy" || activeTab === "resumes");
 
   const [newCategory, setNewCategory] = useState({ name:"", parentId:"", level: 1 });
   const [newCompany, setNewCompany] = useState({ 
@@ -699,20 +699,22 @@ const handleEditCompany = (company: any) => {
       // Per-doc writes each get their own budget. Stable slug IDs keep this
       // idempotent — safe to re-run.
       let done = 0;
-      for (let i = 0; i < TAXONOMY_SEED.length; i += 25) {
-        const chunk = TAXONOMY_SEED.slice(i, i + 25);
-        const results = await Promise.allSettled(
-          chunk.map((node: any) =>
-            setDoc(doc(db, "taxonomy", node.id), { ...node, updatedAt: serverTimestamp() })
-          )
-        );
-        const failed = results
-          .map((r, idx) => (r.status === "rejected" ? { id: chunk[idx].id, reason: (r as any).reason?.message } : null))
-          .filter(Boolean) as { id: string; reason: string }[];
-        if (failed.length > 0) {
-          throw new Error(`${failed.length} node(s) rejected, first: ${failed[0].id} — ${failed[0].reason}`);
+      const failures: { id: string; reason: string }[] = [];
+      // Fully serial writes: one setDoc at a time. Removes any concurrency /
+      // rules-evaluation-budget interaction as a variable, and lets us report
+      // exactly which node fails and why without parallel noise.
+      for (const node of TAXONOMY_SEED) {
+        try {
+          await setDoc(doc(db, "taxonomy", (node as any).id), { ...node, updatedAt: serverTimestamp() });
+          done++;
+        } catch (err: any) {
+          failures.push({ id: (node as any).id, reason: err?.code ? `${err.code}: ${err.message}` : (err?.message || String(err)) });
+          if (failures.length >= 3) break; // stop after a few so the alert is readable
         }
-        done += chunk.length;
+      }
+      if (failures.length > 0) {
+        console.error("Taxonomy seed failures:", failures);
+        throw new Error(`${failures.length}+ rejected. First: ${failures[0].id} — ${failures[0].reason}`);
       }
       alert(`Seeded ${done} taxonomy nodes.`);
     } catch (err: any) {
@@ -1095,32 +1097,31 @@ const handleEditCompany = (company: any) => {
                          <h2 className="font-display text-2xl text-text-heading flex items-center gap-2">
                             <Briefcase className="w-5 h-5 text-primary" /> Talent Directory Mapping
                          </h2>
-                      <p className="text-text-body font-medium text-sm">Monitor and sort professional resumes by industry vertical and technical segment.</p>
+                      <p className="text-text-body font-medium text-sm">Monitor and sort professional resumes by functional domain and role.</p>
                    </div>
                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4 shrink-0">
                       <div className="space-y-1.5">
-                         <label className="eyebrow tabular text-text-body/55 px-1">Industry Vertical</label>
+                         <label className="eyebrow tabular text-text-body/55 px-1">Functional Domain</label>
                          <select 
-                           value={resumeFilter.categoryId}
-                           onChange={(e) => setResumeFilter({ ...resumeFilter, categoryId: e.target.value, subCategoryId:"" })}
+                           value={resumeFilter.taxDomainId}
+                           onChange={(e) => setResumeFilter({ ...resumeFilter, taxDomainId: e.target.value })}
                            className="w-full p-3 bg-bg-main border border-border-main rounded-xl text-[13px] font-medium focus:border-text-heading outline-none"
                          >
-                            <option value="">All Verticals</option>
-                            {categories.filter((c: any) => c.level === 1).map((c: any) => (
+                            <option value="">All Domains</option>
+                            {taxonomyNodes.filter((c: any) => c.type === "domain" && !c.parentId).sort((a: any, b: any) => a.name.localeCompare(b.name)).map((c: any) => (
                                <option key={c.id} value={c.id}>{c.name}</option>
                             ))}
                          </select>
                       </div>
                       <div className="space-y-1.5">
-                         <label className="eyebrow tabular text-text-body/55 px-1">Technical Segment</label>
+                         <label className="eyebrow tabular text-text-body/55 px-1">Role</label>
                          <select 
-                           value={resumeFilter.subCategoryId}
-                           onChange={(e) => setResumeFilter({ ...resumeFilter, subCategoryId: e.target.value })}
-                           disabled={!resumeFilter.categoryId}
-                           className="w-full p-3 bg-bg-main border border-border-main rounded-xl text-[13px] font-medium focus:border-text-heading outline-none disabled:opacity-50"
+                           value={resumeFilter.taxRole}
+                           onChange={(e) => setResumeFilter({ ...resumeFilter, taxRole: e.target.value })}
+                           className="w-full p-3 bg-bg-main border border-border-main rounded-xl text-[13px] font-medium focus:border-text-heading outline-none"
                          >
-                            <option value="">All Segments</option>
-                            {categories.filter((c: any) => c.parentId === resumeFilter.categoryId).map((c: any) => (
+                            <option value="">All Roles</option>
+                            {taxonomyNodes.filter((c: any) => c.type === "role").sort((a: any, b: any) => a.name.localeCompare(b.name)).map((c: any) => (
                                <option key={c.id} value={c.id}>{c.name}</option>
                             ))}
                          </select>
@@ -1142,8 +1143,8 @@ const handleEditCompany = (company: any) => {
                       <tbody className="divide-y divide-border-main bg-bg-card">
                          {resumes
                            .filter(r => 
-                              (!resumeFilter.categoryId || r.categoryId === resumeFilter.categoryId) &&
-                              (!resumeFilter.subCategoryId || r.subCategoryId === resumeFilter.subCategoryId)
+                              (!resumeFilter.taxDomainId || r.taxDomainId === resumeFilter.taxDomainId) &&
+                              (!resumeFilter.taxRole || r.taxRole === resumeFilter.taxRole)
                            )
                            .map((resume: any) => (
                               <tr key={resume.id} className="hover:bg-accent/10/30 transition-colors">
@@ -1158,11 +1159,19 @@ const handleEditCompany = (company: any) => {
                                  </td>
                                  <td className="px-6 py-4">
                                     <div className="space-y-1">
-                                       <span className="px-2 py-0.5 bg-accent/10 text-accent rounded eyebrow tabular block w-fit">
-                                          {resume.categoryName}
-                                       </span>
-                                       {resume.subCategoryName && (
-                                          <p className="text-[9px] text-text-body/55 ml-1">» {resume.subCategoryName}</p>
+                                       {(resume.taxRole || resume.taxDomainId || resume.categoryName) ? (
+                                          <>
+                                             <span className="px-2 py-0.5 bg-accent/10 text-accent rounded eyebrow tabular block w-fit">
+                                                {taxonomyNodes.find((n: any) => n.id === resume.taxRole)?.name
+                                                  || taxonomyNodes.find((n: any) => n.id === resume.taxDomainId)?.name
+                                                  || resume.categoryName}
+                                             </span>
+                                             {taxonomyNodes.find((n: any) => n.id === resume.taxDomainId)?.name && resume.taxRole && (
+                                                <p className="text-[9px] text-text-body/55 ml-1">» {taxonomyNodes.find((n: any) => n.id === resume.taxDomainId)?.name}</p>
+                                             )}
+                                          </>
+                                       ) : (
+                                          <span className="text-[9px] text-text-body/40 italic">Unmapped</span>
                                        )}
                                     </div>
                                  </td>
