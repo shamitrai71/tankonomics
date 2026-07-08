@@ -179,7 +179,9 @@ service cloud.firestore {
     }
 
     function isValidSettings(data) {
-      return data.keys().hasAny(['primaryColor', 'secondaryColor', 'accentColor', 'logoUrl', 'siteName', 'displayMode', 'updatedAt']);
+      return data.keys().hasAny(['primaryColor', 'secondaryColor', 'accentColor', 'logoUrl', 'logoUrlDark', 'siteName', 'displayMode', 'updatedAt',
+                                 'industry', 'domain', 'role', 'standards', 'competencies', 'certifications', 'equipment', 'seniority',
+                                 'educationPenalty', 'experiencePenalty', 'mustHaveMissingFactor']);
     }
 
     function isValidReport(data) {

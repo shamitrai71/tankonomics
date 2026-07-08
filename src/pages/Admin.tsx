@@ -69,7 +69,7 @@ type Tab ="analytics" |"news" |"forums" |"events" |"surveys" |"members" |"theme"
 
 import { CategorySelector } from "../components/CategorySelector";
 import { uploadImage } from "../lib/uploadImage";
-import { scoreMatch } from "../lib/matchScore";
+import { scoreMatch, DEFAULT_WEIGHTS, MatchWeights } from "../lib/matchScore";
 import { TAXONOMY_SEED } from "../lib/taxonomySeed";
 import { Layers } from "lucide-react";
 
@@ -79,6 +79,27 @@ export default function Admin() {
   const { isDark, setMode } = useTheme();
 
   // Theme State
+  const [matchWeights, setMatchWeights] = useState<MatchWeights>(DEFAULT_WEIGHTS);
+  const [savingWeights, setSavingWeights] = useState(false);
+  const [weightsSaved, setWeightsSaved] = useState(false);
+  useEffect(() => {
+    getDoc(doc(db, "settings", "matching"))
+      .then((snap) => { if (snap.exists()) setMatchWeights({ ...DEFAULT_WEIGHTS, ...snap.data() }); })
+      .catch(() => {});
+  }, []);
+  const handleSaveWeights = async () => {
+    setSavingWeights(true);
+    try {
+      await setDoc(doc(db, "settings", "matching"), { ...matchWeights, updatedAt: serverTimestamp() });
+      setWeightsSaved(true);
+      setTimeout(() => setWeightsSaved(false), 2500);
+    } catch (err: any) {
+      alert(`Failed to save weights: ${err?.code ? err.code + ": " : ""}${err?.message || err}`);
+    } finally {
+      setSavingWeights(false);
+    }
+  };
+
   const [themeData, setThemeData] = useState({
     primaryColor:"#0f172a",
     secondaryColor:"#4f46e5",
@@ -663,7 +684,7 @@ const handleEditCompany = (company: any) => {
         status: "suggested",
         adminUid: user?.uid,
         adminNote: matchNote.trim() || null,
-        score: scoreMatch(matchingJob, confirmMatchResume).total,
+        score: scoreMatch(matchingJob, confirmMatchResume, matchWeights).total,
         createdAt: serverTimestamp(),
       });
       setConfirmMatchResume(null);
@@ -900,6 +921,70 @@ const handleEditCompany = (company: any) => {
       <AnimatePresence mode="wait">
         {activeTab === "analytics" && (
           <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -10 }} key="analytics" className="space-y-8">
+            {/* Match Scoring Weights */}
+            <div className="bg-bg-card border border-border-main rounded-2xl p-6 md:p-7">
+              <div className="flex items-start justify-between gap-4 mb-5">
+                <div>
+                  <p className="eyebrow tabular text-accent mb-1">MATCHING ENGINE</p>
+                  <h3 className="font-display text-2xl text-text-heading leading-tight">Scoring weights</h3>
+                  <p className="text-[13px] text-text-body max-w-lg leading-relaxed mt-1">
+                    How much each dimension contributes to a candidate's 0–100 match score. Applies platform-wide. Changes take effect immediately on the next score calculation.
+                  </p>
+                </div>
+                <button
+                  onClick={handleSaveWeights}
+                  disabled={savingWeights}
+                  className="shrink-0 px-4 py-2.5 bg-text-heading text-bg-card rounded-xl text-[13px] font-medium hover:brightness-110 disabled:opacity-50 transition-all inline-flex items-center gap-2"
+                >
+                  {savingWeights ? <Loader2 className="w-4 h-4 animate-spin" /> : weightsSaved ? "Saved ✓" : "Save weights"}
+                </button>
+              </div>
+
+              <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+                {([
+                  ["role","Role match"],["domain","Domain match"],["certifications","Certifications"],
+                  ["competencies","Competencies"],["standards","Standards"],["industry","Industry"],
+                  ["equipment","Equipment"],["seniority","Seniority"],
+                ] as [keyof MatchWeights, string][]).map(([key, label]) => (
+                  <label key={key} className="block">
+                    <span className="eyebrow tabular text-text-body/55 mb-1.5 block">{label}</span>
+                    <input
+                      type="number" min="0" max="50"
+                      value={matchWeights[key]}
+                      onChange={(e) => setMatchWeights({ ...matchWeights, [key]: Number(e.target.value) })}
+                      className="w-full p-2.5 bg-bg-main border border-border-main rounded-lg text-[14px] text-text-heading outline-none focus:border-text-heading transition-all"
+                    />
+                  </label>
+                ))}
+              </div>
+
+              <div className="h-px bg-border-main my-5" />
+              <p className="eyebrow tabular text-text-body/55 mb-3">PENALTIES & GATING</p>
+              <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
+                <label className="block">
+                  <span className="eyebrow tabular text-text-body/55 mb-1.5 block">Below-min education penalty</span>
+                  <input type="number" min="0" max="50" value={matchWeights.educationPenalty}
+                    onChange={(e) => setMatchWeights({ ...matchWeights, educationPenalty: Number(e.target.value) })}
+                    className="w-full p-2.5 bg-bg-main border border-border-main rounded-lg text-[14px] text-text-heading outline-none focus:border-text-heading transition-all" />
+                </label>
+                <label className="block">
+                  <span className="eyebrow tabular text-text-body/55 mb-1.5 block">Below-min experience penalty</span>
+                  <input type="number" min="0" max="50" value={matchWeights.experiencePenalty}
+                    onChange={(e) => setMatchWeights({ ...matchWeights, experiencePenalty: Number(e.target.value) })}
+                    className="w-full p-2.5 bg-bg-main border border-border-main rounded-lg text-[14px] text-text-heading outline-none focus:border-text-heading transition-all" />
+                </label>
+                <label className="block">
+                  <span className="eyebrow tabular text-text-body/55 mb-1.5 block">Missing must-have factor (0–1)</span>
+                  <input type="number" min="0" max="1" step="0.05" value={matchWeights.mustHaveMissingFactor}
+                    onChange={(e) => setMatchWeights({ ...matchWeights, mustHaveMissingFactor: Number(e.target.value) })}
+                    className="w-full p-2.5 bg-bg-main border border-border-main rounded-lg text-[14px] text-text-heading outline-none focus:border-text-heading transition-all" />
+                </label>
+              </div>
+              <p className="text-[11px] text-text-body/45 mt-3 leading-relaxed">
+                Must-have factor: when a candidate lacks a job's starred requirement, their score is multiplied by this (0.4 = keep 40%). They're never hidden — just ranked lower with a flag. Penalties are subtracted from the raw score.
+              </p>
+            </div>
+
             {/* KPI Cards */}
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
                {[
@@ -2892,7 +2977,7 @@ const handleEditCompany = (company: any) => {
                         // domain 4, role 2, skills 2, location 1, credentials 1), best first.
                         const candidateResumes = resumes
                           .filter((r: any) => !alreadyMatchedUids.includes(r.userUid))
-                          .map((r: any) => ({ ...r, _match: scoreMatch(matchingJob, r) }))
+                          .map((r: any) => ({ ...r, _match: scoreMatch(matchingJob, r, matchWeights) }))
                           .sort((a: any, b: any) => b._match.total - a._match.total);
                         if (resumes.length === 0) return (
                           <p className="text-xs text-text-body/55 text-center py-4">Loading resumes…</p>

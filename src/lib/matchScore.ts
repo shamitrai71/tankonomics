@@ -1,93 +1,154 @@
 /**
- * Job ↔ Resume match scoring — 10-point rubric.
+ * Job ↔ Resume match scoring — taxonomy-based, weighted, admin-configurable.
  *
- * | Signal            | Max | How it's earned                                            |
- * |-------------------|-----|------------------------------------------------------------|
- * | Domain experience |  4  | Resume sub-segment in job's domains = 4; primary domain = 3 |
- * | Role relevance    |  2  | Job title keywords in current role = 2; in past roles = 1   |
- * | Skills            |  2  | ≥2 listed skills appear in job text = 2; exactly 1 = 1      |
- * | Location          |  1  | Job location matches current city or a preferred location   |
- * | Credentials       |  1  | Any certification/qualification keyword appears in job text |
+ * Scores exact taxonomy-ID overlap across six dimensions, applies must-have
+ * hard-gating and soft education/experience penalties, and produces a 0–100
+ * score plus a breakdown and human-readable flags.
  *
- * Deliberately conservative: no penalty scoring, no fuzzy inference beyond
- * keyword overlap. A 0 on a signal means "no evidence", not "bad fit".
+ * Weights come from a resolvable config (MatchWeights). Today that config is
+ * the global settings/matching doc (Tier 1). The scorer takes weights as an
+ * argument, so per-job or per-company weight profiles (Tiers 2–3) slot in
+ * later by changing ONLY where the weights are resolved — never this math.
  */
 
-export interface MatchBreakdown {
-  domain: number;      // 0–4
-  role: number;        // 0–2
-  skills: number;      // 0–2
-  location: number;    // 0–1
-  credentials: number; // 0–1
-  total: number;       // 0–10
+export interface MatchWeights {
+  industry: number;
+  domain: number;
+  role: number;
+  standards: number;
+  competencies: number;
+  certifications: number;
+  equipment: number;
+  seniority: number;
+  // Penalties (subtracted): how far below-minimum education/experience hurts.
+  educationPenalty: number;
+  experiencePenalty: number;
+  // Must-have handling: multiplier applied to total when a hard requirement
+  // is missing (0.4 = keep 40% of score; never hidden, just sunk).
+  mustHaveMissingFactor: number;
 }
 
-const norm = (s: unknown): string =>
-  typeof s === "string" ? s.trim().toLowerCase() : "";
+/** Sensible defaults. The admin panel writes overrides to settings/matching. */
+export const DEFAULT_WEIGHTS: MatchWeights = {
+  industry: 10,
+  domain: 15,
+  role: 20,
+  standards: 12,
+  competencies: 15,
+  certifications: 18,
+  equipment: 10,
+  seniority: 0, // off by default; admin can raise
+  educationPenalty: 15,
+  experiencePenalty: 15,
+  mustHaveMissingFactor: 0.4,
+};
 
-/** Meaningful keywords from a title/phrase (drops short filler words). */
-const keywords = (s: unknown): string[] =>
-  norm(s)
-    .split(/[^a-z0-9]+/)
-    .filter((w) => w.length >= 4);
+export interface MatchBreakdown {
+  industry: number;
+  domain: number;
+  role: number;
+  standards: number;
+  competencies: number;
+  certifications: number;
+  equipment: number;
+  seniority: number;
+  educationPenalty: number;
+  experiencePenalty: number;
+  mustHaveMissing: boolean;
+  total: number;   // 0–100, after penalties + must-have factor
+  flags: string[]; // human-readable notes for the admin card
+}
 
-/** Case-insensitive containment either way ("Mumbai" ~ "Navi Mumbai, India"). */
-const looseMatch = (a: string, b: string): boolean =>
-  a.length > 1 && b.length > 1 && (a.includes(b) || b.includes(a));
+const arr = (v: unknown): string[] => (Array.isArray(v) ? v.filter((x) => typeof x === "string") : []);
 
-export function scoreMatch(job: any, resume: any): MatchBreakdown {
-  const out: MatchBreakdown = { domain: 0, role: 0, skills: 0, location: 0, credentials: 0, total: 0 };
-  if (!job || !resume) return out;
+/** Fraction of the job's required ids that the resume also has (0..1). */
+function overlapFraction(jobIds: string[], resumeIds: string[]): number {
+  if (jobIds.length === 0) return 0;
+  const set = new Set(resumeIds);
+  const hit = jobIds.filter((id) => set.has(id)).length;
+  return hit / jobIds.length;
+}
 
-  // ---- Domain experience (0–4) --------------------------------------------
-  const jobDomains: string[] = Array.isArray(job.categoryIds)
-    ? job.categoryIds
-    : job.categoryId ? [job.categoryId] : [];
-  if (jobDomains.length > 0) {
-    if (resume.subCategoryId && jobDomains.includes(resume.subCategoryId)) out.domain = 4;
-    else if (resume.categoryId && jobDomains.includes(resume.categoryId)) out.domain = 3;
-  }
+const EDU_LEVELS_INTERNAL = [
+  "10th / SSC","12th / HSC","ITI","Diploma","Bachelor's Degree","Master's Degree","Doctorate",
+];
+const eduRank = (label: unknown): number =>
+  typeof label === "string" ? EDU_LEVELS_INTERNAL.indexOf(label) : -1;
 
-  // ---- Role relevance (0–2) -----------------------------------------------
-  const jobTitleWords = keywords(job.title);
-  if (jobTitleWords.length > 0) {
-    const currentWords = new Set(keywords(resume.currentJob?.title));
-    if (jobTitleWords.some((w) => currentWords.has(w))) {
-      out.role = 2;
-    } else {
-      const pastTitles: string[] = (resume.pastJobs || []).map((p: any) => p?.title);
-      const pastWords = new Set(pastTitles.flatMap(keywords));
-      if (jobTitleWords.some((w) => pastWords.has(w))) out.role = 1;
+/**
+ * Score a job↔resume pair. `weights` defaults to DEFAULT_WEIGHTS; callers pass
+ * the resolved global config. Returns a 0–100 total, breakdown, and flags.
+ */
+export function scoreMatch(job: any, resume: any, weights: MatchWeights = DEFAULT_WEIGHTS): MatchBreakdown {
+  const b: MatchBreakdown = {
+    industry: 0, domain: 0, role: 0, standards: 0, competencies: 0,
+    certifications: 0, equipment: 0, seniority: 0,
+    educationPenalty: 0, experiencePenalty: 0, mustHaveMissing: false,
+    total: 0, flags: [],
+  };
+  if (!job || !resume) return b;
+
+  // ---- Weighted taxonomy overlap ------------------------------------------
+  b.industry      = weights.industry      * overlapFraction(arr(job.taxIndustryIds), arr(resume.taxIndustryIds));
+  b.standards     = weights.standards     * overlapFraction(arr(job.taxStandardIds), arr(resume.taxStandardIds));
+  b.competencies  = weights.competencies  * overlapFraction(arr(job.taxCompetencyIds), arr(resume.taxCompetencyIds));
+  b.certifications= weights.certifications* overlapFraction(arr(job.taxCertificationIds), arr(resume.taxCertificationIds));
+  b.equipment     = weights.equipment     * overlapFraction(arr(job.taxEquipmentIds), arr(resume.taxEquipmentIds));
+
+  // Domain + role are single-value exact matches.
+  if (job.taxDomainId && resume.taxDomainId === job.taxDomainId) b.domain = weights.domain;
+  if (job.taxRole && resume.taxRole === job.taxRole) b.role = weights.role;
+
+  // Seniority exact match (optional signal).
+  if (job.taxSeniority && resume.taxSeniority === job.taxSeniority) b.seniority = weights.seniority;
+
+  let subtotal = b.industry + b.domain + b.role + b.standards + b.competencies + b.certifications + b.equipment + b.seniority;
+
+  // ---- Soft education penalty ---------------------------------------------
+  if (job.minEducation) {
+    const need = eduRank(job.minEducation);
+    const have = eduRank(resume.educationLevel);
+    if (need >= 0 && have >= 0 && have < need) {
+      b.educationPenalty = weights.educationPenalty;
+      subtotal -= weights.educationPenalty;
+      b.flags.push(`Below stated minimum education (${job.minEducation})`);
+    } else if (need >= 0 && have < 0) {
+      b.flags.push("Education not specified on Blueprint");
     }
   }
 
-  // ---- Skills (0–2) ---------------------------------------------------------
-  const jobText = `${norm(job.title)} ${norm(job.description)}`;
-  const skills: string[] = (resume.additionalSkills || []).map(norm).filter((s: string) => s.length >= 3);
-  const hits = skills.filter((s) => jobText.includes(s)).length;
-  out.skills = hits >= 2 ? 2 : hits === 1 ? 1 : 0;
-
-  // ---- Location (0–1) -------------------------------------------------------
-  const jobLoc = norm(job.location);
-  if (jobLoc) {
-    const candidateLocs: string[] = [
-      norm(resume.currentCity),
-      ...((resume.preferredLocations || []) as string[]).map(norm),
-    ].filter(Boolean);
-    if (candidateLocs.some((loc) => looseMatch(jobLoc, loc))) out.location = 1;
+  // ---- Soft experience penalty --------------------------------------------
+  if (job.minYearsExperience != null && typeof job.minYearsExperience === "number") {
+    const have = typeof resume.yearsExperience === "number" ? resume.yearsExperience : null;
+    if (have != null && have < job.minYearsExperience) {
+      b.experiencePenalty = weights.experiencePenalty;
+      subtotal -= weights.experiencePenalty;
+      b.flags.push(`Below stated minimum experience (${job.minYearsExperience}+ yrs)`);
+    } else if (have == null) {
+      b.flags.push("Experience not specified on Blueprint");
+    }
   }
 
-  // ---- Credentials (0–1) ----------------------------------------------------
-  const creds: string[] = [
-    ...((resume.certifications || []) as any[]),
-    ...((resume.qualifications || []) as any[]),
-  ]
-    .map((c: any) => norm(typeof c === "string" ? c : c?.name || c?.title))
-    .filter((c: string) => c.length >= 3);
-  if (creds.some((c) => jobText.includes(c))) out.credentials = 1;
+  // ---- Must-have gating (soft-but-heavy) ----------------------------------
+  const mustHaves = arr(job.taxMustHaveIds);
+  if (mustHaves.length > 0) {
+    const resumeHas = new Set([
+      ...arr(resume.taxStandardIds),
+      ...arr(resume.taxCertificationIds),
+      ...arr(resume.taxCompetencyIds),
+      ...arr(resume.taxEquipmentIds),
+    ]);
+    const missing = mustHaves.filter((id) => !resumeHas.has(id));
+    if (missing.length > 0) {
+      b.mustHaveMissing = true;
+      subtotal *= weights.mustHaveMissingFactor;
+      b.flags.push(`Missing ${missing.length} must-have requirement${missing.length > 1 ? "s" : ""}`);
+    }
+  }
 
-  out.total = out.domain + out.role + out.skills + out.location + out.credentials;
-  return out;
+  // Clamp to 0..100.
+  b.total = Math.max(0, Math.min(100, Math.round(subtotal)));
+  return b;
 }
 
 /** Suggested cities for the Blueprint's preferred-locations auto-suggest.
