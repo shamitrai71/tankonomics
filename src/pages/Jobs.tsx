@@ -9,6 +9,7 @@
  */
 
 import { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import { useCollection, createDocument, updateDocument } from "../hooks/useFirestore";
 import { orderBy, serverTimestamp, where } from "firebase/firestore";
 import { TaxonomyMultiSelect } from "../components/TaxonomyMultiSelect";
@@ -41,6 +42,7 @@ import { formatDistanceToNow } from "date-fns";
 
 export default function Jobs() {
   const { user, profile, isAdmin, isCompanyOwner, ownedCompanies } = useAuth();
+  const navigate = useNavigate();
   const [searchTerm, setSearchTerm] = useState("");
   const [typeFilter, setTypeFilter] = useState("all");
   const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
@@ -62,6 +64,11 @@ export default function Jobs() {
   const { data: jobs, loading: loadingJobs } = useCollection<any>("jobs", [orderBy("createdAt", "desc")]);
   const { data: categories } = useCollection<any>("company_categories", [orderBy("level", "asc"), orderBy("order", "asc")]);
   const { data: taxonomy } = useCollection<any>("taxonomy");
+  const { data: myResumes } = useCollection<any>(
+    "resumes",
+    [where("userUid", "==", user?.uid || "__none__")]
+  );
+  const myResume = myResumes[0];
   const taxByType = (t: string) => {
     const nameById: Record<string, string> = {};
     taxonomy.forEach((n: any) => { nameById[n.id] = n.name; });
@@ -76,7 +83,12 @@ export default function Jobs() {
     [where("userUid", "==", user?.uid || "__none__"), orderBy("createdAt", "desc")],
     !!user
   );
-  // Matches against this company owner's listings (shown on their job cards).
+  // Reflect any existing 'applied' job_matches so button state survives reloads.
+  useEffect(() => {
+    if (!myMatches) return;
+    const appliedIds = myMatches.filter((m: any) => m.status === "applied").map((m: any) => m.jobId);
+    if (appliedIds.length) setAppliedJobs((prev) => Array.from(new Set([...prev, ...appliedIds])));
+  }, [myMatches]);
   const { data: companyMatches } = useCollection<any>(
     "job_matches",
     [where("companyOwnerUid", "==", user?.uid || "__none__"), orderBy("createdAt", "desc")],
@@ -175,43 +187,52 @@ export default function Jobs() {
   };
 
   const handleApply = async () => {
-    if (!selectedJob || !applyForm.name || !applyForm.email) return;
+    if (!selectedJob) return;
+    // Blueprint-required: an application attaches the candidate's structured resume.
+    if (!myResume) {
+      alert("Please create your Blueprint (professional resume) before applying — employers review your structured profile, not a plain message.");
+      return;
+    }
     setApplyingJobId(selectedJob.id);
     try {
-      const response = await fetch("/api/job-apply", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          jobTitle: selectedJob.title,
-          companyName: selectedJob.companyName,
-          applicantName: applyForm.name,
-          applicantEmail: applyForm.email,
-          message: applyForm.message,
-          creatorEmail: selectedJob.creatorEmail,
-        }),
+      // An application is a job_match with status 'applied', attaching the
+      // applicant's Blueprint. Admins and the company owner see it in the
+      // unified matches pipeline alongside admin-suggested matches.
+      await createDocument("job_matches", {
+        jobId: selectedJob.id,
+        jobTitle: selectedJob.title,
+        companyId: selectedJob.companyId || "",
+        companyName: selectedJob.companyName || "",
+        companyOwnerUid: selectedJob.creatorUid || "",
+        resumeId: myResume.id,
+        userUid: user?.uid,
+        userName: myResume.fullName || profile?.displayName || user?.displayName || "Applicant",
+        status: "applied",
+        coverNote: applyForm.message || null,
+        createdAt: serverTimestamp(),
       });
-
-      if (response.ok) {
-        setAppliedJobs((prev) => [...prev, selectedJob.id]);
+      setAppliedJobs((prev) => [...prev, selectedJob.id]);
+      // Notify the job's owner (best-effort; not required for the application).
+      if (selectedJob.creatorUid) {
         await createDocument("notifications", {
           recipientUid: selectedJob.creatorUid,
           title: "New job applicant",
-          message: `${applyForm.name} applied for "${selectedJob.title}"`,
+          message: `${myResume.fullName || "A candidate"} applied for "${selectedJob.title}"`,
           type: "job_application",
           link: "/jobs",
           read: false,
           createdAt: serverTimestamp(),
         });
-        setShowApplyModal(false);
-        setApplyForm({
-          name: profile?.displayName || user?.displayName || "",
-          email: user?.email || "",
-          message: "",
-        });
       }
+      setShowApplyModal(false);
+      setApplyForm({
+        name: profile?.displayName || user?.displayName || "",
+        email: user?.email || "",
+        message: "",
+      });
     } catch (err: any) {
       console.error("Error applying for job:", err);
-      alert(`Failed to submit application: ${err?.message || "Unknown error"}`);
+      alert(`Failed to submit application: ${err?.code ? `${err.code}: ` : ""}${err?.message || "Unknown error"}`);
     } finally {
       setApplyingJobId(null);
     }
@@ -1024,39 +1045,48 @@ export default function Jobs() {
               </div>
 
               <div className="p-6 space-y-4">
-                <label className="block">
-                  <span className="eyebrow tabular text-text-body/60 mb-2 block">Full name</span>
-                  <input
-                    type="text"
-                    value={applyForm.name}
-                    onChange={(e) => setApplyForm({ ...applyForm, name: e.target.value })}
-                    className="w-full px-4 py-3 bg-bg-main border border-border-main rounded-xl text-[15px] text-text-heading outline-none focus:border-text-heading transition-all"
-                  />
-                </label>
-                <label className="block">
-                  <span className="eyebrow tabular text-text-body/60 mb-2 block">Email</span>
-                  <input
-                    type="email"
-                    value={applyForm.email}
-                    onChange={(e) => setApplyForm({ ...applyForm, email: e.target.value })}
-                    className="w-full px-4 py-3 bg-bg-main border border-border-main rounded-xl text-[15px] text-text-heading outline-none focus:border-text-heading transition-all"
-                  />
-                </label>
-                <label className="block">
-                  <span className="eyebrow tabular text-text-body/60 mb-2 block">Cover note</span>
-                  <textarea
-                    value={applyForm.message}
-                    onChange={(e) => setApplyForm({ ...applyForm, message: e.target.value })}
-                    placeholder="A short note about why you're a fit (optional)…"
-                    className="w-full px-4 py-3 bg-bg-main border border-border-main rounded-xl text-[14px] text-text-heading placeholder:text-text-body/40 outline-none focus:border-text-heading h-24 resize-none transition-all"
-                  />
-                </label>
-                <div className="px-4 py-3 bg-bg-main border border-border-main rounded-xl flex items-start gap-3">
-                  <Info className="w-4 h-4 text-accent shrink-0 mt-0.5" strokeWidth={1.75} />
-                  <p className="text-[12px] text-text-body leading-relaxed">
-                    Your application will be sent directly to <span className="text-text-heading font-medium">{selectedJob.companyName}</span> with your contact details.
-                  </p>
-                </div>
+                {myResume ? (
+                  <>
+                    <div className="px-4 py-3 bg-accent/5 border border-accent/20 rounded-xl flex items-start gap-3">
+                      <CheckCircle2 className="w-4 h-4 text-accent shrink-0 mt-0.5" strokeWidth={2} />
+                      <div>
+                        <p className="text-[13px] text-text-heading font-medium">Your Blueprint will be attached</p>
+                        <p className="text-[12px] text-text-body/70 leading-relaxed mt-0.5">
+                          {myResume.fullName}{myResume.jobTitle ? ` · ${myResume.jobTitle}` : ""} — the employer reviews your full structured profile.
+                        </p>
+                      </div>
+                    </div>
+                    <label className="block">
+                      <span className="eyebrow tabular text-text-body/60 mb-2 block">Cover note (optional)</span>
+                      <textarea
+                        value={applyForm.message}
+                        onChange={(e) => setApplyForm({ ...applyForm, message: e.target.value })}
+                        placeholder="A short note about why you're a fit…"
+                        className="w-full px-4 py-3 bg-bg-main border border-border-main rounded-xl text-[14px] text-text-heading placeholder:text-text-body/40 outline-none focus:border-text-heading h-24 resize-none transition-all"
+                      />
+                    </label>
+                    <div className="px-4 py-3 bg-bg-main border border-border-main rounded-xl flex items-start gap-3">
+                      <Info className="w-4 h-4 text-accent shrink-0 mt-0.5" strokeWidth={1.75} />
+                      <p className="text-[12px] text-text-body leading-relaxed">
+                        Your application goes to <span className="text-text-heading font-medium">{selectedJob.companyName}</span> and appears in the platform's matching pipeline.
+                      </p>
+                    </div>
+                  </>
+                ) : (
+                  <div className="px-4 py-5 bg-bg-main border border-border-main rounded-xl text-center">
+                    <p className="text-[14px] text-text-heading font-medium mb-1">You need a Blueprint to apply</p>
+                    <p className="text-[12px] text-text-body/70 leading-relaxed mb-3">
+                      Applications attach your structured professional profile. Build yours in a couple of minutes.
+                    </p>
+                    <button
+                      onClick={() => { setShowApplyModal(false); navigate("/create-resume"); }}
+                      className="inline-flex items-center gap-2 bg-text-heading text-bg-card px-4 py-2 rounded-xl text-[13px] font-medium hover:brightness-110 transition-all"
+                    >
+                      Create my Blueprint
+                      <ChevronRight className="w-4 h-4" />
+                    </button>
+                  </div>
+                )}
               </div>
 
               <div className="px-6 py-4 border-t border-border-main flex items-center justify-end gap-3 bg-bg-card">
@@ -1065,7 +1095,7 @@ export default function Jobs() {
                 </button>
                 <button
                   onClick={handleApply}
-                  disabled={!applyForm.name || !applyForm.email || applyingJobId === selectedJob.id}
+                  disabled={!myResume || applyingJobId === selectedJob.id}
                   className="inline-flex items-center gap-2 bg-text-heading text-bg-card px-5 py-2.5 rounded-xl text-[14px] font-medium hover:brightness-110 disabled:opacity-50 transition-all"
                 >
                   {applyingJobId === selectedJob.id ? <Loader2 className="w-4 h-4 animate-spin" /> : <Send className="w-4 h-4" strokeWidth={1.75} />}

@@ -255,7 +255,7 @@ service cloud.firestore {
     // Individuals can accept/reject; company owners can mark hired/passed.
     function isValidJobMatch(data) {
       return data.keys().hasAll(['jobId', 'jobTitle', 'companyId', 'companyName', 'companyOwnerUid',
-                                  'resumeId', 'userUid', 'userName', 'status', 'adminUid', 'createdAt']) &&
+                                  'resumeId', 'userUid', 'userName', 'status', 'createdAt']) &&
              data.jobId is string &&
              data.jobTitle is string && data.jobTitle.size() <= 256 &&
              data.companyId is string &&
@@ -264,12 +264,23 @@ service cloud.firestore {
              data.resumeId is string &&
              data.userUid is string &&
              data.userName is string && data.userName.size() <= 256 &&
-             data.status in ['suggested', 'accepted', 'rejected', 'hired', 'passed'] &&
-             data.adminUid is string &&
+             data.status in ['suggested', 'accepted', 'rejected', 'hired', 'passed', 'applied'] &&
              data.createdAt is timestamp &&
+             (!('adminUid' in data.keys()) || data.adminUid == null || data.adminUid is string) &&
              (!('adminNote' in data.keys()) || data.adminNote == null || data.adminNote is string) &&
+             (!('coverNote' in data.keys()) || data.coverNote == null || data.coverNote is string) &&
              (!('score' in data.keys()) || data.score == null || data.score is number) &&
              (!('updatedAt' in data.keys()) || data.updatedAt is timestamp);
+    }
+
+    // An applicant creating their OWN application: must be for themselves,
+    // status 'applied', no self-assigned score, and an admin identity absent.
+    function isValidSelfApplication(data) {
+      return isValidJobMatch(data) &&
+             data.userUid == request.auth.uid &&
+             data.status == 'applied' &&
+             (!('score' in data.keys()) || data.score == null) &&
+             (!('adminUid' in data.keys()) || data.adminUid == null);
     }
 
     // Talent Bank taxonomy nodes (docs/TALENT_BANK_PHASE0.md).
@@ -696,8 +707,11 @@ service cloud.firestore {
       allow read: if isAdmin() ||
                   (isSignedIn() && resource.data.userUid == request.auth.uid) ||
                   (isSignedIn() && resource.data.companyOwnerUid == request.auth.uid);
-      // Only admins can create matches.
-      allow create: if isAdmin() && isValidJobMatch(incoming());
+      // Admins create matches (any status). Signed-in users may create their
+      // OWN application (status 'applied', for themselves, no score) — this is
+      // the candidate-initiated apply path.
+      allow create: if (isAdmin() && isValidJobMatch(incoming())) ||
+                       (isSignedIn() && isValidSelfApplication(incoming()));
       // Individual can accept/reject their own suggestion.
       // Company owner can mark a match hired/passed once individual has accepted.
       // Admin can change anything.
