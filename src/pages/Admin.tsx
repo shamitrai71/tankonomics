@@ -3000,18 +3000,30 @@ const handleEditCompany = (company: any) => {
                                   <p className="text-xs text-text-body/55 truncate">{resume.currentJob.title}{resume.currentJob.company ? ` · ${resume.currentJob.company}` : ""}</p>
                                 )}
                                 <div className="flex items-center gap-2 mt-0.5">
-                                  <span className="eyebrow tabular text-accent text-[9px]">{resume.categoryName}</span>
+                                  <span className="eyebrow tabular text-accent text-[9px]">
+                                    {taxonomyNodes.find((n: any) => n.id === resume.taxRole)?.name || resume.categoryName}
+                                  </span>
                                   <span
                                     className={`eyebrow tabular text-[9px] px-1.5 py-0.5 rounded-full ${
-                                      resume._match.total >= 7 ? "bg-emerald-100 text-emerald-700" :
-                                      resume._match.total >= 4 ? "bg-accent/10 text-accent" :
+                                      resume._match.total >= 70 ? "bg-emerald-100 text-emerald-700" :
+                                      resume._match.total >= 40 ? "bg-accent/10 text-accent" :
                                       "bg-bg-main text-text-body/55"
                                     }`}
-                                    title={`Domain ${resume._match.domain}/4 · Role ${resume._match.role}/2 · Skills ${resume._match.skills}/2 · Location ${resume._match.location}/1 · Credentials ${resume._match.credentials}/1`}
+                                    title={`Role ${Math.round(resume._match.role)} · Domain ${Math.round(resume._match.domain)} · Certs ${Math.round(resume._match.certifications)} · Competencies ${Math.round(resume._match.competencies)} · Standards ${Math.round(resume._match.standards)} · Industry ${Math.round(resume._match.industry)} · Equipment ${Math.round(resume._match.equipment)}`}
                                   >
-                                    {resume._match.total}/10 match
+                                    {resume._match.total}/100 match
                                   </span>
+                                  {resume._match.mustHaveMissing && (
+                                    <span className="eyebrow tabular text-[9px] px-1.5 py-0.5 rounded-full bg-rust/10 text-rust">missing must-have</span>
+                                  )}
                                 </div>
+                                {resume._match.flags?.length > 0 && (
+                                  <div className="flex flex-wrap gap-1 mt-1">
+                                    {resume._match.flags.map((f: string, fi: number) => (
+                                      <span key={fi} className="text-[9px] px-1.5 py-0.5 rounded bg-bg-main text-text-body/60 border border-border-main">{f}</span>
+                                    ))}
+                                  </div>
+                                )}
                               </div>
                               <button
                                 onClick={() => setConfirmMatchResume(resume)}
@@ -3031,22 +3043,36 @@ const handleEditCompany = (company: any) => {
                     {/* Existing matches for this job */}
                     {jobMatches.filter((m: any) => m.jobId === matchingJob.id).length > 0 && (
                       <div className="border-t border-border-main p-4">
-                        <p className="eyebrow tabular text-text-body/55 mb-3">EXISTING MATCHES</p>
+                        <p className="eyebrow tabular text-text-body/55 mb-3">APPLICATIONS & MATCHES</p>
                         <div className="space-y-2">
-                          {jobMatches.filter((m: any) => m.jobId === matchingJob.id).map((match: any) => (
-                            <div key={match.id} className="flex items-center justify-between gap-2 p-2 bg-bg-main rounded-lg">
-                              <div>
-                                <p className="text-xs font-bold text-text-heading">{match.userName}</p>
-                                <span className={`eyebrow tabular text-[9px] px-1.5 py-0.5 rounded-full ${
-                                  match.status === "suggested" ? "bg-rust/10 text-rust" :
-                                  match.status === "accepted" ? "bg-accent/10 text-accent" :
-                                  match.status === "hired" ? "bg-emerald-100 text-emerald-700" :
-                                  "bg-bg-main text-text-body/55"
-                                }`}>{match.status}</span>
+                          {jobMatches
+                            .filter((m: any) => m.jobId === matchingJob.id)
+                            .sort((a: any, b: any) => (a.status === "applied" ? -1 : 0) - (b.status === "applied" ? -1 : 0))
+                            .map((match: any) => (
+                            <div key={match.id} className={`p-2.5 rounded-lg ${match.status === "applied" ? "bg-blueprint/5 border border-blueprint/20" : "bg-bg-main"}`}>
+                              <div className="flex items-center justify-between gap-2">
+                                <div className="flex items-center gap-2 min-w-0">
+                                  <p className="text-xs font-bold text-text-heading truncate">{match.userName}</p>
+                                  {match.status === "applied" && (
+                                    <span className="eyebrow tabular text-[9px] px-1.5 py-0.5 rounded-full bg-blueprint/10 text-blueprint shrink-0">★ APPLIED</span>
+                                  )}
+                                </div>
+                                <div className="flex items-center gap-1.5 shrink-0">
+                                  <span className={`eyebrow tabular text-[9px] px-1.5 py-0.5 rounded-full ${
+                                    match.status === "applied" ? "bg-blueprint/10 text-blueprint" :
+                                    match.status === "suggested" ? "bg-rust/10 text-rust" :
+                                    match.status === "accepted" ? "bg-accent/10 text-accent" :
+                                    match.status === "hired" ? "bg-emerald-100 text-emerald-700" :
+                                    "bg-bg-card text-text-body/55"
+                                  }`}>{match.status}</span>
+                                  <button onClick={() => handleRemoveMatch(match.id)} className="p-1 text-text-body/30 hover:text-rust transition-colors">
+                                    <X className="w-3.5 h-3.5" />
+                                  </button>
+                                </div>
                               </div>
-                              <button onClick={() => handleRemoveMatch(match.id)} className="p-1 text-text-body/30 hover:text-rust transition-colors">
-                                <X className="w-3.5 h-3.5" />
-                              </button>
+                              {match.coverNote && (
+                                <p className="text-[11px] text-text-body/70 mt-1.5 leading-relaxed italic border-l-2 border-blueprint/30 pl-2">"{match.coverNote}"</p>
+                              )}
                             </div>
                           ))}
                         </div>
