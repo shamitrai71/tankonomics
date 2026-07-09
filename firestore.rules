@@ -482,9 +482,14 @@ service cloud.firestore {
 
     match /chats/{chatId} {
       allow read: if isSignedIn() && (request.auth.uid in resource.data.participants);
-      allow create: if isSignedIn() && 
-                    (request.auth.uid in incoming().participants) &&
-                    (get(/databases/$(database)/documents/users/$(request.auth.uid)).data.isPro == true);
+      // Messaging baseline: a verified member (B+) may start a chat they're a
+      // participant in. Connection/match requirements are enforced in the app
+      // (where the "Message" action only appears for connections or matched
+      // company↔candidate pairs); B-tier gating here blocks spam at the rules
+      // level. (Was previously isPro-only, which wrongly limited messaging to
+      // premium users — see USER_TIERS.md.)
+      allow create: if isVerifiedMember() &&
+                    (request.auth.uid in incoming().participants);
       allow update: if isSignedIn() && (request.auth.uid in resource.data.participants);
 
       match /messages/{messageId} {

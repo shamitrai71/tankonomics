@@ -20,7 +20,7 @@ export function TierGate({
   compact = false,
 }: {
   requiredTier: RequiredTier;
-  children: ReactNode;
+  children?: ReactNode;
   compact?: boolean;
 }) {
   const { user, tier, hasBlueprint } = useAuth();

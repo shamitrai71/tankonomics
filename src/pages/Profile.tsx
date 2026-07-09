@@ -446,7 +446,7 @@ function SavedJobs({ profile, isOwner }: { profile: any; isOwner: boolean }) {
 export default function Profile() {
   const { id } = useParams();
   const navigate = useNavigate();
-  const { user, profile: currentUserProfile } = useAuth();
+  const { user, profile: currentUserProfile, tier } = useAuth();
   const { createNotification } = useNotifications();
   const [viewedProfile, setViewedProfile] = useState<any>(null);
   const [profileLoading, setProfileLoading] = useState(true);
@@ -471,6 +471,13 @@ export default function Profile() {
   const connection = myConnections.find((c) => c.userIds.includes(targetId));
   const isConnected = connection?.status === "accepted";
   const isPending = connection?.status === "pending";
+  // Match-unlocked messaging: a job_match linking viewer↔target (either as the
+  // candidate or as the company owner on the match) opens the channel.
+  const { data: matchLinks } = useCollection<any>("job_matches", [where("userUid", "in", [user?.uid || "__x", targetId || "__y"])]);
+  const hasMatchWith = matchLinks.some((m: any) =>
+    (m.userUid === user?.uid && m.companyOwnerUid === targetId) ||
+    (m.userUid === targetId && m.companyOwnerUid === user?.uid)
+  );
   const isRequester = connection?.requesterId === user?.uid;
 
   const [mutualConnections, setMutualConnections] = useState<string[]>([]);
@@ -848,12 +855,10 @@ export default function Profile() {
 
   const handleMessage = async () => {
     if (!user || !targetId || isOwner || messageloading) return;
-    if (!currentUserProfile?.isPro) {
-      alert("Direct messaging is a Pro feature. Contact the platform administrators to enable Pro on your account.");
-      return;
-    }
-    if (!isConnected) {
-      alert("You can only message connections.");
+    // Messaging is open to connections OR a matched company↔candidate pair
+    // (a job_match/application linking the two users unlocks the channel).
+    if (!isConnected && !hasMatchWith) {
+      alert("You can message your connections. Messaging also opens once you're matched with a candidate or company through a job.");
       return;
     }
     setMessageLoading(true);
@@ -956,9 +961,44 @@ export default function Profile() {
     );
   }
 
+  // A-tier limited view: registered-but-unverified viewers see only a summary
+  // card of other members (name, title, company) — not full contact/career
+  // detail. Owners and B+ see the full profile. Consistent with the
+  // members-only positioning (nothing fully public, but A gets a taste).
+  if (!isOwner && (tier === "A")) {
+    return (
+      <div className="min-h-screen bg-bg-main pb-24">
+        <div className="max-w-2xl mx-auto px-4 sm:px-6 pt-10">
+          <div className="bg-bg-card border border-border-main rounded-2xl p-8 text-center">
+            <div className="w-20 h-20 rounded-full bg-bg-main border border-border-main mx-auto mb-4 flex items-center justify-center overflow-hidden">
+              {profile.photoURL
+                ? <img src={profile.photoURL} className="w-full h-full object-cover" alt={profile.displayName} />
+                : <span className="font-display text-2xl text-text-heading">{(profile.displayName || "?").charAt(0)}</span>}
+            </div>
+            <h1 className="font-display text-2xl text-text-heading">{profile.displayName || "Member"}</h1>
+            {profile.jobTitle && <p className="text-[14px] text-text-body mt-1">{profile.jobTitle}</p>}
+            {profile.company && <p className="eyebrow tabular text-text-body/55 mt-1">{profile.company}</p>}
+            <div className="h-px bg-border-main my-6" />
+            <div className="rounded-xl border border-border-main bg-bg-main p-5">
+              <p className="text-[14px] font-medium text-text-heading mb-1">See the full profile</p>
+              <p className="text-[12px] text-text-body/70 leading-relaxed max-w-sm mx-auto mb-4">
+                Verify your email and create your Blueprint to view full member profiles, connect, and message across the network.
+              </p>
+              <button
+                onClick={() => navigate("/create-resume")}
+                className="inline-flex items-center gap-2 bg-text-heading text-bg-card px-4 py-2 rounded-xl text-[13px] font-medium hover:brightness-110 transition-all"
+              >
+                Become a member
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="min-h-screen bg-bg-main pb-24">
-      {/* Save toast */}
       <AnimatePresence>
         {showToast && (
           <motion.div

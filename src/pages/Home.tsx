@@ -19,6 +19,7 @@
 import { useState, ChangeEvent, useMemo, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { useAuth } from "../App";
+import { TierGate } from "../components/TierGate";
 import { useCollection, createDocument, updateDocument, removeDocument } from "../hooks/useFirestore";
 import { orderBy, serverTimestamp } from "firebase/firestore";
 import { uploadImage, isInlineImage, migrateDataUrlToStorage } from "../lib/uploadImage";
@@ -451,7 +452,7 @@ function ReactionPicker({ post }: { post: any }) {
    ============================================================ */
 export default function Home() {
   const MAX_POST_CHARS = 2500;
-  const { user, profile, isAdmin, ownedCompanies } = useAuth();
+  const { user, profile, isAdmin, ownedCompanies, tier } = useAuth();
   const [newPost, setNewPost] = useState("");
   const [postImage, setPostImage] = useState<string | null>(null);
   const [postImageFile, setPostImageFile] = useState<File | null>(null);
@@ -657,7 +658,10 @@ export default function Home() {
         </div>
       )}
 
-      {/* Composer */}
+      {/* Composer — participation requires B+ (verified member) */}
+      {(tier === "A") ? (
+        <div className="mb-8"><TierGate requiredTier="B" /></div>
+      ) : (
       <div className="bg-bg-card border border-border-main rounded-2xl p-5 md:p-6 mb-8 transition-shadow focus-within:shadow-[0_8px_30px_-8px_rgba(11,27,43,0.12)]">
         {/* Identity toggle (Individual / verified companies) */}
         {(isAdmin || ownedCompanies.length > 0) && (
@@ -774,6 +778,7 @@ export default function Home() {
           </button>
         </div>
       </div>
+      )}
 
       {/* Feed */}
       <div className="space-y-6">
