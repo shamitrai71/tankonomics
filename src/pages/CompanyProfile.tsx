@@ -181,6 +181,8 @@ export default function CompanyProfile() {
   const { data: companyPosts } = useCollection<any>("posts", [where("companyId", "==", id), orderBy("createdAt", "desc")]);
   const { data: productRecommendations } = useCollection<any>("product_recommendations", [where("companyId", "==", id)]);
   const { data: follows } = useCollection<any>("follows", [where("targetId", "==", id), where("targetType", "==", "company")]);
+  const { data: companyJobs } = useCollection<any>("jobs", [where("companyId", "==", id)]);
+  const { data: companyJobMatches } = useCollection<any>("job_matches", [where("companyOwnerUid", "==", user?.uid || "__none__")]);
   const { data: likes } = useCollection<any>("likes", [where("targetId", "==", id), where("targetType", "==", "company")]);
 
   const isFollowing = follows.some((f: any) => f.followerId === user?.uid);
@@ -367,7 +369,14 @@ export default function CompanyProfile() {
                 <span className="inline-block w-1.5 h-1.5 rounded-full bg-accent soft-pulse" />
                 INDEXED ENTITY
               </div>
-              <h1 className="font-display text-[clamp(1.875rem,4vw,3rem)] text-text-heading leading-[1.0]">{company.name}</h1>
+              <div className="flex items-center gap-3 flex-wrap">
+                <h1 className="font-display text-[clamp(1.875rem,4vw,3rem)] text-text-heading leading-[1.0]">{company.name}</h1>
+                {company.plan === "premium" && (
+                  <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-blueprint/10 border border-blueprint/30 text-blueprint eyebrow tabular text-[10px]">
+                    ★ PREMIUM
+                  </span>
+                )}
+              </div>
               {company.address && (
                 <p className="eyebrow tabular text-text-body/55 mt-2">{company.address}</p>
               )}
@@ -446,6 +455,83 @@ export default function CompanyProfile() {
          CONTENT BODY
          ============================================================ */}
       <div className="max-w-7xl mx-auto px-4 md:px-8 mt-10">
+        {isOwner && (
+          <div className="mb-8">
+            {company.plan === "premium" ? (
+              <div className="bg-bg-card border border-blueprint/30 rounded-2xl p-6">
+                <div className="flex items-center justify-between gap-3 mb-5">
+                  <div>
+                    <p className="eyebrow tabular text-blueprint mb-1">★ PREMIUM · TALENT DASHBOARD</p>
+                    <h3 className="font-display text-2xl text-text-heading leading-tight">Applications & matches</h3>
+                  </div>
+                  <div className="text-right">
+                    <p className="font-display text-3xl text-text-heading leading-none">{companyJobMatches.filter((m: any) => companyJobs.some((j: any) => j.id === m.jobId)).length}</p>
+                    <p className="eyebrow tabular text-text-body/55 mt-1">total candidates</p>
+                  </div>
+                </div>
+
+                {companyJobs.length === 0 ? (
+                  <p className="text-[13px] text-text-body/60 py-4 text-center">No jobs posted yet. Post a job to start receiving applications and matches.</p>
+                ) : (
+                  <div className="space-y-4">
+                    {companyJobs.map((job: any) => {
+                      const jm = companyJobMatches.filter((m: any) => m.jobId === job.id);
+                      const applied = jm.filter((m: any) => m.status === "applied");
+                      return (
+                        <div key={job.id} className="border border-border-main rounded-xl p-4">
+                          <div className="flex items-center justify-between gap-3 mb-2">
+                            <p className="text-[14px] font-bold text-text-heading">{job.title}</p>
+                            <div className="flex items-center gap-2 shrink-0">
+                              {applied.length > 0 && (
+                                <span className="eyebrow tabular text-[9px] px-2 py-0.5 rounded-full bg-blueprint/10 text-blueprint">{applied.length} applied</span>
+                              )}
+                              <span className="eyebrow tabular text-[9px] px-2 py-0.5 rounded-full bg-bg-main text-text-body/60">{jm.length} total</span>
+                            </div>
+                          </div>
+                          {jm.length === 0 ? (
+                            <p className="text-[11px] text-text-body/45 italic">No candidates yet.</p>
+                          ) : (
+                            <div className="space-y-1.5 mt-2">
+                              {jm
+                                .sort((a: any, b: any) => (b.score || 0) - (a.score || 0))
+                                .slice(0, 5)
+                                .map((m: any) => (
+                                <div key={m.id} className="flex items-center justify-between gap-2 py-1.5 px-2 rounded-lg bg-bg-main">
+                                  <div className="flex items-center gap-2 min-w-0">
+                                    <p className="text-[12px] text-text-heading truncate">{m.userName}</p>
+                                    {m.status === "applied" && <span className="eyebrow tabular text-[8px] text-blueprint shrink-0">★ APPLIED</span>}
+                                  </div>
+                                  <div className="flex items-center gap-2 shrink-0">
+                                    {m.score != null && (
+                                      <span className={`eyebrow tabular text-[9px] px-1.5 py-0.5 rounded-full ${
+                                        m.score >= 70 ? "bg-emerald-100 text-emerald-700" : m.score >= 40 ? "bg-accent/10 text-accent" : "bg-bg-card text-text-body/55"
+                                      }`}>{m.score}/100</span>
+                                    )}
+                                    <span className="eyebrow tabular text-[9px] text-text-body/50">{m.status}</span>
+                                  </div>
+                                </div>
+                              ))}
+                              {jm.length > 5 && <p className="text-[10px] text-text-body/40 text-center pt-1">+{jm.length - 5} more</p>}
+                            </div>
+                          )}
+                        </div>
+                      );
+                    })}
+                  </div>
+                )}
+              </div>
+            ) : (
+              <div className="bg-bg-card border border-border-main rounded-2xl p-6 text-center">
+                <p className="eyebrow tabular text-accent mb-2">TALENT DASHBOARD</p>
+                <h3 className="font-display text-xl text-text-heading mb-1">Unlock the talent dashboard</h3>
+                <p className="text-[13px] text-text-body/70 max-w-md mx-auto leading-relaxed">
+                  Premium companies see every application and ranked match for their jobs in one place, with candidate match scores. Contact the platform team to enable premium.
+                </p>
+              </div>
+            )}
+          </div>
+        )}
+
         <div className="grid grid-cols-1 lg:grid-cols-[1.6fr_1fr] gap-10">
           {/* Main column */}
           <div>
