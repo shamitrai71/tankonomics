@@ -1,4 +1,5 @@
-import { 
+import {
+  setDoc, 
   collection, 
   collectionGroup,
   query, 
@@ -145,6 +146,18 @@ export async function updateDocument(path: string, id: string, data: any) {
       ...data,
       updatedAt: serverTimestamp()
     });
+  } catch (err) {
+    handleFirestoreError(err, OperationType.UPDATE, `${path}/${id}`);
+  }
+}
+
+export async function setDocument(path: string, id: string, data: any) {
+  try {
+    const ref = doc(db, path, id);
+    return await setDoc(ref, {
+      ...data,
+      updatedAt: serverTimestamp()
+    }, { merge: true });
   } catch (err) {
     handleFirestoreError(err, OperationType.UPDATE, `${path}/${id}`);
   }

@@ -9,6 +9,7 @@
 
 import { useState, useEffect } from "react";
 import { useAuth } from "../App";
+import { TierGate } from "../components/TierGate";
 import { useCollection, createDocument } from "../hooks/useFirestore";
 import { orderBy, serverTimestamp } from "firebase/firestore";
 import {
@@ -33,7 +34,7 @@ import { CategorySelector } from "../components/CategorySelector";
 import { useNavigate } from "react-router-dom";
 
 export default function Forums() {
-  const { user, isAdmin, isCompanyOwner, ownedCompanies } = useAuth();
+  const { user, isAdmin, isCompanyOwner, ownedCompanies, tier } = useAuth();
   const navigate = useNavigate();
   const [activeCategory, setActiveCategory] = useState("all");
   const [searchTerm, setSearchTerm] = useState("");
@@ -111,7 +112,7 @@ export default function Forums() {
         <div className="grid grid-cols-1 lg:grid-cols-[280px_1fr] gap-8 lg:gap-10">
           {/* Sidebar */}
           <aside className="space-y-6">
-            {(isAdmin || isCompanyOwner) && (
+            {(tier === "B" || tier === "C" || tier === "admin") ? (
               <button
                 onClick={() => setIsCreating(true)}
                 className="w-full bg-text-heading text-bg-card py-3 rounded-xl font-medium text-[14px] flex items-center justify-center gap-2 hover:brightness-110 transition-all"
@@ -119,6 +120,8 @@ export default function Forums() {
                 <Plus className="w-4 h-4" strokeWidth={1.75} />
                 Start new topic
               </button>
+            ) : (
+              <TierGate requiredTier="B" compact><span /></TierGate>
             )}
 
             <div className="bg-bg-card border border-border-main rounded-2xl p-5">

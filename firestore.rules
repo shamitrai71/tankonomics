@@ -11,6 +11,14 @@ service cloud.firestore {
       return request.auth != null;
     }
 
+    // Tier B (Member): email-verified AND has a Blueprint. Blueprint doc id is
+    // the user's uid (one Blueprint per user), so presence is checkable here.
+    function isVerifiedMember() {
+      return isSignedIn() &&
+             request.auth.token.email_verified == true &&
+             exists(/databases/$(database)/documents/resumes/$(request.auth.uid));
+    }
+
     function isOwner(userId) {
       return isSignedIn() && request.auth.uid == userId;
     }
@@ -622,7 +630,7 @@ service cloud.firestore {
 
     match /posts/{postId} {
       allow read: if isSignedIn();
-      allow create: if isSignedIn() && isValidPost(incoming());
+      allow create: if isVerifiedMember() && isValidPost(incoming());
       allow update: if (isOwner(existing().authorUid) && 
                         isValidPost(incoming()) && 
                         incoming().diff(existing()).affectedKeys().hasOnly(['content', 'image', 'updatedAt'])) ||
@@ -633,7 +641,7 @@ service cloud.firestore {
 
     match /{path=**}/comments/{commentId} {
       allow read: if isSignedIn();
-      allow create: if isSignedIn() && isValidComment(incoming());
+      allow create: if isVerifiedMember() && isValidComment(incoming());
       allow delete: if isOwner(existing().authorUid) || isAdmin();
     }
 
@@ -654,14 +662,14 @@ service cloud.firestore {
 
     match /forum_topics/{topicId} {
       allow read: if isSignedIn();
-      allow create: if isSignedIn() && isValidForumTopic(incoming());
+      allow create: if isVerifiedMember() && isValidForumTopic(incoming());
       allow update: if (isOwner(existing().authorUid) && isValidForumTopic(incoming())) || 
                       (isSignedIn() && incoming().diff(existing()).affectedKeys().hasOnly(['replyCount', 'updatedAt'])) ||
                       isAdmin();
       
       match /posts/{postId} {
         allow read: if isSignedIn();
-        allow create: if isSignedIn() && incoming().topicId == topicId && isValidForumPost(incoming());
+        allow create: if isVerifiedMember() && incoming().topicId == topicId && isValidForumPost(incoming());
         allow delete: if isOwner(existing().authorUid) || isAdmin();
       }
 

@@ -101,6 +101,8 @@ interface AuthContextType {
   isAdmin: boolean;
   ownedCompanies: any[];
   isCompanyOwner: boolean;
+  hasBlueprint: boolean;
+  tier: "A" | "B" | "C" | "admin";
   signIn: () => Promise<void>;
   logout: () => Promise<void>;
 }
@@ -1199,6 +1201,7 @@ export default function App() {
   const [isSplashing, setIsSplashing] = useState(true);
   const [isAdmin, setIsAdmin] = useState(false);
   const [ownedCompanies, setOwnedCompanies] = useState<any[]>([]);
+  const [hasBlueprint, setHasBlueprint] = useState(false);
   const [theme, setTheme] = useState<any>(null);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
@@ -1313,6 +1316,7 @@ export default function App() {
   useEffect(() => {
     if (!user) {
       setProfile(null);
+      setHasBlueprint(false);
       setIsAdmin(false);
       setOwnedCompanies([]);
       return;
@@ -1323,6 +1327,7 @@ export default function App() {
     // cleanup return below can see them.
     let profileUnsub: (() => void) | undefined;
     let companiesUnsub: (() => void) | undefined;
+    let blueprintUnsub: (() => void) | undefined;
 
     // initUserContext is the single source of truth for setting up a
     // signed-in session's Firestore state. It performs three things in
@@ -1440,6 +1445,14 @@ export default function App() {
             setOwnedCompanies(cos);
           }
         );
+
+        // Blueprint presence drives B-tier (email-verified + has a Blueprint).
+        blueprintUnsub = onSnapshot(
+          query(collection(db, "resumes"), where("userUid", "==", user.uid)),
+          (snapshot) => {
+            setHasBlueprint(!snapshot.empty);
+          }
+        );
       } catch (error) {
         // Bootstrap failures are now surfaced instead of swallowed.
         // Common causes: rule rejection on user create, transient network.
@@ -1452,6 +1465,7 @@ export default function App() {
     return () => {
       profileUnsub?.();
       companiesUnsub?.();
+      blueprintUnsub?.();
     };
   }, [user]);
 
@@ -1516,6 +1530,15 @@ export default function App() {
       isAdmin, 
       ownedCompanies, 
       isCompanyOwner: ownedCompanies.length > 0 || isAdmin,
+      hasBlueprint,
+      // Tier: A (registered) < B (member: email-verified + Blueprint) < C
+      // (company premium: approved-company owner + isPro). Admin is orthogonal.
+      tier: (
+        isAdmin ? "admin"
+        : ((ownedCompanies.length > 0 || isAdmin) && profile?.isPro) ? "C"
+        : (user?.emailVerified && hasBlueprint) ? "B"
+        : "A"
+      ),
       signIn, 
       logout 
     }}>

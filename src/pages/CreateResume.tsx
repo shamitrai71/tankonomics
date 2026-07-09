@@ -22,7 +22,7 @@
 import { useState, useEffect } from "react";
 import { useAuth } from "../App";
 import { useNavigate } from "react-router-dom";
-import {
+import { setDocument,
   createDocument,
   useCollection,
   updateDocument,
@@ -191,12 +191,13 @@ export default function CreateResume() {
         updatedAt: serverTimestamp(),
       };
 
-      if (existingResumes.length > 0) {
-        await updateDocument("resumes", existingResumes[0].id, payload);
-      } else {
-        await createDocument("resumes", {
+      // Resume doc ID is the user's UID (one Blueprint per user). This makes
+      // Blueprint-presence checkable in rules via exists(/resumes/$(uid)),
+      // which powers B-tier gating. setDoc with merge upserts either way.
+      if (user?.uid) {
+        await setDocument("resumes", user.uid, {
           ...payload,
-          createdAt: serverTimestamp(),
+          createdAt: existingResumes.length > 0 ? (existingResumes[0].createdAt || serverTimestamp()) : serverTimestamp(),
         });
       }
       setSavedToast(true);
