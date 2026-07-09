@@ -217,6 +217,8 @@ service cloud.firestore {
              (!('address' in data.keys()) || data.address is string) &&
              (!('heroImage' in data.keys()) || data.heroImage is string) &&
              (!('isFeatured' in data.keys()) || data.isFeatured is bool) &&
+             (!('plan' in data.keys()) || data.plan == null || data.plan in ['free', 'premium']) &&
+             (!('planSince' in data.keys()) || data.planSince == null || data.planSince is timestamp) &&
              (!('products' in data.keys()) || data.products is list);
     }
 
@@ -565,7 +567,7 @@ service cloud.firestore {
 
     match /companies/{companyId} {
       allow read: if isSignedIn();
-      allow write: if isAdmin();
+      allow write: if isAdmin() && (request.method == 'delete' || isValidCompany(incoming()));
     }
 
     match /company_categories/{categoryId} {

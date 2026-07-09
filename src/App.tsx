@@ -1532,10 +1532,12 @@ export default function App() {
       isCompanyOwner: ownedCompanies.length > 0 || isAdmin,
       hasBlueprint,
       // Tier: A (registered) < B (member: email-verified + Blueprint) < C
-      // (company premium: approved-company owner + isPro). Admin is orthogonal.
+      // (company premium: owns an approved company with plan=='premium').
+      // Admin orthogonal. isPro remains a separate USER flag reserved for the
+      // future Premium Individual product — it does NOT grant C.
       tier: (
         isAdmin ? "admin"
-        : ((ownedCompanies.length > 0 || isAdmin) && profile?.isPro) ? "C"
+        : (ownedCompanies.some((c: any) => c.status === "approved" && c.plan === "premium")) ? "C"
         : (user?.emailVerified && hasBlueprint) ? "B"
         : "A"
       ),

@@ -1736,6 +1736,30 @@ const handleEditCompany = (company: any) => {
                               Featured
                             </span>
                           )}
+                          <button
+                            onClick={async () => {
+                              const makePremium = company.plan !== "premium";
+                              // PAYMENT INTEGRATION SEAM: today this is an admin
+                              // grant. When billing is added, gate this on a
+                              // successful charge / active subscription instead.
+                              try {
+                                await updateDocument("companies", company.id, {
+                                  plan: makePremium ? "premium" : "free",
+                                  planSince: makePremium ? serverTimestamp() : null,
+                                });
+                              } catch (err: any) {
+                                alert(`Failed to update plan: ${err?.code ? err.code + ": " : ""}${err?.message || err}`);
+                              }
+                            }}
+                            title={company.plan === "premium" ? "Click to revoke premium" : "Click to grant premium"}
+                            className={`px-3 py-1 rounded-full eyebrow tabular border transition-all ${
+                              company.plan === "premium"
+                                ? "bg-blueprint/15 border-blueprint/40 text-blueprint"
+                                : (company.isFeatured ? "bg-bg-card/10 border-white/20 text-white/50 hover:text-white" : "bg-bg-main border-border-main text-text-body/45 hover:text-text-heading")
+                            }`}
+                          >
+                            {company.plan === "premium" ? "★ PREMIUM" : "Free — grant premium"}
+                          </button>
                         </div>
 
                         <div className={`pt-4 border-t flex items-center justify-between ${
