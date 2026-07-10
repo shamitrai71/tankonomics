@@ -176,7 +176,7 @@ export default function Admin() {
   const { data: surveys, loading: loadingSurveys } = useCollection<any>("surveys", [orderBy("createdAt", "desc")], activeTab === "analytics" || activeTab === "surveys");
 
   // Members State
-  const { data: members, loading: loadingMembers } = useCollection<any>("users", [orderBy("createdAt", "desc")], activeTab === "analytics" || activeTab === "members");
+  const { data: members, loading: loadingMembers } = useCollection<any>("users", [orderBy("createdAt", "desc")], activeTab === "analytics" || activeTab === "members" || activeTab === "jobs");
   const [searchMember, setSearchMember] = useState("");
 
   // Moderation State
@@ -687,6 +687,21 @@ const handleEditCompany = (company: any) => {
         score: scoreMatch(matchingJob, confirmMatchResume, matchWeights).total,
         createdAt: serverTimestamp(),
       });
+      // Early match alert (Premium Individual): premium candidates get an
+      // immediate, richer notification when a match is suggested for them.
+      // Non-premium candidates discover matches passively when browsing.
+      const candidateIsPro = members.find((m: any) => m.id === confirmMatchResume.userUid)?.isPro === true;
+      if (candidateIsPro && confirmMatchResume.userUid) {
+        await createDocument("notifications", {
+          recipientUid: confirmMatchResume.userUid,
+          title: "★ New job match for you",
+          message: `You've been matched with "${matchingJob.title}" at ${matchingJob.companyName}. Premium early alert — review it now.`,
+          type: "match_alert",
+          link: "/jobs",
+          read: false,
+          createdAt: serverTimestamp(),
+        });
+      }
       setConfirmMatchResume(null);
       setMatchNote("");
     } catch (err: any) {
@@ -2997,12 +3012,24 @@ const handleEditCompany = (company: any) => {
                       <p className="eyebrow tabular text-text-body/55 mb-2">CANDIDATES · RANKED BY MATCH SCORE</p>
                       {(() => {
                         const alreadyMatchedUids = jobMatches.filter((m: any) => m.jobId === matchingJob.id).map((m: any) => m.userUid);
-                        // Score every unmatched resume against this job (10-point rubric:
-                        // domain 4, role 2, skills 2, location 1, credentials 1), best first.
+                        // Score every unmatched resume against this job, best
+                        // first. Premium-Individual BOOST: among candidates
+                        // within a small score band, the premium one surfaces
+                        // higher — a visibility nudge, never a score override.
+                        const proByUid: Record<string, boolean> = {};
+                        members.forEach((m: any) => { proByUid[m.id] = m.isPro === true; });
+                        const BOOST_BAND = 5;
                         const candidateResumes = resumes
                           .filter((r: any) => !alreadyMatchedUids.includes(r.userUid))
-                          .map((r: any) => ({ ...r, _match: scoreMatch(matchingJob, r, matchWeights) }))
-                          .sort((a: any, b: any) => b._match.total - a._match.total);
+                          .map((r: any) => ({ ...r, _match: scoreMatch(matchingJob, r, matchWeights), _isPro: proByUid[r.userUid] === true }))
+                          .sort((a: any, b: any) => {
+                            const diff = b._match.total - a._match.total;
+                            // Within the band, let premium break the tie upward.
+                            if (Math.abs(diff) <= BOOST_BAND && a._isPro !== b._isPro) {
+                              return a._isPro ? -1 : 1;
+                            }
+                            return diff;
+                          });
                         if (resumes.length === 0) return (
                           <p className="text-xs text-text-body/55 text-center py-4">Loading resumes…</p>
                         );
@@ -3039,6 +3066,9 @@ const handleEditCompany = (company: any) => {
                                   </span>
                                   {resume._match.mustHaveMissing && (
                                     <span className="eyebrow tabular text-[9px] px-1.5 py-0.5 rounded-full bg-rust/10 text-rust">missing must-have</span>
+                                  )}
+                                  {resume._isPro && (
+                                    <span className="eyebrow tabular text-[9px] px-1.5 py-0.5 rounded-full bg-blueprint/10 text-blueprint" title="Premium member — boosted within score band">★ boosted</span>
                                   )}
                                 </div>
                                 {resume._match.flags?.length > 0 && (
