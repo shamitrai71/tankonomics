@@ -222,12 +222,6 @@ service cloud.firestore {
              (!('products' in data.keys()) || data.products is list);
     }
 
-    function isValidCompanyCategory(data) {
-      return data.keys().hasAll(['name', 'level']) &&
-             data.name is string && data.name.size() <= 64 &&
-             data.level is number;
-    }
-
     function isValidCompanyClaim(data) {
       return data.keys().hasAll(['companyId', 'userUid', 'justification']) &&
              data.companyId is string &&
@@ -316,13 +310,6 @@ service cloud.firestore {
              request.auth.uid in data.userIds &&
              data.requesterId == request.auth.uid &&
              data.status in ['pending', 'accepted', 'rejected'] &&
-             data.createdAt == request.time;
-    }
-
-    function isValidChat(data) {
-      return data.keys().hasAll(['participants', 'createdAt']) &&
-             data.participants is list && data.participants.size() >= 2 &&
-             request.auth.uid in data.participants &&
              data.createdAt == request.time;
     }
 
@@ -739,6 +726,19 @@ service cloud.firestore {
                     (isSignedIn() && resource.data.companyOwnerUid == request.auth.uid &&
                      incoming().diff(existing()).affectedKeys().hasOnly(['status', 'updatedAt']) &&
                      incoming().status in ['hired', 'passed']);
+      allow delete: if isAdmin();
+    }
+
+    match /profile_views/{viewId} {
+      // The viewed person reads views of themselves. Admin reads all.
+      allow read: if isAdmin() ||
+                  (isSignedIn() && resource.data.viewedUid == request.auth.uid);
+      // A signed-in user records a view they performed (viewerUid is them).
+      // Doc id is `${viewedUid}_${viewerUid}`; upsert refreshes the timestamp.
+      allow create, update: if isSignedIn() &&
+                    incoming().viewerUid == request.auth.uid &&
+                    incoming().viewedUid is string &&
+                    incoming().viewerUid != incoming().viewedUid;
       allow delete: if isAdmin();
     }
 

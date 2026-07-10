@@ -27,11 +27,13 @@
 import { useState, useEffect, useRef } from "react";
 import { Link, useParams } from "react-router-dom";
 import { useAuth } from "../App";
-import { useCollection, useCollectionGroup, updateDocument, createDocument } from "../hooks/useFirestore";
-import { where, doc, getDoc, setDoc, serverTimestamp } from "firebase/firestore";
+import { setDocument, useCollection, useCollectionGroup, updateDocument, createDocument } from "../hooks/useFirestore";
+import {
+  orderBy, where, doc, getDoc, setDoc, serverTimestamp } from "firebase/firestore";
 import { db } from "../firebase";
 import { migrateDataUrlToStorage, isInlineImage, uploadImage } from "../lib/uploadImage";
 import {
+  Eye,
   Building2,
   Briefcase,
   Globe,
@@ -456,6 +458,11 @@ export default function Profile() {
 
   const targetId = id || user?.uid;
   const { data: endorsements } = useCollection<any>("endorsements", [where("targetUid", "==", targetId || "")]);
+  // Who viewed MY profile (only meaningful on own profile).
+  const { data: myProfileViews } = useCollection<any>(
+    "profile_views",
+    [where("viewedUid", "==", user?.uid || "__none__"), orderBy("viewedAt", "desc")]
+  );
   const { data: recommendations } = useCollection<any>("recommendations", [where("targetUid", "==", targetId || "")]);
   const { data: myConnections } = useCollection<any>("connections", [where("userIds", "array-contains", user?.uid || "")]);
   const { data: targetConnections } = useCollection<any>("connections", [where("userIds", "array-contains", targetId || "")]);
@@ -692,6 +699,31 @@ export default function Profile() {
     };
     fetchProfile();
   }, [targetId, user?.uid]);
+
+  // Record a profile view (reciprocal / LinkedIn model). We record the
+  // viewer's identity ONLY when the viewer is public; private viewers leave
+  // no trace and, correspondingly, can't see their own viewers. Skips self,
+  // signed-out, and own-profile views. Deterministic id upserts on re-view.
+  useEffect(() => {
+    const recordView = async () => {
+      if (!user || !targetId || targetId === user.uid) return;
+      const viewerIsPublic = currentUserProfile?.isPublic === true;
+      if (!viewerIsPublic) return; // private browsing: no record
+      try {
+        await setDocument("profile_views", `${targetId}_${user.uid}`, {
+          viewedUid: targetId,
+          viewerUid: user.uid,
+          viewerName: currentUserProfile?.displayName || "A member",
+          viewerTitle: currentUserProfile?.jobTitle || "",
+          viewerPhoto: currentUserProfile?.photoURL || "",
+          viewedAt: serverTimestamp(),
+        });
+      } catch {
+        // Non-critical; a failed view record should never disrupt browsing.
+      }
+    };
+    recordView();
+  }, [targetId, user?.uid, currentUserProfile?.isPublic]);
 
   const handlePhotoPick = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -1195,6 +1227,66 @@ export default function Profile() {
           </div>
         </header>
 
+        {/* Who viewed your profile — own profile only (Premium Individual) */}
+        {isOwner && (() => {
+          const viewerIsPublic = currentUserProfile?.isPublic === true;
+          const isPremium = currentUserProfile?.isPro === true;
+          const count = myProfileViews.length;
+          return (
+            <div className="mt-8 bg-bg-card border border-border-main rounded-2xl p-6">
+              <div className="flex items-center justify-between gap-3 mb-4">
+                <div>
+                  <p className="eyebrow tabular text-accent mb-1 flex items-center gap-1.5">
+                    <Eye className="w-3.5 h-3.5" strokeWidth={1.75} /> PROFILE VIEWS
+                  </p>
+                  <h3 className="font-display text-xl text-text-heading leading-tight">Who viewed your profile</h3>
+                </div>
+                <div className="text-right">
+                  <p className="font-display text-3xl text-text-heading leading-none">{count}</p>
+                  <p className="eyebrow tabular text-text-body/55 mt-1">{count === 1 ? "viewer" : "viewers"}</p>
+                </div>
+              </div>
+
+              {!viewerIsPublic ? (
+                <div className="rounded-xl border border-border-main bg-bg-main p-4 text-center">
+                  <p className="text-[13px] text-text-heading font-medium mb-1">You're browsing privately</p>
+                  <p className="text-[12px] text-text-body/65 leading-relaxed max-w-md mx-auto">
+                    Turn off private browsing in your profile settings to see who's viewed you. When private, your own views stay hidden too.
+                  </p>
+                </div>
+              ) : count === 0 ? (
+                <p className="text-[13px] text-text-body/55 py-3 text-center">No profile views yet.</p>
+              ) : isPremium ? (
+                <div className="space-y-2">
+                  {myProfileViews.slice(0, 10).map((v: any) => (
+                    <Link key={v.id} to={`/profile/${v.viewerUid}`} className="flex items-center gap-3 p-2 rounded-lg hover:bg-bg-main transition-colors">
+                      <img
+                        src={v.viewerPhoto || `https://api.dicebear.com/7.x/initials/svg?seed=${v.viewerName || "M"}`}
+                        alt={v.viewerName}
+                        className="w-9 h-9 rounded-lg object-cover border border-border-main"
+                      />
+                      <div className="min-w-0 flex-1">
+                        <p className="text-[13px] text-text-heading font-medium truncate">{v.viewerName}</p>
+                        {v.viewerTitle && <p className="text-[11px] text-text-body/60 truncate">{v.viewerTitle}</p>}
+                      </div>
+                    </Link>
+                  ))}
+                  {count > 10 && <p className="text-[11px] text-text-body/45 text-center pt-1">+{count - 10} more</p>}
+                </div>
+              ) : (
+                <div className="rounded-xl border border-blueprint/25 bg-blueprint/5 p-4 text-center">
+                  <p className="text-[13px] text-text-heading font-medium mb-1">
+                    {count} {count === 1 ? "person has" : "people have"} viewed your profile
+                  </p>
+                  <p className="text-[12px] text-text-body/65 leading-relaxed max-w-md mx-auto">
+                    Upgrade to Premium to see exactly who's been looking at your profile.
+                  </p>
+                </div>
+              )}
+            </div>
+          );
+        })()}
+
         {/* ======================= MAIN COLUMNS ======================= */}
         <div className="mt-12 grid grid-cols-1 lg:grid-cols-[1.6fr_1fr] gap-10">
           {/* Left column — profile body */}
@@ -1267,7 +1359,7 @@ export default function Profile() {
                     />
                     <div>
                       <p className="text-[14px] font-medium text-text-heading">Public profile</p>
-                      <p className="text-[12px] text-text-body/70 mt-0.5">Visible to non-connections in the directory.</p>
+                      <p className="text-[12px] text-text-body/70 mt-0.5">Visible to non-connections in the directory. Also enables profile-view tracking — when on, your visits are recorded and you can see who viewed you. Turn off to browse privately (your views stay hidden, and so do theirs from you).</p>
                     </div>
                   </label>
                 </EditSection>
