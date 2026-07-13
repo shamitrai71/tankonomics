@@ -1119,6 +1119,11 @@ export default function Profile() {
                     Pro
                   </span>
                 )}
+                {profile?.isFounder && (
+                  <span className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-blueprint/10 text-blueprint border border-blueprint/30 rounded-full eyebrow tabular" title="Founding member">
+                    ★ Founder
+                  </span>
+                )}
               </div>
 
               <div className="grid grid-cols-3 gap-px mt-6 max-w-md mx-auto sm:mx-0 bg-border-main border border-border-main rounded-xl overflow-hidden">

@@ -56,6 +56,8 @@ service cloud.firestore {
              (!('jobTitle' in data.keys()) || data.jobTitle == null || (data.jobTitle is string && data.jobTitle.size() <= 256)) &&
              (!('companyId' in data.keys()) || data.companyId == null || (data.companyId is string && data.companyId.size() <= 128)) &&
              (!('isPro' in data.keys()) || data.isPro is bool) &&
+             (!('isFounder' in data.keys()) || data.isFounder is bool) &&
+             (!('founderSince' in data.keys()) || data.founderSince == null || data.founderSince is timestamp) &&
              (!('isPublic' in data.keys()) || data.isPublic is bool) &&
              (!('aiUsage' in data.keys()) || data.aiUsage is map) &&
              (!('skills' in data.keys()) || data.skills is list) &&

@@ -2776,6 +2776,36 @@ const handleEditCompany = (company: any) => {
                            >
                              {member.isPro ? "PRO" : "Free"}
                            </button>
+                           {/* Founder — invite-only role granting C-equivalent
+                               privileges. Manual yearly renewal (year one):
+                               founderSince shown so admin can judge renewals. */}
+                           <button
+                             onClick={async () => {
+                               const grant = !member.isFounder;
+                               if (!window.confirm(`${grant ? "Grant" : "Revoke"} Founder status for ${member.displayName || member.email}?\n\nFounders get company-premium-equivalent privileges.`)) return;
+                               try {
+                                 await updateDocument("users", member.id, {
+                                   isFounder: grant,
+                                   founderSince: grant ? serverTimestamp() : null,
+                                   updatedAt: serverTimestamp(),
+                                 });
+                               } catch (err: any) {
+                                 alert(`Failed to update Founder status: ${err?.message || "Unknown error"}`);
+                               }
+                             }}
+                             className={`eyebrow tabular px-2.5 py-1 rounded-full border transition-all ml-1.5 ${
+                               member.isFounder
+                                 ? "bg-blueprint/10 text-blueprint border-blueprint/30 hover:bg-rust/10 hover:text-rust hover:border-rust/30"
+                                 : "bg-bg-main text-text-body/45 border-border-main hover:text-blueprint hover:border-blueprint/30"
+                             }`}
+                             title={
+                               member.isFounder
+                                 ? `Founder since ${member.founderSince?.toDate ? member.founderSince.toDate().toLocaleDateString() : "—"} · click to revoke`
+                                 : "Click to grant Founder status"
+                             }
+                           >
+                             {member.isFounder ? "★ FOUNDER" : "Founder"}
+                           </button>
                         </td>
                         <td className="px-6 py-4">
                            <div className="flex flex-col gap-1">

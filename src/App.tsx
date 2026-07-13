@@ -103,6 +103,7 @@ interface AuthContextType {
   isCompanyOwner: boolean;
   hasBlueprint: boolean;
   tier: "A" | "B" | "C" | "admin";
+  isFounder: boolean;
   signIn: () => Promise<void>;
   logout: () => Promise<void>;
 }
@@ -1535,8 +1536,13 @@ export default function App() {
       // (company premium: owns an approved company with plan=='premium').
       // Admin orthogonal. isPro remains a separate USER flag reserved for the
       // future Premium Individual product — it does NOT grant C.
+      isFounder: profile?.isFounder === true,
+      // Tier: A < B < C. Founder is a ROLE (invite-only, admin-appointed) that
+      // grants C-equivalent privileges without owning a premium company —
+      // orthogonal to tier per USER_TIERS.md §1.
       tier: (
         isAdmin ? "admin"
+        : (profile?.isFounder === true) ? "C"
         : (ownedCompanies.some((c: any) => c.status === "approved" && c.plan === "premium")) ? "C"
         : (user?.emailVerified && hasBlueprint) ? "B"
         : "A"
