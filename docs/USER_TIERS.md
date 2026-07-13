@@ -83,28 +83,90 @@ and prevents instant off-platform disintermediation. *Exact trigger
   owner; Stage 2 decides whether it lives on the company doc (recommended) or
   stays on the owner's user doc.
 
-## 6. Stage-wise execution (mapped to what already exists)
+## 6. Stage-wise execution — STATUS: ALL FOUR STAGES COMPLETE (Jul 2026)
 
-**Stage 1 — Tier gating.** Enforce A/B/C in rules + UI: A job-view (open the
-jobs read rule to signed-in), apply-requires-Blueprint (✅ built),
-forums/events/surveys participation B+, creation C, messaging connections-only
-(✅ largely built) + match-unlocked channel (new), limited profile card for A
-(new). Confirm the B verification definition.
+**Stage 1 — Tier gating. ✅ DONE.**
+- `tier` ("A"|"B"|"C"|"admin") computed in the App auth context, plus
+  `hasBlueprint`. Every surface keys off it.
+- **B verification defined and locked:** email-verified **AND** has a
+  Blueprint. Enforced server-side by `isVerifiedMember()`.
+- **Resume-id = user-uid migration** (the enabling change): the Blueprint saves
+  at doc id == uid via a `setDocument` merge helper, so rules can check
+  `exists(/resumes/$(uid))`. Blueprint-presence is otherwise unqueryable in
+  rules (rules can `get()` a known path but cannot query by field).
+  *Legacy note: any pre-migration resume with an auto-id must be re-saved once
+  to land at the uid, or its owner won't register as B.*
+- Participation gated to B+ in rules: feed posts, comments, forum topics,
+  forum replies. Creation (events/surveys/groups) remains company-gated (C).
+- `TierGate` component guides users through what's missing (verify email /
+  create Blueprint / claim company) instead of silent permission errors.
+- A-tier limited profile card (name/title/company only when viewing others).
+- **Match-unlocked messaging:** the chat-create rule previously required
+  `isPro`, which wrongly limited messaging to premium users. Now B+ can chat,
+  and the app opens the Message action for **connections OR a matched
+  company↔candidate pair** — without this the hiring loop dead-ends.
 
-**Stage 2 — Company Premium.** Company-level premium flag (admin-granted
-first, payments later), owner-only C privileges wired to it, premium badge,
-job-results dashboard on the company view. Decide downgrade behaviour.
+**Stage 2 — Company Premium. ✅ DONE.**
+- **Premium lives on the COMPANY doc** (`plan: "free"|"premium"` +
+  `planSince`), not the user — matching the owner-only seat model and the
+  eventual billing target. `isValidCompany` gained the fields and was wired
+  into the companies write rule (which had no validator).
+- **`isPro` deliberately preserved untouched on the user doc** as the
+  foundation of the separate Premium Individual product (Stage 3).
+- C-tier = owns an **approved** company with `plan == "premium"`.
+- Admin grant/revoke toggle in Admin → Companies, carrying an explicit
+  **payment-integration seam** (comment marking where a billing check replaces
+  the admin grant).
+- ★ PREMIUM badge on the company profile; **talent dashboard** for premium
+  owners (their jobs → applications/matches ranked by match score, applications
+  badged); free companies see an upsell card.
+- *Implementation note:* the dashboard queries `job_matches` by
+  `companyOwnerUid` (not `companyId`) because that is what the read rule
+  permits — Firestore rejects queries it cannot prove are scoped to readable
+  docs.
 
-**Stage 3 — Premium Individual.** Profile-view tracking (privacy note: track
-views only when the viewer consents to being visible — LinkedIn model),
-"who viewed your profile", profile boost, early match alerts.
+**Stage 3 — Premium Individual. ✅ DONE.** (All three features key off `isPro`.)
+- **Who viewed your profile**, on the **LinkedIn reciprocal model**: a view is
+  recorded with the viewer's identity **only if the viewer is public**
+  (`isPublic`); private browsers leave no trace and correspondingly cannot see
+  their own viewers. Public + premium → viewer names/titles/photos. Public +
+  free → **count only**, with the upgrade prompt. New `profile_views`
+  collection (doc id `{viewedUid}_{viewerUid}`, so re-views upsert rather than
+  duplicate). The existing "Public profile" toggle now explains the tradeoff.
+  *Note: `isPublic` defaults false, so nobody is tracked until they opt in.*
+- **Profile boost** — an honest **banded tiebreaker**, not score-faking: in the
+  admin candidate ranking, a premium candidate sorts above a non-premium one
+  **only when scores are within 5 points**. A clearly better non-premium
+  candidate still wins. Boosted rows show a visible "★ boosted" marker, so the
+  admin can see why a candidate ranked where they did.
+- **Early match alerts** — premium candidates get an immediate notification
+  when an admin suggests a match; non-premium discover matches passively.
 
-**Stage 4 — Community depth.** Group admin tooling (approve/decline members,
-open/closed toggle), founder programme launch.
+**Stage 4 — Community depth. ✅ DONE.**
+- **Group admin tooling: ALREADY EXISTED — nothing was built.** `GroupDetail`
+  already has a Settings tab with a pending-request count, an approval panel,
+  working approve/reject handlers, and member management; the rules already
+  support `isPrivate`, `role: 'pending'`, `status: pending/approved/rejected`,
+  and an `isGroupAdmin()` helper. This plan simply hadn't accounted for it.
+  *Recorded so nobody rebuilds it.*
+- **Founder programme — built.** `isFounder` + `founderSince` on the user doc;
+  admin grant/revoke toggle beside the Pro toggle in Admin → Members. Founder
+  is a **role**, orthogonal to tier (per §1): it grants **C-equivalent
+  privileges without owning a premium company**. "★ Founder" badge on the
+  profile. **Renewal is manual admin judgment** — `founderSince` is surfaced in
+  the toggle tooltip; activity-metric automation stays deferred per §4.
 
-## 7. Open items to confirm before Stage 1 build
+## 7. Open items (still to confirm/build)
 
-1. Exact wording of the B verification rule.
-2. Contact-reveal trigger: candidate-accept vs admin-confirm.
-3. Whether A's limited profile card shows company affiliation or only
-   name/title.
+1. **Contact-reveal trigger** — candidate-accept vs admin-confirm (§3). Not yet
+   implemented; Blueprint contact details are currently governed only by the
+   `job_matches` visibility rules.
+2. **Downgrade behaviour** — what happens to a lapsed premium company's
+   groups/forums. Default suggestion stands: content persists read-only.
+3. **Payments** — every premium grant is currently a manual admin toggle. The
+   seam is marked in the company premium toggle.
+4. **Messaging enforcement note (accepted trade-off):** the rules enforce B+
+   and participant-membership on chat creation, but the
+   *connection-or-match* requirement is enforced in the app layer, because
+   Firestore rules cannot query `job_matches` by participant pair. Low stakes;
+   revisit only if abuse appears.
