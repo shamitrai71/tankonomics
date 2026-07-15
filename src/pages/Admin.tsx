@@ -3271,9 +3271,18 @@ const handleEditCompany = (company: any) => {
                 <select value={newTaxNode.parentId} onChange={(e) => setNewTaxNode({ ...newTaxNode, parentId: e.target.value })}
                   className="p-3 bg-bg-main border border-border-main rounded-xl text-sm outline-none">
                   <option value="">No parent (top level)</option>
-                  {taxonomyNodes.filter((n: any) => n.type === taxType && n.level === 1).sort((a: any, b: any) => a.order - b.order).map((n: any) => (
-                    <option key={n.id} value={n.id}>{n.name}</option>
-                  ))}
+                  {(() => {
+                    // A role's parent is a FAMILY (different type); every other
+                    // type groups within its own type. The old filter always
+                    // used taxType, so the role parent list came up empty.
+                    const parentType = taxType === "role" ? "family" : taxType;
+                    return taxonomyNodes
+                      .filter((n: any) => n.type === parentType && (parentType === "family" || n.level === 1))
+                      .sort((a: any, b: any) => (a.name || "").localeCompare(b.name || ""))
+                      .map((n: any) => (
+                        <option key={n.id} value={n.id}>{n.name}</option>
+                      ));
+                  })()}
                 </select>
                 <input value={newTaxNode.aliases} onChange={(e) => setNewTaxNode({ ...newTaxNode, aliases: e.target.value })}
                   placeholder="Aliases (comma-separated)" className="p-3 bg-bg-main border border-border-main rounded-xl text-sm outline-none focus:border-text-heading" />
