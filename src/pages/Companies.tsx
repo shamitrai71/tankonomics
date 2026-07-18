@@ -78,10 +78,10 @@ export default function Companies() {
               INDEXED DIRECTORY
             </div>
             <h1 className="font-display text-[clamp(2.25rem,5vw,4rem)] text-text-heading leading-[0.98]">
-              The verified operators
+              The company registry.
             </h1>
             <p className="text-text-body text-[15px] mt-3 max-w-xl">
-              Storage operators, EPC contractors, OEMs and inspectors — vetted and indexed for the global tank &amp; terminal industry.
+              Storage operators, EPC contractors, OEMs, inspectors and service providers — indexed for the tank &amp; terminal sector.
             </p>
           </div>
         </header>
@@ -243,7 +243,7 @@ export default function Companies() {
                 <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-text-body/40" strokeWidth={1.75} />
                 <input
                   type="text"
-                  placeholder="Search partners…"
+                  placeholder="Search companies…"
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
                   className="w-full pl-11 pr-10 py-3 bg-bg-card border border-border-main rounded-xl text-[14px] text-text-heading placeholder:text-text-body/40 outline-none focus:border-text-heading transition-all"
@@ -317,7 +317,7 @@ export default function Companies() {
                       </div>
 
                       <p className="text-text-body text-[13px] leading-relaxed line-clamp-2 mb-6 flex-1">
-                        {company.description || "Industry partner — operators, EPCs, OEMs and inspectors across the global tank & terminal network."}
+                        {company.description || "Operators, EPCs, OEMs and inspectors across the tank & terminal sector."}
                       </p>
 
                       <div className="flex items-center justify-between pt-4 border-t border-border-main">
@@ -334,9 +334,15 @@ export default function Companies() {
                               <Globe className="w-4 h-4" strokeWidth={1.75} />
                             </a>
                           )}
-                          <span className="eyebrow tabular flex items-center gap-1">
-                            <Building2 className="w-3 h-3" strokeWidth={1.75} /> Partner
-                          </span>
+                          {(() => {
+                            const primaryCatId = company.categoryIds?.[0] || company.categoryId;
+                            const primaryCat = primaryCatId ? categories.find((c: any) => c.id === primaryCatId)?.name : null;
+                            return primaryCat ? (
+                              <span className="eyebrow tabular flex items-center gap-1">
+                                <Building2 className="w-3 h-3" strokeWidth={1.75} /> {primaryCat}
+                              </span>
+                            ) : null;
+                          })()}
                         </div>
 
                         <Link
@@ -354,8 +360,8 @@ export default function Companies() {
                 {filteredCompanies.length === 0 && (
                   <div className="col-span-full py-20 text-center bg-bg-card border border-dashed border-border-main rounded-2xl">
                     <Building2 className="w-12 h-12 text-text-body/25 mx-auto mb-4" strokeWidth={1.5} />
-                    <p className="eyebrow tabular text-text-body/55 mb-1">NO MATCH</p>
-                    <h3 className="font-display text-2xl text-text-heading mb-2">No partners found</h3>
+                    <p className="eyebrow tabular text-text-body/55 mb-1">NO RESULTS</p>
+                    <h3 className="font-display text-2xl text-text-heading mb-2">No companies match.</h3>
                     <p className="text-text-body text-[14px]">Try adjusting your search or sector filters.</p>
                     {(searchTerm || selectedCategories.length > 0) && (
                       <button

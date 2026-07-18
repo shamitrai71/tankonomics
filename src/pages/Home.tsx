@@ -649,9 +649,9 @@ export default function Home() {
         <div className="mb-8 md:mb-10">
           <div className="eyebrow tabular text-accent inline-flex items-center gap-2 mb-3">
             <span className="inline-block w-1.5 h-1.5 rounded-full bg-accent soft-pulse" />
-            INDUSTRY FEED · LIVE
+            OPERATIONS FEED · LIVE
           </div>
-          <h1 className="font-display text-4xl md:text-5xl text-text-heading leading-[1.0]">The pulse of tank &amp; terminal.</h1>
+          <h1 className="font-display text-4xl md:text-5xl text-text-heading leading-[1.0]">The industry feed.</h1>
           <p className="text-text-body text-[14px] mt-3 max-w-md">
             Technical updates, sector news and peer insights — moderated for verified members.
           </p>

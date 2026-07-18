@@ -98,13 +98,13 @@ export default function Forums() {
           <div className="relative">
             <div className="eyebrow tabular text-accent inline-flex items-center gap-2 mb-3">
               <span className="inline-block w-1.5 h-1.5 rounded-full bg-accent soft-pulse" />
-              INDUSTRY DISCOURSE
+              TECHNICAL EXCHANGE
             </div>
             <h1 className="font-display text-[clamp(2.25rem,5vw,4rem)] text-text-heading leading-[0.98]">
-              Where the operators talk.
+              Technical discussion.
             </h1>
             <p className="text-text-body text-[15px] mt-3 max-w-xl">
-              Threaded discussions on tank construction, terminal automation, inspection findings and recruitment — moderated for verified members.
+              Tank construction, terminal automation, inspection findings and integrity — discussed by working professionals.
             </p>
           </div>
         </header>
@@ -195,7 +195,7 @@ export default function Forums() {
                 >
                   <div className="px-6 py-5 border-b border-border-main flex items-baseline justify-between">
                     <div>
-                      <p className="eyebrow tabular text-accent">NEW DISCUSSION</p>
+                      <p className="eyebrow tabular text-accent">NEW TOPIC</p>
                       <h3 className="font-display text-2xl text-text-heading mt-1">Post a topic</h3>
                     </div>
                     <button onClick={() => setIsCreating(false)} className="text-[13px] text-text-body hover:text-text-heading">
@@ -309,8 +309,8 @@ export default function Forums() {
             ) : filteredTopics.length === 0 ? (
               <div className="py-20 text-center bg-bg-card border border-dashed border-border-main rounded-2xl">
                 <MessageSquare className="w-12 h-12 text-text-body/25 mx-auto mb-4" strokeWidth={1.5} />
-                <p className="eyebrow tabular text-text-body/55 mb-1">NO THREADS</p>
-                <h3 className="font-display text-2xl text-text-heading mb-2">No discussions yet</h3>
+                <p className="eyebrow tabular text-text-body/55 mb-1">NO TOPICS</p>
+                <h3 className="font-display text-2xl text-text-heading mb-2">No discussions yet.</h3>
                 <p className="text-text-body text-[14px]">
                   {searchTerm || activeCategory !== "all"
                     ? "Try adjusting your search or sector filter."

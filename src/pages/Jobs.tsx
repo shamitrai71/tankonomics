@@ -277,13 +277,13 @@ export default function Jobs() {
             <div className="relative">
               <div className="eyebrow tabular text-accent inline-flex items-center gap-2 mb-3">
                 <span className="inline-block w-1.5 h-1.5 rounded-full bg-accent soft-pulse" />
-                INDUSTRY CAREERS
+                TECHNICAL ROLES
               </div>
               <h1 className="font-display text-[clamp(2.25rem,5vw,4rem)] text-text-heading leading-[0.98]">
-                Build your next role.
+                Roles in tank &amp; terminal.
               </h1>
               <p className="text-text-body text-[15px] mt-3 max-w-xl">
-                Verified opportunities across operators, EPCs, OEMs and inspection consultancies in the global tank &amp; terminal industry.
+                Openings across operators, EPCs, OEMs and inspection consultancies in the tank &amp; terminal sector.
               </p>
             </div>
           </div>
@@ -479,8 +479,8 @@ export default function Jobs() {
             ) : filteredJobs.length === 0 ? (
               <div className="text-center py-20 bg-bg-card border border-dashed border-border-main rounded-2xl">
                 <Briefcase className="w-12 h-12 text-text-body/25 mx-auto mb-4" strokeWidth={1.5} />
-                <p className="eyebrow tabular text-text-body/55 mb-1">NO MATCH</p>
-                <h3 className="font-display text-2xl text-text-heading mb-2">No opportunities found</h3>
+                <p className="eyebrow tabular text-text-body/55 mb-1">NO RESULTS</p>
+                <h3 className="font-display text-2xl text-text-heading mb-2">No open roles match.</h3>
                 <p className="text-text-body text-[14px]">Try adjusting your filters or search keywords.</p>
                 {(searchTerm || typeFilter !== "all" || selectedCategories.length > 0) && (
                   <button
@@ -639,7 +639,7 @@ export default function Jobs() {
             >
               <div className="px-6 py-5 border-b border-border-main flex items-baseline justify-between shrink-0">
                 <div>
-                  <p className="eyebrow tabular text-accent">NEW LISTING</p>
+                  <p className="eyebrow tabular text-accent">POST A ROLE</p>
                   <h2 className="font-display text-2xl text-text-heading mt-1">Post an opportunity</h2>
                 </div>
                 <button onClick={() => setShowPostModal(false)} className="p-2 hover:bg-bg-main rounded-lg transition-colors text-text-body/60">

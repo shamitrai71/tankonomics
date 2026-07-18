@@ -118,10 +118,10 @@ export default function Groups() {
                 COMMUNITY GROUPS
               </div>
               <h1 className="font-display text-[clamp(2.25rem,5vw,4rem)] text-text-heading leading-[0.98]">
-                Specialist circles.
+                Specialist networks.
               </h1>
               <p className="text-text-body text-[15px] mt-3 max-w-xl">
-                High-integrity micro-communities for verified tank-storage professionals. Join existing networks or propose a new one.
+                Focused networks for tank-storage specialists — join an existing one or propose a new group.
               </p>
             </div>
           </div>
@@ -293,7 +293,7 @@ export default function Groups() {
             >
               <div className="px-6 py-5 border-b border-border-main flex items-baseline justify-between shrink-0">
                 <div>
-                  <p className="eyebrow tabular text-accent">NEW MICRO-COMMUNITY</p>
+                  <p className="eyebrow tabular text-accent">NEW GROUP</p>
                   <h2 className="font-display text-2xl text-text-heading mt-1">Create a group</h2>
                 </div>
                 <button onClick={() => setShowCreateModal(false)} className="p-2 hover:bg-bg-main rounded-lg transition-colors text-text-body/60">
@@ -307,7 +307,7 @@ export default function Groups() {
                     <div className="w-12 h-12 bg-bg-card border border-border-main rounded-xl flex items-center justify-center mb-4 text-rust">
                       <ShieldCheck className="w-5 h-5" strokeWidth={1.75} />
                     </div>
-                    <p className="eyebrow tabular text-rust mb-2">VERIFICATION REQUIRED</p>
+                    <p className="eyebrow tabular text-rust mb-2">COMPANY LINK REQUIRED</p>
                     <h3 className="font-display text-xl text-text-heading mb-3">Connect your profile to a verified company first</h3>
                     <p className="text-[13px] text-text-body leading-relaxed mb-5 max-w-sm">
                       To maintain the professional integrity of groups, you must be connected to a verified company before creating or joining one.

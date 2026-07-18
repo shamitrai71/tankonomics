@@ -119,7 +119,7 @@ function ClaimModal({ company, onClose }: { company: any; onClose: () => void })
             <div className="w-14 h-14 bg-accent/10 text-accent rounded-full flex items-center justify-center mx-auto mb-4 border border-accent/20">
               <Check className="w-6 h-6" strokeWidth={2} />
             </div>
-            <p className="eyebrow tabular text-accent mb-2">VERIFICATION QUEUED</p>
+            <p className="eyebrow tabular text-accent mb-2">CLAIM UNDER REVIEW</p>
             <h3 className="font-display text-2xl text-text-heading mb-2">Claim submitted</h3>
             <p className="text-text-body text-[14px]">Our administrators will review your credentials shortly.</p>
           </div>
