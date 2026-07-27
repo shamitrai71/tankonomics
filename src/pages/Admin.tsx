@@ -203,6 +203,7 @@ export default function Admin() {
   const { data: taxonomyNodes, loading: loadingTaxonomy } = useCollection<any>("taxonomy", [], activeTab === "taxonomy" || activeTab === "resumes");
 
   const [newCategory, setNewCategory] = useState({ name:"", parentId:"", level: 1 });
+  const [newLocation, setNewLocation] = useState({ name: "", type: "", city: "", country: "", externalUrl: "" });
   const [newCompany, setNewCompany] = useState({ 
     name:"", 
     description:"", 
@@ -222,7 +223,8 @@ export default function Admin() {
     tier3CategoryId:"",
     categoryIds: [] as string[],
     isFeatured: false,
-    products: [] as any[]
+    products: [] as any[],
+    locations: [] as any[]
   });
   const [newProduct, setNewProduct] = useState({ name:"", description:"", image:"" });
   const [editingCompanyId, setEditingCompanyId] = useState<string | null>(null);
@@ -563,6 +565,7 @@ export default function Admin() {
       tier3CategoryId: newCompany.tier3CategoryId ||"",
       isFeatured: !!newCompany.isFeatured,
       products: Array.isArray(newCompany.products) ? newCompany.products : [],
+      locations: Array.isArray(newCompany.locations) ? newCompany.locations : [],
       updatedAt: serverTimestamp(),
     };
 
@@ -593,7 +596,8 @@ export default function Admin() {
         tier3CategoryId:"",
         categoryIds: [],
         isFeatured: false,
-        products: []
+        products: [],
+        locations: []
       });
     } catch (err: any) {
       console.error("Company save failed:", err);
@@ -621,7 +625,8 @@ const handleEditCompany = (company: any) => {
     tier3CategoryId: company.tier3CategoryId ||"",
     categoryIds: company.categoryIds || [],
     isFeatured: company.isFeatured || false,
-    products: company.products || []
+    products: company.products || [],
+    locations: company.locations || []
   });
   setEditingCompanyId(company.id);
   window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -1573,9 +1578,77 @@ const handleEditCompany = (company: any) => {
                   </div>
                 </div>
 
+                {/* Locations / multi-site editor */}
                 <div className="space-y-4">
                   <div>
-                    <label className="eyebrow tabular text-text-body/55 mb-1 block">Classification (Select Multiple)</label>
+                    <label className="eyebrow tabular text-text-body/55 mb-1 block">Locations / Sites</label>
+                    <p className="text-[11px] text-text-body/50 mb-3">Terminals, plants, refineries, offices. Link each to its page on TankBazaar (or leave blank).</p>
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-2 mb-2">
+                      <input
+                        placeholder="Site name"
+                        value={newLocation.name}
+                        onChange={(e) => setNewLocation({ ...newLocation, name: e.target.value })}
+                        className="p-2.5 bg-bg-card border border-border-main rounded-lg text-[13px] outline-none focus:border-text-heading"
+                      />
+                      <select
+                        value={newLocation.type}
+                        onChange={(e) => setNewLocation({ ...newLocation, type: e.target.value })}
+                        className="p-2.5 bg-bg-card border border-border-main rounded-lg text-[13px] outline-none focus:border-text-heading"
+                      >
+                        <option value="">Type…</option>
+                        {["port terminal","inland terminal","plant","refinery","office","factory","depot","yard","oil rig"].map(t => (
+                          <option key={t} value={t}>{t}</option>
+                        ))}
+                      </select>
+                      <input
+                        placeholder="City"
+                        value={newLocation.city}
+                        onChange={(e) => setNewLocation({ ...newLocation, city: e.target.value })}
+                        className="p-2.5 bg-bg-card border border-border-main rounded-lg text-[13px] outline-none focus:border-text-heading"
+                      />
+                      <input
+                        placeholder="Country"
+                        value={newLocation.country}
+                        onChange={(e) => setNewLocation({ ...newLocation, country: e.target.value })}
+                        className="p-2.5 bg-bg-card border border-border-main rounded-lg text-[13px] outline-none focus:border-text-heading"
+                      />
+                      <input
+                        placeholder="TankBazaar URL"
+                        value={newLocation.externalUrl}
+                        onChange={(e) => setNewLocation({ ...newLocation, externalUrl: e.target.value })}
+                        className="p-2.5 bg-bg-card border border-border-main rounded-lg text-[13px] outline-none focus:border-text-heading"
+                      />
+                    </div>
+                    <button
+                      onClick={() => {
+                        if (!newLocation.name.trim() || !newLocation.type) return;
+                        setNewCompany({ ...newCompany, locations: [...newCompany.locations, newLocation] });
+                        setNewLocation({ name: "", type: "", city: "", country: "", externalUrl: "" });
+                      }}
+                      className="text-[13px] px-3 py-1.5 bg-text-heading text-bg-card rounded-lg hover:brightness-110 transition-all"
+                    >
+                      + Add location
+                    </button>
+
+                    {newCompany.locations.length > 0 && (
+                      <div className="mt-3 space-y-1.5">
+                        {newCompany.locations.map((loc: any, i: number) => (
+                          <div key={i} className="p-2.5 bg-bg-card border border-border-main rounded-lg flex items-center justify-between gap-3 group">
+                            <div className="min-w-0 flex items-center gap-2">
+                              <span className="text-[13px] font-medium truncate">{loc.name}</span>
+                              {loc.type && <span className="eyebrow tabular text-[9px] px-1.5 py-0.5 rounded-full bg-bg-main text-text-body/55 shrink-0">{loc.type}</span>}
+                              <span className="text-[11px] text-text-body/50 truncate">{[loc.city, loc.country].filter(Boolean).join(", ")}</span>
+                              {loc.externalUrl && <span className="eyebrow tabular text-[9px] text-accent shrink-0">↗ linked</span>}
+                            </div>
+                            <button onClick={() => setNewCompany({ ...newCompany, locations: newCompany.locations.filter((_: any, idx: number) => idx !== i) })} className="text-rust opacity-0 group-hover:opacity-100 shrink-0">
+                              <Trash2 className="w-3.5 h-3.5" />
+                            </button>
+                          </div>
+                        ))}
+                      </div>
+                    )}
+                  </div>
+                </div>
                     <CategorySelector 
                       categories={categories} 
                       selectedIds={newCompany.categoryIds} 

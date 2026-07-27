@@ -221,7 +221,8 @@ service cloud.firestore {
              (!('isFeatured' in data.keys()) || data.isFeatured is bool) &&
              (!('plan' in data.keys()) || data.plan == null || data.plan in ['free', 'premium']) &&
              (!('planSince' in data.keys()) || data.planSince == null || data.planSince is timestamp) &&
-             (!('products' in data.keys()) || data.products is list);
+             (!('products' in data.keys()) || data.products is list) &&
+             (!('locations' in data.keys()) || data.locations is list);
     }
 
     function isValidCompanyClaim(data) {
