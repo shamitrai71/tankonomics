@@ -1649,6 +1649,10 @@ const handleEditCompany = (company: any) => {
                     )}
                   </div>
                 </div>
+
+                <div className="space-y-4">
+                  <div>
+                    <label className="eyebrow tabular text-text-body/55 mb-1 block">Classification (Select Multiple)</label>
                     <CategorySelector 
                       categories={categories} 
                       selectedIds={newCompany.categoryIds} 
@@ -1772,11 +1776,12 @@ const handleEditCompany = (company: any) => {
                         <div className="flex items-center gap-2">
                           <button 
                             onClick={() => handleEditCompany(company)}
+                            title="Edit company"
                             className={`p-2 rounded-xl transition-all ${
                               company.isFeatured ? "hover:bg-bg-card/20 text-white/70 hover:text-white" : "hover:bg-bg-main text-text-body/55 hover:text-accent"
                             }`}
                           >
-                            <Palette className="w-4 h-4" />
+                            <Edit className="w-4 h-4" />
                           </button>
                           <button 
                             onClick={async () => {
