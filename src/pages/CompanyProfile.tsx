@@ -28,6 +28,7 @@ import {
   ArrowLeft,
   Share2,
   ExternalLink,
+  MapPin,
   MessageSquare,
   Check,
   X,
@@ -48,6 +49,12 @@ import { motion, AnimatePresence } from "framer-motion";
 import { serverTimestamp, where, orderBy } from "firebase/firestore";
 import { db } from "../firebase";
 import { formatDistanceToNow } from "date-fns";
+
+// Company-level "all sites on TankBazaar" CTA. TankBazaar currently only
+// supports #terminal-<id> deep links, not ?operator= filtering — so this
+// derived roll-up link is gated OFF until TankBazaar reads the operator param.
+// Per-location "View on TankBazaar" links (real #terminal URLs) are unaffected.
+const TANKBAZAAR_OPERATOR_FILTER = false;
 
 /* ============================================================
    ClaimModal — claim ownership of an unclaimed business
@@ -171,7 +178,7 @@ export default function CompanyProfile() {
   const { id } = useParams();
   const { user } = useAuth();
   const [isClaiming, setIsClaiming] = useState(false);
-  const [activeTab, setActiveTab] = useState<"about" | "products" | "feed" | "team">("about");
+  const [activeTab, setActiveTab] = useState<"about" | "products" | "locations" | "feed" | "team">("about");
   const [newsContent, setNewsContent] = useState("");
   const [isPosting, setIsPosting] = useState(false);
 
@@ -540,6 +547,7 @@ export default function CompanyProfile() {
               {([
                 { key: "about", label: "About" },
                 ...(company.products?.length > 0 ? [{ key: "products", label: `Products · ${company.products.length}` }] : []),
+                ...(company.locations?.length > 0 ? [{ key: "locations", label: `Locations · ${company.locations.length}` }] : []),
                 { key: "feed", label: "Feed" },
                 { key: "team", label: `Team · ${employees.length}` },
               ] as { key: typeof activeTab; label: string }[]).map((tab) => (
@@ -653,6 +661,60 @@ export default function CompanyProfile() {
                       </div>
                     );
                   })}
+                </motion.div>
+              )}
+
+              {/* Locations */}
+              {activeTab === "locations" && (
+                <motion.div key="locations" initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -8 }} className="space-y-4">
+                  {TANKBAZAAR_OPERATOR_FILTER && (
+                    <a
+                      href={`https://tankbazaar.web.app/?operator=${encodeURIComponent(company.name || "")}`}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="flex items-center justify-between gap-3 p-5 bg-accent/10 border border-accent/30 rounded-2xl hover:bg-accent/15 transition-all group"
+                    >
+                      <div className="flex items-center gap-3 min-w-0">
+                        <MapPin className="w-5 h-5 text-accent shrink-0" strokeWidth={1.75} />
+                        <span className="text-[14px] font-medium text-text-heading truncate">
+                          Explore all {company.locations.length} {company.locations.length === 1 ? "site" : "sites"} on TankBazaar
+                        </span>
+                      </div>
+                      <ExternalLink className="w-4 h-4 text-accent shrink-0 group-hover:translate-x-0.5 transition-transform" strokeWidth={1.75} />
+                    </a>
+                  )}
+
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    {company.locations.map((loc: any, i: number) => (
+                      <div key={i} className="bg-bg-card border border-border-main rounded-2xl p-5 flex flex-col hover:border-text-heading transition-all">
+                        <div className="flex items-start justify-between gap-3 mb-3">
+                          <div className="min-w-0">
+                            <h4 className="font-display text-lg text-text-heading leading-tight truncate">{loc.name}</h4>
+                            {(loc.city || loc.country) && (
+                              <p className="eyebrow tabular text-text-body/55 mt-1 flex items-center gap-1.5">
+                                <MapPin className="w-3 h-3 shrink-0" strokeWidth={1.75} />
+                                {[loc.city, loc.country].filter(Boolean).join(", ")}
+                              </p>
+                            )}
+                          </div>
+                          {loc.type && (
+                            <span className="eyebrow tabular text-[9px] px-2 py-1 rounded-full bg-bg-main text-text-body/55 shrink-0 whitespace-nowrap">{loc.type}</span>
+                          )}
+                        </div>
+                        {loc.externalUrl && (
+                          <a
+                            href={loc.externalUrl}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="mt-auto pt-3 border-t border-border-main inline-flex items-center gap-1.5 eyebrow tabular text-accent hover:gap-2.5 transition-all"
+                          >
+                            View on TankBazaar
+                            <ExternalLink className="w-3 h-3" strokeWidth={1.75} />
+                          </a>
+                        )}
+                      </div>
+                    ))}
+                  </div>
                 </motion.div>
               )}
 

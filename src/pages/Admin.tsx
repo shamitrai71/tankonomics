@@ -43,7 +43,7 @@ import {
 import axios from "axios";
 import { createDocument, useCollection, removeDocument, updateDocument } from "../hooks/useFirestore";
 import { useAuth, useTheme } from "../App";
-import { orderBy, serverTimestamp, doc, getDoc, setDoc, deleteDoc } from "firebase/firestore";
+import { orderBy, serverTimestamp, doc, getDoc, getDocs, collection, setDoc, deleteDoc } from "firebase/firestore";
 import { db, auth } from "../firebase";
 import { format, subDays, isWithinInterval, startOfDay, endOfDay } from "date-fns";
 import { motion, AnimatePresence } from "framer-motion";
@@ -71,6 +71,7 @@ import { CategorySelector } from "../components/CategorySelector";
 import { uploadImage } from "../lib/uploadImage";
 import { scoreMatch, DEFAULT_WEIGHTS, MatchWeights } from "../lib/matchScore";
 import { TAXONOMY_SEED } from "../lib/taxonomySeed";
+import { CATEGORY_SEED } from "../lib/categorySeed";
 import { Layers } from "lucide-react";
 
 export default function Admin() {
@@ -154,6 +155,7 @@ export default function Admin() {
   const [newTaxNode, setNewTaxNode] = useState({ name: "", parentId: "", aliases: "" });
   const [editingTaxNode, setEditingTaxNode] = useState<any>(null);
   const [isSeedingTax, setIsSeedingTax] = useState(false);
+  const [isSeedingCats, setIsSeedingCats] = useState(false);
   const [eventData, setEventData] = useState({ 
     title:"", 
     date:"", 
@@ -447,6 +449,52 @@ export default function Admin() {
     m.email?.toLowerCase().includes(searchMember.toLowerCase()) ||
     m.jobTitle?.toLowerCase().includes(searchMember.toLowerCase())
   );
+
+  const handleSeedCategories = async () => {
+    if (!window.confirm(
+      `Replace ALL company categories with the ${CATEGORY_SEED.length}-node master tree?\n\n` +
+      `This deletes every existing category (including any that resisted manual deletion) and reseeds ` +
+      `with stable slug IDs. Companies keep their categoryIds but must be re-tagged against the new tree.`
+    )) return;
+    setIsSeedingCats(true);
+    try {
+      // 1. Clear existing — fetch fresh (tab-independent), delete serially.
+      //    Serial deletes avoid the rules-evaluation budget interaction that
+      //    batched writes hit (isAdmin()'s exists() lookup per op).
+      const existing = await getDocs(collection(db, "company_categories"));
+      let cleared = 0;
+      for (const d of existing.docs) { await deleteDoc(doc(db, "company_categories", d.id)); cleared++; }
+
+      // 2. Seed with stable slug IDs (doc id === slug). Idempotent — safe to re-run.
+      //    L1 nodes first so parents exist before children (cosmetic; Firestore
+      //    does not enforce referential order, but keeps reads consistent mid-seed).
+      const ordered = [...CATEGORY_SEED].sort((a, b) => a.level - b.level);
+      let done = 0;
+      const failures: { id: string; reason: string }[] = [];
+      for (const node of ordered) {
+        try {
+          await setDoc(doc(db, "company_categories", node.id), {
+            name: node.name, slug: node.slug, level: node.level,
+            parentId: node.parentId, order: node.order, updatedAt: serverTimestamp(),
+          });
+          done++;
+        } catch (err: any) {
+          failures.push({ id: node.id, reason: err?.code ? `${err.code}: ${err.message}` : (err?.message || String(err)) });
+          if (failures.length >= 3) break;
+        }
+      }
+      if (failures.length > 0) {
+        console.error("Category seed failures:", failures);
+        throw new Error(`${failures.length}+ rejected. First: ${failures[0].id} — ${failures[0].reason}`);
+      }
+      alert(`Cleared ${cleared} old categor${cleared === 1 ? "y" : "ies"}, seeded ${done} from the master tree.`);
+    } catch (err: any) {
+      console.error("Category seed failed:", err);
+      alert(`Category seeding failed: ${err?.message || "Unknown error"}`);
+    } finally {
+      setIsSeedingCats(false);
+    }
+  };
 
   const handleCreateCategory = async () => {
     if (!newCategory.name) return;
@@ -1325,9 +1373,19 @@ const handleEditCompany = (company: any) => {
           <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -10 }} key="companies" className="space-y-10">
             {/* Category Manager */}
             <div className="bg-bg-card p-8 rounded-2xl border border-border-main shadow-sm">
-              <h2 className="font-display text-2xl text-text-heading mb-6 flex items-center gap-2">
-                <Layout className="w-5 h-5 text-accent" /> Global Category Manager
-              </h2>
+              <div className="flex items-center justify-between mb-6 gap-4 flex-wrap">
+                <h2 className="font-display text-2xl text-text-heading flex items-center gap-2">
+                  <Layout className="w-5 h-5 text-accent" /> Global Category Manager
+                </h2>
+                <button
+                  onClick={handleSeedCategories}
+                  disabled={isSeedingCats}
+                  className="inline-flex items-center gap-2 bg-text-heading text-bg-card px-4 py-2.5 rounded-xl text-[13px] font-medium hover:opacity-90 disabled:opacity-50 transition-all"
+                >
+                  {isSeedingCats ? <Loader2 className="w-4 h-4 animate-spin" /> : <Layers className="w-4 h-4" />}
+                  Seed master tree ({CATEGORY_SEED.length})
+                </button>
+              </div>
               <p className="text-xs text-text-body mb-6 font-medium">Manage categories and sub-categories used across Directory, Jobs, Events, and Forums.</p>
               <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                 {[1, 2, 3].map((level) => (
