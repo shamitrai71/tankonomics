@@ -72,6 +72,7 @@ import { uploadImage } from "../lib/uploadImage";
 import { scoreMatch, DEFAULT_WEIGHTS, MatchWeights } from "../lib/matchScore";
 import { TAXONOMY_SEED } from "../lib/taxonomySeed";
 import { CATEGORY_SEED } from "../lib/categorySeed";
+import { COMPANY_SEED } from "../lib/companySeed";
 import { Layers } from "lucide-react";
 
 export default function Admin() {
@@ -156,6 +157,7 @@ export default function Admin() {
   const [editingTaxNode, setEditingTaxNode] = useState<any>(null);
   const [isSeedingTax, setIsSeedingTax] = useState(false);
   const [isSeedingCats, setIsSeedingCats] = useState(false);
+  const [isSeedingCompanies, setIsSeedingCompanies] = useState(false);
   const [eventData, setEventData] = useState({ 
     title:"", 
     date:"", 
@@ -449,6 +451,57 @@ export default function Admin() {
     m.email?.toLowerCase().includes(searchMember.toLowerCase()) ||
     m.jobTitle?.toLowerCase().includes(searchMember.toLowerCase())
   );
+
+  const handleSeedCompanies = async () => {
+    if (!window.confirm(
+      `Seed the ${COMPANY_SEED.length} launch companies?\n\n` +
+      `Each is written with its slug as the document id (the shared cross-app identity key). ` +
+      `Safe to re-run — existing companies are updated in place, and their locations, ` +
+      `products, and claim status are preserved.`
+    )) return;
+    setIsSeedingCompanies(true);
+    try {
+      let created = 0, updated = 0;
+      const failures: { id: string; reason: string }[] = [];
+      for (const c of COMPANY_SEED) {
+        try {
+          const ref = doc(db, "companies", c.id);
+          // Content fields only. locations/products are intentionally omitted so a
+          // re-run never clobbers sites added later; categoryId mirrors categoryIds[0]
+          // for legacy list/profile readers.
+          const content: any = {
+            name: c.name, slug: c.slug, description: c.description, aboutUs: c.aboutUs,
+            address: c.address, website: c.website, logo: c.logo, heroImage: c.heroImage,
+            socialLinks: { linkedin: c.linkedin, twitter: c.twitter, facebook: c.facebook, instagram: c.instagram },
+            categoryIds: c.categoryIds, categoryId: c.categoryIds[0],
+            subCategoryId: "", tier3CategoryId: "", isFeatured: c.isFeatured,
+            updatedAt: serverTimestamp(),
+          };
+          const snap = await getDoc(ref);
+          if (snap.exists()) {
+            await setDoc(ref, content, { merge: true }); // preserve locations/products/claim
+            updated++;
+          } else {
+            await setDoc(ref, { ...content, isClaimed: false, ownerUid: "", createdAt: serverTimestamp() });
+            created++;
+          }
+        } catch (err: any) {
+          failures.push({ id: c.id, reason: err?.code ? `${err.code}: ${err.message}` : (err?.message || String(err)) });
+          if (failures.length >= 3) break;
+        }
+      }
+      if (failures.length > 0) {
+        console.error("Company seed failures:", failures);
+        throw new Error(`${failures.length}+ rejected. First: ${failures[0].id} — ${failures[0].reason}`);
+      }
+      alert(`Seeded companies — ${created} created, ${updated} updated (of ${COMPANY_SEED.length}).`);
+    } catch (err: any) {
+      console.error("Company seed failed:", err);
+      alert(`Company seeding failed: ${err?.message || "Unknown error"}`);
+    } finally {
+      setIsSeedingCompanies(false);
+    }
+  };
 
   const handleSeedCategories = async () => {
     if (!window.confirm(
@@ -1442,9 +1495,21 @@ const handleEditCompany = (company: any) => {
 
             {/* Company Creator */}
             <div className="bg-bg-card p-8 rounded-2xl border border-border-main shadow-sm">
-              <h2 className="font-display text-2xl text-text-heading mb-6 flex items-center gap-2">
-                <Building2 className="w-5 h-5 text-accent" /> {editingCompanyId ? "Edit Company" : "Register New Company"}
-              </h2>
+              <div className="flex items-center justify-between mb-6 gap-4 flex-wrap">
+                <h2 className="font-display text-2xl text-text-heading flex items-center gap-2">
+                  <Building2 className="w-5 h-5 text-accent" /> {editingCompanyId ? "Edit Company" : "Register New Company"}
+                </h2>
+                {!editingCompanyId && (
+                  <button
+                    onClick={handleSeedCompanies}
+                    disabled={isSeedingCompanies}
+                    className="inline-flex items-center gap-2 bg-text-heading text-bg-card px-4 py-2.5 rounded-xl text-[13px] font-medium hover:opacity-90 disabled:opacity-50 transition-all"
+                  >
+                    {isSeedingCompanies ? <Loader2 className="w-4 h-4 animate-spin" /> : <Building2 className="w-4 h-4" />}
+                    Seed {COMPANY_SEED.length} companies
+                  </button>
+                )}
+              </div>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                 <div className="space-y-4">
                   <div>
