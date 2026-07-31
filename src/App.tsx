@@ -1259,34 +1259,12 @@ export default function App() {
         const themeData = doc.data();
         setTheme(themeData);
         
-        // ONLY apply site-wide custom colors if NOT in dark mode
-        // This allows the default dark mode variables in CSS to work
-        const root = document.documentElement;
-        if (!isDark) {
-          if (themeData.primaryColor) root.style.setProperty("--primary-brand", themeData.primaryColor);
-          if (themeData.secondaryColor) root.style.setProperty("--secondary-brand", themeData.secondaryColor);
-          if (themeData.accentColor) root.style.setProperty("--accent-brand", themeData.accentColor);
-          if (themeData.backgroundColor) root.style.setProperty("--bg-main", themeData.backgroundColor);
-          if (themeData.headingColor) root.style.setProperty("--text-heading", themeData.headingColor);
-          if (themeData.bodyTextColor) root.style.setProperty("--text-body", themeData.bodyTextColor);
-          if (themeData.cardBackgroundColor) root.style.setProperty("--bg-card", themeData.cardBackgroundColor);
-          if (themeData.borderColor) root.style.setProperty("--border-main", themeData.borderColor);
-          if (themeData.sidebarFocusColor) root.style.setProperty("--sidebar-focus", themeData.sidebarFocusColor);
-          if (themeData.sidebarFocusTextColor) root.style.setProperty("--sidebar-focus-text", themeData.sidebarFocusTextColor);
-        } else {
-          // In dark mode, we clear the inline styles to let index.css .dark variables win
-          // unless the user specifically wants to customize dark mode too (not implemented here)
-          root.style.removeProperty("--primary-brand");
-          root.style.removeProperty("--secondary-brand");
-          root.style.removeProperty("--accent-brand");
-          root.style.removeProperty("--bg-main");
-          root.style.removeProperty("--text-heading");
-          root.style.removeProperty("--text-body");
-          root.style.removeProperty("--bg-card");
-          root.style.removeProperty("--border-main");
-          root.style.removeProperty("--sidebar-focus");
-          root.style.removeProperty("--sidebar-focus-text");
-        }
+        // DOM application of these custom colors is handled by a dedicated effect
+        // keyed on [isDark, theme] (below), so it re-runs on every dark-mode toggle.
+        // Keeping this snapshot callback pure is what fixes the toggle: previously
+        // the inline light-mode vars set here were never cleared when switching to
+        // dark (this callback captured a stale isDark and didn't re-fire on toggle),
+        // and inline styles outrank the .dark class rules.
       }
     }, (error) => {
       console.error("Theme sync error:", error);
@@ -1313,6 +1291,31 @@ export default function App() {
       unsubTheme();
     };
   }, []);
+
+  // Apply the site's custom colors as inline CSS variables in LIGHT mode only.
+  // In DARK mode we clear them so the `.dark` rules in index.css win (inline
+  // styles outrank a class selector). Keyed on [isDark, theme] so it re-runs on
+  // every toggle — this is what makes the dark-mode switch actually take effect.
+  useEffect(() => {
+    const root = document.documentElement;
+    const CUSTOM: Record<string, string | undefined> = theme ? {
+      "--primary-brand": theme.primaryColor,
+      "--secondary-brand": theme.secondaryColor,
+      "--accent-brand": theme.accentColor,
+      "--bg-main": theme.backgroundColor,
+      "--text-heading": theme.headingColor,
+      "--text-body": theme.bodyTextColor,
+      "--bg-card": theme.cardBackgroundColor,
+      "--border-main": theme.borderColor,
+      "--sidebar-focus": theme.sidebarFocusColor,
+      "--sidebar-focus-text": theme.sidebarFocusTextColor,
+    } : {};
+    for (const key of Object.keys(CUSTOM)) {
+      const value = CUSTOM[key];
+      if (!isDark && value) root.style.setProperty(key, value);
+      else root.style.removeProperty(key);
+    }
+  }, [isDark, theme]);
 
   useEffect(() => {
     if (!user) {
