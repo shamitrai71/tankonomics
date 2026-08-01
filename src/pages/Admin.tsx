@@ -209,7 +209,7 @@ export default function Admin() {
   const { data: taxonomyNodes, loading: loadingTaxonomy } = useCollection<any>("taxonomy", [], activeTab === "taxonomy" || activeTab === "resumes");
 
   const [newCategory, setNewCategory] = useState({ name:"", parentId:"", level: 1 });
-  const [newLocation, setNewLocation] = useState({ name: "", type: "", city: "", country: "", externalUrl: "" });
+  const [newLocation, setNewLocation] = useState({ name: "", type: "", city: "", country: "", externalUrl: "", facilityClass: [] as string[], processType: [] as string[], primaryClass: "", googlePlaceId: "" });
   const [newCompany, setNewCompany] = useState({ 
     name:"", 
     description:"", 
@@ -1791,11 +1791,77 @@ const handleEditCompany = (company: any) => {
                         className="p-2.5 bg-bg-card border border-border-main rounded-lg text-[13px] outline-none focus:border-text-heading"
                       />
                     </div>
+                    {/* Richer facility attributes */}
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-2 mb-2">
+                      <div className="p-2.5 bg-bg-card border border-border-main rounded-lg">
+                        <label className="eyebrow tabular text-[10px] text-text-body/55 mb-1.5 block">Facility class</label>
+                        <div className="flex gap-3">
+                          {["storage", "process"].map(fc => (
+                            <label key={fc} className="flex items-center gap-1.5 text-[12px] capitalize cursor-pointer">
+                              <input
+                                type="checkbox"
+                                checked={newLocation.facilityClass.includes(fc)}
+                                onChange={() => {
+                                  const next = newLocation.facilityClass.includes(fc)
+                                    ? newLocation.facilityClass.filter(x => x !== fc)
+                                    : [...newLocation.facilityClass, fc];
+                                  setNewLocation({
+                                    ...newLocation,
+                                    facilityClass: next,
+                                    primaryClass: next.includes(newLocation.primaryClass) ? newLocation.primaryClass : (next[0] || ""),
+                                    processType: next.includes("process") ? newLocation.processType : [],
+                                  });
+                                }}
+                              />
+                              {fc}
+                            </label>
+                          ))}
+                        </div>
+                      </div>
+                      <div className="p-2.5 bg-bg-card border border-border-main rounded-lg">
+                        <label className="eyebrow tabular text-[10px] text-text-body/55 mb-1.5 block">Process type</label>
+                        <div className="flex flex-wrap gap-x-3 gap-y-1">
+                          {["refineries", "petrochemicals", "chemicals", "gas-processing-lng-lpg"].map(pt => (
+                            <label key={pt} className={`flex items-center gap-1.5 text-[12px] cursor-pointer ${newLocation.facilityClass.includes("process") ? "" : "opacity-40"}`}>
+                              <input
+                                type="checkbox"
+                                disabled={!newLocation.facilityClass.includes("process")}
+                                checked={newLocation.processType.includes(pt)}
+                                onChange={() => {
+                                  const next = newLocation.processType.includes(pt)
+                                    ? newLocation.processType.filter(x => x !== pt)
+                                    : [...newLocation.processType, pt];
+                                  setNewLocation({ ...newLocation, processType: next });
+                                }}
+                              />
+                              {pt === "gas-processing-lng-lpg" ? "gas processing" : pt}
+                            </label>
+                          ))}
+                        </div>
+                      </div>
+                      <select
+                        value={newLocation.primaryClass}
+                        onChange={(e) => setNewLocation({ ...newLocation, primaryClass: e.target.value })}
+                        className="p-2.5 bg-bg-card border border-border-main rounded-lg text-[13px] outline-none focus:border-text-heading"
+                      >
+                        <option value="">Primary class…</option>
+                        {newLocation.facilityClass.map(fc => (
+                          <option key={fc} value={fc}>{fc === "process" ? "Process (primary)" : "Storage (primary)"}</option>
+                        ))}
+                      </select>
+                      <input
+                        placeholder="Google Place ID (optional)"
+                        value={newLocation.googlePlaceId}
+                        onChange={(e) => setNewLocation({ ...newLocation, googlePlaceId: e.target.value })}
+                        className="p-2.5 bg-bg-card border border-border-main rounded-lg text-[13px] outline-none focus:border-text-heading"
+                      />
+                    </div>
                     <button
                       onClick={() => {
                         if (!newLocation.name.trim() || !newLocation.type) return;
-                        setNewCompany({ ...newCompany, locations: [...newCompany.locations, newLocation] });
-                        setNewLocation({ name: "", type: "", city: "", country: "", externalUrl: "" });
+                        const loc = { ...newLocation, primaryClass: newLocation.primaryClass || newLocation.facilityClass[0] || "" };
+                        setNewCompany({ ...newCompany, locations: [...newCompany.locations, loc] });
+                        setNewLocation({ name: "", type: "", city: "", country: "", externalUrl: "", facilityClass: [], processType: [], primaryClass: "", googlePlaceId: "" });
                       }}
                       className="text-[13px] px-3 py-1.5 bg-text-heading text-bg-card rounded-lg hover:brightness-110 transition-all"
                     >
@@ -1809,6 +1875,9 @@ const handleEditCompany = (company: any) => {
                             <div className="min-w-0 flex items-center gap-2">
                               <span className="text-[13px] font-medium truncate">{loc.name}</span>
                               {loc.type && <span className="eyebrow tabular text-[9px] px-1.5 py-0.5 rounded-full bg-bg-main text-text-body/55 shrink-0">{loc.type}</span>}
+                              {(Array.isArray(loc.facilityClass) ? loc.facilityClass : []).map((fc: string) => (
+                                <span key={fc} className="eyebrow tabular text-[9px] px-1.5 py-0.5 rounded-full shrink-0 capitalize" style={fc === "process" ? { background: "#FAEEDA", color: "#854F0B" } : { background: "#E6F1FB", color: "#0C447C" }}>{fc}</span>
+                              ))}
                               <span className="text-[11px] text-text-body/50 truncate">{[loc.city, loc.country].filter(Boolean).join(", ")}</span>
                               {loc.externalUrl && <span className="eyebrow tabular text-[9px] text-accent shrink-0">↗ linked</span>}
                             </div>
