@@ -696,22 +696,51 @@ export default function CompanyProfile() {
                                 {[loc.city, loc.country].filter(Boolean).join(", ")}
                               </p>
                             )}
+                            {Array.isArray(loc.processType) && loc.processType.length > 0 && (
+                              <p className="eyebrow tabular text-text-body/45 mt-1 capitalize">{loc.processType.join(" · ")}</p>
+                            )}
                           </div>
-                          {loc.type && (
-                            <span className="eyebrow tabular text-[9px] px-2 py-1 rounded-full bg-bg-main text-text-body/55 shrink-0 whitespace-nowrap">{loc.type}</span>
+                          <div className="flex flex-col items-end gap-1 shrink-0">
+                            {(Array.isArray(loc.facilityClass) ? loc.facilityClass : []).map((fc: string) => (
+                              <span
+                                key={fc}
+                                className="eyebrow tabular text-[9px] px-2 py-1 rounded-full whitespace-nowrap"
+                                style={fc === "process" ? { background: "#FAEEDA", color: "#854F0B" } : { background: "#E6F1FB", color: "#0C447C" }}
+                              >
+                                {fc === "process" ? "Process" : "Storage"}
+                              </span>
+                            ))}
+                            {loc.type && (
+                              <span className="eyebrow tabular text-[9px] px-2 py-1 rounded-full bg-bg-main text-text-body/55 whitespace-nowrap">{loc.type}</span>
+                            )}
+                          </div>
+                        </div>
+                        <div className="mt-auto pt-3 border-t border-border-main flex flex-wrap items-center gap-x-4 gap-y-2">
+                          {loc.externalUrl && (
+                            <a
+                              href={loc.externalUrl}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="inline-flex items-center gap-1.5 eyebrow tabular text-accent hover:gap-2.5 transition-all"
+                            >
+                              View on TankBazaar
+                              <ExternalLink className="w-3 h-3" strokeWidth={1.75} />
+                            </a>
+                          )}
+                          {(loc.name || loc.city) && (
+                            <a
+                              href={loc.googlePlaceId
+                                ? `https://www.google.com/maps/place/?q=place_id:${loc.googlePlaceId}`
+                                : `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent([loc.name, loc.city, loc.country].filter(Boolean).join(" "))}`}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="inline-flex items-center gap-1.5 eyebrow tabular text-accent hover:gap-2.5 transition-all"
+                            >
+                              Google Maps
+                              <ExternalLink className="w-3 h-3" strokeWidth={1.75} />
+                            </a>
                           )}
                         </div>
-                        {loc.externalUrl && (
-                          <a
-                            href={loc.externalUrl}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className="mt-auto pt-3 border-t border-border-main inline-flex items-center gap-1.5 eyebrow tabular text-accent hover:gap-2.5 transition-all"
-                          >
-                            View on TankBazaar
-                            <ExternalLink className="w-3 h-3" strokeWidth={1.75} />
-                          </a>
-                        )}
                       </div>
                     ))}
                   </div>
