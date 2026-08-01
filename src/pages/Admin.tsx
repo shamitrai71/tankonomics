@@ -73,6 +73,7 @@ import { scoreMatch, DEFAULT_WEIGHTS, MatchWeights } from "../lib/matchScore";
 import { TAXONOMY_SEED } from "../lib/taxonomySeed";
 import { CATEGORY_SEED } from "../lib/categorySeed";
 import { COMPANY_SEED } from "../lib/companySeed";
+import { LOCATION_SEED } from "../lib/locationSeed";
 import { Layers } from "lucide-react";
 
 export default function Admin() {
@@ -158,6 +159,7 @@ export default function Admin() {
   const [isSeedingTax, setIsSeedingTax] = useState(false);
   const [isSeedingCats, setIsSeedingCats] = useState(false);
   const [isSeedingCompanies, setIsSeedingCompanies] = useState(false);
+  const [isSeedingLocations, setIsSeedingLocations] = useState(false);
   const [eventData, setEventData] = useState({ 
     title:"", 
     date:"", 
@@ -451,6 +453,43 @@ export default function Admin() {
     m.email?.toLowerCase().includes(searchMember.toLowerCase()) ||
     m.jobTitle?.toLowerCase().includes(searchMember.toLowerCase())
   );
+
+  const handleSeedLocations = async () => {
+    const slugs = Object.keys(LOCATION_SEED);
+    const total = Object.values(LOCATION_SEED).reduce((n, a) => n + a.length, 0);
+    if (!window.confirm(
+      `Seed locations for ${slugs.length} compan${slugs.length === 1 ? "y" : "ies"} (${total} locations)?\n\n` +
+      `This SETS each listed company's locations[] to its seed set (authoritative for those companies). ` +
+      `Companies not listed here are untouched. Re-running re-syncs to the seed. Run the company seed first.`
+    )) return;
+    setIsSeedingLocations(true);
+    try {
+      let done = 0;
+      const failures: { slug: string; reason: string }[] = [];
+      for (const slug of slugs) {
+        try {
+          const ref = doc(db, "companies", slug);
+          const snap = await getDoc(ref);
+          if (!snap.exists()) { failures.push({ slug, reason: "company not found — run the company seed first" }); continue; }
+          await setDoc(ref, { locations: LOCATION_SEED[slug], updatedAt: serverTimestamp() }, { merge: true });
+          done++;
+        } catch (err: any) {
+          failures.push({ slug, reason: err?.code ? `${err.code}: ${err.message}` : (err?.message || String(err)) });
+        }
+        if (failures.length >= 3) break;
+      }
+      if (failures.length > 0) {
+        console.error("Location seed failures:", failures);
+        throw new Error(`${failures.length} issue(s). First: ${failures[0].slug} — ${failures[0].reason}`);
+      }
+      alert(`Seeded locations for ${done} compan${done === 1 ? "y" : "ies"} (${total} locations).`);
+    } catch (err: any) {
+      console.error("Location seed failed:", err);
+      alert(`Location seeding failed: ${err?.message || "Unknown error"}`);
+    } finally {
+      setIsSeedingLocations(false);
+    }
+  };
 
   const handleSeedCompanies = async () => {
     if (!window.confirm(
@@ -1500,14 +1539,24 @@ const handleEditCompany = (company: any) => {
                   <Building2 className="w-5 h-5 text-accent" /> {editingCompanyId ? "Edit Company" : "Register New Company"}
                 </h2>
                 {!editingCompanyId && (
-                  <button
-                    onClick={handleSeedCompanies}
-                    disabled={isSeedingCompanies}
-                    className="inline-flex items-center gap-2 bg-text-heading text-bg-card px-4 py-2.5 rounded-xl text-[13px] font-medium hover:opacity-90 disabled:opacity-50 transition-all"
-                  >
-                    {isSeedingCompanies ? <Loader2 className="w-4 h-4 animate-spin" /> : <Building2 className="w-4 h-4" />}
-                    Seed {COMPANY_SEED.length} companies
-                  </button>
+                  <div className="flex items-center gap-2 flex-wrap">
+                    <button
+                      onClick={handleSeedCompanies}
+                      disabled={isSeedingCompanies}
+                      className="inline-flex items-center gap-2 bg-text-heading text-bg-card px-4 py-2.5 rounded-xl text-[13px] font-medium hover:opacity-90 disabled:opacity-50 transition-all"
+                    >
+                      {isSeedingCompanies ? <Loader2 className="w-4 h-4 animate-spin" /> : <Building2 className="w-4 h-4" />}
+                      Seed {COMPANY_SEED.length} companies
+                    </button>
+                    <button
+                      onClick={handleSeedLocations}
+                      disabled={isSeedingLocations}
+                      className="inline-flex items-center gap-2 border border-border-main text-text-heading px-4 py-2.5 rounded-xl text-[13px] font-medium hover:bg-bg-main disabled:opacity-50 transition-all"
+                    >
+                      {isSeedingLocations ? <Loader2 className="w-4 h-4 animate-spin" /> : <MapPin className="w-4 h-4" />}
+                      Seed locations
+                    </button>
+                  </div>
                 )}
               </div>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
