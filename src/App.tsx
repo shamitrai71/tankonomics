@@ -160,8 +160,10 @@ function Navbar({ onMenuToggle, theme }: { onMenuToggle: () => void, theme: any 
   const [searchTerm, setSearchTerm] = useState("");
   const [debouncedSearch, setDebouncedSearch] = useState("");
   const [searchOpen, setSearchOpen] = useState(false);
+  const [mobileSearchOpen, setMobileSearchOpen] = useState(false);
   const searchRef = useRef<HTMLDivElement>(null);
   const searchInputRef = useRef<HTMLInputElement>(null);
+  const mobileSearchInputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
     const t = setTimeout(() => setDebouncedSearch(searchTerm.trim()), 300);
@@ -220,15 +222,19 @@ function Navbar({ onMenuToggle, theme }: { onMenuToggle: () => void, theme: any 
     [searchCompanies, searchJobs, searchGroups, searchTopics, searchEvents, searchSurveys, searchPosts, searchNews].every(a => a.length === 0);
 
   useEffect(() => {
+    if (mobileSearchOpen) mobileSearchInputRef.current?.focus();
+  }, [mobileSearchOpen]);
+
+  useEffect(() => {
     const onClickOutside = (e: MouseEvent) => {
       if (searchRef.current && !searchRef.current.contains(e.target as Node)) setSearchOpen(false);
     };
     const onKey = (e: KeyboardEvent) => {
-      if (e.key === "Escape") setSearchOpen(false);
+      if (e.key === "Escape") { setSearchOpen(false); setMobileSearchOpen(false); }
       if ((e.metaKey || e.ctrlKey) && e.key === "k") {
         e.preventDefault();
-        searchInputRef.current?.focus();
-        setSearchOpen(true);
+        if (window.innerWidth < 768) setMobileSearchOpen(true);
+        else { searchInputRef.current?.focus(); setSearchOpen(true); }
       }
     };
     document.addEventListener("mousedown", onClickOutside);
@@ -242,6 +248,7 @@ function Navbar({ onMenuToggle, theme }: { onMenuToggle: () => void, theme: any 
   const goToResult = (r: SearchResult) => {
     r.go();
     setSearchOpen(false);
+    setMobileSearchOpen(false);
     setSearchTerm("");
   };
 
@@ -376,6 +383,14 @@ function Navbar({ onMenuToggle, theme }: { onMenuToggle: () => void, theme: any 
       <div className="flex items-center gap-1 sm:gap-2 md:gap-3">
         {user ? (
           <div className="flex items-center gap-1 sm:gap-2 md:gap-3 relative">
+            <button
+              onClick={() => setMobileSearchOpen(true)}
+              className="p-2 sm:p-2.5 rounded-xl text-text-body hover:bg-bg-main hover:text-text-heading transition-all md:hidden"
+              aria-label="Search"
+            >
+              <Search className="w-4 h-4 sm:w-5 sm:h-5" strokeWidth={1.75} />
+            </button>
+
             <button
               id="notifications-toggle"
               onClick={() => {
@@ -527,6 +542,80 @@ function Navbar({ onMenuToggle, theme }: { onMenuToggle: () => void, theme: any 
         )}
       </div>
     </nav>
+
+    {/* Mobile search overlay — md:hidden trigger above opens this; reuses the
+        same searchTerm/searchResults/goToResult as the desktop dropdown. */}
+    <AnimatePresence>
+      {mobileSearchOpen && (
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          exit={{ opacity: 0 }}
+          className="fixed inset-0 z-[80] bg-bg-main md:hidden flex flex-col"
+        >
+          <div className="h-20 border-b border-border-main px-4 flex items-center gap-3 shrink-0">
+            <Search className="w-4 h-4 text-text-body/50 shrink-0" />
+            <input
+              ref={mobileSearchInputRef}
+              type="text"
+              placeholder="Search companies, jobs, forums…"
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              className="bg-transparent border-none flex-1 text-[15px] text-text-heading placeholder:text-text-body/45 outline-none"
+            />
+            <button
+              onClick={() => { setMobileSearchOpen(false); setSearchTerm(""); }}
+              className="p-2 -mr-2 text-text-body/60 hover:text-text-heading"
+              aria-label="Close search"
+            >
+              <X className="w-5 h-5" />
+            </button>
+          </div>
+
+          <div className="flex-1 overflow-y-auto">
+            {debouncedSearch.length < 2 ? (
+              <p className="p-6 text-center text-[13px] text-text-body/50">Keep typing to search…</p>
+            ) : searchLoading ? (
+              <div className="p-4 space-y-2">
+                {[1, 2, 3].map(i => <div key={i} className="h-11 bg-bg-card rounded-lg animate-pulse" />)}
+              </div>
+            ) : searchResults.length === 0 ? (
+              <div className="p-6 text-center">
+                <p className="eyebrow tabular text-text-body/50 mb-1">NO RESULTS</p>
+                <p className="text-[13px] text-text-body">Nothing matches "{debouncedSearch}"</p>
+              </div>
+            ) : (
+              <div className="py-2">
+                {Object.entries(
+                  searchResults.reduce((acc: Record<string, SearchResult[]>, r) => {
+                    (acc[r.type] ||= []).push(r);
+                    return acc;
+                  }, {})
+                ).map(([type, items]) => (
+                  <div key={type} className="mb-1 last:mb-0">
+                    <p className="eyebrow tabular text-text-body/40 px-4 pt-3 pb-1">{type}{items.length > 1 ? "S" : ""}</p>
+                    {items.map((r) => (
+                      <button
+                        key={`${r.type}-${r.id}`}
+                        onClick={() => goToResult(r)}
+                        className="w-full text-left px-4 py-3 hover:bg-bg-card active:bg-bg-card transition-colors flex items-start justify-between gap-2 border-b border-border-main/50"
+                      >
+                        <span className="flex flex-col min-w-0">
+                          <span className="text-[14px] text-text-heading truncate">{r.title}</span>
+                          {r.subtitle && <span className="text-[12px] text-text-body/50 truncate">{r.subtitle}</span>}
+                        </span>
+                        {r.type === "News" && <ExternalLink className="w-3.5 h-3.5 text-text-body/40 shrink-0 mt-0.5" strokeWidth={1.75} />}
+                      </button>
+                    ))}
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
+        </motion.div>
+      )}
+    </AnimatePresence>
+
     <NewChatModal isOpen={showNewChat} onClose={() => setShowNewChat(false)} />
     </>
   );
