@@ -47,12 +47,31 @@ export default function Companies() {
       company.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
       company.description?.toLowerCase().includes(searchTerm.toLowerCase());
 
-    const matchesCategory =
-      selectedCategories.length === 0 ||
-      (company.categoryIds && company.categoryIds.some((id: string) => selectedCategories.includes(id))) ||
-      selectedCategories.includes(company.categoryId) ||
-      selectedCategories.includes(company.subCategoryId) ||
-      selectedCategories.includes(company.tier3CategoryId);
+    // Drill-down matching: selecting a subcategory narrows its parent sector to
+    // just that subcategory; different top-level sectors still union. (A flat
+    // OR-union would keep every parent-sector company visible when a child is
+    // picked, which is the bug this replaces.)
+    const cids: string[] = (company.categoryIds && company.categoryIds.length)
+      ? company.categoryIds
+      : [company.categoryId, company.subCategoryId, company.tier3CategoryId].filter(Boolean);
+
+    let matchesCategory = selectedCategories.length === 0;
+    if (!matchesCategory) {
+      const catOf = (id: string) => categories.find((c: any) => c.id === id);
+      const selMains = selectedCategories.filter((id) => { const c = catOf(id); return c && !c.parentId; });
+      const selSubs = selectedCategories.filter((id) => { const c = catOf(id); return c && c.parentId; });
+      // Within each selected sector: if any of its subcategories are selected,
+      // require one of them; otherwise the whole sector matches.
+      const mainMatch = selMains.some((m) => {
+        const subs = selSubs.filter((s) => catOf(s)?.parentId === m);
+        return subs.length > 0 ? subs.some((s) => cids.includes(s)) : cids.includes(m);
+      });
+      // Subcategories whose parent sector isn't also selected still filter on their own.
+      const orphanSubMatch = selSubs
+        .filter((s) => !selMains.includes(catOf(s)?.parentId))
+        .some((s) => cids.includes(s));
+      matchesCategory = mainMatch || orphanSubMatch;
+    }
     return matchesSearch && matchesCategory;
   });
 

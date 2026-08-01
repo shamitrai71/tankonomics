@@ -215,7 +215,7 @@ function Navbar({ onMenuToggle, theme }: { onMenuToggle: () => void, theme: any 
           <Search className="w-4 h-4 text-text-body/50 shrink-0" />
           <input
             type="text"
-            placeholder="Search partners, news, events…"
+            placeholder="Search forums, events, surveys, groups…"
             className="bg-transparent border-none focus:ring-0 text-[14px] w-full text-text-heading placeholder:text-text-body/45 outline-none"
           />
           <kbd className="hidden lg:inline-flex items-center px-1.5 py-0.5 text-[10px] font-mono text-text-body/50 bg-bg-card border border-border-main rounded">⌘K</kbd>
