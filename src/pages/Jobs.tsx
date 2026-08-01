@@ -9,7 +9,7 @@
  */
 
 import { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import { useCollection, createDocument, updateDocument } from "../hooks/useFirestore";
 import { orderBy, serverTimestamp, where } from "firebase/firestore";
 import { TaxonomyMultiSelect } from "../components/TaxonomyMultiSelect";
@@ -43,6 +43,7 @@ import { formatDistanceToNow } from "date-fns";
 export default function Jobs() {
   const { user, profile, isAdmin, isCompanyOwner, ownedCompanies } = useAuth();
   const navigate = useNavigate();
+  const location = useLocation();
   const [searchTerm, setSearchTerm] = useState("");
   const [typeFilter, setTypeFilter] = useState("all");
   const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
@@ -62,6 +63,19 @@ export default function Jobs() {
   });
 
   const { data: jobs, loading: loadingJobs } = useCollection<any>("jobs", [orderBy("createdAt", "desc")]);
+
+  // Deep-link from global search: navigate("/jobs", { state: { openJobId } })
+  useEffect(() => {
+    const openJobId = (location.state as any)?.openJobId;
+    if (openJobId && jobs.length > 0) {
+      const job = jobs.find((j: any) => j.id === openJobId);
+      if (job) {
+        setSelectedJob(job);
+        setShowDetailModal(true);
+      }
+      navigate(location.pathname, { replace: true, state: {} }); // clear so back-nav / refresh doesn't reopen
+    }
+  }, [location.state, jobs]);
   const { data: categories } = useCollection<any>("company_categories", [orderBy("level", "asc"), orderBy("order", "asc")]);
   const { data: taxonomy } = useCollection<any>("taxonomy");
   const { data: myResumes } = useCollection<any>(

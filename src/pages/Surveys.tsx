@@ -9,6 +9,7 @@
  */
 
 import { useState, useEffect } from "react";
+import { useLocation } from "react-router-dom";
 import { useAuth } from "../App";
 import { useCollection, createDocument, updateDocument } from "../hooks/useFirestore";
 import { orderBy, serverTimestamp, doc, getDoc, setDoc } from "firebase/firestore";
@@ -18,18 +19,40 @@ import {
   TrendingUp,
   Plus,
   BarChart3,
+  Search,
+  X,
   Building2,
   User,
-  X,
   Check,
   Loader2,
 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 
 export default function Surveys() {
+  const location = useLocation();
+  const [highlightId, setHighlightId] = useState<string | null>((location.state as any)?.highlightId || null);
+
+  // Deep-link from global search: scroll the matched survey into view and
+  // briefly ring-highlight it, then clear so it doesn't re-trigger on revisit.
+  useEffect(() => {
+    if (!highlightId) return;
+    const el = document.getElementById(`survey-${highlightId}`);
+    el?.scrollIntoView({ behavior: "smooth", block: "center" });
+    const t = setTimeout(() => setHighlightId(null), 2500);
+    return () => clearTimeout(t);
+  }, [highlightId]);
+
   const { user, isAdmin, isCompanyOwner, ownedCompanies } = useAuth();
   const { data: surveys, loading } = useCollection<any>("surveys", [orderBy("createdAt", "desc")]);
   const [isCreating, setIsCreating] = useState(false);
+  const [searchTerm, setSearchTerm] = useState("");
+  const filteredSurveys = surveys.filter(
+    (survey: any) =>
+      !searchTerm ||
+      survey.question?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      survey.companyName?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      survey.options?.some((o: any) => (o.text || "").toLowerCase().includes(searchTerm.toLowerCase())),
+  );
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [votingOnId, setVotingOnId] = useState<string | null>(null);
   const [newSurvey, setNewSurvey] = useState({
@@ -258,6 +281,26 @@ export default function Surveys() {
           )}
         </AnimatePresence>
 
+        {/* Search */}
+        <div className="relative w-full sm:w-72">
+          <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-text-body/40" strokeWidth={1.75} />
+          <input
+            type="text"
+            placeholder="Search pulse checks…"
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+            className="w-full pl-11 pr-10 py-2.5 bg-bg-card border border-border-main rounded-xl text-[13px] text-text-heading placeholder:text-text-body/40 outline-none focus:border-text-heading transition-all"
+          />
+          {searchTerm && (
+            <button
+              onClick={() => setSearchTerm("")}
+              className="absolute right-3 top-1/2 -translate-y-1/2 w-6 h-6 rounded-md hover:bg-bg-main flex items-center justify-center text-text-body/50"
+            >
+              <X className="w-3.5 h-3.5" />
+            </button>
+          )}
+        </div>
+
         {/* Surveys list */}
         <div className="space-y-4">
           {loading ? (
@@ -269,13 +312,23 @@ export default function Surveys() {
               <h3 className="font-display text-2xl text-text-heading mb-2">Pulse checks coming soon</h3>
               <p className="text-text-body text-[14px]">Industry surveys will appear here when administrators publish them.</p>
             </div>
+          ) : filteredSurveys.length === 0 ? (
+            <div className="bg-bg-card border border-dashed border-border-main rounded-2xl py-20 text-center">
+              <Search className="w-12 h-12 text-text-body/25 mx-auto mb-4" strokeWidth={1.5} />
+              <p className="eyebrow tabular text-text-body/55 mb-1">NO MATCHES</p>
+              <h3 className="font-display text-2xl text-text-heading mb-2">No pulse checks match "{searchTerm}"</h3>
+              <p className="text-text-body text-[14px]">Try a different search term.</p>
+            </div>
           ) : (
-            surveys.map((survey: any) => (
+            filteredSurveys.map((survey: any) => (
               <motion.div
                 key={survey.id}
+                id={`survey-${survey.id}`}
                 initial={{ opacity: 0, y: 8 }}
                 animate={{ opacity: 1, y: 0 }}
-                className="bg-bg-card border border-border-main rounded-2xl overflow-hidden hover:border-text-heading transition-all"
+                className={`bg-bg-card border rounded-2xl overflow-hidden transition-all ${
+                  highlightId === survey.id ? "border-accent ring-4 ring-accent/15" : "border-border-main hover:border-text-heading"
+                }`}
               >
                 <div className="grid grid-cols-1 md:grid-cols-[1fr_220px]">
                   {/* Main content */}

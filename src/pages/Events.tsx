@@ -23,6 +23,7 @@ import {
   BellOff,
   ChevronLeft,
   Clock,
+  Search,
   CalendarDays,
   Mic,
   CalendarPlus,
@@ -62,6 +63,7 @@ export default function Events() {
   const [currentMonth, setCurrentMonth] = useState(new Date());
   const [view, setView] = useState<"list" | "calendar">("list");
   const [dateFilter, setDateFilter] = useState<string>("all");
+  const [searchTerm, setSearchTerm] = useState("");
   const [customRange, setCustomRange] = useState<{ start: string; end: string }>({ start: "", end: "" });
   const [isCreating, setIsCreating] = useState(false);
   const [newEvent, setNewEvent] = useState({
@@ -175,6 +177,14 @@ export default function Events() {
     const todayStart = startOfDay(now);
 
     return events.filter((event: any) => {
+      const matchesSearch =
+        !searchTerm ||
+        event.title?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        event.description?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        event.location?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        event.companyName?.toLowerCase().includes(searchTerm.toLowerCase());
+      if (!matchesSearch) return false;
+
       const eventDate = new Date(event.date);
 
       if (dateFilter === "range" && customRange.start && customRange.end) {
@@ -201,7 +211,7 @@ export default function Events() {
       }
       return true;
     });
-  }, [events, dateFilter, customRange]);
+  }, [events, dateFilter, customRange, searchTerm]);
 
   const isReminded = (eventId: string) => userReminders.some((r) => r.eventId === eventId);
 
@@ -471,6 +481,26 @@ export default function Events() {
                 </motion.div>
               )}
             </AnimatePresence>
+
+            {/* Search */}
+            <div className="relative w-full sm:w-72">
+              <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-text-body/40" strokeWidth={1.75} />
+              <input
+                type="text"
+                placeholder="Search sessions…"
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                className="w-full pl-11 pr-10 py-2.5 bg-bg-card border border-border-main rounded-xl text-[13px] text-text-heading placeholder:text-text-body/40 outline-none focus:border-text-heading transition-all"
+              />
+              {searchTerm && (
+                <button
+                  onClick={() => setSearchTerm("")}
+                  className="absolute right-3 top-1/2 -translate-y-1/2 w-6 h-6 rounded-md hover:bg-bg-main flex items-center justify-center text-text-body/50"
+                >
+                  <X className="w-3.5 h-3.5" />
+                </button>
+              )}
+            </div>
 
             {/* List view */}
             {view === "list" ? (

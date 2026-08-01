@@ -1,4 +1,4 @@
-import { useEffect, useState, createContext, useContext, ReactNode } from "react";
+import { useEffect, useState, useRef, createContext, useContext, ReactNode } from "react";
 import { 
   BrowserRouter as Router, 
   Routes, 
@@ -32,6 +32,7 @@ import {
   deleteDoc,
   collection,
   query,
+  limit,
   serverTimestamp
 } from "firebase/firestore";
 import { 
@@ -140,6 +141,7 @@ function Navbar({ onMenuToggle, theme }: { onMenuToggle: () => void, theme: any 
   const { user, profile } = useAuth();
   const { isDark, setMode } = useTheme();
   const location = useLocation();
+  const navigate = useNavigate();
   const [showNotifications, setShowNotifications] = useState(false);
   const [showNewChat, setShowNewChat] = useState(false);
   const { data: notifications } = useCollection<any>(
@@ -149,6 +151,93 @@ function Navbar({ onMenuToggle, theme }: { onMenuToggle: () => void, theme: any 
   );
 
   const unreadCount = notifications.filter(n => !n.read).length;
+
+  // --- Global search ---------------------------------------------------
+  // Debounced so typing doesn't thrash Firestore; the 7 subscriptions below
+  // only turn on once there's a real query (2+ chars), and turn back off
+  // when cleared, so browsing the rest of the app never pays their cost.
+  const [searchTerm, setSearchTerm] = useState("");
+  const [debouncedSearch, setDebouncedSearch] = useState("");
+  const [searchOpen, setSearchOpen] = useState(false);
+  const searchRef = useRef<HTMLDivElement>(null);
+  const searchInputRef = useRef<HTMLInputElement>(null);
+
+  useEffect(() => {
+    const t = setTimeout(() => setDebouncedSearch(searchTerm.trim()), 300);
+    return () => clearTimeout(t);
+  }, [searchTerm]);
+
+  const searchEnabled = debouncedSearch.length >= 2;
+  const { data: searchCompanies } = useCollection<any>("companies", [limit(300)], searchEnabled);
+  const { data: searchJobs } = useCollection<any>("jobs", [limit(300)], searchEnabled);
+  const { data: searchGroups } = useCollection<any>("groups", [limit(300)], searchEnabled);
+  const { data: searchTopics } = useCollection<any>("forum_topics", [limit(300)], searchEnabled);
+  const { data: searchEvents } = useCollection<any>("events", [limit(300)], searchEnabled);
+  const { data: searchSurveys } = useCollection<any>("surveys", [limit(300)], searchEnabled);
+  const { data: searchPosts } = useCollection<any>("posts", [limit(300)], searchEnabled);
+
+  const matches = (v: any) => typeof v === "string" && v.toLowerCase().includes(debouncedSearch.toLowerCase());
+
+  type SearchResult = { type: string; id: string; title: string; subtitle?: string; go: () => void };
+  const searchResults: SearchResult[] = !searchEnabled ? [] : [
+    ...searchCompanies
+      .filter((c: any) => matches(c.name) || matches(c.description))
+      .slice(0, 5)
+      .map((c: any) => ({ type: "Company", id: c.id, title: c.name, subtitle: c.address, go: () => navigate(`/business/${c.id}`) })),
+    ...searchJobs
+      .filter((j: any) => matches(j.title) || matches(j.companyName) || matches(j.description))
+      .slice(0, 5)
+      .map((j: any) => ({ type: "Job", id: j.id, title: j.title, subtitle: j.companyName, go: () => navigate("/jobs", { state: { openJobId: j.id } }) })),
+    ...searchGroups
+      .filter((g: any) => matches(g.name) || matches(g.description))
+      .slice(0, 5)
+      .map((g: any) => ({ type: "Group", id: g.id, title: g.name, subtitle: g.description, go: () => navigate(`/groups/${g.id}`) })),
+    ...searchTopics
+      .filter((t: any) => matches(t.title) || matches(t.content) || matches(t.authorName))
+      .slice(0, 5)
+      .map((t: any) => ({ type: "Forum", id: t.id, title: t.title, subtitle: t.authorName ? `by ${t.authorName}` : undefined, go: () => navigate(`/forums/${t.id}`) })),
+    ...searchEvents
+      .filter((e: any) => matches(e.title) || matches(e.description) || matches(e.location) || matches(e.companyName))
+      .slice(0, 5)
+      .map((e: any) => ({ type: "Event", id: e.id, title: e.title, subtitle: e.location, go: () => navigate(`/events/${e.id}`) })),
+    ...searchSurveys
+      .filter((s: any) => matches(s.question) || matches(s.companyName))
+      .slice(0, 5)
+      .map((s: any) => ({ type: "Survey", id: s.id, title: s.question, subtitle: s.companyName, go: () => navigate("/surveys", { state: { highlightId: s.id } }) })),
+    ...searchPosts
+      .filter((p: any) => matches(p.content) || matches(p.authorName))
+      .slice(0, 5)
+      .map((p: any) => ({ type: "Post", id: p.id, title: p.content, subtitle: p.authorName, go: () => navigate(`/post/${p.id}`) })),
+  ];
+
+  const searchLoading = searchEnabled && searchResults.length === 0 &&
+    [searchCompanies, searchJobs, searchGroups, searchTopics, searchEvents, searchSurveys, searchPosts].every(a => a.length === 0);
+
+  useEffect(() => {
+    const onClickOutside = (e: MouseEvent) => {
+      if (searchRef.current && !searchRef.current.contains(e.target as Node)) setSearchOpen(false);
+    };
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === "Escape") setSearchOpen(false);
+      if ((e.metaKey || e.ctrlKey) && e.key === "k") {
+        e.preventDefault();
+        searchInputRef.current?.focus();
+        setSearchOpen(true);
+      }
+    };
+    document.addEventListener("mousedown", onClickOutside);
+    document.addEventListener("keydown", onKey);
+    return () => {
+      document.removeEventListener("mousedown", onClickOutside);
+      document.removeEventListener("keydown", onKey);
+    };
+  }, []);
+
+  const goToResult = (r: SearchResult) => {
+    r.go();
+    setSearchOpen(false);
+    setSearchTerm("");
+  };
 
   const markAllAsRead = async () => {
     const unread = notifications.filter(n => !n.read);
@@ -211,14 +300,67 @@ function Navbar({ onMenuToggle, theme }: { onMenuToggle: () => void, theme: any 
         </Link>
 
         {/* Search — refined with mono placeholder + kbd hint */}
-        <div className="hidden md:flex items-center gap-2.5 bg-bg-main rounded-xl pl-4 pr-2 py-2 w-80 border border-border-main focus-within:bg-bg-card focus-within:ring-4 focus-within:ring-text-heading/5 focus-within:border-text-heading transition-all">
-          <Search className="w-4 h-4 text-text-body/50 shrink-0" />
-          <input
-            type="text"
-            placeholder="Search forums, events, surveys, groups…"
-            className="bg-transparent border-none focus:ring-0 text-[14px] w-full text-text-heading placeholder:text-text-body/45 outline-none"
-          />
-          <kbd className="hidden lg:inline-flex items-center px-1.5 py-0.5 text-[10px] font-mono text-text-body/50 bg-bg-card border border-border-main rounded">⌘K</kbd>
+        <div ref={searchRef} className="hidden md:block relative w-80">
+          <div className="flex items-center gap-2.5 bg-bg-main rounded-xl pl-4 pr-2 py-2 w-full border border-border-main focus-within:bg-bg-card focus-within:ring-4 focus-within:ring-text-heading/5 focus-within:border-text-heading transition-all">
+            <Search className="w-4 h-4 text-text-body/50 shrink-0" />
+            <input
+              ref={searchInputRef}
+              type="text"
+              placeholder="Search forums, events, surveys, groups…"
+              value={searchTerm}
+              onChange={(e) => { setSearchTerm(e.target.value); setSearchOpen(true); }}
+              onFocus={() => setSearchOpen(true)}
+              className="bg-transparent border-none focus:ring-0 text-[14px] w-full text-text-heading placeholder:text-text-body/45 outline-none"
+            />
+            {searchTerm ? (
+              <button
+                onClick={() => { setSearchTerm(""); searchInputRef.current?.focus(); }}
+                className="w-6 h-6 rounded-md hover:bg-bg-card flex items-center justify-center text-text-body/50 shrink-0"
+              >
+                <X className="w-3.5 h-3.5" />
+              </button>
+            ) : (
+              <kbd className="hidden lg:inline-flex items-center px-1.5 py-0.5 text-[10px] font-mono text-text-body/50 bg-bg-card border border-border-main rounded shrink-0">⌘K</kbd>
+            )}
+          </div>
+
+          {searchOpen && debouncedSearch.length >= 2 && (
+            <div className="absolute top-full left-0 right-0 mt-2 bg-bg-card border border-border-main rounded-xl shadow-xl max-h-[70vh] overflow-y-auto z-[70]">
+              {searchLoading ? (
+                <div className="p-4 space-y-2">
+                  {[1, 2, 3].map(i => <div key={i} className="h-9 bg-bg-main rounded-lg animate-pulse" />)}
+                </div>
+              ) : searchResults.length === 0 ? (
+                <div className="p-6 text-center">
+                  <p className="eyebrow tabular text-text-body/50 mb-1">NO RESULTS</p>
+                  <p className="text-[13px] text-text-body">Nothing matches "{debouncedSearch}"</p>
+                </div>
+              ) : (
+                <div className="py-2">
+                  {Object.entries(
+                    searchResults.reduce((acc: Record<string, SearchResult[]>, r) => {
+                      (acc[r.type] ||= []).push(r);
+                      return acc;
+                    }, {})
+                  ).map(([type, items]) => (
+                    <div key={type} className="mb-1 last:mb-0">
+                      <p className="eyebrow tabular text-text-body/40 px-4 pt-2 pb-1">{type}{items.length > 1 ? "S" : ""}</p>
+                      {items.map((r) => (
+                        <button
+                          key={`${r.type}-${r.id}`}
+                          onClick={() => goToResult(r)}
+                          className="w-full text-left px-4 py-2 hover:bg-bg-main transition-colors flex flex-col"
+                        >
+                          <span className="text-[13px] text-text-heading truncate">{r.title}</span>
+                          {r.subtitle && <span className="text-[11px] text-text-body/50 truncate">{r.subtitle}</span>}
+                        </button>
+                      ))}
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+          )}
         </div>
       </div>
 
