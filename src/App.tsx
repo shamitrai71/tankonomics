@@ -46,6 +46,7 @@ import {
   LogOut,
   Bell,
   Search,
+  ExternalLink,
   Menu,
   X,
   ShieldCheck,
@@ -175,6 +176,7 @@ function Navbar({ onMenuToggle, theme }: { onMenuToggle: () => void, theme: any 
   const { data: searchEvents } = useCollection<any>("events", [limit(300)], searchEnabled);
   const { data: searchSurveys } = useCollection<any>("surveys", [limit(300)], searchEnabled);
   const { data: searchPosts } = useCollection<any>("posts", [limit(300)], searchEnabled);
+  const { data: searchNews } = useCollection<any>("news", [limit(300)], searchEnabled);
 
   const matches = (v: any) => typeof v === "string" && v.toLowerCase().includes(debouncedSearch.toLowerCase());
 
@@ -208,10 +210,14 @@ function Navbar({ onMenuToggle, theme }: { onMenuToggle: () => void, theme: any 
       .filter((p: any) => matches(p.content) || matches(p.authorName))
       .slice(0, 5)
       .map((p: any) => ({ type: "Post", id: p.id, title: p.content, subtitle: p.authorName, go: () => navigate(`/post/${p.id}`) })),
+    ...searchNews
+      .filter((n: any) => matches(n.title) || matches(n.description) || matches(n.source))
+      .slice(0, 5)
+      .map((n: any) => ({ type: "News", id: n.id, title: n.title, subtitle: n.source, go: () => window.open(n.url, "_blank", "noopener,noreferrer") })),
   ];
 
   const searchLoading = searchEnabled && searchResults.length === 0 &&
-    [searchCompanies, searchJobs, searchGroups, searchTopics, searchEvents, searchSurveys, searchPosts].every(a => a.length === 0);
+    [searchCompanies, searchJobs, searchGroups, searchTopics, searchEvents, searchSurveys, searchPosts, searchNews].every(a => a.length === 0);
 
   useEffect(() => {
     const onClickOutside = (e: MouseEvent) => {
@@ -349,10 +355,13 @@ function Navbar({ onMenuToggle, theme }: { onMenuToggle: () => void, theme: any 
                         <button
                           key={`${r.type}-${r.id}`}
                           onClick={() => goToResult(r)}
-                          className="w-full text-left px-4 py-2 hover:bg-bg-main transition-colors flex flex-col"
+                          className="w-full text-left px-4 py-2 hover:bg-bg-main transition-colors flex items-start justify-between gap-2"
                         >
-                          <span className="text-[13px] text-text-heading truncate">{r.title}</span>
-                          {r.subtitle && <span className="text-[11px] text-text-body/50 truncate">{r.subtitle}</span>}
+                          <span className="flex flex-col min-w-0">
+                            <span className="text-[13px] text-text-heading truncate">{r.title}</span>
+                            {r.subtitle && <span className="text-[11px] text-text-body/50 truncate">{r.subtitle}</span>}
+                          </span>
+                          {r.type === "News" && <ExternalLink className="w-3 h-3 text-text-body/40 shrink-0 mt-0.5" strokeWidth={1.75} />}
                         </button>
                       ))}
                     </div>
