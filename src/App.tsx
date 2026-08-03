@@ -171,49 +171,84 @@ function Navbar({ onMenuToggle, theme }: { onMenuToggle: () => void, theme: any 
   }, [searchTerm]);
 
   const searchEnabled = debouncedSearch.length >= 2;
-  const { data: searchCompanies } = useCollection<any>("companies", [limit(300)], searchEnabled);
-  const { data: searchJobs } = useCollection<any>("jobs", [limit(300)], searchEnabled);
-  const { data: searchGroups } = useCollection<any>("groups", [limit(300)], searchEnabled);
-  const { data: searchTopics } = useCollection<any>("forum_topics", [limit(300)], searchEnabled);
-  const { data: searchEvents } = useCollection<any>("events", [limit(300)], searchEnabled);
-  const { data: searchSurveys } = useCollection<any>("surveys", [limit(300)], searchEnabled);
-  const { data: searchPosts } = useCollection<any>("posts", [limit(300)], searchEnabled);
-  const { data: searchNews } = useCollection<any>("news", [limit(300)], searchEnabled);
+  // orderBy makes the 300-doc cap deterministic — "most recent 300" instead of
+  // an arbitrary 300, so once a collection grows past that, older docs are the
+  // ones that age out of search rather than a silent, unpredictable subset.
+  // companies uses updatedAt (touched on every write, incl. re-seeding);
+  // everything else uses createdAt (set once, reliably, at creation).
+  const { data: searchCompanies } = useCollection<any>("companies", [orderBy("updatedAt", "desc"), limit(300)], searchEnabled);
+  const { data: searchJobs } = useCollection<any>("jobs", [orderBy("createdAt", "desc"), limit(300)], searchEnabled);
+  const { data: searchGroups } = useCollection<any>("groups", [orderBy("createdAt", "desc"), limit(300)], searchEnabled);
+  const { data: searchTopics } = useCollection<any>("forum_topics", [orderBy("createdAt", "desc"), limit(300)], searchEnabled);
+  const { data: searchEvents } = useCollection<any>("events", [orderBy("createdAt", "desc"), limit(300)], searchEnabled);
+  const { data: searchSurveys } = useCollection<any>("surveys", [orderBy("createdAt", "desc"), limit(300)], searchEnabled);
+  const { data: searchPosts } = useCollection<any>("posts", [orderBy("createdAt", "desc"), limit(300)], searchEnabled);
+  const { data: searchNews } = useCollection<any>("news", [orderBy("createdAt", "desc"), limit(300)], searchEnabled);
 
-  const matches = (v: any) => typeof v === "string" && v.toLowerCase().includes(debouncedSearch.toLowerCase());
+  // Tokenized AND matching: split the query into words and require every word
+  // to appear SOMEWHERE across the given fields (not necessarily the same one,
+  // not necessarily in order). "Jamnagar Reliance" now matches a company named
+  // "Reliance Industries" whose city field says "Jamnagar" — a plain substring
+  // check on the raw phrase never would. A narrow separator joins the fields so
+  // a word split across two fields' boundary can't falsely bridge into a match.
+  const searchWords = debouncedSearch.toLowerCase().split(/\s+/).filter(Boolean);
+  const norm = (v: any) => (typeof v === "string" ? v.toLowerCase() : "");
+  const matchesAll = (...fields: any[]) => {
+    const hay = fields.map(norm).join(" \u241F ");
+    return searchWords.length > 0 && searchWords.every((w) => hay.includes(w));
+  };
+  // Relevance score (lower = better): a primary field that starts with the
+  // raw query outranks one that merely contains it, which outranks a match
+  // that only worked because of tokenization (e.g. matched via a subtitle
+  // field, or word order differed from the query).
+  const scoreOf = (primary: any) => {
+    const p = norm(primary), raw = debouncedSearch.toLowerCase();
+    if (p.startsWith(raw)) return 0;
+    if (p.includes(raw)) return 1;
+    return 2;
+  };
+  const byRelevance = (primaryOf: (x: any) => any) => (a: any, b: any) => scoreOf(primaryOf(a)) - scoreOf(primaryOf(b));
 
   type SearchResult = { type: string; id: string; title: string; subtitle?: string; go: () => void };
   const searchResults: SearchResult[] = !searchEnabled ? [] : [
     ...searchCompanies
-      .filter((c: any) => matches(c.name) || matches(c.description))
+      .filter((c: any) => matchesAll(c.name, c.description, c.address))
+      .sort(byRelevance((c: any) => c.name))
       .slice(0, 5)
       .map((c: any) => ({ type: "Company", id: c.id, title: c.name, subtitle: c.address, go: () => navigate(`/business/${c.id}`) })),
     ...searchJobs
-      .filter((j: any) => matches(j.title) || matches(j.companyName) || matches(j.description))
+      .filter((j: any) => matchesAll(j.title, j.companyName, j.description))
+      .sort(byRelevance((j: any) => j.title))
       .slice(0, 5)
       .map((j: any) => ({ type: "Job", id: j.id, title: j.title, subtitle: j.companyName, go: () => navigate("/jobs", { state: { openJobId: j.id } }) })),
     ...searchGroups
-      .filter((g: any) => matches(g.name) || matches(g.description))
+      .filter((g: any) => matchesAll(g.name, g.description))
+      .sort(byRelevance((g: any) => g.name))
       .slice(0, 5)
       .map((g: any) => ({ type: "Group", id: g.id, title: g.name, subtitle: g.description, go: () => navigate(`/groups/${g.id}`) })),
     ...searchTopics
-      .filter((t: any) => matches(t.title) || matches(t.content) || matches(t.authorName))
+      .filter((t: any) => matchesAll(t.title, t.content, t.authorName))
+      .sort(byRelevance((t: any) => t.title))
       .slice(0, 5)
       .map((t: any) => ({ type: "Forum", id: t.id, title: t.title, subtitle: t.authorName ? `by ${t.authorName}` : undefined, go: () => navigate(`/forums/${t.id}`) })),
     ...searchEvents
-      .filter((e: any) => matches(e.title) || matches(e.description) || matches(e.location) || matches(e.companyName))
+      .filter((e: any) => matchesAll(e.title, e.description, e.location, e.companyName))
+      .sort(byRelevance((e: any) => e.title))
       .slice(0, 5)
       .map((e: any) => ({ type: "Event", id: e.id, title: e.title, subtitle: e.location, go: () => navigate(`/events/${e.id}`) })),
     ...searchSurveys
-      .filter((s: any) => matches(s.question) || matches(s.companyName))
+      .filter((s: any) => matchesAll(s.question, s.companyName))
+      .sort(byRelevance((s: any) => s.question))
       .slice(0, 5)
       .map((s: any) => ({ type: "Survey", id: s.id, title: s.question, subtitle: s.companyName, go: () => navigate("/surveys", { state: { highlightId: s.id } }) })),
     ...searchPosts
-      .filter((p: any) => matches(p.content) || matches(p.authorName))
+      .filter((p: any) => matchesAll(p.content, p.authorName))
+      .sort(byRelevance((p: any) => p.content))
       .slice(0, 5)
       .map((p: any) => ({ type: "Post", id: p.id, title: p.content, subtitle: p.authorName, go: () => navigate(`/post/${p.id}`) })),
     ...searchNews
-      .filter((n: any) => matches(n.title) || matches(n.description) || matches(n.source))
+      .filter((n: any) => matchesAll(n.title, n.description, n.source))
+      .sort(byRelevance((n: any) => n.title))
       .slice(0, 5)
       .map((n: any) => ({ type: "News", id: n.id, title: n.title, subtitle: n.source, go: () => window.open(n.url, "_blank", "noopener,noreferrer") })),
   ];
