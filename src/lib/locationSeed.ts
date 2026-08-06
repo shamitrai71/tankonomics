@@ -514,4 +514,319 @@ export const LOCATION_SEED: Record<string, SeedLocation[]> = {
     { name: "Batman Refinery", type: "refinery", city: "Batman", country: "Turkey", externalUrl: "https://tankbazaar.com/#terminal-829", facilityClass: ["process"], processType: ["refineries"], primaryClass: "process", googlePlaceId: "ChIJeSanljZHC0ARtkmra43U2V0" },
     { name: "Kırıkkale Refinery", type: "refinery", city: "Kırıkkale", country: "Turkey", externalUrl: "https://tankbazaar.com/#terminal-828", facilityClass: ["process"], processType: ["refineries"], primaryClass: "process", googlePlaceId: "ChIJD61F_YHfgUARl3ExRjvLt7o" },
   ],
+  "ampol-limited": [
+    { name: "Brisbane Terminal", type: "port terminal", city: "Brisbane", country: "Australia", externalUrl: "https://tankbazaar.com/#terminal-348", facilityClass: ["storage"], processType: [], primaryClass: "storage", googlePlaceId: "" },
+    { name: "Lytton Refinery", type: "refinery", city: "Brisbane", country: "Australia", externalUrl: "https://tankbazaar.com/#terminal-827", facilityClass: ["process"], processType: ["refineries"], primaryClass: "process", googlePlaceId: "" },
+  ],
+  "bp-products-north-america-inc": [
+    { name: "Chicago Depot", type: "inland terminal", city: "Chicago IL", country: "USA", externalUrl: "https://tankbazaar.com/#terminal-387", facilityClass: ["storage"], processType: [], primaryClass: "storage", googlePlaceId: "" },
+    { name: "Whiting Refinery", type: "refinery", city: "Whiting IN", country: "USA", externalUrl: "https://tankbazaar.com/#terminal-798", facilityClass: ["process"], processType: ["refineries"], primaryClass: "process", googlePlaceId: "" },
+  ],
+  "borealis-ag": [
+    { name: "Agrolinz Melamine Terminal", type: "plant", city: "Linz", country: "Austria", externalUrl: "https://tankbazaar.com/#terminal-922", facilityClass: ["process"], processType: ["fertilisers"], primaryClass: "process", googlePlaceId: "" },
+    { name: "Kallo Terminal", type: "plant", city: "Kallo", country: "Belgium", externalUrl: "https://tankbazaar.com/#terminal-867", facilityClass: ["process"], processType: ["petrochemicals"], primaryClass: "process", googlePlaceId: "" },
+  ],
+  "braskem-sa": [
+    { name: "Camaçari Terminal", type: "plant", city: "Camaçari, Bahia", country: "Brazil", externalUrl: "https://tankbazaar.com/#terminal-850", facilityClass: ["process"], processType: ["petrochemicals"], primaryClass: "process", googlePlaceId: "" },
+    { name: "Triunfo Terminal", type: "plant", city: "Triunfo, Rio Grande do Sul", country: "Brazil", externalUrl: "https://tankbazaar.com/#terminal-889", facilityClass: ["process"], processType: ["petrochemicals"], primaryClass: "process", googlePlaceId: "" },
+  ],
+  "cf-industries-holdings-inc": [
+    { name: "Donaldsonville Terminal", type: "plant", city: "Donaldsonville LA", country: "USA", externalUrl: "https://tankbazaar.com/#terminal-904", facilityClass: ["process"], processType: ["fertilisers"], primaryClass: "process", googlePlaceId: "" },
+    { name: "Verdigris Terminal", type: "plant", city: "Verdigris OK", country: "USA", externalUrl: "https://tankbazaar.com/#terminal-985", facilityClass: ["process"], processType: ["fertilisers"], primaryClass: "process", googlePlaceId: "" },
+    { name: "Yazoo City Terminal", type: "plant", city: "Yazoo City MS", country: "USA", externalUrl: "https://tankbazaar.com/#terminal-984", facilityClass: ["process"], processType: ["fertilisers"], primaryClass: "process", googlePlaceId: "" },
+  ],
+  "cpc-corp": [
+    { name: "Keelung Terminal", type: "port terminal", city: "Keelung", country: "Taiwan", externalUrl: "https://tankbazaar.com/#terminal-361", facilityClass: ["storage"], processType: [], primaryClass: "storage", googlePlaceId: "" },
+    { name: "Taichung Terminal", type: "port terminal", city: "Taichung", country: "Taiwan", externalUrl: "https://tankbazaar.com/#terminal-360", facilityClass: ["storage"], processType: [], primaryClass: "storage", googlePlaceId: "" },
+  ],
+  "chevron-usa-inc": [
+    { name: "El Segundo Refinery", type: "refinery", city: "El Segundo CA", country: "USA", externalUrl: "https://tankbazaar.com/#terminal-800", facilityClass: ["process"], processType: ["refineries"], primaryClass: "process", googlePlaceId: "" },
+    { name: "Pascagoula Refinery", type: "refinery", city: "Pascagoula MS", country: "USA", externalUrl: "https://tankbazaar.com/#terminal-802", facilityClass: ["process"], processType: ["refineries"], primaryClass: "process", googlePlaceId: "" },
+    { name: "Richmond Refinery", type: "refinery", city: "Richmond CA", country: "USA", externalUrl: "https://tankbazaar.com/#terminal-801", facilityClass: ["process"], processType: ["refineries"], primaryClass: "process", googlePlaceId: "" },
+  ],
+  "china-national-offshore-oil-corporation": [
+    { name: "CNOOC Guangzhou Refinery", type: "refinery", city: "Guangzhou", country: "China", externalUrl: "https://tankbazaar.com/#terminal-211", facilityClass: ["process"], processType: ["refineries"], primaryClass: "process", googlePlaceId: "" },
+    { name: "CNOOC Huizhou Refinery", type: "refinery", city: "Huizhou, Guangdong", country: "China", externalUrl: "https://tankbazaar.com/#terminal-1024", facilityClass: ["process"], processType: ["refineries", "petrochemicals"], primaryClass: "process", googlePlaceId: "" },
+    { name: "CNOOC Zhanjiang Dongfang Petrochemical Terminal", type: "refinery", city: "Zhanjiang, Guangdong", country: "China", externalUrl: "https://tankbazaar.com/#terminal-1045", facilityClass: ["process"], processType: ["refineries"], primaryClass: "process", googlePlaceId: "" },
+  ],
+  "china-railway-logistics": [
+    { name: "Baotou Terminal", type: "inland terminal", city: "Baotou, Inner Mongolia", country: "China", externalUrl: "https://tankbazaar.com/#terminal-709", facilityClass: ["storage"], processType: [], primaryClass: "storage", googlePlaceId: "" },
+    { name: "Xilinhot Terminal", type: "inland terminal", city: "Xilinhot, Inner Mongolia", country: "China", externalUrl: "https://tankbazaar.com/#terminal-708", facilityClass: ["storage"], processType: [], primaryClass: "storage", googlePlaceId: "" },
+  ],
+  "cobil": [
+    { name: "Kinshasa Depot", type: "inland terminal", city: "Kinshasa", country: "DRC", externalUrl: "https://tankbazaar.com/#terminal-346", facilityClass: ["storage"], processType: [], primaryClass: "storage", googlePlaceId: "" },
+    { name: "Matadi Terminal", type: "port terminal", city: "Matadi", country: "DRC", externalUrl: "https://tankbazaar.com/#terminal-164", facilityClass: ["storage"], processType: [], primaryClass: "storage", googlePlaceId: "" },
+  ],
+  "coromandel-international-limited": [
+    { name: "Ennore Terminal", type: "plant", city: "Ennore, Chennai, Tamil Nadu", country: "India", externalUrl: "https://tankbazaar.com/#terminal-979", facilityClass: ["process"], processType: ["fertilisers"], primaryClass: "process", googlePlaceId: "" },
+    { name: "Vizag Terminal", type: "plant", city: "Visakhapatnam, Andhra Pradesh", country: "India", externalUrl: "https://tankbazaar.com/#terminal-897", facilityClass: ["process"], processType: ["fertilisers"], primaryClass: "process", googlePlaceId: "" },
+  ],
+  "cosmo-oil-co-ltd": [
+    { name: "Osaka Terminal", type: "refinery", city: "Osaka", country: "Japan", externalUrl: "https://tankbazaar.com/#terminal-356", facilityClass: ["process"], processType: ["refineries"], primaryClass: "process", googlePlaceId: "" },
+    { name: "Yokkaichi Terminal", type: "refinery", city: "Yokkaichi", country: "Japan", externalUrl: "https://tankbazaar.com/#terminal-189", facilityClass: ["process"], processType: ["refineries"], primaryClass: "process", googlePlaceId: "" },
+  ],
+  "ep-petroecuador": [
+    { name: "Petroecuador Balao Terminal", type: "port terminal", city: "Balao", country: "Ecuador", externalUrl: "https://tankbazaar.com/#terminal-279", facilityClass: ["storage"], processType: [], primaryClass: "storage", googlePlaceId: "" },
+    { name: "Petroecuador Esmeraldas Terminal", type: "refinery", city: "Esmeraldas", country: "Ecuador", externalUrl: "https://tankbazaar.com/#terminal-156", facilityClass: ["process"], processType: ["refineries"], primaryClass: "process", googlePlaceId: "" },
+  ],
+  "empresa-nacional-del-petroleo-enap": [
+    { name: "ENAP Quintero Terminal", type: "port terminal", city: "Quintero", country: "Chile", externalUrl: "https://tankbazaar.com/#terminal-277", facilityClass: ["storage"], processType: [], primaryClass: "storage", googlePlaceId: "" },
+    { name: "ENAP Valparaiso Terminal", type: "refinery", city: "Valparaiso", country: "Chile", externalUrl: "https://tankbazaar.com/#terminal-154", facilityClass: ["process"], processType: ["refineries"], primaryClass: "process", googlePlaceId: "" },
+  ],
+  "eurochem-group-ag": [
+    { name: "Antwerp Terminal", type: "plant", city: "Antwerp", country: "Belgium", externalUrl: "https://tankbazaar.com/#terminal-967", facilityClass: ["process"], processType: ["fertilisers"], primaryClass: "process", googlePlaceId: "" },
+    { name: "Novomoskovsk Terminal", type: "plant", city: "Novomoskovsk", country: "Russia", externalUrl: "https://tankbazaar.com/#terminal-917", facilityClass: ["process"], processType: ["fertilisers"], primaryClass: "process", googlePlaceId: "" },
+  ],
+  "formosa-plastics-corporation": [
+    { name: "Mailiao Terminal", type: "plant", city: "Mailiao, Yunlin", country: "Taiwan", externalUrl: "https://tankbazaar.com/#terminal-848", facilityClass: ["process"], processType: ["petrochemicals"], primaryClass: "process", googlePlaceId: "" },
+    { name: "Point Comfort Terminal", type: "plant", city: "Point Comfort TX", country: "USA", externalUrl: "https://tankbazaar.com/#terminal-865", facilityClass: ["process"], processType: ["petrochemicals"], primaryClass: "process", googlePlaceId: "" },
+  ],
+  "gail-india-limited": [
+    { name: "Auraiya Terminal", type: "inland terminal", city: "Auraiya, Uttar Pradesh", country: "India", externalUrl: "https://tankbazaar.com/#terminal-424", facilityClass: ["storage"], processType: [], primaryClass: "storage", googlePlaceId: "" },
+    { name: "Pata Petrochemical Complex", type: "plant", city: "Pata, Uttar Pradesh", country: "India", externalUrl: "https://tankbazaar.com/#terminal-888", facilityClass: ["process"], processType: ["petrochemicals"], primaryClass: "process", googlePlaceId: "" },
+    { name: "Vijaipur Terminal", type: "inland terminal", city: "Vijaipur, Madhya Pradesh", country: "India", externalUrl: "https://tankbazaar.com/#terminal-423", facilityClass: ["storage"], processType: [], primaryClass: "storage", googlePlaceId: "" },
+  ],
+  "galp-energia-sgps-sa": [
+    { name: "Setubal Terminal", type: "port terminal", city: "Setubal", country: "Portugal", externalUrl: "https://tankbazaar.com/#terminal-261", facilityClass: ["storage"], processType: [], primaryClass: "storage", googlePlaceId: "" },
+    { name: "Leixões Terminal", type: "port terminal", city: "Leça da Palmeira", country: "Portugal", externalUrl: "https://tankbazaar.com/#terminal-107", facilityClass: ["storage"], processType: [], primaryClass: "storage", googlePlaceId: "" },
+    { name: "Sines Oil Terminal", type: "port terminal", city: "Sines", country: "Portugal", externalUrl: "https://tankbazaar.com/#terminal-106", facilityClass: ["storage"], processType: [], primaryClass: "storage", googlePlaceId: "" },
+  ],
+  "icl-group-ltd": [
+    { name: "Rotem Terminal", type: "plant", city: "Arad", country: "Israel", externalUrl: "https://tankbazaar.com/#terminal-971", facilityClass: ["process"], processType: ["fertilisers"], primaryClass: "process", googlePlaceId: "" },
+    { name: "Sodom Terminal", type: "plant", city: "Sodom", country: "Israel", externalUrl: "https://tankbazaar.com/#terminal-910", facilityClass: ["process"], processType: ["fertilisers"], primaryClass: "process", googlePlaceId: "" },
+  ],
+  "idemitsu-kosan-co-ltd": [
+    { name: "Chiba Refinery", type: "refinery", city: "Ichihara, Chiba", country: "Japan", externalUrl: "https://tankbazaar.com/#terminal-823", facilityClass: ["process"], processType: ["refineries"], primaryClass: "process", googlePlaceId: "" },
+    { name: "Kashima Terminal", type: "refinery", city: "Kashima", country: "Japan", externalUrl: "https://tankbazaar.com/#terminal-190", facilityClass: ["process", "storage"], processType: ["refineries"], primaryClass: "process", googlePlaceId: "" },
+    { name: "Tokuyama Terminal", type: "plant", city: "Shunan, Yamaguchi", country: "Japan", externalUrl: "https://tankbazaar.com/#terminal-891", facilityClass: ["process"], processType: ["petrochemicals"], primaryClass: "process", googlePlaceId: "" },
+  ],
+  "imperial-oil-limited": [
+    { name: "Halifax Terminal", type: "port terminal", city: "Halifax, Nova Scotia", country: "Canada", externalUrl: "https://tankbazaar.com/#terminal-1003", facilityClass: ["storage"], processType: [], primaryClass: "storage", googlePlaceId: "" },
+    { name: "Sarnia Refinery", type: "refinery", city: "Sarnia", country: "Canada", externalUrl: "https://tankbazaar.com/#terminal-389", facilityClass: ["process"], processType: ["refineries"], primaryClass: "process", googlePlaceId: "" },
+  ],
+  "intercontinental-terminals-company-llc": [
+    { name: "ITC Deer Park Terminal", type: "port terminal", city: "Deer Park TX", country: "USA", externalUrl: "https://tankbazaar.com/#terminal-646", facilityClass: ["storage"], processType: [], primaryClass: "storage", googlePlaceId: "" },
+    { name: "ITC Pasadena Terminal", type: "inland terminal", city: "Pasadena TX", country: "USA", externalUrl: "https://tankbazaar.com/#terminal-647", facilityClass: ["storage"], processType: [], primaryClass: "storage", googlePlaceId: "" },
+  ],
+  "irving-oil-limited": [
+    { name: "Whitegate Terminal", type: "port terminal", city: "Cork", country: "Ireland", externalUrl: "https://tankbazaar.com/#terminal-263", facilityClass: ["storage"], processType: [], primaryClass: "storage", googlePlaceId: "" },
+    { name: "Saint John Refinery", type: "refinery", city: "Saint John", country: "Canada", externalUrl: "https://tankbazaar.com/#terminal-168", facilityClass: ["process"], processType: ["refineries"], primaryClass: "process", googlePlaceId: "" },
+  ],
+  "jsc-uzbekneftegaz": [
+    { name: "Bukhara Refinery", type: "refinery", city: "Bukhara", country: "Uzbekistan", externalUrl: "https://tankbazaar.com/#terminal-379", facilityClass: ["process"], processType: ["refineries"], primaryClass: "process", googlePlaceId: "" },
+    { name: "Fergana Refinery", type: "refinery", city: "Fergana", country: "Uzbekistan", externalUrl: "https://tankbazaar.com/#terminal-830", facilityClass: ["process"], processType: ["refineries"], primaryClass: "process", googlePlaceId: "" },
+  ],
+  "jordan-petroleum-refinery-company-jopetrol": [
+    { name: "JOPetrol Amman Depot", type: "inland terminal", city: "Amman", country: "Jordan", externalUrl: "https://tankbazaar.com/#terminal-137", facilityClass: ["storage"], processType: [], primaryClass: "storage", googlePlaceId: "" },
+    { name: "JOPetrol Zarqa Depot", type: "inland terminal", city: "Zarqa", country: "Jordan", externalUrl: "https://tankbazaar.com/#terminal-383", facilityClass: ["storage"], processType: [], primaryClass: "storage", googlePlaceId: "" },
+    { name: "Zarqa Refinery", type: "refinery", city: "Zarqa", country: "Jordan", externalUrl: "https://tankbazaar.com/#terminal-762", facilityClass: ["process"], processType: ["refineries"], primaryClass: "process", googlePlaceId: "" },
+  ],
+  "k-s-aktiengesellschaft": [
+    { name: "Bernburg Terminal", type: "plant", city: "Bernburg", country: "Germany", externalUrl: "https://tankbazaar.com/#terminal-969", facilityClass: ["process"], processType: ["fertilisers"], primaryClass: "process", googlePlaceId: "" },
+    { name: "Kali Werra Terminal", type: "plant", city: "Werra", country: "Germany", externalUrl: "https://tankbazaar.com/#terminal-909", facilityClass: ["process"], processType: ["fertilisers"], primaryClass: "process", googlePlaceId: "" },
+    { name: "Sigmundshall Terminal", type: "plant", city: "Bad Nenndorf", country: "Germany", externalUrl: "https://tankbazaar.com/#terminal-970", facilityClass: ["process"], processType: ["fertilisers"], primaryClass: "process", googlePlaceId: "" },
+  ],
+  "kuwait-national-petroleum-company": [
+    { name: "KNPC Kuwait City Depot", type: "inland terminal", city: "Kuwait City", country: "Kuwait", externalUrl: "https://tankbazaar.com/#terminal-328", facilityClass: ["storage"], processType: [], primaryClass: "storage", googlePlaceId: "" },
+    { name: "Shuaiba Refinery", type: "refinery", city: "Shuaiba", country: "Kuwait", externalUrl: "https://tankbazaar.com/#terminal-46", facilityClass: ["process"], processType: ["refineries"], primaryClass: "process", googlePlaceId: "" },
+  ],
+  "kuwait-petroleum-corporation": [
+    { name: "KPC Nairobi Depot", type: "inland terminal", city: "Nairobi", country: "Kenya", externalUrl: "https://tankbazaar.com/#terminal-153", facilityClass: ["storage"], processType: [], primaryClass: "storage", googlePlaceId: "" },
+    { name: "Mina Al-Ahmadi Refinery", type: "refinery", city: "Mina Ahmadi", country: "Kuwait", externalUrl: "https://tankbazaar.com/#terminal-19", facilityClass: ["process"], processType: ["refineries"], primaryClass: "process", googlePlaceId: "" },
+    { name: "Mombasa Oil Terminal", type: "port terminal", city: "Mombasa", country: "Kenya", externalUrl: "https://tankbazaar.com/#terminal-62", facilityClass: ["storage"], processType: [], primaryClass: "storage", googlePlaceId: "" },
+  ],
+  "lg-chem-ltd": [
+    { name: "Daesan Terminal", type: "plant", city: "Daesan", country: "South Korea", externalUrl: "https://tankbazaar.com/#terminal-869", facilityClass: ["process"], processType: ["petrochemicals"], primaryClass: "process", googlePlaceId: "" },
+    { name: "Yeosu Terminal", type: "plant", city: "Yeosu", country: "South Korea", externalUrl: "https://tankbazaar.com/#terminal-849", facilityClass: ["process"], processType: ["petrochemicals"], primaryClass: "process", googlePlaceId: "" },
+  ],
+  "marathon-petroleum-corporation": [
+    { name: "Galveston Bay Refinery", type: "refinery", city: "Texas City TX", country: "USA", externalUrl: "https://tankbazaar.com/#terminal-795", facilityClass: ["process"], processType: ["refineries"], primaryClass: "process", googlePlaceId: "" },
+    { name: "Garyville Refinery", type: "refinery", city: "Garyville LA", country: "USA", externalUrl: "https://tankbazaar.com/#terminal-796", facilityClass: ["process"], processType: ["refineries"], primaryClass: "process", googlePlaceId: "" },
+  ],
+  "motor-oil-hellas-corinth-refineries-sa": [
+    { name: "Agioi Theodoroi Terminal", type: "port terminal", city: "Agioi Theodoroi", country: "Greece", externalUrl: "https://tankbazaar.com/#terminal-109", facilityClass: ["storage"], processType: [], primaryClass: "storage", googlePlaceId: "" },
+    { name: "Hellas Thessaloniki Terminal", type: "port terminal", city: "Thessaloniki", country: "Greece", externalUrl: "https://tankbazaar.com/#terminal-194", facilityClass: ["storage"], processType: [], primaryClass: "storage", googlePlaceId: "" },
+  ],
+  "neste-oyj": [
+    { name: "Naantali Terminal", type: "port terminal", city: "Naantali", country: "Finland", externalUrl: "https://tankbazaar.com/#terminal-125", facilityClass: ["storage"], processType: [], primaryClass: "storage", googlePlaceId: "" },
+    { name: "Porvoo Refinery", type: "refinery", city: "Porvoo", country: "Finland", externalUrl: "https://tankbazaar.com/#terminal-781", facilityClass: ["process"], processType: ["refineries"], primaryClass: "process", googlePlaceId: "" },
+    { name: "Porvoo Terminal", type: "port terminal", city: "Porvoo", country: "Finland", externalUrl: "https://tankbazaar.com/#terminal-124", facilityClass: ["storage"], processType: [], primaryClass: "storage", googlePlaceId: "" },
+  ],
+  "nigerian-national-petroleum-company-limited": [
+    { name: "NNPC Kaduna Refinery", type: "refinery", city: "Kaduna", country: "Nigeria", externalUrl: "https://tankbazaar.com/#terminal-147", facilityClass: ["process"], processType: ["refineries"], primaryClass: "process", googlePlaceId: "" },
+    { name: "NNPC Port Harcourt Terminal", type: "refinery", city: "Port Harcourt", country: "Nigeria", externalUrl: "https://tankbazaar.com/#terminal-300", facilityClass: ["process"], processType: ["refineries"], primaryClass: "process", googlePlaceId: "" },
+  ],
+  "numaligarh-refinery-limited": [
+    { name: "NRL Siliguri Terminal", type: "inland terminal", city: "Siliguri, West Bengal", country: "India", externalUrl: "https://tankbazaar.com/#terminal-434", facilityClass: ["storage"], processType: [], primaryClass: "storage", googlePlaceId: "" },
+    { name: "Refinery", type: "refinery", city: "Numaligarh, Assam", country: "India", externalUrl: "https://tankbazaar.com/#terminal-85", facilityClass: ["process"], processType: ["refineries"], primaryClass: "process", googlePlaceId: "" },
+  ],
+  "nutrien-ltd": [
+    { name: "Borger Terminal", type: "plant", city: "Borger TX", country: "USA", externalUrl: "https://tankbazaar.com/#terminal-987", facilityClass: ["process"], processType: ["fertilisers"], primaryClass: "process", googlePlaceId: "" },
+    { name: "Geismar Terminal", type: "plant", city: "Geismar LA", country: "USA", externalUrl: "https://tankbazaar.com/#terminal-920", facilityClass: ["process"], processType: ["fertilisers"], primaryClass: "process", googlePlaceId: "" },
+    { name: "Redwater Terminal", type: "plant", city: "Redwater, Alberta", country: "Canada", externalUrl: "https://tankbazaar.com/#terminal-905", facilityClass: ["process"], processType: ["fertilisers"], primaryClass: "process", googlePlaceId: "" },
+  ],
+  "ocp-group-sa": [
+    { name: "Jorf Lasfar Terminal", type: "plant", city: "El Jadida", country: "Morocco", externalUrl: "https://tankbazaar.com/#terminal-906", facilityClass: ["process"], processType: ["fertilisers"], primaryClass: "process", googlePlaceId: "" },
+    { name: "Safi Terminal", type: "plant", city: "Safi", country: "Morocco", externalUrl: "https://tankbazaar.com/#terminal-964", facilityClass: ["process"], processType: ["fertilisers"], primaryClass: "process", googlePlaceId: "" },
+  ],
+  "omv-aktiengesellschaft": [
+    { name: "Lobau Terminal", type: "inland terminal", city: "Vienna", country: "Austria", externalUrl: "https://tankbazaar.com/#terminal-723", facilityClass: ["storage"], processType: [], primaryClass: "storage", googlePlaceId: "" },
+    { name: "Schwechat Refinery", type: "refinery", city: "Schwechat", country: "Austria", externalUrl: "https://tankbazaar.com/#terminal-313", facilityClass: ["process"], processType: ["refineries"], primaryClass: "process", googlePlaceId: "" },
+  ],
+  "omv-petrom-sa": [
+    { name: "Petrobrazi Refinery", type: "refinery", city: "Ploiesti", country: "Romania", externalUrl: "https://tankbazaar.com/#terminal-780", facilityClass: ["process"], processType: ["refineries"], primaryClass: "process", googlePlaceId: "" },
+    { name: "Petrom Ploiesti Depot", type: "inland terminal", city: "Ploiesti", country: "Romania", externalUrl: "https://tankbazaar.com/#terminal-236", facilityClass: ["storage"], processType: [], primaryClass: "storage", googlePlaceId: "" },
+  ],
+  "oq-saoc": [
+    { name: "Duqm Terminal", type: "port terminal", city: "Duqm", country: "Oman", externalUrl: "https://tankbazaar.com/#terminal-129", facilityClass: ["storage"], processType: [], primaryClass: "storage", googlePlaceId: "" },
+    { name: "Oman Oil Nizwa Depot", type: "inland terminal", city: "Nizwa", country: "Oman", externalUrl: "https://tankbazaar.com/#terminal-330", facilityClass: ["storage"], processType: [], primaryClass: "storage", googlePlaceId: "" },
+  ],
+  "pjsc-phosagro": [
+    { name: "PhosAgro Balakovo Terminal", type: "plant", city: "Balakovo", country: "Russia", externalUrl: "https://tankbazaar.com/#terminal-977", facilityClass: ["process"], processType: ["fertilisers"], primaryClass: "process", googlePlaceId: "" },
+    { name: "PhosAgro Cherepovets Terminal", type: "plant", city: "Cherepovets", country: "Russia", externalUrl: "https://tankbazaar.com/#terminal-907", facilityClass: ["process"], processType: ["fertilisers"], primaryClass: "process", googlePlaceId: "" },
+  ],
+  "pjsc-rosneft-oil-company": [
+    { name: "Angarsk Refinery", type: "refinery", city: "Angarsk", country: "Russia", externalUrl: "https://tankbazaar.com/#terminal-307", facilityClass: ["process"], processType: ["refineries"], primaryClass: "process", googlePlaceId: "" },
+    { name: "Ryazan Refinery", type: "refinery", city: "Ryazan", country: "Russia", externalUrl: "https://tankbazaar.com/#terminal-308", facilityClass: ["process"], processType: ["refineries"], primaryClass: "process", googlePlaceId: "" },
+    { name: "Tuapse Refinery", type: "refinery", city: "Tuapse", country: "Russia", externalUrl: "https://tankbazaar.com/#terminal-225", facilityClass: ["process"], processType: ["refineries"], primaryClass: "process", googlePlaceId: "" },
+  ],
+  "pakistan-state-oil-company-limited-pso": [
+    { name: "PSO Karachi Port Terminal", type: "port terminal", city: "Karachi", country: "Pakistan", externalUrl: "https://tankbazaar.com/#terminal-301", facilityClass: ["storage"], processType: [], primaryClass: "storage", googlePlaceId: "" },
+    { name: "PSO Mahmood Kot Depot", type: "inland terminal", city: "Mahmood Kot", country: "Pakistan", externalUrl: "https://tankbazaar.com/#terminal-303", facilityClass: ["storage"], processType: [], primaryClass: "storage", googlePlaceId: "" },
+  ],
+  "petroliam-nasional-berhad-petronas": [
+    { name: "Melaka Refinery", type: "refinery", city: "Melaka", country: "Malaysia", externalUrl: "https://tankbazaar.com/#terminal-353", facilityClass: ["process"], processType: ["refineries"], primaryClass: "process", googlePlaceId: "" },
+    { name: "Petronas Bintulu Terminal", type: "port terminal", city: "Bintulu", country: "Malaysia", externalUrl: "https://tankbazaar.com/#terminal-183", facilityClass: ["storage"], processType: [], primaryClass: "storage", googlePlaceId: "" },
+  ],
+  "petron-corporation": [
+    { name: "Batangas Terminal", type: "port terminal", city: "Batangas", country: "Philippines", externalUrl: "https://tankbazaar.com/#terminal-184", facilityClass: ["storage"], processType: [], primaryClass: "storage", googlePlaceId: "" },
+    { name: "Cebu Terminal", type: "port terminal", city: "Cebu", country: "Philippines", externalUrl: "https://tankbazaar.com/#terminal-359", facilityClass: ["storage"], processType: [], primaryClass: "storage", googlePlaceId: "" },
+    { name: "Limay Terminal", type: "refinery", city: "Limay", country: "Philippines", externalUrl: "https://tankbazaar.com/#terminal-185", facilityClass: ["process"], processType: ["refineries"], primaryClass: "process", googlePlaceId: "" },
+  ],
+  "petroleos-del-peru-petroperu-sa": [
+    { name: "Petroperu Callao Terminal", type: "port terminal", city: "Callao", country: "Peru", externalUrl: "https://tankbazaar.com/#terminal-278", facilityClass: ["storage"], processType: [], primaryClass: "storage", googlePlaceId: "" },
+    { name: "Petroperu Talara Terminal", type: "refinery", city: "Talara", country: "Peru", externalUrl: "https://tankbazaar.com/#terminal-155", facilityClass: ["process"], processType: ["refineries"], primaryClass: "process", googlePlaceId: "" },
+  ],
+  "phillips-66-company": [
+    { name: "Sweeny Refinery", type: "refinery", city: "Old Ocean TX", country: "USA", externalUrl: "https://tankbazaar.com/#terminal-803", facilityClass: ["process"], processType: ["refineries"], primaryClass: "process", googlePlaceId: "" },
+    { name: "Wood River Refinery", type: "refinery", city: "Roxana IL", country: "USA", externalUrl: "https://tankbazaar.com/#terminal-799", facilityClass: ["process"], processType: ["refineries"], primaryClass: "process", googlePlaceId: "" },
+  ],
+  "preem-ab": [
+    { name: "Brofjorden Terminal", type: "refinery", city: "Lysekil", country: "Sweden", externalUrl: "https://tankbazaar.com/#terminal-119", facilityClass: ["process", "storage"], processType: ["refineries"], primaryClass: "process", googlePlaceId: "" },
+    { name: "Nynashamn Terminal", type: "refinery", city: "Nynashamn", country: "Sweden", externalUrl: "https://tankbazaar.com/#terminal-230", facilityClass: ["process", "storage"], processType: ["refineries"], primaryClass: "process", googlePlaceId: "" },
+  ],
+  "qatarenergy": [
+    { name: "Qatar Mesaieed Terminal", type: "port terminal", city: "Mesaieed", country: "Qatar", externalUrl: "https://tankbazaar.com/#terminal-40", facilityClass: ["storage"], processType: [], primaryClass: "storage", googlePlaceId: "" },
+    { name: "Ras Laffan Terminal", type: "port terminal", city: "Ras Laffan", country: "Qatar", externalUrl: "https://tankbazaar.com/#terminal-128", facilityClass: ["storage"], processType: [], primaryClass: "storage", googlePlaceId: "" },
+  ],
+  "rashtriya-chemicals-and-fertilizers-limited": [
+    { name: "RCF Thal Terminal", type: "plant", city: "Thal, Raigad, Maharashtra", country: "India", externalUrl: "https://tankbazaar.com/#terminal-894", facilityClass: ["process"], processType: ["fertilisers"], primaryClass: "process", googlePlaceId: "" },
+    { name: "RCF Trombay Terminal", type: "plant", city: "Trombay, Mumbai, Maharashtra", country: "India", externalUrl: "https://tankbazaar.com/#terminal-893", facilityClass: ["process"], processType: ["fertilisers"], primaryClass: "process", googlePlaceId: "" },
+  ],
+  "repsol-sa": [
+    { name: "Cartagena Repsol Terminal", type: "port terminal", city: "Cartagena", country: "Spain", externalUrl: "https://tankbazaar.com/#terminal-104", facilityClass: ["storage"], processType: [], primaryClass: "storage", googlePlaceId: "" },
+    { name: "Tarragona Terminal", type: "port terminal", city: "Tarragona", country: "Spain", externalUrl: "https://tankbazaar.com/#terminal-105", facilityClass: ["storage"], processType: [], primaryClass: "storage", googlePlaceId: "" },
+  ],
+  "rosneft-oil-company-pjsc": [
+    { name: "Murmansk Arctic Terminal", type: "port terminal", city: "Murmansk", country: "Russia", externalUrl: "https://tankbazaar.com/#terminal-365", facilityClass: ["storage"], processType: [], primaryClass: "storage", googlePlaceId: "" },
+    { name: "Ust-Luga Terminal", type: "port terminal", city: "Ust-Luga", country: "Russia", externalUrl: "https://tankbazaar.com/#terminal-55", facilityClass: ["storage"], processType: [], primaryClass: "storage", googlePlaceId: "" },
+    { name: "Vostok Oil Bukhta Sever Terminal", type: "port terminal", city: "Bukhta Sever", country: "Russia", externalUrl: "https://tankbazaar.com/#terminal-367", facilityClass: ["storage"], processType: [], primaryClass: "storage", googlePlaceId: "" },
+  ],
+  "saudi-arabian-oil-company-saudi-aramco": [
+    { name: "Aramco Jeddah Terminal", type: "port terminal", city: "Jeddah", country: "Saudi Arabia", externalUrl: "https://tankbazaar.com/#terminal-127", facilityClass: ["storage"], processType: [], primaryClass: "storage", googlePlaceId: "" },
+    { name: "Aramco Riyadh Depot", type: "inland terminal", city: "Riyadh", country: "Saudi Arabia", externalUrl: "https://tankbazaar.com/#terminal-136", facilityClass: ["storage"], processType: [], primaryClass: "storage", googlePlaceId: "" },
+  ],
+  "saudi-basic-industries-corporation-sabic": [
+    { name: "SABIC Geleen Terminal", type: "plant", city: "Geleen", country: "Netherlands", externalUrl: "https://tankbazaar.com/#terminal-864", facilityClass: ["process"], processType: ["petrochemicals"], primaryClass: "process", googlePlaceId: "" },
+    { name: "SABIC Jubail Terminal", type: "plant", city: "Jubail", country: "Saudi Arabia", externalUrl: "https://tankbazaar.com/#terminal-846", facilityClass: ["process"], processType: ["petrochemicals"], primaryClass: "process", googlePlaceId: "" },
+    { name: "SABIC Wilton Terminal", type: "plant", city: "Wilton, Redcar", country: "UK", externalUrl: "https://tankbazaar.com/#terminal-875", facilityClass: ["process"], processType: ["petrochemicals"], primaryClass: "process", googlePlaceId: "" },
+  ],
+  "shell-plc": [
+    { name: "Banyan Terminal", type: "port terminal", city: "Pulau Bukom", country: "Singapore", externalUrl: "https://tankbazaar.com/#terminal-354", facilityClass: ["storage"], processType: [], primaryClass: "storage", googlePlaceId: "" },
+    { name: "Energy and Chemicals Park Singapore Terminal", type: "refinery", city: "Pulau Bukom", country: "Singapore", externalUrl: "https://tankbazaar.com/#terminal-821", facilityClass: ["process"], processType: ["refineries", "petrochemicals"], primaryClass: "process", googlePlaceId: "" },
+  ],
+  "skytanking": [
+    { name: "Frankfurt Fuel Farm", type: "inland terminal", city: "Frankfurt", country: "Germany", externalUrl: "https://tankbazaar.com/#terminal-410", facilityClass: ["storage"], processType: [], primaryClass: "storage", googlePlaceId: "" },
+    { name: "Munich Fuel Farm", type: "inland terminal", city: "Munich", country: "Germany", externalUrl: "https://tankbazaar.com/#terminal-416", facilityClass: ["storage"], processType: [], primaryClass: "storage", googlePlaceId: "" },
+  ],
+  "societe-algerienne-de-raffinage-naftec": [
+    { name: "Naftec Arzew Refinery", type: "refinery", city: "Arzew", country: "Algeria", externalUrl: "https://tankbazaar.com/#terminal-834", facilityClass: ["process"], processType: ["refineries"], primaryClass: "process", googlePlaceId: "" },
+    { name: "Skikda Refinery", type: "refinery", city: "Skikda", country: "Algeria", externalUrl: "https://tankbazaar.com/#terminal-835", facilityClass: ["process"], processType: ["refineries"], primaryClass: "process", googlePlaceId: "" },
+  ],
+  "sonangol-ap": [
+    { name: "Cabinda Refinery", type: "refinery", city: "Cabinda", country: "Angola", externalUrl: "https://tankbazaar.com/#terminal-345", facilityClass: ["process"], processType: ["refineries"], primaryClass: "process", googlePlaceId: "" },
+    { name: "Luanda Terminal", type: "port terminal", city: "Luanda", country: "Angola", externalUrl: "https://tankbazaar.com/#terminal-143", facilityClass: ["storage"], processType: [], primaryClass: "storage", googlePlaceId: "" },
+  ],
+  "state-oil-company-of-the-azerbaijan-republic": [
+    { name: "Baku-Supsa Terminal", type: "port terminal", city: "Supsa", country: "Georgia", externalUrl: "https://tankbazaar.com/#terminal-202", facilityClass: ["storage"], processType: [], primaryClass: "storage", googlePlaceId: "" },
+    { name: "Dubendi Oil Terminal", type: "port terminal", city: "Dubendi", country: "Azerbaijan", externalUrl: "https://tankbazaar.com/#terminal-203", facilityClass: ["storage"], processType: [], primaryClass: "storage", googlePlaceId: "" },
+    { name: "Heydar Aliyev Baku Oil Refinery", type: "refinery", city: "Baku", country: "Azerbaijan", externalUrl: "https://tankbazaar.com/#terminal-746", facilityClass: ["process"], processType: ["refineries"], primaryClass: "process", googlePlaceId: "" },
+  ],
+  "state-organization-for-marketing-of-oil": [
+    { name: "SOMO Baghdad Depot", type: "inland terminal", city: "Baghdad", country: "Iraq", externalUrl: "https://tankbazaar.com/#terminal-331", facilityClass: ["storage"], processType: [], primaryClass: "storage", googlePlaceId: "" },
+    { name: "SOMO Khor al-Amaya Terminal", type: "port terminal", city: "Al Faw", country: "Iraq", externalUrl: "https://tankbazaar.com/#terminal-134", facilityClass: ["storage"], processType: [], primaryClass: "storage", googlePlaceId: "" },
+    { name: "SOMO Umm Qasr Terminal", type: "port terminal", city: "Umm Qasr", country: "Iraq", externalUrl: "https://tankbazaar.com/#terminal-205", facilityClass: ["storage"], processType: [], primaryClass: "storage", googlePlaceId: "" },
+  ],
+  "suncor-energy-inc": [
+    { name: "Edmonton Refinery", type: "refinery", city: "Edmonton", country: "Canada", externalUrl: "https://tankbazaar.com/#terminal-169", facilityClass: ["process"], processType: ["refineries"], primaryClass: "process", googlePlaceId: "" },
+    { name: "Montreal Terminal", type: "port terminal", city: "Montreal", country: "Canada", externalUrl: "https://tankbazaar.com/#terminal-269", facilityClass: ["storage"], processType: [], primaryClass: "storage", googlePlaceId: "" },
+    { name: "Vancouver Terminal", type: "port terminal", city: "Vancouver", country: "Canada", externalUrl: "https://tankbazaar.com/#terminal-167", facilityClass: ["storage"], processType: [], primaryClass: "storage", googlePlaceId: "" },
+  ],
+  "tanzania-international-petroleum-reserves-limited": [
+    { name: "TIPER Dar es Salaam Terminal", type: "port terminal", city: "Dar es Salaam", country: "Tanzania", externalUrl: "https://tankbazaar.com/#terminal-148", facilityClass: ["storage"], processType: [], primaryClass: "storage", googlePlaceId: "" },
+    { name: "TIPER Zanzibar Terminal", type: "port terminal", city: "Zanzibar", country: "Tanzania", externalUrl: "https://tankbazaar.com/#terminal-347", facilityClass: ["storage"], processType: [], primaryClass: "storage", googlePlaceId: "" },
+  ],
+  "the-dow-chemical-company": [
+    { name: "Dow Böhlen Terminal", type: "plant", city: "Böhlen, Saxony", country: "Germany", externalUrl: "https://tankbazaar.com/#terminal-877", facilityClass: ["process"], processType: ["petrochemicals"], primaryClass: "process", googlePlaceId: "" },
+    { name: "Dow Freeport Terminal", type: "plant", city: "Freeport TX", country: "USA", externalUrl: "https://tankbazaar.com/#terminal-845", facilityClass: ["process"], processType: ["petrochemicals"], primaryClass: "process", googlePlaceId: "" },
+    { name: "Dow Terneuzen Terminal", type: "plant", city: "Terneuzen", country: "Netherlands", externalUrl: "https://tankbazaar.com/#terminal-862", facilityClass: ["process"], processType: ["petrochemicals"], primaryClass: "process", googlePlaceId: "" },
+  ],
+  "the-mosaic-company": [
+    { name: "Mosaic Faustina Terminal", type: "plant", city: "Faustina LA", country: "USA", externalUrl: "https://tankbazaar.com/#terminal-918", facilityClass: ["process"], processType: ["fertilisers"], primaryClass: "process", googlePlaceId: "" },
+    { name: "Mosaic Riverview Terminal", type: "plant", city: "Riverview FL", country: "USA", externalUrl: "https://tankbazaar.com/#terminal-986", facilityClass: ["process"], processType: ["fertilisers"], primaryClass: "process", googlePlaceId: "" },
+  ],
+  "totalenergies-raffinage-france": [
+    { name: "Donges Terminal", type: "port terminal", city: "Donges", country: "France", externalUrl: "https://tankbazaar.com/#terminal-103", facilityClass: ["storage"], processType: [], primaryClass: "storage", googlePlaceId: "" },
+    { name: "Raffinerie de Normandie Terminal", type: "refinery", city: "Gonfreville-l'Orcher", country: "France", externalUrl: "https://tankbazaar.com/#terminal-777", facilityClass: ["process"], processType: ["refineries"], primaryClass: "process", googlePlaceId: "" },
+  ],
+  "transneft-pjsc": [
+    { name: "Novorossiysk CPC Terminal", type: "port terminal", city: "Novorossiysk", country: "Russia", externalUrl: "https://tankbazaar.com/#terminal-54", facilityClass: ["storage"], processType: [], primaryClass: "storage", googlePlaceId: "" },
+    { name: "Primorsk Oil Terminal", type: "port terminal", city: "Primorsk", country: "Russia", externalUrl: "https://tankbazaar.com/#terminal-53", facilityClass: ["storage"], processType: [], primaryClass: "storage", googlePlaceId: "" },
+    { name: "Sheskharis Grushovaya Complex", type: "port terminal", city: "Novorossiysk", country: "Russia", externalUrl: "https://tankbazaar.com/#terminal-701", facilityClass: ["storage"], processType: [], primaryClass: "storage", googlePlaceId: "" },
+  ],
+  "vida-bioenergy-vtti-bv": [
+    { name: "Glentham Terminal", type: "inland terminal", city: "Glentham", country: "UK", externalUrl: "https://tankbazaar.com/#terminal-666", facilityClass: ["storage"], processType: [], primaryClass: "storage", googlePlaceId: "" },
+    { name: "Tilburg Terminal", type: "inland terminal", city: "Tilburg", country: "Netherlands", externalUrl: "https://tankbazaar.com/#terminal-665", facilityClass: ["storage"], processType: [], primaryClass: "storage", googlePlaceId: "" },
+  ],
+  "vesta-terminals-bv": [
+    { name: "Antwerp Terminal", type: "port terminal", city: "Antwerp", country: "Belgium", externalUrl: "https://tankbazaar.com/#terminal-690", facilityClass: ["storage"], processType: [], primaryClass: "storage", googlePlaceId: "" },
+    { name: "Flushing Terminal", type: "port terminal", city: "Vlissingen", country: "Netherlands", externalUrl: "https://tankbazaar.com/#terminal-691", facilityClass: ["storage"], processType: [], primaryClass: "storage", googlePlaceId: "" },
+    { name: "Tallinn Terminal", type: "port terminal", city: "Tallinn", country: "Estonia", externalUrl: "https://tankbazaar.com/#terminal-692", facilityClass: ["storage"], processType: [], primaryClass: "storage", googlePlaceId: "" },
+  ],
+  "vivo-energy-holding-bv": [
+    { name: "Lagos Terminal", type: "port terminal", city: "Lagos", country: "Nigeria", externalUrl: "https://tankbazaar.com/#terminal-12", facilityClass: ["storage"], processType: [], primaryClass: "storage", googlePlaceId: "" },
+    { name: "Kampala Depot", type: "inland terminal", city: "Kampala", country: "Uganda", externalUrl: "https://tankbazaar.com/#terminal-151", facilityClass: ["storage"], processType: [], primaryClass: "storage", googlePlaceId: "" },
+  ],
+  "vopak-international-venezuela-aruba-nv-viia": [
+    { name: "VIIA Freeport Terminal", type: "port terminal", city: "Freeport TX", country: "USA", externalUrl: "https://tankbazaar.com/#terminal-583", facilityClass: ["storage"], processType: [], primaryClass: "storage", googlePlaceId: "" },
+    { name: "VIIA Plaquemine Terminal", type: "port terminal", city: "Plaquemine LA", country: "USA", externalUrl: "https://tankbazaar.com/#terminal-584", facilityClass: ["storage"], processType: [], primaryClass: "storage", googlePlaceId: "" },
+    { name: "VIIA St Charles Terminal", type: "port terminal", city: "St. Charles LA", country: "USA", externalUrl: "https://tankbazaar.com/#terminal-585", facilityClass: ["storage"], processType: [], primaryClass: "storage", googlePlaceId: "" },
+  ],
+  "ypf-sa": [
+    { name: "Comodoro Rivadavia Terminal", type: "port terminal", city: "Comodoro Rivadavia, Chubut", country: "Argentina", externalUrl: "https://tankbazaar.com/#terminal-998", facilityClass: ["storage"], processType: [], primaryClass: "storage", googlePlaceId: "" },
+    { name: "Bahia Blanca Terminal", type: "refinery", city: "Bahia Blanca", country: "Argentina", externalUrl: "https://tankbazaar.com/#terminal-160", facilityClass: ["process"], processType: ["refineries"], primaryClass: "process", googlePlaceId: "" },
+    { name: "La Plata Terminal", type: "refinery", city: "La Plata", country: "Argentina", externalUrl: "https://tankbazaar.com/#terminal-276", facilityClass: ["process"], processType: ["refineries"], primaryClass: "process", googlePlaceId: "" },
+  ],
+  "yacimientos-petroliferos-fiscales-bolivianos": [
+    { name: "YPFB Gualberto Villarroel Refinery", type: "refinery", city: "Cochabamba", country: "Bolivia", externalUrl: "https://tankbazaar.com/#terminal-843", facilityClass: ["process"], processType: ["refineries"], primaryClass: "process", googlePlaceId: "" },
+    { name: "YPFB La Paz Depot", type: "inland terminal", city: "La Paz", country: "Bolivia", externalUrl: "https://tankbazaar.com/#terminal-158", facilityClass: ["storage"], processType: [], primaryClass: "storage", googlePlaceId: "" },
+  ],
+  "yara-suomi-oy": [
+    { name: "Kotka Terminal", type: "plant", city: "Kotka", country: "Finland", externalUrl: "https://tankbazaar.com/#terminal-960", facilityClass: ["process"], processType: ["fertilisers"], primaryClass: "process", googlePlaceId: "" },
+    { name: "Uusikaupunki Terminal", type: "plant", city: "Uusikaupunki", country: "Finland", externalUrl: "https://tankbazaar.com/#terminal-961", facilityClass: ["process"], processType: ["fertilisers"], primaryClass: "process", googlePlaceId: "" },
+  ],
+  "z-energy-limited": [
+    { name: "Auckland Terminal", type: "port terminal", city: "Auckland", country: "New Zealand", externalUrl: "https://tankbazaar.com/#terminal-171", facilityClass: ["storage"], processType: [], primaryClass: "storage", googlePlaceId: "" },
+    { name: "Lyttelton Terminal", type: "port terminal", city: "Christchurch", country: "New Zealand", externalUrl: "https://tankbazaar.com/#terminal-350", facilityClass: ["storage"], processType: [], primaryClass: "storage", googlePlaceId: "" },
+  ],
 };
