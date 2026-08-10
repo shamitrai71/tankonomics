@@ -12,7 +12,7 @@
  * the previous version.
  */
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useCollection } from "../hooks/useFirestore";
 import { orderBy } from "firebase/firestore";
 import {
@@ -26,14 +26,32 @@ import {
   ShieldCheck,
   X as CloseIcon,
 } from "lucide-react";
-import { Link } from "react-router-dom";
+import { Link, useSearchParams } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 
 export default function Companies() {
+  // Category deep-linking: /directory?category=rim-seals (comma-separate for
+  // several). This is what lets the sibling apps — TankWorldIndia, ASTSPARES —
+  // link straight to a filtered slice of the hub directory by master category
+  // slug, rather than dropping the visitor on an unfiltered list.
+  const [searchParams, setSearchParams] = useSearchParams();
   const [searchTerm, setSearchTerm] = useState("");
-  const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
+  const [selectedCategories, setSelectedCategories] = useState<string[]>(() => {
+    const param = searchParams.get("category");
+    return param ? param.split(",").map((s) => s.trim()).filter(Boolean) : [];
+  });
   const [sectorSearch, setSectorSearch] = useState("");
   const [showFilters, setShowFilters] = useState(false);
+
+  // Mirror the filter back into the URL so any filtered view is itself
+  // shareable/bookmarkable (replace, not push, so filtering doesn't flood
+  // browser history).
+  useEffect(() => {
+    const next = new URLSearchParams(searchParams);
+    if (selectedCategories.length > 0) next.set("category", selectedCategories.join(","));
+    else next.delete("category");
+    if (next.toString() !== searchParams.toString()) setSearchParams(next, { replace: true });
+  }, [selectedCategories]);
 
   const { data: categories, loading: loadingCats } = useCollection<any>("company_categories", [orderBy("level", "asc"), orderBy("order", "asc")]);
   const { data: companies, loading: loadingCompanies } = useCollection<any>("companies", [orderBy("createdAt", "desc")]);
