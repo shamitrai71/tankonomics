@@ -2116,4 +2116,126 @@ export const LOCATION_SEED: Record<string, SeedLocation[]> = {
   "zuari-agro-chemicals-limited": [
     { name: "Goa Terminal", type: "plant", city: "Zuarinagar, Goa", country: "India", externalUrl: "https://tankbazaar.com/#terminal-902", facilityClass: ["process"], processType: ["fertilisers"], primaryClass: "process", googlePlaceId: "" },
   ],
+  "ador-welding-limited": [
+    { name: "Registered Office", type: "office", city: "Mumbai, Maharashtra", country: "India", externalUrl: "", facilityClass: [], processType: [], primaryClass: "", googlePlaceId: "" },
+  ],
+  "aeroflex-industries-limited": [
+    { name: "Registered Office", type: "office", city: "Taloja, Navi Mumbai, Maharashtra", country: "India", externalUrl: "", facilityClass: [], processType: [], primaryClass: "", googlePlaceId: "" },
+  ],
+  "afcons-infrastructure-limited": [
+    { name: "Registered Office", type: "office", city: "Mumbai, Maharashtra", country: "India", externalUrl: "", facilityClass: [], processType: [], primaryClass: "", googlePlaceId: "" },
+  ],
+  "artson-limited": [
+    { name: "Corporate Office", type: "office", city: "Hyderabad, Telangana", country: "India", externalUrl: "", facilityClass: [], processType: [], primaryClass: "", googlePlaceId: "" },
+  ],
+  "baliga-lighting-equipments-private-limited": [
+    { name: "Registered Office", type: "office", city: "Chennai, Tamil Nadu", country: "India", externalUrl: "", facilityClass: [], processType: [], primaryClass: "", googlePlaceId: "" },
+  ],
+  "balmer-lawrie-and-co-limited": [
+    { name: "Registered Office", type: "office", city: "Kolkata, West Bengal", country: "India", externalUrl: "", facilityClass: [], processType: [], primaryClass: "", googlePlaceId: "" },
+  ],
+  "bharat-heavy-electricals-limited": [
+    { name: "Registered Office", type: "office", city: "New Delhi", country: "India", externalUrl: "", facilityClass: [], processType: [], primaryClass: "", googlePlaceId: "" },
+    { name: "Tiruchirappalli Manufacturing Plant", type: "plant", city: "Tiruchirappalli, Tamil Nadu", country: "India", externalUrl: "", facilityClass: [], processType: [], primaryClass: "", googlePlaceId: "" },
+    { name: "Haridwar Manufacturing Plant", type: "plant", city: "Haridwar, Uttarakhand", country: "India", externalUrl: "", facilityClass: [], processType: [], primaryClass: "", googlePlaceId: "" },
+  ],
+  "bridge-and-roof-company-india-limited": [
+    { name: "Corporate Office", type: "office", city: "Kolkata, West Bengal", country: "India", externalUrl: "", facilityClass: [], processType: [], primaryClass: "", googlePlaceId: "" },
+  ],
+  "bureau-veritas-sa": [
+    { name: "India Office", type: "office", city: "Mumbai, Maharashtra", country: "India", externalUrl: "", facilityClass: [], processType: [], primaryClass: "", googlePlaceId: "" },
+  ],
+  "cholamandalam-ms-general-insurance": [
+    { name: "Registered Office", type: "office", city: "Chennai, Tamil Nadu", country: "India", externalUrl: "", facilityClass: [], processType: [], primaryClass: "", googlePlaceId: "" },
+  ],
+  "elgi-equipments-limited": [
+    { name: "Registered Office", type: "office", city: "Coimbatore, Tamil Nadu", country: "India", externalUrl: "", facilityClass: [], processType: [], primaryClass: "", googlePlaceId: "" },
+  ],
+  "erm-india-private-limited": [
+    { name: "India Office", type: "office", city: "Gurugram, Haryana", country: "India", externalUrl: "", facilityClass: [], processType: [], primaryClass: "", googlePlaceId: "" },
+  ],
+  "emerson-electric-co": [
+    { name: "India Office", type: "office", city: "Mumbai, Maharashtra", country: "India", externalUrl: "", facilityClass: [], processType: [], primaryClass: "", googlePlaceId: "" },
+  ],
+  "endress-hauser-group": [
+    { name: "India Office", type: "office", city: "Mumbai, Maharashtra", country: "India", externalUrl: "", facilityClass: [], processType: [], primaryClass: "", googlePlaceId: "" },
+  ],
+  "engineers-india-limited": [
+    { name: "Registered Office", type: "office", city: "New Delhi", country: "India", externalUrl: "", facilityClass: [], processType: [], primaryClass: "", googlePlaceId: "" },
+  ],
+  "fidicon-devices-india-private-limited": [
+    { name: "Registered Office", type: "office", city: "Ankleshwar, Gujarat", country: "India", externalUrl: "", facilityClass: [], processType: [], primaryClass: "", googlePlaceId: "" },
+  ],
+  "fluidyne-instruments-private-limited": [
+    { name: "Registered Office", type: "office", city: "Mumbai, Maharashtra", country: "India", externalUrl: "", facilityClass: [], processType: [], primaryClass: "", googlePlaceId: "" },
+  ],
+  "forbes-marshall-pvt-ltd": [
+    { name: "Registered Office", type: "office", city: "Pune, Maharashtra", country: "India", externalUrl: "", facilityClass: [], processType: [], primaryClass: "", googlePlaceId: "" },
+  ],
+  "godrej-and-boyce-mfg-co-ltd": [
+    { name: "Registered Office", type: "office", city: "Mumbai, Maharashtra", country: "India", externalUrl: "", facilityClass: [], processType: [], primaryClass: "", googlePlaceId: "" },
+  ],
+  "hmt-llc": [
+    { name: "Corporate Headquarters", type: "office", city: "The Woodlands, TX", country: "India", externalUrl: "", facilityClass: [], processType: [], primaryClass: "", googlePlaceId: "" },
+  ],
+  "honeywell-international-inc": [
+    { name: "India Office", type: "office", city: "Gurugram, Haryana", country: "India", externalUrl: "", facilityClass: [], processType: [], primaryClass: "", googlePlaceId: "" },
+  ],
+  "john-wood-group-plc": [
+    { name: "India Office", type: "office", city: "Mumbai, Maharashtra", country: "India", externalUrl: "", facilityClass: [], processType: [], primaryClass: "", googlePlaceId: "" },
+  ],
+  "kec-international-limited": [
+    { name: "Registered Office", type: "office", city: "Mumbai, Maharashtra", country: "India", externalUrl: "", facilityClass: [], processType: [], primaryClass: "", googlePlaceId: "" },
+  ],
+  "ksb-limited": [
+    { name: "Registered Office", type: "office", city: "Pimpri-Chinchwad, Maharashtra", country: "India", externalUrl: "", facilityClass: [], processType: [], primaryClass: "", googlePlaceId: "" },
+  ],
+  "kirloskar-brothers-limited": [
+    { name: "Registered Office", type: "office", city: "Pune, Maharashtra", country: "India", externalUrl: "", facilityClass: [], processType: [], primaryClass: "", googlePlaceId: "" },
+    { name: "Kirloskarvadi Manufacturing Plant", type: "plant", city: "Kirloskarvadi, Maharashtra", country: "India", externalUrl: "", facilityClass: [], processType: [], primaryClass: "", googlePlaceId: "" },
+  ],
+  "larsen-and-toubro-limited": [
+    { name: "Registered Office", type: "office", city: "Mumbai, Maharashtra", country: "India", externalUrl: "", facilityClass: [], processType: [], primaryClass: "", googlePlaceId: "" },
+    { name: "Hydrocarbon Engineering — Manufacturing Complex", type: "plant", city: "Chennai, Tamil Nadu", country: "India", externalUrl: "", facilityClass: [], processType: [], primaryClass: "", googlePlaceId: "" },
+    { name: "L&T Valves — Manufacturing Plant", type: "plant", city: "Coimbatore, Tamil Nadu", country: "India", externalUrl: "", facilityClass: [], processType: [], primaryClass: "", googlePlaceId: "" },
+  ],
+  "lloyd-insulations-india-limited": [
+    { name: "Registered Office", type: "office", city: "New Delhi", country: "India", externalUrl: "", facilityClass: [], processType: [], primaryClass: "", googlePlaceId: "" },
+  ],
+  "mesa-industries-inc": [
+    { name: "Registered Office", type: "office", city: "Cincinnati, OH", country: "India", externalUrl: "", facilityClass: [], processType: [], primaryClass: "", googlePlaceId: "" },
+  ],
+  "offshore-infrastructures-limited": [
+    { name: "Registered Office", type: "office", city: "Mulund, Mumbai, Maharashtra", country: "India", externalUrl: "", facilityClass: [], processType: [], primaryClass: "", googlePlaceId: "" },
+  ],
+  "petrofac-limited": [
+    { name: "India Office", type: "office", city: "Mumbai, Maharashtra", country: "India", externalUrl: "", facilityClass: [], processType: [], primaryClass: "", googlePlaceId: "" },
+  ],
+  "prashanth-projects-limited": [
+    { name: "Registered Office", type: "office", city: "Navi Mumbai, Maharashtra", country: "India", externalUrl: "", facilityClass: [], processType: [], primaryClass: "", googlePlaceId: "" },
+  ],
+  "ramboll-group-a-s": [
+    { name: "India Office", type: "office", city: "Gurugram, Haryana", country: "India", externalUrl: "", facilityClass: [], processType: [], primaryClass: "", googlePlaceId: "" },
+  ],
+  "sgs-sa": [
+    { name: "India Office", type: "office", city: "Gurugram, Haryana", country: "India", externalUrl: "", facilityClass: [], processType: [], primaryClass: "", googlePlaceId: "" },
+  ],
+  "sharp-tanks-and-structurals-private-limited": [
+    { name: "Registered Office", type: "office", city: "Andheri East, Mumbai, Maharashtra", country: "India", externalUrl: "", facilityClass: [], processType: [], primaryClass: "", googlePlaceId: "" },
+  ],
+  "thermosystems-private-limited": [
+    { name: "Registered Office", type: "office", city: "Hyderabad, Telangana", country: "India", externalUrl: "", facilityClass: [], processType: [], primaryClass: "", googlePlaceId: "" },
+  ],
+  "toyo-engineering-india-limited": [
+    { name: "Registered Office", type: "office", city: "Mumbai, Maharashtra", country: "India", externalUrl: "", facilityClass: [], processType: [], primaryClass: "", googlePlaceId: "" },
+  ],
+  "tuv-sud-ag": [
+    { name: "India Office", type: "office", city: "Mumbai, Maharashtra", country: "India", externalUrl: "", facilityClass: [], processType: [], primaryClass: "", googlePlaceId: "" },
+  ],
+  "vesuvius-india-limited": [
+    { name: "Registered Office", type: "office", city: "Kolkata, West Bengal", country: "India", externalUrl: "", facilityClass: [], processType: [], primaryClass: "", googlePlaceId: "" },
+  ],
+  "vijay-tanks-and-vessels-private-limited": [
+    { name: "Registered Office", type: "office", city: "Ranoli, Vadodara, Gujarat", country: "India", externalUrl: "", facilityClass: [], processType: [], primaryClass: "", googlePlaceId: "" },
+  ],
 };

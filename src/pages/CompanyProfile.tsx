@@ -426,6 +426,19 @@ export default function CompanyProfile() {
                   <ExternalLink className="w-3 h-3" strokeWidth={1.75} />
                 </a>
               )}
+              {company.externalDirectoryUrl && (
+                <a
+                  href={company.externalDirectoryUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center gap-2 px-4 py-2.5 bg-accent/10 border border-accent/30 text-accent rounded-xl text-[13px] font-medium hover:border-accent transition-all"
+                  title={`Profile on ${company.externalDirectoryName || "partner directory"}`}
+                >
+                  <Building2 className="w-4 h-4" strokeWidth={1.75} />
+                  {company.externalDirectoryName || "Partner directory"}
+                  <ExternalLink className="w-3 h-3" strokeWidth={1.75} />
+                </a>
+              )}
               {company.socialLinks?.linkedin && (
                 <a href={company.socialLinks.linkedin} target="_blank" rel="noopener noreferrer" className="p-2.5 bg-bg-card border border-border-main rounded-xl hover:border-text-heading transition-all" title="LinkedIn">
                   <Linkedin className="w-4 h-4 text-[#0077b5]" strokeWidth={1.75} />

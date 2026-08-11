@@ -513,6 +513,8 @@ export default function Admin() {
             address: c.address, website: c.website, logo: c.logo, heroImage: c.heroImage,
             socialLinks: { linkedin: c.linkedin, twitter: c.twitter, facebook: c.facebook, instagram: c.instagram },
             categoryIds: c.categoryIds, categoryId: c.categoryIds[0],
+            externalDirectoryUrl: c.externalDirectoryUrl || "",
+            externalDirectoryName: c.externalDirectoryName || "",
             subCategoryId: "", tier3CategoryId: "", isFeatured: c.isFeatured,
             updatedAt: serverTimestamp(),
           };
