@@ -52,6 +52,7 @@ export const CATEGORY_SEED: CategorySeedNode[] = [
   { id: "roofing-systems", slug: "roofing-systems", name: "Roofing Systems", level: 2, parentId: "engineering-and-construction", order: 14 },
   { id: "demolition-and-decommissioning", slug: "demolition-and-decommissioning", name: "Demolition & Decommissioning", level: 2, parentId: "engineering-and-construction", order: 15 },
   { id: "heavy-engineering-and-fabrication", slug: "heavy-engineering-and-fabrication", name: "Heavy Engineering & Fabrication", level: 2, parentId: "engineering-and-construction", order: 16 },
+  { id: "tank-maintenance", slug: "tank-maintenance", name: "Tank Maintenance", level: 2, parentId: "engineering-and-construction", order: 17 },
   { id: "tank-systems-and-equipment", slug: "tank-systems-and-equipment", name: "Tank Systems & Equipment", level: 1, parentId: "", order: 5 },
   { id: "tank-gauging", slug: "tank-gauging", name: "Tank Gauging", level: 2, parentId: "tank-systems-and-equipment", order: 1 },
   { id: "rim-seals", slug: "rim-seals", name: "Rim Seals", level: 2, parentId: "tank-systems-and-equipment", order: 2 },
