@@ -585,7 +585,7 @@ export default function CompanyProfile() {
                     <p className="eyebrow tabular text-text-body/55 mb-3">Organisational summary</p>
                     <h2 className="font-display text-3xl text-text-heading mb-5 leading-tight">About {company.name}</h2>
                     <p className="text-text-body leading-relaxed whitespace-pre-wrap text-[15px]">
-                      {company.aboutUs || company.description || "Detailed organisational summary pending verification. This partner represents core technical excellence in our regional network."}
+                      {company.aboutUs || company.description || "No description has been added for this company yet."}
                     </p>
                   </section>
 
