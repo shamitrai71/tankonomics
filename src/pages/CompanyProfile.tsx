@@ -594,6 +594,9 @@ export default function CompanyProfile() {
                       <p className="eyebrow tabular text-text-body/55 mb-1">Classification</p>
                       <p className="text-[14px] font-medium text-text-heading truncate">
                         {categories.find((c: any) => c.id === company.categoryId)?.name || "—"}
+                        {company.categoryIds?.length > 1 && (
+                          <span className="text-text-body/45 font-normal"> +{company.categoryIds.length - 1}</span>
+                        )}
                       </p>
                     </div>
                     <div className="p-4 bg-bg-card border border-border-main rounded-xl">
@@ -1012,24 +1015,55 @@ export default function CompanyProfile() {
             {/* Taxonomy */}
             <div className="bg-bg-card border border-border-main rounded-2xl p-6">
               <p className="eyebrow tabular text-text-body/55 mb-4">Directory taxonomy</p>
-              <div className="divide-y divide-border-main">
-                <div className="pb-3">
-                  <p className="eyebrow tabular text-text-body/45 mb-1">Level 1</p>
-                  <p className="text-[14px] font-medium text-text-heading">{categories.find((c: any) => c.id === company.categoryId)?.name || "—"}</p>
-                </div>
-                {company.subCategoryId && (
-                  <div className="py-3">
-                    <p className="eyebrow tabular text-text-body/45 mb-1">Level 2</p>
-                    <p className="text-[14px] font-medium text-text-body">{categories.find((c: any) => c.id === company.subCategoryId)?.name || "—"}</p>
+              {(() => {
+                // Full multi-tag breakdown. Earlier this panel read only the
+                // legacy single categoryId/subCategoryId fields, so a company
+                // with several tags (e.g. Refineries + Petrochemicals + Captive
+                // Terminals) only ever showed its first one. categoryIds is the
+                // real data — every seed and edit path writes the full array —
+                // this just needed to actually be rendered.
+                const ids: string[] = company.categoryIds?.length ? company.categoryIds : [company.categoryId].filter(Boolean);
+                const resolved = ids
+                  .map((id: string) => categories.find((c: any) => c.id === id))
+                  .filter(Boolean);
+                const sectors = resolved.filter((c: any) => c.level === 1);
+                const specializations = resolved.filter((c: any) => c.level !== 1);
+                if (resolved.length === 0) {
+                  return <p className="text-[14px] text-text-body/50">Not yet classified.</p>;
+                }
+                return (
+                  <div className="divide-y divide-border-main">
+                    {sectors.length > 0 && (
+                      <div className="pb-3">
+                        <p className="eyebrow tabular text-text-body/45 mb-2">
+                          Sector{sectors.length > 1 ? "s" : ""}
+                        </p>
+                        <div className="flex flex-wrap gap-1.5">
+                          {sectors.map((c: any) => (
+                            <span key={c.id} className="px-2.5 py-1 bg-accent/10 text-accent rounded-lg text-[13px] font-medium">
+                              {c.name}
+                            </span>
+                          ))}
+                        </div>
+                      </div>
+                    )}
+                    {specializations.length > 0 && (
+                      <div className="pt-3">
+                        <p className="eyebrow tabular text-text-body/45 mb-2">
+                          Specialization{specializations.length > 1 ? "s" : ""} ({specializations.length})
+                        </p>
+                        <div className="flex flex-wrap gap-1.5">
+                          {specializations.map((c: any) => (
+                            <span key={c.id} className="px-2.5 py-1 bg-surface-3 text-text-body rounded-lg text-[13px]">
+                              {c.name}
+                            </span>
+                          ))}
+                        </div>
+                      </div>
+                    )}
                   </div>
-                )}
-                {company.tier3CategoryId && (
-                  <div className="pt-3">
-                    <p className="eyebrow tabular text-text-body/45 mb-1">Level 3</p>
-                    <p className="text-[14px] font-medium text-text-body/80">{categories.find((c: any) => c.id === company.tier3CategoryId)?.name || "—"}</p>
-                  </div>
-                )}
-              </div>
+                );
+              })()}
             </div>
 
             {/* Contact */}
