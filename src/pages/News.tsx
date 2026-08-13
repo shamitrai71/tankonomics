@@ -8,12 +8,14 @@
  */
 
 import { useCollection } from "../hooks/useFirestore";
+import { usePageCopy } from "../lib/pageCopy";
 import { orderBy } from "firebase/firestore";
 import { ExternalLink, Clock, Newspaper } from "lucide-react";
 import { formatDistanceToNow } from "date-fns";
 import { motion } from "framer-motion";
 
 export default function News() {
+  const copy = usePageCopy("news");
   const { data: newsItems, loading } = useCollection<any>("news", [orderBy("createdAt", "desc")]);
 
   return (
@@ -25,13 +27,13 @@ export default function News() {
           <div className="relative">
             <div className="eyebrow tabular text-accent inline-flex items-center gap-2 mb-3">
               <span className="inline-block w-1.5 h-1.5 rounded-full bg-accent soft-pulse" />
-              GLOBAL HEADLINES
+              {copy.eyebrow}
             </div>
             <h1 className="font-display text-[clamp(2.25rem,5vw,4rem)] text-text-heading leading-[0.98]">
-              Industry news, indexed.
+              {copy.title}
             </h1>
             <p className="text-text-body text-[15px] mt-3 max-w-xl">
-              Curated headlines covering tank storage, terminals, refineries and energy logistics — refreshed as the wire moves.
+              {copy.subtitle}
             </p>
           </div>
         </header>

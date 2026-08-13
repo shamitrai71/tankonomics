@@ -9,6 +9,7 @@
 
 import { useState, useEffect } from "react";
 import { useAuth } from "../App";
+import { usePageCopy } from "../lib/pageCopy";
 import { TierGate } from "../components/TierGate";
 import { useCollection, createDocument } from "../hooks/useFirestore";
 import { orderBy, serverTimestamp } from "firebase/firestore";
@@ -34,6 +35,7 @@ import { CategorySelector } from "../components/CategorySelector";
 import { useNavigate } from "react-router-dom";
 
 export default function Forums() {
+  const copy = usePageCopy("forums");
   const { user, isAdmin, isCompanyOwner, ownedCompanies, tier } = useAuth();
   const navigate = useNavigate();
   const [activeCategory, setActiveCategory] = useState("all");
@@ -98,13 +100,13 @@ export default function Forums() {
           <div className="relative">
             <div className="eyebrow tabular text-accent inline-flex items-center gap-2 mb-3">
               <span className="inline-block w-1.5 h-1.5 rounded-full bg-accent soft-pulse" />
-              TECHNICAL EXCHANGE
+              {copy.eyebrow}
             </div>
             <h1 className="font-display text-[clamp(2.25rem,5vw,4rem)] text-text-heading leading-[0.98]">
-              Technical discussion.
+              {copy.title}
             </h1>
             <p className="text-text-body text-[15px] mt-3 max-w-xl">
-              Tank construction, terminal automation, inspection findings and integrity — discussed by working professionals.
+              {copy.subtitle}
             </p>
           </div>
         </header>

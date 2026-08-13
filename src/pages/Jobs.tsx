@@ -38,9 +38,11 @@ import {
 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useAuth } from "../App";
+import { usePageCopy } from "../lib/pageCopy";
 import { formatDistanceToNow } from "date-fns";
 
 export default function Jobs() {
+  const copy = usePageCopy("jobs");
   const { user, profile, isAdmin, isCompanyOwner, ownedCompanies } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
@@ -291,13 +293,13 @@ export default function Jobs() {
             <div className="relative">
               <div className="eyebrow tabular text-accent inline-flex items-center gap-2 mb-3">
                 <span className="inline-block w-1.5 h-1.5 rounded-full bg-accent soft-pulse" />
-                TECHNICAL ROLES
+                {copy.eyebrow}
               </div>
               <h1 className="font-display text-[clamp(2.25rem,5vw,4rem)] text-text-heading leading-[0.98]">
-                Roles in tank &amp; terminal.
+                {copy.title}
               </h1>
               <p className="text-text-body text-[15px] mt-3 max-w-xl">
-                Openings across operators, EPCs, OEMs and inspection consultancies in the tank &amp; terminal sector.
+                {copy.subtitle}
               </p>
             </div>
           </div>

@@ -14,6 +14,7 @@
 
 import { useState, useEffect } from "react";
 import { useCollection } from "../hooks/useFirestore";
+import { usePageCopy } from "../lib/pageCopy";
 import { orderBy } from "firebase/firestore";
 import {
   Building2,
@@ -30,6 +31,7 @@ import { Link, useSearchParams } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 
 export default function Companies() {
+  const copy = usePageCopy("companies");
   // Category deep-linking: /directory?category=rim-seals (comma-separate for
   // several). This is what lets the sibling apps — TankWorldIndia, ASTSPARES —
   // link straight to a filtered slice of the hub directory by master category
@@ -112,13 +114,13 @@ export default function Companies() {
           <div className="relative">
             <div className="eyebrow tabular text-accent inline-flex items-center gap-2 mb-3">
               <span className="inline-block w-1.5 h-1.5 rounded-full bg-accent soft-pulse" />
-              INDEXED DIRECTORY
+              {copy.eyebrow}
             </div>
             <h1 className="font-display text-[clamp(2.25rem,5vw,4rem)] text-text-heading leading-[0.98]">
-              The company registry.
+              {copy.title}
             </h1>
             <p className="text-text-body text-[15px] mt-3 max-w-xl">
-              Storage operators, EPC contractors, OEMs, inspectors and service providers — indexed for the tank &amp; terminal sector.
+              {copy.subtitle}
             </p>
           </div>
         </header>

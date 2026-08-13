@@ -11,6 +11,7 @@
 
 import { useCollection, createDocument, removeDocument } from "../hooks/useFirestore";
 import { useAuth } from "../App";
+import { usePageCopy } from "../lib/pageCopy";
 import { orderBy, where, serverTimestamp } from "firebase/firestore";
 import {
   Calendar as CalendarIcon,
@@ -58,6 +59,7 @@ import { formatEventRange } from "../lib/eventDates";
  */
 
 export default function Events() {
+  const copy = usePageCopy("events");
   const { user, profile, isAdmin, isCompanyOwner, ownedCompanies } = useAuth();
   const navigate = useNavigate();
   const [currentMonth, setCurrentMonth] = useState(new Date());
@@ -260,13 +262,13 @@ export default function Events() {
             <div className="relative">
               <div className="eyebrow tabular text-accent inline-flex items-center gap-2 mb-3">
                 <span className="inline-block w-1.5 h-1.5 rounded-full bg-accent soft-pulse" />
-                TECHNICAL CALENDAR
+                {copy.eyebrow}
               </div>
               <h1 className="font-display text-[clamp(2.25rem,5vw,4rem)] text-text-heading leading-[0.98]">
-                Sessions &amp; site visits.
+                {copy.title}
               </h1>
               <p className="text-text-body text-[15px] mt-3 max-w-xl">
-                Industry technical exchanges, conferences, training programs and verified terminal site visits.
+                {copy.subtitle}
               </p>
             </div>
           </div>

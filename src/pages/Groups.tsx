@@ -23,11 +23,13 @@ import {
 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useAuth } from "../App";
+import { usePageCopy } from "../lib/pageCopy";
 import { useCollection } from "../hooks/useFirestore";
 import { db } from "../firebase";
 import { collection, addDoc, serverTimestamp, setDoc, doc } from "firebase/firestore";
 
 export default function Groups() {
+  const copy = usePageCopy("groups");
   const { user, profile, isAdmin } = useAuth();
   const { data: groups, loading } = useCollection<any>("groups");
   const [searchTerm, setSearchTerm] = useState("");
@@ -115,13 +117,13 @@ export default function Groups() {
             <div className="relative">
               <div className="eyebrow tabular text-accent inline-flex items-center gap-2 mb-3">
                 <span className="inline-block w-1.5 h-1.5 rounded-full bg-accent soft-pulse" />
-                COMMUNITY GROUPS
+                {copy.eyebrow}
               </div>
               <h1 className="font-display text-[clamp(2.25rem,5vw,4rem)] text-text-heading leading-[0.98]">
-                Specialist networks.
+                {copy.title}
               </h1>
               <p className="text-text-body text-[15px] mt-3 max-w-xl">
-                Focused networks for tank-storage specialists — join an existing one or propose a new group.
+                {copy.subtitle}
               </p>
             </div>
           </div>

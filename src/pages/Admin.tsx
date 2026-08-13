@@ -41,7 +41,8 @@ import {
   Moon
 } from "lucide-react";
 import axios from "axios";
-import { createDocument, useCollection, removeDocument, updateDocument } from "../hooks/useFirestore";
+import { createDocument, useCollection, removeDocument, updateDocument, setDocument } from "../hooks/useFirestore";
+import { PAGE_COPY_DEFAULTS, PAGE_COPY_KEYS } from "../lib/pageCopy";
 import { useAuth, useTheme } from "../App";
 import { orderBy, serverTimestamp, doc, getDoc, getDocs, collection, setDoc, deleteDoc } from "firebase/firestore";
 import { db, auth } from "../firebase";
@@ -65,7 +66,7 @@ import {
   Area
 } from "recharts";
 
-type Tab ="analytics" |"news" |"forums" |"events" |"surveys" |"members" |"theme" |"moderation" |"companies" |"resumes" |"groups" |"jobs" |"taxonomy";
+type Tab ="analytics" |"news" |"forums" |"events" |"surveys" |"members" |"theme" |"moderation" |"companies" |"resumes" |"groups" |"jobs" |"taxonomy" |"pageCopy";
 
 import { CategorySelector } from "../components/CategorySelector";
 import { uploadImage } from "../lib/uploadImage";
@@ -78,6 +79,12 @@ import { Layers } from "lucide-react";
 
 export default function Admin() {
   const [activeTab, setActiveTab] = useState<Tab>("analytics");
+  // Local edits for the Page Copy tab: keyed by page key, only populated once
+  // the admin actually types in a field. Read via effectivePageCopy() below,
+  // which falls back to the live Firestore doc, then the shipped default —
+  // never blank, so the form always shows real text to edit against.
+  const [copyDrafts, setCopyDrafts] = useState<Record<string, { eyebrow: string; title: string; subtitle: string }>>({});
+  const [savingCopyKey, setSavingCopyKey] = useState<string | null>(null);
   const { user } = useAuth();
   const { isDark, setMode } = useTheme();
 
@@ -207,6 +214,7 @@ export default function Admin() {
   const { data: jobMatches, loading: loadingJobMatches } = useCollection<any>("job_matches", [orderBy("createdAt", "desc")], activeTab === "jobs");
   // Taxonomy tab: all nodes in one subscription (~455 docs), sorted client-side.
   const { data: taxonomyNodes, loading: loadingTaxonomy } = useCollection<any>("taxonomy", [], activeTab === "taxonomy" || activeTab === "resumes");
+  const { data: pageCopyDocs, loading: loadingPageCopy } = useCollection<any>("pageCopy", [], activeTab === "pageCopy");
 
   const [newCategory, setNewCategory] = useState({ name:"", parentId:"", level: 1 });
   const [newLocation, setNewLocation] = useState({ name: "", type: "", city: "", country: "", externalUrl: "", facilityClass: [] as string[], processType: [] as string[], primaryClass: "", googlePlaceId: "" });
@@ -1021,6 +1029,7 @@ const handleEditCompany = (company: any) => {
     { id:"groups", label:"Groups", icon: Users },
     { id:"jobs", label:"Jobs", icon: Briefcase },
     { id:"taxonomy", label:"Taxonomy", icon: Layers },
+    { id:"pageCopy", label:"Page Copy", icon: Edit },
     { id:"moderation", label:"Moderation", icon: Shield },
     { id:"theme", label:"Branding", icon: Palette },
   ];
@@ -3699,6 +3708,125 @@ const handleEditCompany = (company: any) => {
                   })()}
                 </div>
               )}
+            </div>
+          </motion.div>
+        )}
+
+        {activeTab === "pageCopy" && (
+          <motion.div key="pageCopy" initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -10 }} className="space-y-6">
+            <div>
+              <h2 className="font-display text-2xl text-text-heading">Page Copy</h2>
+              <p className="text-xs text-text-body/55 mt-1 font-medium">
+                The eyebrow, headline and subtitle shown at the top of each public page.
+                Changes go live immediately — no deploy required. Leave a field blank and it
+                falls back to the shipped default rather than disappearing.
+              </p>
+            </div>
+
+            <div className="grid gap-4">
+              {PAGE_COPY_KEYS.map((key) => {
+                const liveDoc = pageCopyDocs.find((d: any) => d.id === key);
+                const fallback = PAGE_COPY_DEFAULTS[key];
+                const draft = copyDrafts[key];
+                const effective = {
+                  eyebrow: draft?.eyebrow ?? liveDoc?.eyebrow ?? fallback.eyebrow,
+                  title: draft?.title ?? liveDoc?.title ?? fallback.title,
+                  subtitle: draft?.subtitle ?? liveDoc?.subtitle ?? fallback.subtitle,
+                };
+                const isCustomized = !!(liveDoc?.eyebrow || liveDoc?.title || liveDoc?.subtitle);
+                const isDirty = !!draft;
+
+                const setField = (field: "eyebrow" | "title" | "subtitle", value: string) => {
+                  setCopyDrafts((prev) => ({ ...prev, [key]: { ...effective, ...prev[key], [field]: value } }));
+                };
+
+                const save = async () => {
+                  setSavingCopyKey(key);
+                  try {
+                    await setDocument("pageCopy", key, effective);
+                    setCopyDrafts((prev) => { const next = { ...prev }; delete next[key]; return next; });
+                  } finally {
+                    setSavingCopyKey(null);
+                  }
+                };
+
+                const resetToDefault = async () => {
+                  setSavingCopyKey(key);
+                  try {
+                    await setDocument("pageCopy", key, fallback);
+                    setCopyDrafts((prev) => { const next = { ...prev }; delete next[key]; return next; });
+                  } finally {
+                    setSavingCopyKey(null);
+                  }
+                };
+
+                return (
+                  <div key={key} className="bg-bg-card border border-border-main rounded-2xl p-5">
+                    <div className="flex items-center justify-between mb-4">
+                      <div className="flex items-center gap-2">
+                        <p className="font-display text-lg text-text-heading capitalize">{key}</p>
+                        {isCustomized ? (
+                          <span className="eyebrow tabular text-[10px] px-2 py-0.5 rounded-full bg-accent/10 text-accent">Customized</span>
+                        ) : (
+                          <span className="eyebrow tabular text-[10px] px-2 py-0.5 rounded-full bg-text-body/10 text-text-body/55">Default</span>
+                        )}
+                        {isDirty && (
+                          <span className="eyebrow tabular text-[10px] px-2 py-0.5 rounded-full bg-yellow-500/10 text-yellow-600">Unsaved</span>
+                        )}
+                      </div>
+                      <div className="flex items-center gap-2">
+                        {isCustomized && (
+                          <button
+                            onClick={resetToDefault}
+                            disabled={savingCopyKey === key}
+                            className="text-xs px-3 py-1.5 rounded-lg border border-border-main text-text-body/70 hover:text-text-heading hover:border-text-heading transition-all disabled:opacity-50"
+                          >
+                            Reset to default
+                          </button>
+                        )}
+                        <button
+                          onClick={save}
+                          disabled={savingCopyKey === key || !isDirty}
+                          className="text-xs px-3 py-1.5 rounded-lg bg-text-heading text-bg-card hover:brightness-110 transition-all disabled:opacity-40 flex items-center gap-1.5"
+                        >
+                          {savingCopyKey === key ? <Loader2 className="w-3 h-3 animate-spin" /> : <Save className="w-3 h-3" />}
+                          Save
+                        </button>
+                      </div>
+                    </div>
+
+                    <div className="grid gap-3">
+                      <div>
+                        <label className="text-[11px] font-medium text-text-body/55 mb-1 block">Eyebrow (small label above the headline)</label>
+                        <input
+                          type="text"
+                          value={effective.eyebrow}
+                          onChange={(e) => setField("eyebrow", e.target.value)}
+                          className="w-full px-3 py-2 rounded-lg border border-border-main bg-bg-main text-sm text-text-heading focus:outline-none focus:border-accent"
+                        />
+                      </div>
+                      <div>
+                        <label className="text-[11px] font-medium text-text-body/55 mb-1 block">Headline</label>
+                        <input
+                          type="text"
+                          value={effective.title}
+                          onChange={(e) => setField("title", e.target.value)}
+                          className="w-full px-3 py-2 rounded-lg border border-border-main bg-bg-main text-sm text-text-heading font-display focus:outline-none focus:border-accent"
+                        />
+                      </div>
+                      <div>
+                        <label className="text-[11px] font-medium text-text-body/55 mb-1 block">Subtitle</label>
+                        <textarea
+                          value={effective.subtitle}
+                          onChange={(e) => setField("subtitle", e.target.value)}
+                          rows={2}
+                          className="w-full px-3 py-2 rounded-lg border border-border-main bg-bg-main text-sm text-text-body resize-none focus:outline-none focus:border-accent"
+                        />
+                      </div>
+                    </div>
+                  </div>
+                );
+              })}
             </div>
           </motion.div>
         )}

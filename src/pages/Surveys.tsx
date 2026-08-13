@@ -11,6 +11,7 @@
 import { useState, useEffect } from "react";
 import { useLocation } from "react-router-dom";
 import { useAuth } from "../App";
+import { usePageCopy } from "../lib/pageCopy";
 import { useCollection, createDocument, updateDocument } from "../hooks/useFirestore";
 import { orderBy, serverTimestamp, doc, getDoc, setDoc } from "firebase/firestore";
 import { db } from "../firebase";
@@ -29,6 +30,7 @@ import {
 import { motion, AnimatePresence } from "framer-motion";
 
 export default function Surveys() {
+  const copy = usePageCopy("surveys");
   const location = useLocation();
   const [highlightId, setHighlightId] = useState<string | null>((location.state as any)?.highlightId || null);
 
@@ -147,13 +149,13 @@ export default function Surveys() {
             <div className="relative">
               <div className="eyebrow tabular text-accent inline-flex items-center gap-2 mb-3">
                 <span className="inline-block w-1.5 h-1.5 rounded-full bg-accent soft-pulse" />
-                INDUSTRY PULSE
+                {copy.eyebrow}
               </div>
               <h1 className="font-display text-[clamp(2.25rem,5vw,4rem)] text-text-heading leading-[0.98]">
-                Pulse checks on the market.
+                {copy.title}
               </h1>
               <p className="text-text-body text-[15px] mt-3 max-w-xl">
-                Real-time surveys and sentiment data from the global tank &amp; terminal community.
+                {copy.subtitle}
               </p>
             </div>
           </div>

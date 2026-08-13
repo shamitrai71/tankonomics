@@ -565,6 +565,16 @@ service cloud.firestore {
       allow write: if isAdmin();
     }
 
+    // Editable header copy (eyebrow/title/subtitle) for public pages —
+    // Events, Forums, Surveys, Groups, Jobs, Companies, News. Doc id is the
+    // page key (see src/lib/pageCopy.ts). Same access shape as
+    // company_categories: readable by any signed-in user, writable only by
+    // admin via the Page Copy tab in /admin.
+    match /pageCopy/{pageKey} {
+      allow read: if isSignedIn();
+      allow write: if isAdmin();
+    }
+
     match /company_claims/{claimId} {
       allow read: if isAdmin() || (isSignedIn() && resource.data.userUid == request.auth.uid);
       allow create: if isSignedIn() && isValidCompanyClaim(incoming());

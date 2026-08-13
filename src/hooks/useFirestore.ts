@@ -95,6 +95,35 @@ export function useCollection<T>(path: string, constraints: QueryConstraint[] = 
   return { data, loading, error };
 }
 
+export function useDocument<T>(path: string, id: string, enabled: boolean = true) {
+  const [data, setData] = useState<T | null>(null);
+  const [loading, setLoading] = useState(enabled);
+  const [error, setError] = useState<any>(null);
+
+  useEffect(() => {
+    if (!enabled || !id) {
+      setLoading(false);
+      return;
+    }
+
+    setLoading(true);
+    const ref = doc(db, path, id);
+
+    const unsubscribe = onSnapshot(ref, (snap) => {
+      setData(snap.exists() ? ({ id: snap.id, ...snap.data({ serverTimestamps: "estimate" }) } as T) : null);
+      setLoading(false);
+    }, (err) => {
+      setError(err);
+      setLoading(false);
+      handleFirestoreError(err, OperationType.GET, `${path}/${id}`);
+    });
+
+    return () => unsubscribe();
+  }, [path, id, enabled]);
+
+  return { data, loading, error };
+}
+
 export function useCollectionGroup<T>(collectionId: string, constraints: QueryConstraint[] = [], enabled: boolean = true) {
   const [data, setData] = useState<T[]>([]);
   const [loading, setLoading] = useState(enabled);
