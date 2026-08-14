@@ -38,7 +38,8 @@ import {
   Unlock,
   LayoutDashboard,
   Sun,
-  Moon
+  Moon,
+  ImagePlus,
 } from "lucide-react";
 import axios from "axios";
 import { createDocument, useCollection, removeDocument, updateDocument, setDocument } from "../hooks/useFirestore";
@@ -66,9 +67,10 @@ import {
   Area
 } from "recharts";
 
-type Tab ="analytics" |"news" |"forums" |"events" |"surveys" |"members" |"theme" |"moderation" |"companies" |"resumes" |"groups" |"jobs" |"taxonomy" |"pageCopy";
+type Tab ="analytics" |"news" |"forums" |"events" |"surveys" |"members" |"theme" |"moderation" |"companies" |"resumes" |"groups" |"jobs" |"taxonomy" |"pageCopy" |"batchLogos";
 
 import { CategorySelector } from "../components/CategorySelector";
+import BatchLogoUploader from "../components/BatchLogoUploader";
 import { uploadImage } from "../lib/uploadImage";
 import { scoreMatch, DEFAULT_WEIGHTS, MatchWeights } from "../lib/matchScore";
 import { TAXONOMY_SEED } from "../lib/taxonomySeed";
@@ -77,8 +79,24 @@ import { COMPANY_SEED } from "../lib/companySeed";
 import { LOCATION_SEED } from "../lib/locationSeed";
 import { Layers } from "lucide-react";
 
+// Case-insensitive match on name or id/slug — id === slug for every company
+// in this app, so one check covers searching by either.
+function matchesCompanySearch(company: any, term: string): boolean {
+  const q = term.trim().toLowerCase();
+  if (!q) return true;
+  return (
+    (company.name || "").toLowerCase().includes(q) ||
+    (company.id || "").toLowerCase().includes(q)
+  );
+}
+
 export default function Admin() {
   const [activeTab, setActiveTab] = useState<Tab>("analytics");
+  // Filters the Active Directory list below — with 500+ companies and no
+  // way to jump to one directly, admins were resorting to the browser's own
+  // Ctrl+F, which doesn't scope to just this list or work across the
+  // masonry column layout reliably.
+  const [companySearch, setCompanySearch] = useState("");
   // Local edits for the Page Copy tab: keyed by page key, only populated once
   // the admin actually types in a field. Read via effectivePageCopy() below,
   // which falls back to the live Firestore doc, then the shipped default —
@@ -206,7 +224,7 @@ export default function Admin() {
   // queue lives inside that tab). groups has no analytics-tab usage at all.
   const categoryTabs: Tab[] = ["analytics", "companies", "resumes", "forums", "events"];
   const { data: categories, loading: loadingCategories } = useCollection<any>("company_categories", [orderBy("level", "asc"), orderBy("order", "asc")], categoryTabs.includes(activeTab));
-  const { data: companies, loading: loadingCompanies } = useCollection<any>("companies", [orderBy("createdAt", "desc")], activeTab === "analytics" || activeTab === "companies");
+  const { data: companies, loading: loadingCompanies } = useCollection<any>("companies", [orderBy("createdAt", "desc")], activeTab === "analytics" || activeTab === "companies" || activeTab === "batchLogos");
   const { data: claims, loading: loadingClaims } = useCollection<any>("company_claims", [orderBy("createdAt", "desc")], activeTab === "companies");
   const { data: groups, loading: loadingGroups } = useCollection<any>("groups", [orderBy("createdAt", "desc")], activeTab === "groups");
   // Jobs tab: load all jobs + all matches. Resumes also needed for the matching panel.
@@ -482,15 +500,22 @@ export default function Admin() {
           await setDoc(ref, { locations: LOCATION_SEED[slug], updatedAt: serverTimestamp() }, { merge: true });
           done++;
         } catch (err: any) {
+          // Continue rather than stop — same fix as the company/category/
+          // taxonomy seeds and TankWorldIndia's seeder, for the same reason:
+          // stopping early silently truncates the run.
           failures.push({ slug, reason: err?.code ? `${err.code}: ${err.message}` : (err?.message || String(err)) });
         }
-        if (failures.length >= 3) break;
       }
       if (failures.length > 0) {
         console.error("Location seed failures:", failures);
-        throw new Error(`${failures.length} issue(s). First: ${failures[0].slug} — ${failures[0].reason}`);
       }
-      alert(`Seeded locations for ${done} compan${done === 1 ? "y" : "ies"} (${total} locations).`);
+      alert(
+        `Seeded locations for ${done} compan${done === 1 ? "y" : "ies"} (${total} locations).` +
+        (failures.length > 0
+          ? `\n\n${failures.length} failed:\n` + failures.slice(0, 10).map(f => `${f.slug}: ${f.reason}`).join("\n") +
+            (failures.length > 10 ? `\n…and ${failures.length - 10} more (see console)` : "")
+          : "")
+      );
     } catch (err: any) {
       console.error("Location seed failed:", err);
       alert(`Location seeding failed: ${err?.message || "Unknown error"}`);
@@ -516,9 +541,19 @@ export default function Admin() {
           // Content fields only. locations/products are intentionally omitted so a
           // re-run never clobbers sites added later; categoryId mirrors categoryIds[0]
           // for legacy list/profile readers.
+          //
+          // logo/heroImage get the SAME treatment as locations, for the same reason:
+          // both can now be set independently of this seed — via the single-company
+          // edit form's upload, or the batch logo uploader — and most seed entries
+          // have logo/heroImage as an empty string rather than a real URL. Including
+          // an empty string here unconditionally would merge-overwrite a real,
+          // separately-uploaded logo back to blank on every re-run. Only include the
+          // field when the seed source actually has something to say about it.
           const content: any = {
             name: c.name, slug: c.slug, description: c.description, aboutUs: c.aboutUs,
-            address: c.address, website: c.website, logo: c.logo, heroImage: c.heroImage,
+            address: c.address, website: c.website,
+            ...(c.logo ? { logo: c.logo } : {}),
+            ...(c.heroImage ? { heroImage: c.heroImage } : {}),
             socialLinks: { linkedin: c.linkedin, twitter: c.twitter, facebook: c.facebook, instagram: c.instagram },
             categoryIds: c.categoryIds, categoryId: c.categoryIds[0],
             externalDirectoryUrl: c.externalDirectoryUrl || "",
@@ -535,15 +570,23 @@ export default function Admin() {
             created++;
           }
         } catch (err: any) {
+          // Record and CONTINUE — stopping after a handful of failures (the
+          // previous behavior) silently truncates the run and hides which
+          // records never got processed. Same fix already applied to
+          // TankWorldIndia's seeder for the identical reason.
           failures.push({ id: c.id, reason: err?.code ? `${err.code}: ${err.message}` : (err?.message || String(err)) });
-          if (failures.length >= 3) break;
         }
       }
       if (failures.length > 0) {
         console.error("Company seed failures:", failures);
-        throw new Error(`${failures.length}+ rejected. First: ${failures[0].id} — ${failures[0].reason}`);
       }
-      alert(`Seeded companies — ${created} created, ${updated} updated (of ${COMPANY_SEED.length}).`);
+      alert(
+        `Seeded companies — ${created} created, ${updated} updated (of ${COMPANY_SEED.length}).` +
+        (failures.length > 0
+          ? `\n\n${failures.length} failed:\n` + failures.slice(0, 10).map(f => `${f.id}: ${f.reason}`).join("\n") +
+            (failures.length > 10 ? `\n…and ${failures.length - 10} more (see console)` : "")
+          : "")
+      );
     } catch (err: any) {
       console.error("Company seed failed:", err);
       alert(`Company seeding failed: ${err?.message || "Unknown error"}`);
@@ -582,14 +625,18 @@ export default function Admin() {
           done++;
         } catch (err: any) {
           failures.push({ id: node.id, reason: err?.code ? `${err.code}: ${err.message}` : (err?.message || String(err)) });
-          if (failures.length >= 3) break;
         }
       }
       if (failures.length > 0) {
         console.error("Category seed failures:", failures);
-        throw new Error(`${failures.length}+ rejected. First: ${failures[0].id} — ${failures[0].reason}`);
       }
-      alert(`Cleared ${cleared} old categor${cleared === 1 ? "y" : "ies"}, seeded ${done} from the master tree.`);
+      alert(
+        `Cleared ${cleared} old categor${cleared === 1 ? "y" : "ies"}, seeded ${done} from the master tree.` +
+        (failures.length > 0
+          ? `\n\n${failures.length} failed:\n` + failures.slice(0, 10).map(f => `${f.id}: ${f.reason}`).join("\n") +
+            (failures.length > 10 ? `\n…and ${failures.length - 10} more (see console)` : "")
+          : "")
+      );
     } catch (err: any) {
       console.error("Category seed failed:", err);
       alert(`Category seeding failed: ${err?.message || "Unknown error"}`);
@@ -900,14 +947,18 @@ const handleEditCompany = (company: any) => {
           done++;
         } catch (err: any) {
           failures.push({ id: (node as any).id, reason: err?.code ? `${err.code}: ${err.message}` : (err?.message || String(err)) });
-          if (failures.length >= 3) break; // stop after a few so the alert is readable
         }
       }
       if (failures.length > 0) {
         console.error("Taxonomy seed failures:", failures);
-        throw new Error(`${failures.length}+ rejected. First: ${failures[0].id} — ${failures[0].reason}`);
       }
-      alert(`Seeded ${done} taxonomy nodes.`);
+      alert(
+        `Seeded ${done} taxonomy nodes.` +
+        (failures.length > 0
+          ? `\n\n${failures.length} failed:\n` + failures.slice(0, 10).map(f => `${f.id}: ${f.reason}`).join("\n") +
+            (failures.length > 10 ? `\n…and ${failures.length - 10} more (see console)` : "")
+          : "")
+      );
     } catch (err: any) {
       console.error("Taxonomy seed failed:", err);
       alert(`Seeding failed: ${err?.message || "Unknown error"}`);
@@ -1030,6 +1081,7 @@ const handleEditCompany = (company: any) => {
     { id:"jobs", label:"Jobs", icon: Briefcase },
     { id:"taxonomy", label:"Taxonomy", icon: Layers },
     { id:"pageCopy", label:"Page Copy", icon: Edit },
+    { id:"batchLogos", label:"Batch Logos", icon: ImagePlus },
     { id:"moderation", label:"Moderation", icon: Shield },
     { id:"theme", label:"Branding", icon: Palette },
   ];
@@ -1995,17 +2047,29 @@ const handleEditCompany = (company: any) => {
 
             {/* Companies List */}
             <div className="space-y-6 mt-12">
-              <div className="flex items-center justify-between">
+              <div className="flex items-center justify-between flex-wrap gap-3">
                 <h2 className="font-display text-2xl text-text-heading flex items-center gap-2">
                   <Building2 className="w-5 h-5 text-accent" /> Active Directory
                 </h2>
                 <div className="eyebrow tabular text-text-body/55 tracking-widest">
-                  {companies.length} Registered Companies
+                  {companySearch.trim()
+                    ? `${companies.filter((c: any) => matchesCompanySearch(c, companySearch)).length} of ${companies.length}`
+                    : `${companies.length} Registered Companies`}
                 </div>
               </div>
-              
+
+              <input
+                type="text"
+                value={companySearch}
+                onChange={(e) => setCompanySearch(e.target.value)}
+                placeholder="Filter by name or slug…"
+                className="w-full p-3 bg-bg-main border border-border-main rounded-xl text-[13px] font-medium"
+              />
+
               <div className="columns-1 md:columns-2 lg:columns-3 gap-6 space-y-6">
-                {companies.map((company: any) => (
+                {companies
+                  .filter((c: any) => matchesCompanySearch(c, companySearch))
+                  .map((company: any) => (
                   <div 
                     key={company.id} 
                     className={`break-inside-avoid mb-6 rounded-2xl border transition-all group overflow-hidden relative ${
@@ -3828,6 +3892,20 @@ const handleEditCompany = (company: any) => {
                 );
               })}
             </div>
+          </motion.div>
+        )}
+
+        {activeTab === "batchLogos" && (
+          <motion.div key="batchLogos" initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -10 }} className="space-y-6">
+            <div>
+              <h2 className="font-display text-2xl text-text-heading">Batch Logo Upload</h2>
+              <p className="text-xs text-text-body/55 mt-1 font-medium">
+                Select several logo files at once — each is matched to a company by filename
+                (against its slug or full name), reviewed before anything uploads, then written
+                straight to Storage and Firestore. No Cloudinary URL to hand-generate.
+              </p>
+            </div>
+            <BatchLogoUploader companies={companies} />
           </motion.div>
         )}
       </AnimatePresence>
