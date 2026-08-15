@@ -72,17 +72,39 @@ export const CategorySelector = ({ categories, selectedIds, onChange }: Category
             </label>
             <div className="pl-6 space-y-0.5">
               {categories.filter((c) => c.parentId === parent.id).map((sub) => (
-                <label key={sub.id} className="flex items-center gap-2 cursor-pointer group">
-                  <input
-                    type="checkbox"
-                    checked={selectedIds.includes(sub.id)}
-                    onChange={() => toggleId(sub.id)}
-                    className="w-3.5 h-3.5 accent-accent"
-                  />
-                  <span className="text-[12px] text-text-body/70 group-hover:text-text-heading transition-colors">
-                    {sub.name}
-                  </span>
-                </label>
+                <div key={sub.id}>
+                  <label className="flex items-center gap-2 cursor-pointer group">
+                    <input
+                      type="checkbox"
+                      checked={selectedIds.includes(sub.id)}
+                      onChange={() => toggleId(sub.id)}
+                      className="w-3.5 h-3.5 accent-accent"
+                    />
+                    <span className="text-[12px] text-text-body/70 group-hover:text-text-heading transition-colors">
+                      {sub.name}
+                    </span>
+                  </label>
+                  {/* Third level, e.g. Tank Gauging → Radar Level Gauges. Always
+                      rendered rather than collapsed: this is the admin picker,
+                      where seeing the full tree matters more than compactness. */}
+                  {categories.some((c) => c.parentId === sub.id) && (
+                    <div className="pl-5 space-y-0.5 border-l border-border-main/50 ml-1.5 mt-0.5">
+                      {categories.filter((c) => c.parentId === sub.id).map((leaf) => (
+                        <label key={leaf.id} className="flex items-center gap-2 cursor-pointer group">
+                          <input
+                            type="checkbox"
+                            checked={selectedIds.includes(leaf.id)}
+                            onChange={() => toggleId(leaf.id)}
+                            className="w-3 h-3 accent-accent"
+                          />
+                          <span className="text-[11.5px] text-text-body/55 group-hover:text-text-heading transition-colors">
+                            {leaf.name}
+                          </span>
+                        </label>
+                      ))}
+                    </div>
+                  )}
+                </div>
               ))}
             </div>
           </div>

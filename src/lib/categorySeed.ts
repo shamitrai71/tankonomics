@@ -56,6 +56,20 @@ export const CATEGORY_SEED: CategorySeedNode[] = [
   { id: "surface-preparation-and-blasting", slug: "surface-preparation-and-blasting", name: "Surface Preparation & Blasting", level: 2, parentId: "engineering-and-construction", order: 18 },
   { id: "tank-systems-and-equipment", slug: "tank-systems-and-equipment", name: "Tank Systems & Equipment", level: 1, parentId: "", order: 5 },
   { id: "tank-gauging", slug: "tank-gauging", name: "Tank Gauging", level: 2, parentId: "tank-systems-and-equipment", order: 1 },
+  // ── Level 3 ────────────────────────────────────────────────────────────
+  // Tank Gauging is the first L2 to gain sub-types. Custody transfer accuracy
+  // is the commercial core of a terminal, and radar / servo / temperature /
+  // interface instruments are genuinely different purchases from different
+  // vendors — a single flat "Tank Gauging" node hid that.
+  //
+  // Selecting the L2 remains INCLUSIVE of everything below it, so a company
+  // tagged only "radar-level-gauges" still appears under Tank Gauging.
+  { id: "radar-level-gauges", slug: "radar-level-gauges", name: "Radar Level Gauges", level: 3, parentId: "tank-gauging", order: 1 },
+  { id: "servo-gauges", slug: "servo-gauges", name: "Servo Gauges", level: 3, parentId: "tank-gauging", order: 2 },
+  { id: "temperature-measurement-mtt", slug: "temperature-measurement-mtt", name: "Temperature Measurement (MTT)", level: 3, parentId: "tank-gauging", order: 3 },
+  { id: "water-interface-detection", slug: "water-interface-detection", name: "Water Interface Detection", level: 3, parentId: "tank-gauging", order: 4 },
+  { id: "manual-gauging-equipment", slug: "manual-gauging-equipment", name: "Manual Gauging Equipment", level: 3, parentId: "tank-gauging", order: 5 },
+  { id: "tank-sampling-systems", slug: "tank-sampling-systems", name: "Tank Sampling Systems", level: 3, parentId: "tank-gauging", order: 6 },
   { id: "rim-seals", slug: "rim-seals", name: "Rim Seals", level: 2, parentId: "tank-systems-and-equipment", order: 2 },
   { id: "seal-fittings", slug: "seal-fittings", name: "Seal Fittings", level: 2, parentId: "tank-systems-and-equipment", order: 3 },
   { id: "floating-roof-systems", slug: "floating-roof-systems", name: "Floating Roof Systems", level: 2, parentId: "tank-systems-and-equipment", order: 4 },
@@ -184,6 +198,15 @@ export const CATEGORY_SEED: CategorySeedNode[] = [
   { id: "frp-products", slug: "frp-products", name: "FRP Products", level: 2, parentId: "materials-and-metallurgy", order: 11 },
   { id: "hdpe-products", slug: "hdpe-products", name: "HDPE Products", level: 2, parentId: "materials-and-metallurgy", order: 12 },
   { id: "cable-manufacturers", slug: "cable-manufacturers", name: "Cable Manufacturers", level: 2, parentId: "materials-and-metallurgy", order: 13 },
+  // Civil/construction materials. The sheet above is metals- and polymer-led;
+  // these cover what actually goes into tank foundations, ring beams and bund
+  // walls. Refractory and insulation MATERIALS are added here deliberately as
+  // the counterparts to AX-08 Refractory Services and EC-10 Insulation
+  // Contractors, which previously had no materials-side equivalent.
+  { id: "ready-mix-concrete", slug: "ready-mix-concrete", name: "Ready Mix Concrete", level: 2, parentId: "materials-and-metallurgy", order: 14 },
+  { id: "cement-and-aggregates", slug: "cement-and-aggregates", name: "Cement & Aggregates", level: 2, parentId: "materials-and-metallurgy", order: 15 },
+  { id: "refractory-materials", slug: "refractory-materials", name: "Refractory Materials", level: 2, parentId: "materials-and-metallurgy", order: 16 },
+  { id: "insulation-materials", slug: "insulation-materials", name: "Insulation Materials", level: 2, parentId: "materials-and-metallurgy", order: 17 },
   { id: "industrial-supplies-mro", slug: "industrial-supplies-mro", name: "Industrial Supplies (MRO)", level: 1, parentId: "", order: 12 },
   { id: "fasteners", slug: "fasteners", name: "Fasteners", level: 2, parentId: "industrial-supplies-mro", order: 1 },
   { id: "gaskets", slug: "gaskets", name: "Gaskets", level: 2, parentId: "industrial-supplies-mro", order: 2 },

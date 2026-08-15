@@ -67,10 +67,20 @@ export default function Companies() {
       company.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
       company.description?.toLowerCase().includes(searchTerm.toLowerCase());
 
-    // Drill-down matching: selecting a subcategory narrows its parent sector to
-    // just that subcategory; different top-level sectors still union. (A flat
-    // OR-union would keep every parent-sector company visible when a child is
-    // picked, which is the bug this replaces.)
+    // Drill-down matching, now depth-aware (L1 → L2 → L3).
+    //
+    // Two rules, unchanged in spirit from the two-level version:
+    //   1. Selecting a child NARROWS its parent rather than OR-unioning with
+    //      it — picking "Radar Level Gauges" under "Tank Gauging" shows only
+    //      radar companies, not every gauging company.
+    //   2. Different branches still UNION — picking something under Tank
+    //      Systems and something under Flow & Transfer shows both.
+    //
+    // New rule for three levels: a selection is INCLUSIVE of its descendants.
+    // Selecting "Tank Gauging" matches a company tagged only with its L3
+    // child "Radar Level Gauges". Without this, a company tagged at L3 would
+    // vanish from its own parent's filter — the same class of confusing empty
+    // result as the Independent Terminals bug.
     const cids: string[] = (company.categoryIds && company.categoryIds.length)
       ? company.categoryIds
       : [company.categoryId, company.subCategoryId, company.tier3CategoryId].filter(Boolean);
@@ -78,29 +88,62 @@ export default function Companies() {
     let matchesCategory = selectedCategories.length === 0;
     if (!matchesCategory) {
       const catOf = (id: string) => categories.find((c: any) => c.id === id);
-      const selMains = selectedCategories.filter((id) => { const c = catOf(id); return c && !c.parentId; });
-      const selSubs = selectedCategories.filter((id) => { const c = catOf(id); return c && c.parentId; });
-      // Within each selected sector: if any of its subcategories are selected,
-      // require one of them; otherwise the whole sector matches.
-      const mainMatch = selMains.some((m) => {
-        const subs = selSubs.filter((s) => catOf(s)?.parentId === m);
-        return subs.length > 0 ? subs.some((s) => cids.includes(s)) : cids.includes(m);
+      // Does the company carry this category, or anything beneath it?
+      const hasWithDescendants = (id: string): boolean => {
+        if (cids.includes(id)) return true;
+        return categories.some((c: any) => c.parentId === id && hasWithDescendants(c.id));
+      };
+      // Selected ids that have another selected id as an ancestor are handled
+      // by that ancestor's branch — evaluate only the topmost selections, then
+      // narrow downward through whatever is selected beneath each.
+      const isDescendantOfSelected = (id: string): boolean => {
+        let cur = catOf(id);
+        while (cur?.parentId) {
+          if (selectedCategories.includes(cur.parentId)) return true;
+          cur = catOf(cur.parentId);
+        }
+        return false;
+      };
+      const topSelections = selectedCategories.filter((id) => !isDescendantOfSelected(id));
+
+      matchesCategory = topSelections.some((topId) => {
+        // Narrow to the DEEPEST selected descendants within this branch, not
+        // just immediate children — a user can select L1 and L3 while skipping
+        // L2, and that must still narrow to the L3. Walking only one level at
+        // a time would stop at the gap and wrongly match the whole L1 branch.
+        const isUnder = (id: string, ancestorId: string): boolean => {
+          let cur = catOf(id);
+          while (cur?.parentId) {
+            if (cur.parentId === ancestorId) return true;
+            cur = catOf(cur.parentId);
+          }
+          return false;
+        };
+        const selectedBelow = selectedCategories.filter((sel) => isUnder(sel, topId));
+        if (selectedBelow.length === 0) return hasWithDescendants(topId);
+        // Keep only the deepest selections — if both an L2 and its L3 child are
+        // selected, the L3 is the operative filter.
+        const deepest = selectedBelow.filter(
+          (sel) => !selectedBelow.some((other) => other !== sel && isUnder(other, sel)),
+        );
+        return deepest.some((id) => hasWithDescendants(id));
       });
-      // Subcategories whose parent sector isn't also selected still filter on their own.
-      const orphanSubMatch = selSubs
-        .filter((s) => !selMains.includes(catOf(s)?.parentId))
-        .some((s) => cids.includes(s));
-      matchesCategory = mainMatch || orphanSubMatch;
     }
     return matchesSearch && matchesCategory;
   });
 
+  // A sector stays visible if it, a subcategory, or a sub-subcategory matches
+  // the search — searching "radar" should surface Tank Systems, not hide it
+  // because only an L3 node matched.
+  const matchesSectorSearch = (id: string): boolean => {
+    const c = categories.find((x: any) => x.id === id);
+    if (!c) return false;
+    if (c.name.toLowerCase().includes(sectorSearch.toLowerCase())) return true;
+    return categories.some((k: any) => k.parentId === id && matchesSectorSearch(k.id));
+  };
+
   const mainCategories = categories.filter(
-    (c: any) =>
-      c.level === 1 &&
-      (!sectorSearch ||
-        c.name.toLowerCase().includes(sectorSearch.toLowerCase()) ||
-        categories.some((sub: any) => sub.parentId === c.id && sub.name.toLowerCase().includes(sectorSearch.toLowerCase()))),
+    (c: any) => c.level === 1 && (!sectorSearch || matchesSectorSearch(c.id)),
   );
 
   const marketLeaders = companies.filter((c) => c.isFeatured || c.isClaimed).slice(0, 5);
@@ -187,7 +230,18 @@ export default function Companies() {
                   )}
                 </button>
                 {mainCategories.map((cat: any) => {
-                  const isOpen = selectedCategories.includes(cat.id) || categories.some((sub: any) => sub.parentId === cat.id && (selectedCategories.includes(sub.id) || (sectorSearch && sub.name.toLowerCase().includes(sectorSearch.toLowerCase()))));
+                  // Open a sector when it, any child, or any GRANDCHILD is
+                  // selected or search-matched — otherwise drilling to an L3
+                  // would leave its sector collapsed and the selection hidden.
+                  const descendantsOf = (id: string): any[] => {
+                    const kids = categories.filter((c: any) => c.parentId === id);
+                    return kids.concat(...kids.map((k: any) => descendantsOf(k.id)));
+                  };
+                  const branch = descendantsOf(cat.id);
+                  const isOpen = selectedCategories.includes(cat.id) || branch.some((d: any) =>
+                    selectedCategories.includes(d.id) ||
+                    (sectorSearch && d.name.toLowerCase().includes(sectorSearch.toLowerCase()))
+                  );
                   const isActive = selectedCategories.includes(cat.id);
                   return (
                     <div key={cat.id}>
@@ -208,18 +262,54 @@ export default function Companies() {
                           {categories
                             .filter((sub: any) => sub.parentId === cat.id)
                             .filter((sub: any) => !sectorSearch || sub.name.toLowerCase().includes(sectorSearch.toLowerCase()) || cat.name.toLowerCase().includes(sectorSearch.toLowerCase()))
-                            .map((sub: any) => (
-                              <button
-                                key={sub.id}
-                                onClick={() => toggleCategory(sub.id)}
-                                className={`w-full text-left px-3 py-1.5 rounded-md text-[12px] transition-all flex items-center justify-between ${
-                                  selectedCategories.includes(sub.id) ? "text-accent" : "text-text-body/70 hover:text-text-heading"
-                                }`}
-                              >
-                                <span>{sub.name}</span>
-                                {selectedCategories.includes(sub.id) && <span className="w-1 h-1 rounded-full bg-accent" />}
-                              </button>
-                            ))}
+                            .map((sub: any) => {
+                              const subChildren = categories.filter((c: any) => c.parentId === sub.id);
+                              // Expand L3 only when the L2 itself is selected, one of
+                              // its children is, or a search is actively matching —
+                              // otherwise a sector with several L3-bearing children
+                              // would dump dozens of rows into the sidebar at once.
+                              const subOpen = subChildren.length > 0 && (
+                                selectedCategories.includes(sub.id) ||
+                                subChildren.some((c: any) => selectedCategories.includes(c.id)) ||
+                                (!!sectorSearch && subChildren.some((c: any) => c.name.toLowerCase().includes(sectorSearch.toLowerCase())))
+                              );
+                              return (
+                                <div key={sub.id}>
+                                  <button
+                                    onClick={() => toggleCategory(sub.id)}
+                                    className={`w-full text-left px-3 py-1.5 rounded-md text-[12px] transition-all flex items-center justify-between ${
+                                      selectedCategories.includes(sub.id) ? "text-accent" : "text-text-body/70 hover:text-text-heading"
+                                    }`}
+                                  >
+                                    <span>{sub.name}</span>
+                                    <div className="flex items-center gap-1.5 shrink-0">
+                                      {selectedCategories.includes(sub.id) && <span className="w-1 h-1 rounded-full bg-accent" />}
+                                      {subChildren.length > 0 && (
+                                        <ChevronRight className={`w-3 h-3 transition-transform ${subOpen ? "rotate-90" : ""}`} strokeWidth={1.75} />
+                                      )}
+                                    </div>
+                                  </button>
+                                  {subOpen && (
+                                    <div className="pl-3 ml-3 mt-0.5 mb-1 space-y-0.5 border-l border-border-main/60">
+                                      {subChildren
+                                        .filter((c: any) => !sectorSearch || c.name.toLowerCase().includes(sectorSearch.toLowerCase()) || sub.name.toLowerCase().includes(sectorSearch.toLowerCase()) || cat.name.toLowerCase().includes(sectorSearch.toLowerCase()))
+                                        .map((c: any) => (
+                                          <button
+                                            key={c.id}
+                                            onClick={() => toggleCategory(c.id)}
+                                            className={`w-full text-left px-3 py-1 rounded-md text-[11.5px] transition-all flex items-center justify-between ${
+                                              selectedCategories.includes(c.id) ? "text-accent" : "text-text-body/55 hover:text-text-heading"
+                                            }`}
+                                          >
+                                            <span>{c.name}</span>
+                                            {selectedCategories.includes(c.id) && <span className="w-1 h-1 rounded-full bg-accent" />}
+                                          </button>
+                                        ))}
+                                    </div>
+                                  )}
+                                </div>
+                              );
+                            })}
                         </div>
                       )}
                     </div>
