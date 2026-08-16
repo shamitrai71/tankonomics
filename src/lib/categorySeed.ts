@@ -243,6 +243,13 @@ export const CATEGORY_SEED: CategorySeedNode[] = [
   { id: "steam-systems", slug: "steam-systems", name: "Steam Systems", level: 2, parentId: "utilities-and-energy", order: 4 },
   { id: "compressed-air", slug: "compressed-air", name: "Compressed Air", level: 2, parentId: "utilities-and-energy", order: 5 },
   { id: "power-generation", slug: "power-generation", name: "Power Generation", level: 2, parentId: "utilities-and-energy", order: 6 },
+  // Emergency and standby power is a regulatory requirement at terminals, not
+  // an optional extra — it runs fire water pumps, ESD and emergency lighting
+  // when mains fails. These are genuinely different products from different
+  // vendors, so they sit as L3 under Power Generation.
+  { id: "diesel-generators", slug: "diesel-generators", name: "Diesel Generators & Gensets", level: 3, parentId: "power-generation", order: 1 },
+  { id: "ups-systems", slug: "ups-systems", name: "UPS Systems", level: 3, parentId: "power-generation", order: 2 },
+  { id: "power-distribution-equipment", slug: "power-distribution-equipment", name: "Power Distribution Equipment", level: 3, parentId: "power-generation", order: 3 },
   { id: "renewable-energy", slug: "renewable-energy", name: "Renewable Energy", level: 2, parentId: "utilities-and-energy", order: 7 },
   { id: "battery-energy-storage", slug: "battery-energy-storage", name: "Battery Energy Storage", level: 2, parentId: "utilities-and-energy", order: 8 },
   { id: "hydrogen-infrastructure", slug: "hydrogen-infrastructure", name: "Hydrogen Infrastructure", level: 2, parentId: "utilities-and-energy", order: 9 },
@@ -289,4 +296,36 @@ export const CATEGORY_SEED: CategorySeedNode[] = [
   { id: "news-and-media", slug: "news-and-media", name: "News & Media", level: 2, parentId: "news-media-and-associations", order: 1 },
   { id: "industry-associations", slug: "industry-associations", name: "Industry Associations", level: 2, parentId: "news-media-and-associations", order: 2 },
   { id: "standards-bodies", slug: "standards-bodies", name: "Standards Bodies", level: 2, parentId: "news-media-and-associations", order: 3 },
+
+  // ── Renewables & Energy Storage (L1) ──────────────────────────────────
+  // Added deliberately as its own sheet rather than folded into Sustainability:
+  // ethanol blending, SATAT/CBG and the Green Hydrogen Mission are creating
+  // storage requirements that differ materially from conventional hydrocarbons
+  // (seal materials, coatings, corrosion behaviour, containment). Companies
+  // specialising in exactly that need somewhere to land.
+  { id: "renewables-and-energy-storage", slug: "renewables-and-energy-storage", name: "Renewables & Energy Storage", level: 1, parentId: "", order: 19 },
+  { id: "solar-power-systems", slug: "solar-power-systems", name: "Solar Power Systems", level: 2, parentId: "renewables-and-energy-storage", order: 1 },
+  { id: "bess-systems", slug: "bess-systems", name: "Battery Energy Storage (BESS)", level: 2, parentId: "renewables-and-energy-storage", order: 2 },
+  { id: "hydrogen-storage-and-handling", slug: "hydrogen-storage-and-handling", name: "Hydrogen Storage & Handling", level: 2, parentId: "renewables-and-energy-storage", order: 3 },
+  { id: "ammonia-storage-and-handling", slug: "ammonia-storage-and-handling", name: "Ammonia Storage & Handling", level: 2, parentId: "renewables-and-energy-storage", order: 4 },
+  { id: "biofuel-and-ethanol-storage-systems", slug: "biofuel-and-ethanol-storage-systems", name: "Biofuel & Ethanol Storage Systems", level: 2, parentId: "renewables-and-energy-storage", order: 5 },
+  { id: "cbg-and-biogas-infrastructure", slug: "cbg-and-biogas-infrastructure", name: "CBG & Biogas Infrastructure", level: 2, parentId: "renewables-and-energy-storage", order: 6 },
+  { id: "carbon-capture-equipment", slug: "carbon-capture-equipment", name: "Carbon Capture Equipment", level: 2, parentId: "renewables-and-energy-storage", order: 7 },
+  { id: "energy-efficiency-systems", slug: "energy-efficiency-systems", name: "Energy Efficiency Systems", level: 2, parentId: "renewables-and-energy-storage", order: 8 },
+
+  // ── Inspection Equipment (L1) ─────────────────────────────────────────
+  // The Asset Integrity sheet is entirely SERVICES — someone you hire. The
+  // instruments themselves are a separate industry with separate vendors and
+  // previously had no home anywhere in the tree.
+  { id: "inspection-equipment", slug: "inspection-equipment", name: "Inspection Equipment", level: 1, parentId: "", order: 20 },
+  { id: "ndt-equipment", slug: "ndt-equipment", name: "NDT Equipment", level: 2, parentId: "inspection-equipment", order: 1 },
+  { id: "ultrasonic-flaw-detectors", slug: "ultrasonic-flaw-detectors", name: "Ultrasonic Flaw Detectors", level: 3, parentId: "ndt-equipment", order: 1 },
+  { id: "thickness-gauges", slug: "thickness-gauges", name: "Thickness Gauges", level: 3, parentId: "ndt-equipment", order: 2 },
+  { id: "phased-array-and-tofd", slug: "phased-array-and-tofd", name: "Phased Array & TOFD", level: 3, parentId: "ndt-equipment", order: 3 },
+  { id: "tank-floor-scanners", slug: "tank-floor-scanners", name: "Tank Floor Scanners (MFL)", level: 2, parentId: "inspection-equipment", order: 2 },
+  { id: "radiographic-equipment", slug: "radiographic-equipment", name: "Radiographic Equipment", level: 2, parentId: "inspection-equipment", order: 3 },
+  { id: "weld-inspection-equipment", slug: "weld-inspection-equipment", name: "Weld Inspection Equipment", level: 2, parentId: "inspection-equipment", order: 4 },
+  { id: "acoustic-emission-systems", slug: "acoustic-emission-systems", name: "Acoustic Emission Systems", level: 2, parentId: "inspection-equipment", order: 5 },
+  { id: "borescopes-and-visual-inspection", slug: "borescopes-and-visual-inspection", name: "Borescopes & Visual Inspection", level: 2, parentId: "inspection-equipment", order: 6 },
+  { id: "inspection-drones-and-crawlers", slug: "inspection-drones-and-crawlers", name: "Inspection Drones & Crawlers", level: 2, parentId: "inspection-equipment", order: 7 },
 ];
