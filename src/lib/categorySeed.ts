@@ -54,6 +54,39 @@ export const CATEGORY_SEED: CategorySeedNode[] = [
   { id: "heavy-engineering-and-fabrication", slug: "heavy-engineering-and-fabrication", name: "Heavy Engineering & Fabrication", level: 2, parentId: "engineering-and-construction", order: 16 },
   { id: "tank-maintenance", slug: "tank-maintenance", name: "Tank Maintenance", level: 2, parentId: "engineering-and-construction", order: 17 },
   { id: "surface-preparation-and-blasting", slug: "surface-preparation-and-blasting", name: "Surface Preparation & Blasting", level: 2, parentId: "engineering-and-construction", order: 18 },
+
+  // ── Offshore Floating Systems (L2, added for FPSO/FLNG/FSRU vendor tracking) ─
+  // Distinct from "Offshore Production" / "LNG Production" (Natural Resources &
+  // Upstream), which are for E&P operators and asset owners. This node is for
+  // the contractor side: companies that design, convert, build, lease, and
+  // operate floating units as a service (SBM Offshore, MODEC, Yinson, BW
+  // Offshore, Bumi Armada) — structurally an EPC/contractor category, not an
+  // upstream one.
+  { id: "offshore-floating-systems", slug: "offshore-floating-systems", name: "Offshore Floating Systems (FPSO/FSRU/FLNG)", level: 2, parentId: "engineering-and-construction", order: 19 },
+  { id: "fpso-fso-design-and-conversion", slug: "fpso-fso-design-and-conversion", name: "FPSO/FSO Design & Conversion", level: 3, parentId: "offshore-floating-systems", order: 1 },
+  { id: "flng-systems", slug: "flng-systems", name: "FLNG Systems", level: 3, parentId: "offshore-floating-systems", order: 2 },
+  { id: "fsru-and-regasification-systems", slug: "fsru-and-regasification-systems", name: "FSRU & Regasification Systems", level: 3, parentId: "offshore-floating-systems", order: 3 },
+
+  // ── LNG Terminal Engineering (L2, added alongside Offshore Floating Systems) ─
+  // EPC and technology-licensing companies for onshore LNG liquefaction/export
+  // trains (Air Products, Linde, Chart Industries, Baker Hughes/CLE), separate
+  // from Gas Processing (LNG/LPG) under Process Industries, which is for the
+  // plant operators, not the engineering contractors.
+  { id: "lng-terminal-engineering", slug: "lng-terminal-engineering", name: "LNG Terminal Engineering (Liquefaction & Export)", level: 2, parentId: "engineering-and-construction", order: 20 },
+
+  // ── Process Technology Licensors (L2, added for licensor/technology tracking) ─
+  // Companies that license process technology/IP for plant units — distinct
+  // from EPC Contractors (who build) and Engineering Consultants under
+  // Professional Services (who advise). Serves both Process Industries
+  // (refineries, petrochemicals, gas processing) and Natural Resources &
+  // Upstream (LNG production) facilities, per the Licensor-Technology Tracker's
+  // Category Grouping field.
+  { id: "process-technology-licensors", slug: "process-technology-licensors", name: "Process Technology Licensors", level: 2, parentId: "engineering-and-construction", order: 21 },
+  { id: "refining-process-technologies", slug: "refining-process-technologies", name: "Refining Process Technologies", level: 3, parentId: "process-technology-licensors", order: 1 },
+  { id: "petrochemical-process-technologies", slug: "petrochemical-process-technologies", name: "Petrochemical Process Technologies", level: 3, parentId: "process-technology-licensors", order: 2 },
+  { id: "gas-processing-and-lng-technologies", slug: "gas-processing-and-lng-technologies", name: "Gas Processing & LNG Technologies", level: 3, parentId: "process-technology-licensors", order: 3 },
+  { id: "fertilizer-process-technologies", slug: "fertilizer-process-technologies", name: "Fertilizer Process Technologies", level: 3, parentId: "process-technology-licensors", order: 4 },
+
   { id: "tank-systems-and-equipment", slug: "tank-systems-and-equipment", name: "Tank Systems & Equipment", level: 1, parentId: "", order: 5 },
   { id: "tank-gauging", slug: "tank-gauging", name: "Tank Gauging", level: 2, parentId: "tank-systems-and-equipment", order: 1 },
   // ── Level 3 ────────────────────────────────────────────────────────────
@@ -103,6 +136,12 @@ export const CATEGORY_SEED: CategorySeedNode[] = [
   { id: "industrial-platforms", slug: "industrial-platforms", name: "Industrial Platforms", level: 2, parentId: "tank-systems-and-equipment", order: 28 },
   { id: "cranes-and-lifting-equipment", slug: "cranes-and-lifting-equipment", name: "Cranes & Lifting Equipment", level: 2, parentId: "tank-systems-and-equipment", order: 29 },
   { id: "blasting-and-painting-equipment", slug: "blasting-and-painting-equipment", name: "Blasting & Painting Equipment", level: 2, parentId: "tank-systems-and-equipment", order: 30 },
+
+  // ── Cryogenic & LNG Storage Tanks (L2, added for LNG export terminal session) ─
+  // Full-containment / double-wall cryogenic tank manufacturers (9% nickel
+  // steel, membrane systems) — a genuinely different vendor set from ambient
+  // bolted-steel-tanks above.
+  { id: "cryogenic-and-lng-storage-tanks", slug: "cryogenic-and-lng-storage-tanks", name: "Cryogenic & LNG Storage Tanks", level: 2, parentId: "tank-systems-and-equipment", order: 31 },
   { id: "flow-and-transfer-equipment", slug: "flow-and-transfer-equipment", name: "Flow & Transfer Equipment", level: 1, parentId: "", order: 6 },
   { id: "pumps", slug: "pumps", name: "Pumps", level: 2, parentId: "flow-and-transfer-equipment", order: 1 },
   { id: "compressors", slug: "compressors", name: "Compressors", level: 2, parentId: "flow-and-transfer-equipment", order: 2 },
@@ -122,6 +161,14 @@ export const CATEGORY_SEED: CategorySeedNode[] = [
   { id: "marine-loading-arms", slug: "marine-loading-arms", name: "Marine Loading Arms", level: 2, parentId: "flow-and-transfer-equipment", order: 16 },
   { id: "truck-loading-systems", slug: "truck-loading-systems", name: "Truck Loading Systems", level: 2, parentId: "flow-and-transfer-equipment", order: 17 },
   { id: "rail-loading-systems", slug: "rail-loading-systems", name: "Rail Loading Systems", level: 2, parentId: "flow-and-transfer-equipment", order: 18 },
+
+  // ── Offshore/cryogenic transfer additions (FPSO + LNG export session) ────────
+  // Offshore Loading Systems covers single-point mooring (SPM) and CALM buoys —
+  // a distinct product line from Marine Loading Arms (fixed jetty arms).
+  // Cryogenic Loading Systems covers LNG-specific loading arms/hoses, which use
+  // different materials and design standards than ambient marine-loading-arms.
+  { id: "offshore-loading-systems-spm-calm", slug: "offshore-loading-systems-spm-calm", name: "Offshore Loading Systems (SPM/CALM)", level: 2, parentId: "flow-and-transfer-equipment", order: 19 },
+  { id: "cryogenic-loading-systems-lng", slug: "cryogenic-loading-systems-lng", name: "Cryogenic Loading Systems (LNG)", level: 2, parentId: "flow-and-transfer-equipment", order: 20 },
   { id: "instrumentation-and-automation", slug: "instrumentation-and-automation", name: "Instrumentation & Automation", level: 1, parentId: "", order: 7 },
   { id: "terminal-automation", slug: "terminal-automation", name: "Terminal Automation", level: 2, parentId: "instrumentation-and-automation", order: 1 },
   { id: "scada-systems", slug: "scada-systems", name: "SCADA Systems", level: 2, parentId: "instrumentation-and-automation", order: 2 },
