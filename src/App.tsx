@@ -317,22 +317,32 @@ function Navbar({ onMenuToggle, theme }: { onMenuToggle: () => void, theme: any 
         </button>
 
         <Link to="/" className="flex items-center gap-2.5 group shrink-0">
-          {theme?.displayMode !== 'text_only' && (
-            <div className={`flex items-center justify-center transition-all shrink-0 overflow-hidden ${theme?.logoUrl ? "rounded-lg w-8 h-8 md:w-[50px] md:h-[50px]" : "w-9 h-9 md:w-11 md:h-11"}`}>
-               {theme?.logoUrl ? (
-                 <img
-                   src={theme.logoUrl}
-                   className="w-full h-full object-contain transition-transform group-hover:scale-105"
-                   alt="Logo"
-                   onError={(e) => {
-                     (e.target as HTMLImageElement).style.display = 'none';
-                   }}
-                 />
-               ) : (
-                 <BrandMark size={44} tone="dark" className="transition-transform group-hover:scale-105" />
-               )}
-            </div>
-          )}
+          {theme?.displayMode !== 'text_only' && (() => {
+            // In dark mode, prefer the dedicated dark-background logo the
+            // admin can upload (theme.logoUrlDark) — most brand marks are
+            // drawn for a light background and go invisible or muddy on a
+            // dark one otherwise. Falls back to the regular logo, then to
+            // the built-in BrandMark, whose tone is likewise flipped so it
+            // draws light strokes on the dark surface instead of dark
+            // strokes that would disappear.
+            const activeLogo = isDark ? (theme?.logoUrlDark || theme?.logoUrl) : theme?.logoUrl;
+            return (
+              <div className={`flex items-center justify-center transition-all shrink-0 overflow-hidden ${activeLogo ? "rounded-lg w-8 h-8 md:w-[50px] md:h-[50px]" : "w-9 h-9 md:w-11 md:h-11"}`}>
+                 {activeLogo ? (
+                   <img
+                     src={activeLogo}
+                     className="w-full h-full object-contain transition-transform group-hover:scale-105"
+                     alt="Logo"
+                     onError={(e) => {
+                       (e.target as HTMLImageElement).style.display = 'none';
+                     }}
+                   />
+                 ) : (
+                   <BrandMark size={44} tone={isDark ? "light" : "dark"} className="transition-transform group-hover:scale-105" />
+                 )}
+              </div>
+            );
+          })()}
           {theme?.displayMode !== 'image_only' && (
             <div className="flex flex-col">
               <span className="font-display text-[22px] sm:text-2xl md:text-[28px] tracking-tight text-text-heading line-clamp-1 whitespace-nowrap leading-none transition-colors group-hover:text-primary">
@@ -658,6 +668,7 @@ function Navbar({ onMenuToggle, theme }: { onMenuToggle: () => void, theme: any 
 
 function Sidebar({ isOpen, onClose, theme }: { isOpen: boolean; onClose: () => void, theme: any }) {
   const { user, isAdmin, logout } = useAuth();
+  const { isDark } = useTheme();
   const location = useLocation();
 
   const navItems = [
@@ -704,15 +715,20 @@ function Sidebar({ isOpen, onClose, theme }: { isOpen: boolean; onClose: () => v
 
         <div className="flex items-center justify-between px-6 pt-6 pb-8">
           <Link to="/" onClick={onClose} className="flex items-center gap-3">
-             {theme?.displayMode !== 'text_only' && (
-               <div className={`flex items-center justify-center transition-all ${theme?.logoUrl ? "rounded-2xl" : ""}`}>
-                  {theme?.logoUrl ? (
-                    <img src={theme.logoUrl} className="h-9 w-auto" alt="Logo" />
+             {theme?.displayMode !== 'text_only' && (() => {
+               // Same dark-background logo swap as the Navbar — see the
+               // comment there for why this matters.
+               const activeLogo = isDark ? (theme?.logoUrlDark || theme?.logoUrl) : theme?.logoUrl;
+               return (
+               <div className={`flex items-center justify-center transition-all ${activeLogo ? "rounded-2xl" : ""}`}>
+                  {activeLogo ? (
+                    <img src={activeLogo} className="h-9 w-auto" alt="Logo" />
                   ) : (
-                    <BrandMark size={40} tone="dark" />
+                    <BrandMark size={40} tone={isDark ? "light" : "dark"} />
                   )}
                </div>
-             )}
+               );
+             })()}
              {theme?.displayMode !== 'image_only' && (
                <span className="font-display text-2xl tracking-tight text-text-heading leading-none">
                  {theme?.siteName || "Tankonomics"}

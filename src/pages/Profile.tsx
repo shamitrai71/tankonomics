@@ -71,8 +71,12 @@ import {
   Trash2,
   AtSign,
   Globe2,
+  Sun,
+  Moon,
+  Monitor,
 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
+import { useTheme } from "../App";
 import { format } from "date-fns";
 import { useNavigate } from "react-router-dom";
 import * as XLSX from "xlsx";
@@ -450,6 +454,7 @@ export default function Profile() {
   const navigate = useNavigate();
   const { user, profile: currentUserProfile, tier } = useAuth();
   const { createNotification } = useNotifications();
+  const { mode, setMode } = useTheme();
   const [viewedProfile, setViewedProfile] = useState<any>(null);
   const [profileLoading, setProfileLoading] = useState(true);
 
@@ -1367,6 +1372,38 @@ export default function Profile() {
                       <p className="text-[12px] text-text-body/70 mt-0.5">Visible to non-connections in the directory. Also enables profile-view tracking — when on, your visits are recorded and you can see who viewed you. Turn off to browse privately (your views stay hidden, and so do theirs from you).</p>
                     </div>
                   </label>
+                </EditSection>
+
+                <EditSection title="Appearance" description="Light or dark mode for this device" icon={Sun}>
+                  <p className="text-[12px] text-text-body/70 mb-3">
+                    Applies to admins and members alike, on the device you're using now.
+                  </p>
+                  <div className="flex items-center gap-2 bg-bg-main p-1 rounded-xl border border-border-main w-fit">
+                    <button
+                      type="button"
+                      onClick={() => setMode('light')}
+                      className={`flex items-center gap-2 px-3 py-2 rounded-lg text-[13px] font-medium transition-all ${mode === 'light' ? 'bg-text-heading text-bg-card' : 'text-text-body/70 hover:text-text-heading'}`}
+                    >
+                      <Sun className="w-4 h-4" strokeWidth={1.75} />
+                      Light
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => setMode('dark')}
+                      className={`flex items-center gap-2 px-3 py-2 rounded-lg text-[13px] font-medium transition-all ${mode === 'dark' ? 'bg-text-heading text-bg-card' : 'text-text-body/70 hover:text-text-heading'}`}
+                    >
+                      <Moon className="w-4 h-4" strokeWidth={1.75} />
+                      Dark
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => setMode('system')}
+                      className={`flex items-center gap-2 px-3 py-2 rounded-lg text-[13px] font-medium transition-all ${mode === 'system' ? 'bg-text-heading text-bg-card' : 'text-text-body/70 hover:text-text-heading'}`}
+                    >
+                      <Monitor className="w-4 h-4" strokeWidth={1.75} />
+                      System
+                    </button>
+                  </div>
                 </EditSection>
 
                 <EditSection title="Social profiles" description="External links" icon={LinkIcon}>

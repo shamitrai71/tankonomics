@@ -37,8 +37,6 @@ import {
   Lock,
   Unlock,
   LayoutDashboard,
-  Sun,
-  Moon,
   ImagePlus,
 } from "lucide-react";
 import axios from "axios";
@@ -104,7 +102,10 @@ export default function Admin() {
   const [copyDrafts, setCopyDrafts] = useState<Record<string, { eyebrow: string; title: string; subtitle: string }>>({});
   const [savingCopyKey, setSavingCopyKey] = useState<string | null>(null);
   const { user } = useAuth();
-  const { isDark, setMode } = useTheme();
+  // Dark/light mode is a user preference now controlled from Profile > Appearance,
+  // not from here — this page only needs isDark to keep the live theme-color
+  // preview (below) from stomping dark-mode colors with light-mode ones.
+  const { isDark } = useTheme();
 
   // Theme State
   const [matchWeights, setMatchWeights] = useState<MatchWeights>(DEFAULT_WEIGHTS);
@@ -274,9 +275,26 @@ export default function Admin() {
     fetchTheme();
   }, []);
 
-  // Live preview of CSS variables in Admin panel
+  // Live preview of CSS variables in Admin panel.
+  //
+  // GUARDED ON isDark — this is the same bug App.tsx's own theme-color effect
+  // was already fixed for (see the comment there): inline styles set via
+  // .style.setProperty() outrank the .dark class's CSS variable rules, so an
+  // unconditional write here silently forces the ENTIRE app back to light-mode
+  // colors the instant this page mounts, regardless of the person's actual
+  // dark/light preference — which is exactly the "reverts to light mode when
+  // I open the admin panel" symptom. Skip the preview writes while dark mode
+  // is active (previewing the light theme while looking at dark mode makes
+  // little sense anyway), and clear any stale inline overrides on the way
+  // into dark mode so the .dark class rules can take over cleanly.
   useEffect(() => {
     const root = document.documentElement;
+    if (isDark) {
+      const props = ["--primary-brand","--secondary-brand","--accent-brand","--bg-main",
+        "--text-heading","--text-body","--bg-card","--border-main","--sidebar-focus","--sidebar-focus-text"];
+      for (const p of props) root.style.removeProperty(p);
+      return;
+    }
     root.style.setProperty("--primary-brand", themeData.primaryColor);
     root.style.setProperty("--secondary-brand", themeData.secondaryColor);
     root.style.setProperty("--accent-brand", themeData.accentColor);
@@ -287,7 +305,7 @@ export default function Admin() {
     root.style.setProperty("--border-main", themeData.borderColor);
     root.style.setProperty("--sidebar-focus", themeData.sidebarFocusColor);
     root.style.setProperty("--sidebar-focus-text", themeData.sidebarFocusTextColor);
-  }, [themeData]);
+  }, [themeData, isDark]);
 
   const handleSaveTheme = async () => {
     setSavingTheme(true);
@@ -1104,23 +1122,6 @@ const handleEditCompany = (company: any) => {
               <p className="text-text-body text-[15px] mt-3 max-w-xl">
                 Manage members, moderate content, configure the directory taxonomy, theme the site, and inspect platform-wide analytics.
               </p>
-            </div>
-
-            <div className="flex items-center gap-2 bg-bg-card p-1 rounded-xl border border-border-main h-fit shrink-0">
-              <button
-                onClick={() => setMode('light')}
-                className={`p-2 rounded-lg transition-all ${!isDark ? 'bg-text-heading text-bg-card' : 'text-text-body/55 hover:text-text-body'}`}
-                title="Light mode"
-              >
-                <Sun className="w-4 h-4" strokeWidth={1.75} />
-              </button>
-              <button
-                onClick={() => setMode('dark')}
-                className={`p-2 rounded-lg transition-all ${isDark ? 'bg-text-heading text-bg-card' : 'text-text-body/55 hover:text-text-body'}`}
-                title="Dark mode"
-              >
-                <Moon className="w-4 h-4" strokeWidth={1.75} />
-              </button>
             </div>
           </div>
         </header>
