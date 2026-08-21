@@ -279,6 +279,10 @@ export const CATEGORY_SEED: CategorySeedNode[] = [
   { id: "cement-and-aggregates", slug: "cement-and-aggregates", name: "Cement & Aggregates", level: 2, parentId: "materials-and-metallurgy", order: 15 },
   { id: "refractory-materials", slug: "refractory-materials", name: "Refractory Materials", level: 2, parentId: "materials-and-metallurgy", order: 16 },
   { id: "insulation-materials", slug: "insulation-materials", name: "Insulation Materials", level: 2, parentId: "materials-and-metallurgy", order: 17 },
+  // Added to match TWI's MM-18 — secondary/recycled metals (lead, aluminium,
+  // copper) reclaimed from batteries and scrap, distinct from the primary
+  // steel/aluminium producers above.
+  { id: "secondary-metals-and-recycling", slug: "secondary-metals-and-recycling", name: "Secondary Metals & Recycling", level: 2, parentId: "materials-and-metallurgy", order: 18 },
   { id: "industrial-supplies-mro", slug: "industrial-supplies-mro", name: "Industrial Supplies (MRO)", level: 1, parentId: "", order: 12 },
   { id: "fasteners", slug: "fasteners", name: "Fasteners", level: 2, parentId: "industrial-supplies-mro", order: 1 },
   { id: "gaskets", slug: "gaskets", name: "Gaskets", level: 2, parentId: "industrial-supplies-mro", order: 2 },
