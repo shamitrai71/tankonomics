@@ -1,8 +1,14 @@
-// Auto-generated. Per-company location sets, keyed by company slug (doc id).
+// Auto-generated. Per-company location SEED data, keyed by company slug.
 // Richer model: facilityClass[] + processType[] (master slugs) + primaryClass
 // (badge colour) + optional googlePlaceId (Google Maps deep link; empty when
 // Google has no reliable place — the profile falls back to a maps search).
 // Seed via Admin -> Companies -> "Seed locations".
+//
+// NOTE — this is SEED input only, not the live Firestore document shape.
+// Locations live as their own documents at companies/{slug}/locations/{id}
+// (a subcollection, not an array field on the company doc) — see `Location`
+// below for the live shape, and docs/LOCATION_CLAIMING_DRAFT.md for why.
+// The seed action defaults every new location's ownership fields to null.
 
 export interface SeedLocation {
   name: string; type: string; city: string; country: string;
@@ -11,6 +17,22 @@ export interface SeedLocation {
   processType: string[];      // master slugs e.g. ["refineries","petrochemicals"]; [] for storage
   primaryClass: string;       // "storage" | "process" — drives the badge/colour
   googlePlaceId: string;      // Google Place ID; "" when none is reliable
+}
+
+// Live Firestore document shape at companies/{slug}/locations/{id}. Extends
+// SeedLocation with ownership fields (all null until the delegation/claim
+// workflow in docs/LOCATION_CLAIMING_DRAFT.md is built — deliberately not
+// yet). `ownerUid: null` is not "unowned": the effective owner still falls
+// back to the parent company's `ownerUid` at read time. Only an explicit
+// value here overrides that fallback for this one location.
+export interface Location extends SeedLocation {
+  id: string;                              // Firestore doc id (not part of the seed data)
+  ownerUid: string | null;
+  ownerSource: "delegated" | "location-claim" | null;
+  assignedBy: string | null;
+  assignedAt: unknown | null;              // Firestore Timestamp once set
+  createdAt: unknown;                      // Firestore Timestamp
+  updatedAt: unknown;                      // Firestore Timestamp
 }
 
 export const LOCATION_SEED: Record<string, SeedLocation[]> = {
@@ -2237,5 +2259,863 @@ export const LOCATION_SEED: Record<string, SeedLocation[]> = {
   ],
   "vijay-tanks-and-vessels-private-limited": [
     { name: "Registered Office", type: "office", city: "Ranoli, Vadodara, Gujarat", country: "India", externalUrl: "", facilityClass: [], processType: [], primaryClass: "", googlePlaceId: "" },
+  ],
+  "vinci-energies-sa-actemium": [
+    { name: "Registered Office", type: "registered office", city: "", country: "Belgium", externalUrl: "", facilityClass: [], processType: [], primaryClass: "", googlePlaceId: "ChIJl8j3-vRxdmsRUcGh6Kgf3M0" }
+  ],
+  "agidens-process-automation-nv": [
+    { name: "Registered Office", type: "registered office", city: "", country: "Belgium", externalUrl: "", facilityClass: [], processType: [], primaryClass: "", googlePlaceId: "ChIJqeoFYLXJw0cRmtb9CHZao8k" }
+  ],
+  "ari-armaturen-albert-richter-gmbh-and-co-kg": [
+    { name: "Registered Office", type: "registered office", city: "", country: "Germany", externalUrl: "", facilityClass: [], processType: [], primaryClass: "", googlePlaceId: "ChIJqdFMjBZZu0cRR6-5pWD__sc" }
+  ],
+  "bray-controls-benelux-bv": [
+    { name: "Registered Office", type: "registered office", city: "", country: "Netherlands", externalUrl: "", facilityClass: [], processType: [], primaryClass: "", googlePlaceId: "ChIJqf6h2PtTz0cRbnDBwgOtmzw" }
+  ],
+  "belven-nv": [
+    { name: "Registered Office", type: "registered office", city: "", country: "Belgium", externalUrl: "", facilityClass: [], processType: [], primaryClass: "", googlePlaceId: "ChIJ5f8oWZ7lw0cRzYiAomKl_U0" }
+  ],
+  "control-seal-bv": [
+    { name: "Registered Office", type: "registered office", city: "", country: "Netherlands", externalUrl: "", facilityClass: [], processType: [], primaryClass: "", googlePlaceId: "ChIJebjudK0ptkcRsDWRUX8h-fc" }
+  ],
+  "dtn-llc": [
+    { name: "Registered Office", type: "registered office", city: "", country: "United States", externalUrl: "", facilityClass: [], processType: [], primaryClass: "", googlePlaceId: "ChIJKVyLBwcw9ocRzaOdEFGDjIs" }
+  ],
+  "eccos-inzenjering-doo": [
+    { name: "Registered Office", type: "registered office", city: "", country: "Croatia", externalUrl: "", facilityClass: [], processType: [], primaryClass: "", googlePlaceId: "ChIJiSZPn2J_ZkcRv0Uhql6RFbE" }
+  ],
+  "eriks-nv": [
+    { name: "Registered Office", type: "registered office", city: "", country: "Netherlands", externalUrl: "", facilityClass: [], processType: [], primaryClass: "", googlePlaceId: "ChIJiaRtDtFXz0cRVTQkBdu43cQ" }
+  ],
+  "emil-stelling-armaturen-kg": [
+    { name: "Registered Office", type: "registered office", city: "", country: "Germany", externalUrl: "", facilityClass: [], processType: [], primaryClass: "", googlePlaceId: "ChIJAcIjDkKOsUcR350_z_JnIGs" }
+  ],
+  "fma-systems-ltd": [
+    { name: "Registered Office", type: "registered office", city: "", country: "United Kingdom", externalUrl: "", facilityClass: [], processType: [], primaryClass: "", googlePlaceId: "ChIJL1i-CLzgLxMRaEIdB51-ras" }
+  ],
+  "hafen-und-industrietechnik-gmbh": [
+    { name: "Registered Office", type: "registered office", city: "", country: "Germany", externalUrl: "", facilityClass: [], processType: [], primaryClass: "", googlePlaceId: "ChIJ6aFCTz4ht0cR5aOLxflb_Lw" }
+  ],
+  "kimman-process-solutions-bv": [
+    { name: "Registered Office", type: "registered office", city: "", country: "Netherlands", externalUrl: "", facilityClass: [], processType: [], primaryClass: "", googlePlaceId: "ChIJhyqX3v4zxEcRegTmfajYp9E" }
+  ],
+  "kremsmuller-industrieanlagenbau-kg": [
+    { name: "Registered Office", type: "registered office", city: "", country: "Austria", externalUrl: "", facilityClass: [], processType: [], primaryClass: "", googlePlaceId: "ChIJz8npifLtc0cRvBV5n89UBxI" }
+  ],
+  "m-f-technologies-gmbh": [
+    { name: "Registered Office", type: "registered office", city: "", country: "Germany", externalUrl: "", facilityClass: [], processType: [], primaryClass: "", googlePlaceId: "ChIJqS7JSoXysUcRHVunm7RU1sg" }
+  ],
+  "plexus-integracao-de-sistemas-lda": [
+    { name: "Registered Office", type: "registered office", city: "", country: "Portugal", externalUrl: "", facilityClass: [], processType: [], primaryClass: "", googlePlaceId: "ChIJA5enSReVGw0RuMS6a1XC3Us" }
+  ],
+  "rotork-plc": [
+    { name: "Registered Office", type: "registered office", city: "", country: "United Kingdom", externalUrl: "", facilityClass: [], processType: [], primaryClass: "", googlePlaceId: "ChIJnRankcmGcUgRl0EHMjyg1yc" }
+  ],
+  "sofis-bv": [
+    { name: "Registered Office", type: "registered office", city: "", country: "Netherlands", externalUrl: "", facilityClass: [], processType: [], primaryClass: "", googlePlaceId: "ChIJ21VgGsHaxUcRVdNwDbnRDMA" }
+  ],
+  "sze-hagenuk-gmbh": [
+    { name: "Registered Office", type: "registered office", city: "", country: "Germany", externalUrl: "", facilityClass: [], processType: [], primaryClass: "", googlePlaceId: "ChIJvbWXDSZXskcRQ0xkgt9htBA" }
+  ],
+  "toptech-systems-inc": [
+    { name: "Registered Office", type: "registered office", city: "", country: "United States", externalUrl: "", facilityClass: [], processType: [], primaryClass: "", googlePlaceId: "ChIJ2S5pjBFy54gRQE0nRLa-RWI" }
+  ],
+  "verwater-group-bv": [
+    { name: "Registered Office", type: "registered office", city: "", country: "Netherlands", externalUrl: "", facilityClass: [], processType: [], primaryClass: "", googlePlaceId: "ChIJu9LSE_I1xEcRR4Gva_twHyo" }
+  ],
+  "voczero-ltd": [
+    { name: "Registered Office", type: "registered office", city: "", country: "United Kingdom", externalUrl: "", facilityClass: [], processType: [], primaryClass: "", googlePlaceId: "ChIJm1u2mPk940YRHp5t5o-TuBo" }
+  ],
+  "zwick-armaturen-gmbh": [
+    { name: "Registered Office", type: "registered office", city: "", country: "Germany", externalUrl: "", facilityClass: [], processType: [], primaryClass: "", googlePlaceId: "ChIJ4Qx9YfMluUcR_8h4_KyXmRM" }
+  ],
+  "astha-infra-engg-india-private-limited": [
+    { name: "Registered Office", type: "registered office", city: "", country: "India", externalUrl: "", facilityClass: [], processType: [], primaryClass: "", googlePlaceId: "ChIJVVWlgk7B5zsRH35eT2yZKCI" }
+  ],
+  "petrotech-engineers": [
+    { name: "Registered Office", type: "registered office", city: "", country: "India", externalUrl: "", facilityClass: [], processType: [], primaryClass: "", googlePlaceId: "ChIJFQAAwC7PXzkR4Namu69wOG0" }
+  ],
+  "vermont-technologies-private-limited": [
+    { name: "Registered Office", type: "registered office", city: "", country: "India", externalUrl: "", facilityClass: [], processType: [], primaryClass: "", googlePlaceId: "ChIJW6VJemC2wjsRhIDngJ8AJ9M" }
+  ],
+  "rostfrei-steels-private-limited": [
+    { name: "Registered Office", type: "registered office", city: "", country: "India", externalUrl: "", facilityClass: [], processType: [], primaryClass: "", googlePlaceId: "ChIJmw4auEHRDDkRZE8z2Ul4tAI" }
+  ],
+  "protego-india-private-limited": [
+    { name: "Registered Office", type: "registered office", city: "", country: "India", externalUrl: "", facilityClass: [], processType: [], primaryClass: "", googlePlaceId: "ChIJd9uK8lfIXzkRCwS5hbxvZRA" }
+  ],
+  "protectoseal-india-private-limited": [
+    { name: "Registered Office", type: "registered office", city: "", country: "India", externalUrl: "", facilityClass: [], processType: [], primaryClass: "", googlePlaceId: "ChIJLxBAcwCT5zsRUAmj2SGvaJE" }
+  ],
+  "newton-engineering-and-chemicals-limited": [
+    { name: "Registered Office", type: "registered office", city: "", country: "India", externalUrl: "", facilityClass: [], processType: [], primaryClass: "", googlePlaceId: "ChIJAQAAACvEXzkRPV2kHWTEOdM" }
+  ],
+  "velankanni-engineers": [
+    { name: "Registered Office", type: "registered office", city: "", country: "India", externalUrl: "", facilityClass: [], processType: [], primaryClass: "", googlePlaceId: "ChIJjySSFiC55zsRrNUJb4Ogr2s" }
+  ],
+  "aarkay-erectors-private-limited": [
+    { name: "Registered Office", type: "registered office", city: "", country: "India", externalUrl: "", facilityClass: [], processType: [], primaryClass: "", googlePlaceId: "ChIJA6JIkWtzCDsRDD5cLc4ltbA" }
+  ],
+  "kesari-engineering-and-construction": [
+    { name: "Registered Office", type: "registered office", city: "", country: "India", externalUrl: "", facilityClass: [], processType: [], primaryClass: "", googlePlaceId: "ChIJ75uLawx_XzkRO_cVatnkXt0" }
+  ],
+  "nuberg-engineering-limited": [
+    { name: "Registered Office", type: "registered office", city: "", country: "India", externalUrl: "", facilityClass: [], processType: [], primaryClass: "", googlePlaceId: "ChIJVVWVPNvoDDkReXsxbd8Obns" }
+  ],
+  "united-fabritech-and-erectors-private-limited": [
+    { name: "Registered Office", type: "registered office", city: "", country: "India", externalUrl: "", facilityClass: [], processType: [], primaryClass: "", googlePlaceId: "ChIJXXFhnlQzTqkREUN9WfmDHDY" }
+  ],
+  "consite-engineering-company-limited": [
+    { name: "Registered Office", type: "registered office", city: "", country: "India", externalUrl: "", facilityClass: [], processType: [], primaryClass: "", googlePlaceId: "ChIJM9niUFbP5zsR4oKXq1k3-uw" }
+  ],
+  "deha-tech-makina-sanayi-ve-ticaret-as": [
+    { name: "Registered Office", type: "registered office", city: "", country: "Turkey", externalUrl: "", facilityClass: [], processType: [], primaryClass: "", googlePlaceId: "ChIJtWS6Ak9byxQRqOaxftoWgh0" }
+  ],
+  "tank-connection-llc": [
+    { name: "Registered Office", type: "registered office", city: "", country: "United States", externalUrl: "", facilityClass: [], processType: [], primaryClass: "", googlePlaceId: "ChIJ5fBGJEMQuIcRGkII7Mqwr5w" }
+  ],
+  "permastore-limited": [
+    { name: "Registered Office", type: "registered office", city: "", country: "United Kingdom", externalUrl: "", facilityClass: [], processType: [], primaryClass: "", googlePlaceId: "ChIJAaNEOpi_2UcR30PMpP1AJV4" }
+  ],
+  "pune-techtrol-private-limited": [
+    { name: "Registered Office", type: "registered office", city: "Pune, Maharashtra", country: "India", externalUrl: "", facilityClass: [], processType: [], primaryClass: "", googlePlaceId: "ChIJVVVVRce5wjsR_DRGTqL0LAk" }
+  ],
+  "scully-signal-company": [
+    { name: "Registered Office", type: "registered office", city: "", country: "United States", externalUrl: "", facilityClass: [], processType: [], primaryClass: "", googlePlaceId: "ChIJs_sGEyQL44kRAUmApIQT0NQ" }
+  ],
+  "hima-paul-hildebrandt-gmbh": [
+    { name: "Registered Office", type: "registered office", city: "", country: "Germany", externalUrl: "", facilityClass: [], processType: [], primaryClass: "", googlePlaceId: "ChIJQ9F3E2XIl0cRF86hB3zlZVI" }
+  ],
+  "sureflo-techcon-limited": [
+    { name: "Registered Office", type: "registered office", city: "", country: "India", externalUrl: "", facilityClass: [], processType: [], primaryClass: "", googlePlaceId: "ChIJo_VAryXI5zsRaLS3-7onuEM" }
+  ],
+  "epiq-india": [
+    { name: "Registered Office", type: "registered office", city: "", country: "India", externalUrl: "", facilityClass: [], processType: [], primaryClass: "", googlePlaceId: "ChIJ57Vj4U7kDDkRLC28QRN0pJY" }
+  ],
+  "tristar-engineering-and-chemical-co": [
+    { name: "Registered Office", type: "registered office", city: "", country: "India", externalUrl: "", facilityClass: [], processType: [], primaryClass: "", googlePlaceId: "ChIJLYnd6a_A5zsRXmHDLLP_xX4" }
+  ],
+  "arham-oil": [
+    { name: "Registered Office", type: "registered office", city: "", country: "India", externalUrl: "", facilityClass: [], processType: [], primaryClass: "", googlePlaceId: "ChIJtcCtAZaDXjkRL7PdupX66G0" }
+  ],
+  "ram-engineering": [
+    { name: "Registered Office", type: "registered office", city: "Navi Mumbai, Maharashtra", country: "India", externalUrl: "", facilityClass: [], processType: [], primaryClass: "", googlePlaceId: "ChIJewMGD2C55zsRPuq0fKCDXQ4" }
+  ],
+  "phoenix-contact-india-private-limited": [
+    { name: "Registered Office", type: "registered office", city: "", country: "India", externalUrl: "", facilityClass: [], processType: [], primaryClass: "", googlePlaceId: "ChIJdQyj9P3jDDkRrszxCtYMJOg" }
+  ],
+  "petrofac-engineering-india-private-limited": [
+    { name: "Registered Office", type: "registered office", city: "", country: "India", externalUrl: "", facilityClass: [], processType: [], primaryClass: "", googlePlaceId: "ChIJi9mtbOXH5zsRqzTWchP_0wM" }
+  ],
+  "nvent-electrical-products-india-private-limited": [
+    { name: "Registered Office", type: "registered office", city: "", country: "India", externalUrl: "", facilityClass: [], processType: [], primaryClass: "", googlePlaceId: "ChIJm9-TaADH5zsRGeHegZoDHCA" }
+  ],
+  "uop-india-private-limited": [
+    { name: "Registered Office", type: "registered office", city: "Gurugram, Haryana", country: "India", externalUrl: "", facilityClass: [], processType: [], primaryClass: "", googlePlaceId: "ChIJMRKe0DcZDTkRAj5sJenQZF4" }
+  ],
+  "axens-india-private-limited": [
+    { name: "Registered Office", type: "registered office", city: "New Delhi", country: "India", externalUrl: "", facilityClass: [], processType: [], primaryClass: "", googlePlaceId: "ChIJVVW57lLiDDkRd9lKQvRAACE" }
+  ],
+  "haldor-topsoe-india-private-limited": [
+    { name: "Registered Office", type: "registered office", city: "New Delhi", country: "India", externalUrl: "", facilityClass: [], processType: [], primaryClass: "", googlePlaceId: "ChIJ7UPAhKrmDDkRFAanpXSo96I" }
+  ],
+  "sp-armada-clean-energy-ventures-private-limited": [
+    { name: "Registered Office", type: "registered office", city: "Mumbai", country: "India", externalUrl: "", facilityClass: [], processType: [], primaryClass: "", googlePlaceId: "ChIJMXrFHtzR5zsRHl918_N9N38" }
+  ],
+  "prodair-air-products-india-private-limited": [
+    { name: "Registered Office", type: "registered office", city: "Pune", country: "India", externalUrl: "", facilityClass: [], processType: [], primaryClass: "", googlePlaceId: "ChIJJW9mKgnBwjsREMKdfKldqkk" }
+  ],
+  "technip-energies-india-limited": [
+    { name: "Registered Office", type: "registered office", city: "New Delhi", country: "India", externalUrl: "", facilityClass: [], processType: [], primaryClass: "", googlePlaceId: "ChIJVVVVFU7hDDkRqTHr9p7S50k" }
+  ],
+  "indiana-gratings-private-limited": [
+    { name: "Registered Office", type: "registered office", city: "", country: "India", externalUrl: "", facilityClass: [], processType: [], primaryClass: "", googlePlaceId: "ChIJcWyAlhTI5zsRr1hlojJnKT0" }
+  ],
+  "galfan-engineers-private-limited": [
+    { name: "Registered Office", type: "registered office", city: "", country: "India", externalUrl: "", facilityClass: [], processType: [], primaryClass: "", googlePlaceId: "ChIJOwC3mh1lUjoRItN7p9nNUwA" }
+  ],
+  "vinfab-engineers-india-private-limited": [
+    { name: "Registered Office", type: "registered office", city: "", country: "India", externalUrl: "", facilityClass: [], processType: [], primaryClass: "", googlePlaceId: "ChIJf2cSDy625zsRSNNsk6CWKJw" }
+  ],
+  "patny-systems-private-limited": [
+    { name: "Registered Office", type: "registered office", city: "", country: "India", externalUrl: "", facilityClass: [], processType: [], primaryClass: "", googlePlaceId: "ChIJu55jPwmayzsRW-z4tinXOAE" }
+  ],
+  "greatweld-engineering-private-limited": [
+    { name: "Registered Office", type: "registered office", city: "", country: "India", externalUrl: "", facilityClass: [], processType: [], primaryClass: "", googlePlaceId: "ChIJv4_kUIrFwjsR-Nw-Y8C6P9s" }
+  ],
+  "omkar-gratings-private-limited": [
+    { name: "Registered Office", type: "registered office", city: "", country: "India", externalUrl: "", facilityClass: [], processType: [], primaryClass: "", googlePlaceId: "ChIJ50-VHlvfwjsRC_qODIZ-7-w" }
+  ],
+  "action-construction-equipment-limited": [
+    { name: "Registered Office", type: "registered office", city: "", country: "India", externalUrl: "", facilityClass: [], processType: [], primaryClass: "", googlePlaceId: "ChIJFXjIl9XgDDkRa-agz2XorI0" }
+  ],
+  "escorts-kubota-limited": [
+    { name: "Registered Office", type: "registered office", city: "", country: "India", externalUrl: "", facilityClass: [], processType: [], primaryClass: "", googlePlaceId: "ChIJAeBXre3dDDkRmxxYXztay2E" }
+  ],
+  "indo-farm-equipment-limited": [
+    { name: "Registered Office", type: "registered office", city: "", country: "India", externalUrl: "", facilityClass: [], processType: [], primaryClass: "", googlePlaceId: "ChIJ8cOcIJNfBTkR2AD6CiCxsm8" }
+  ],
+  "til-limited": [
+    { name: "Registered Office", type: "registered office", city: "", country: "India", externalUrl: "", facilityClass: [], processType: [], primaryClass: "", googlePlaceId: "ChIJXwp1MKN5AjoRQ1Jq208moJo" }
+  ],
+  "terex-india-private-limited": [
+    { name: "Registered Office", type: "registered office", city: "", country: "India", externalUrl: "", facilityClass: [], processType: [], primaryClass: "", googlePlaceId: "ChIJS-9fr3R3rjsRiE0RUVcY48o" }
+  ],
+  "sany-heavy-industry-india-private-limited": [
+    { name: "Registered Office", type: "registered office", city: "", country: "India", externalUrl: "", facilityClass: [], processType: [], primaryClass: "", googlePlaceId: "ChIJeSZwZd_JwjsRbmtKp5C641c" }
+  ],
+  "kobelco-construction-equipment-india-private-limited": [
+    { name: "Registered Office", type: "registered office", city: "", country: "India", externalUrl: "", facilityClass: [], processType: [], primaryClass: "", googlePlaceId: "ChIJyahk2TV3TToRDWc59AnlVFk" }
+  ],
+  "blastclean-systems-private-limited": [
+    { name: "Registered Office", type: "registered office", city: "", country: "India", externalUrl: "", facilityClass: [], processType: [], primaryClass: "", googlePlaceId: "ChIJmcFvOszH5zsRTA9yz2iRU44" }
+  ],
+  "surface-finishing-equipment-company": [
+    { name: "Registered Office", type: "registered office", city: "", country: "India", externalUrl: "", facilityClass: [], processType: [], primaryClass: "", googlePlaceId: "ChIJq6qqahqMQTkRTLAgx-iWwtQ" }
+  ],
+  "krishna-shot-blasting-india-private-limited": [
+    { name: "Registered Office", type: "registered office", city: "", country: "India", externalUrl: "", facilityClass: [], processType: [], primaryClass: "", googlePlaceId: "ChIJsS_q0d6JQTkRPLlwZveGV4w" }
+  ],
+  "ambica-enterprises": [
+    { name: "Registered Office", type: "registered office", city: "", country: "India", externalUrl: "", facilityClass: [], processType: [], primaryClass: "", googlePlaceId: "ChIJ74p8RaLzQTkRHm6MUtaGgCw" }
+  ],
+  "acton-finishing-private-limited": [
+    { name: "Registered Office", type: "registered office", city: "", country: "India", externalUrl: "", facilityClass: [], processType: [], primaryClass: "", googlePlaceId: "ChIJJ-_smCIXrjsRuv8W4qc2x5s" }
+  ],
+  "corrtech-international-private-limited": [
+    { name: "Registered Office", type: "registered office", city: "", country: "India", externalUrl: "", facilityClass: [], processType: [], primaryClass: "", googlePlaceId: "ChIJ____P_WEXjkRSESBOCFsOqw" }
+  ],
+  "himoya-corrosion-technology-private-limited": [
+    { name: "Registered Office", type: "registered office", city: "", country: "India", externalUrl: "", facilityClass: [], processType: [], primaryClass: "", googlePlaceId: "ChIJnaJq0-d2AjoRZuMEbCsDkGA" }
+  ],
+  "de-nora-india-limited": [
+    { name: "Registered Office", type: "registered office", city: "", country: "India", externalUrl: "", facilityClass: [], processType: [], primaryClass: "", googlePlaceId: "ChIJpQE5h4i7vzsRh36zr_5juaw" }
+  ],
+  "ti-anode-fabricators-private-limited": [
+    { name: "Registered Office", type: "registered office", city: "", country: "India", externalUrl: "", facilityClass: [], processType: [], primaryClass: "", googlePlaceId: "ChIJP5pXTLNeUjoRcGBixfHxHJ0" }
+  ],
+  "cryogenic-ogs-limited": [
+    { name: "Registered Office", type: "registered office", city: "", country: "India", externalUrl: "", facilityClass: [], processType: [], primaryClass: "", googlePlaceId: "ChIJu_-PFwDDXzkRYaiUAKTVJt4" }
+  ],
+  "hd-fire-protect-private-limited": [
+    { name: "Registered Office", type: "registered office", city: "", country: "India", externalUrl: "", facilityClass: [], processType: [], primaryClass: "", googlePlaceId: "ChIJRVR9ciHP5zsRuloU13vmgeo" }
+  ],
+  "foamtech-antifire-company": [
+    { name: "Registered Office", type: "registered office", city: "", country: "India", externalUrl: "", facilityClass: [], processType: [], primaryClass: "", googlePlaceId: "ChIJ-aQCjugDDTkRMnjRD264ebc" }
+  ],
+  "rajyog-fire-services-private-limited": [
+    { name: "Registered Office", type: "registered office", city: "", country: "India", externalUrl: "", facilityClass: [], processType: [], primaryClass: "", googlePlaceId: "ChIJwTrw3jrO5zsRVnoAHtq6Uh0" }
+  ],
+  "shah-bhogilal-jethalal-and-bros": [
+    { name: "Registered Office", type: "registered office", city: "", country: "India", externalUrl: "", facilityClass: [], processType: [], primaryClass: "", googlePlaceId: "ChIJfWd5kkaEXjkRCQTj-ZFCqnU" }
+  ],
+  "gmm-pfaudler-limited": [
+    { name: "Registered Office", type: "registered office", city: "", country: "India", externalUrl: "", facilityClass: [], processType: [], primaryClass: "", googlePlaceId: "ChIJzxaBsOvJXzkRS5Gqf8FHRUs" }
+  ],
+  "caterpillar-india-private-limited": [
+    { name: "Registered Office", type: "registered office", city: "", country: "India", externalUrl: "", facilityClass: [], processType: [], primaryClass: "", googlePlaceId: "ChIJkXTey4gRrjsR_hBn6deRUbk" }
+  ],
+  "kirloskar-oil-engines-limited": [
+    { name: "Registered Office", type: "registered office", city: "", country: "India", externalUrl: "", facilityClass: [], processType: [], primaryClass: "", googlePlaceId: "ChIJu4a2EpXpwjsRILLj8MypdWA" }
+  ],
+  "cummins-india-limited": [
+    { name: "Registered Office", type: "registered office", city: "", country: "India", externalUrl: "", facilityClass: [], processType: [], primaryClass: "", googlePlaceId: "" }
+  ],
+  "greaves-cotton-limited": [
+    { name: "Registered Office", type: "registered office", city: "", country: "India", externalUrl: "", facilityClass: [], processType: [], primaryClass: "", googlePlaceId: "ChIJAWxCNW635zsRjBDXpG2t3xg" }
+  ],
+  "ashok-leyland-limited": [
+    { name: "Registered Office", type: "registered office", city: "", country: "India", externalUrl: "", facilityClass: [], processType: [], primaryClass: "", googlePlaceId: "ChIJmzCSjk1wUjoRPWTerx95TGE" }
+  ],
+  "mahindra-and-mahindra-limited": [
+    { name: "Registered Office", type: "registered office", city: "", country: "India", externalUrl: "", facilityClass: [], processType: [], primaryClass: "", googlePlaceId: "ChIJ5Yblfzy35zsRFtZ6v91CkCM" }
+  ],
+  "tafe-motors-and-tractors-limited": [
+    { name: "Registered Office", type: "registered office", city: "", country: "India", externalUrl: "", facilityClass: [], processType: [], primaryClass: "", googlePlaceId: "ChIJqXkx-Q2acjkRuxmX6qSgaKg" }
+  ],
+  "honda-india-power-products-limited": [
+    { name: "Registered Office", type: "registered office", city: "", country: "India", externalUrl: "", facilityClass: [], processType: [], primaryClass: "", googlePlaceId: "ChIJVVVVFezlDDkRDmINOe6dQo0" }
+  ],
+  "siemens-limited": [
+    { name: "Registered Office", type: "registered office", city: "", country: "India", externalUrl: "", facilityClass: [], processType: [], primaryClass: "", googlePlaceId: "" }
+  ],
+  "honeywell-automation-india-limited": [
+    { name: "Registered Office", type: "registered office", city: "", country: "India", externalUrl: "", facilityClass: [], processType: [], primaryClass: "", googlePlaceId: "ChIJf1dDL-vBwjsR9AeQQufa1kg" }
+  ],
+  "nivelco-instruments-india-private-limited": [
+    { name: "Registered Office", type: "registered office", city: "", country: "India", externalUrl: "", facilityClass: [], processType: [], primaryClass: "", googlePlaceId: "ChIJCWx9qeW_wjsRbZkJQlKMEfk" }
+  ],
+  "sapcon-instruments-private-limited": [
+    { name: "Registered Office", type: "registered office", city: "", country: "India", externalUrl: "", facilityClass: [], processType: [], primaryClass: "", googlePlaceId: "ChIJq5oNLAH9YjkRrHJaWRPB18c" }
+  ],
+  "electronet-equipments-private-limited": [
+    { name: "Registered Office", type: "registered office", city: "", country: "India", externalUrl: "", facilityClass: [], processType: [], primaryClass: "", googlePlaceId: "ChIJbwc8kVnqwjsR5sb00v_mtIk" }
+  ],
+  "rane-elastomer-processors": [
+    { name: "Registered Office", type: "registered office", city: "", country: "India", externalUrl: "", facilityClass: [], processType: [], primaryClass: "", googlePlaceId: "ChIJS3k64-6w5zsROhAzW6TLtaE" }
+  ],
+  "vikas-rubber-industries": [
+    { name: "Registered Office", type: "registered office", city: "", country: "India", externalUrl: "", facilityClass: [], processType: [], primaryClass: "", googlePlaceId: "ChIJPVmGlfgCDTkRHEHAGwBLzUY" }
+  ],
+  "global-engineering-and-technology": [
+    { name: "Registered Office", type: "registered office", city: "", country: "India", externalUrl: "", facilityClass: [], processType: [], primaryClass: "", googlePlaceId: "ChIJq6qqqpuIXjkRHRHBW4IhiQg" }
+  ],
+  "goodrich-gasket-pvt-ltd": [
+    { name: "Registered Office", type: "registered office", city: "", country: "India", externalUrl: "", facilityClass: [], processType: [], primaryClass: "", googlePlaceId: "ChIJwRFzdGtdUjoRumSY5m1dlOc" }
+  ],
+  "gasket-industries": [
+    { name: "Registered Office", type: "registered office", city: "", country: "India", externalUrl: "", facilityClass: [], processType: [], primaryClass: "", googlePlaceId: "ChIJYxxMwqnJ5zsRdMA_tCKvCS4" }
+  ],
+  "dipti-metal-industries": [
+    { name: "Registered Office", type: "registered office", city: "", country: "India", externalUrl: "", facilityClass: [], processType: [], primaryClass: "", googlePlaceId: "ChIJScg01hbO5zsR_DT0bSfymLk" }
+  ],
+  "ringsy-engineering": [
+    { name: "Registered Office", type: "registered office", city: "", country: "India", externalUrl: "", facilityClass: [], processType: [], primaryClass: "", googlePlaceId: "ChIJzb-yetrLXzkROYK2bLEens4" }
+  ],
+  "lightning-eliminators-and-consultants-inc": [
+    { name: "Registered Office", type: "registered office", city: "", country: "United States", externalUrl: "", facilityClass: [], processType: [], primaryClass: "", googlePlaceId: "ChIJwwISlhXya4cRPaM28KBcEYg" }
+  ],
+  "lightning-master-corporation": [
+    { name: "Registered Office", type: "registered office", city: "", country: "United States", externalUrl: "", facilityClass: [], processType: [], primaryClass: "", googlePlaceId: "ChIJK2L6287xwogR4lYZdMhCXRc" }
+  ],
+  "artis-industrial-pvt-ltd": [
+    { name: "Registered Office", type: "registered office", city: "", country: "India", externalUrl: "", facilityClass: [], processType: [], primaryClass: "", googlePlaceId: "ChIJj8koL49RozsRA9I5M8tQu4g" }
+  ],
+  "eddyfi-technologies": [
+    { name: "Registered Office", type: "registered office", city: "", country: "Canada", externalUrl: "", facilityClass: [], processType: [], primaryClass: "", googlePlaceId: "ChIJDzpV-D-XuEwRtGGNKJyY0BY" }
+  ],
+  "inrotech-as": [
+    { name: "Registered Office", type: "registered office", city: "", country: "Denmark", externalUrl: "", facilityClass: [], processType: [], primaryClass: "", googlePlaceId: "ChIJCWgK1kffTEYRfY3nlIjKoeY" }
+  ],
+  "ifm-electronic-india-private-limited": [
+    { name: "Registered Office", type: "registered office", city: "", country: "India", externalUrl: "", facilityClass: [], processType: [], primaryClass: "", googlePlaceId: "ChIJFT1YMVq-wjsRArvbM-9BGkA" }
+  ],
+  "aquametro-oil-and-marine-ag": [
+    { name: "Registered Office", type: "registered office", city: "", country: "Switzerland", externalUrl: "", facilityClass: [], processType: [], primaryClass: "", googlePlaceId: "ChIJGSfQ6FLHkUcRkwko1aOT0pk" }
+  ],
+  "jettyrobot-sro": [
+    { name: "Registered Office", type: "registered office", city: "", country: "Czech Republic", externalUrl: "", facilityClass: [], processType: [], primaryClass: "", googlePlaceId: "ChIJU03ZzruWC0cR605z0yLplLE" }
+  ],
+  "firetech-equipment-and-systems-pvt-ltd": [
+    { name: "Registered Office", type: "registered office", city: "", country: "India", externalUrl: "", facilityClass: [], processType: [], primaryClass: "", googlePlaceId: "ChIJlc8T4Ke55zsRW-2PxQBWsyc" }
+  ],
+  "vimal-fire-controls-pvt-ltd": [
+    { name: "Registered Office", type: "registered office", city: "", country: "India", externalUrl: "", facilityClass: [], processType: [], primaryClass: "", googlePlaceId: "ChIJq6qqapfH5zsRMBaLss2_CmU" }
+  ],
+  "patol-limited": [
+    { name: "Registered Office", type: "registered office", city: "", country: "United Kingdom", externalUrl: "", facilityClass: [], processType: [], primaryClass: "", googlePlaceId: "ChIJde9ZrHWfdkgRPhFbAysFS_A" }
+  ],
+  "ctr-manufacturing-industries-private-limited": [
+    { name: "Registered Office", type: "registered office", city: "", country: "India", externalUrl: "", facilityClass: [], processType: [], primaryClass: "", googlePlaceId: "ChIJscsXu0PBwjsR87Dq-blKW_k" }
+  ],
+  "reliance-fire-protection-systems": [
+    { name: "Registered Office", type: "registered office", city: "", country: "India", externalUrl: "", facilityClass: [], processType: [], primaryClass: "", googlePlaceId: "ChIJy_P7m0TO5zsRmdjl9Gpy9AY" }
+  ],
+  "saval": [
+    { name: "Registered Office", type: "registered office", city: "", country: "Netherlands", externalUrl: "", facilityClass: [], processType: [], primaryClass: "", googlePlaceId: "ChIJhw6hmPufxkcRvXxekiVnbaw" }
+  ],
+  "non-entry-systems-ltd": [
+    { name: "Registered Office", type: "registered office", city: "", country: "United Kingdom", externalUrl: "", facilityClass: [], processType: [], primaryClass: "", googlePlaceId: "ChIJEQY0Hu30bkgRs0Bo41SN4ms" }
+  ],
+  "koks-robotics": [
+    { name: "Location", type: "registered office", city: "", country: "Netherlands", externalUrl: "", facilityClass: [], processType: [], primaryClass: "", googlePlaceId: "" }
+  ],
+  "spanchem-technologies": [
+    { name: "Registered Office", type: "registered office", city: "", country: "India", externalUrl: "", facilityClass: [], processType: [], primaryClass: "", googlePlaceId: "ChIJr1mKq7jH5zsR9g5Z-WtjUKg" }
+  ],
+  "alfa-laval-india-private-limited": [
+    { name: "Registered Office", type: "registered office", city: "", country: "India", externalUrl: "", facilityClass: [], processType: [], primaryClass: "", googlePlaceId: "ChIJqdszS5a4wjsR5UF2jENXHoU" }
+  ],
+  "nuova-saimar-srl": [
+    { name: "Registered Office", type: "registered office", city: "", country: "Italy", externalUrl: "", facilityClass: [], processType: [], primaryClass: "", googlePlaceId: "ChIJScCtMo77fUcR2kmbpc95pJs" }
+  ],
+  "fleury-engineering": [
+    { name: "Registered Office", type: "registered office", city: "", country: "Ireland", externalUrl: "", facilityClass: [], processType: [], primaryClass: "", googlePlaceId: "ChIJ1cHMCSqEREgRar2U5J6eDUM" }
+  ],
+  "gerotto-federico-srl": [
+    { name: "Registered Office", type: "registered office", city: "", country: "Italy", externalUrl: "", facilityClass: [], processType: [], primaryClass: "", googlePlaceId: "ChIJG_uTYlvRfkcRl276YUt8aG0" }
+  ],
+  "petroneft-non-entry-engineering-solutions-private-limited": [
+    { name: "Registered Office", type: "registered office", city: "", country: "India", externalUrl: "", facilityClass: [], processType: [], primaryClass: "", googlePlaceId: "ChIJAQBQXKm35zsR4HcOERAcHS4" }
+  ],
+  "woodfield-systems-international-pvt-ltd": [
+    { name: "Registered Office", type: "registered office", city: "", country: "India", externalUrl: "", facilityClass: [], processType: [], primaryClass: "", googlePlaceId: "ChIJq3DLaqGE5zsRv00DM_N6fhE" }
+  ],
+  "heatly-and-gresham-india-private-limited": [
+    { name: "Registered Office", type: "registered office", city: "", country: "India", externalUrl: "", facilityClass: [], processType: [], primaryClass: "", googlePlaceId: "ChIJ5QlVe1nhDDkRF0B-OF_4omg" }
+  ],
+  "moonup-technology-private-limited": [
+    { name: "Registered Office", type: "registered office", city: "", country: "India", externalUrl: "", facilityClass: [], processType: [], primaryClass: "", googlePlaceId: "ChIJC290h-3BwjsR7-42Cf5N--s" }
+  ],
+  "lloyds-engineering-works-limited": [
+    { name: "Registered Office", type: "registered office", city: "", country: "India", externalUrl: "", facilityClass: [], processType: [], primaryClass: "", googlePlaceId: "ChIJ7cF2mV3O5zsRtFoU9BA1TfI" }
+  ],
+  "technika": [
+    { name: "Registered Office", type: "registered office", city: "", country: "India", externalUrl: "", facilityClass: [], processType: [], primaryClass: "", googlePlaceId: "ChIJsYe4NSrG5zsRG8DR9myXC6c" }
+  ],
+  "jre-private-limited": [
+    { name: "Registered Office", type: "registered office", city: "", country: "India", externalUrl: "", facilityClass: [], processType: [], primaryClass: "", googlePlaceId: "" }
+  ],
+  "dkc-international-solutions-llp": [
+    { name: "Registered Office", type: "registered office", city: "", country: "India", externalUrl: "", facilityClass: [], processType: [], primaryClass: "", googlePlaceId: "ChIJSV_XxR_P5zsRKx3abzzHJx0" }
+  ],
+  "kanon-loading-equipment-bv": [
+    { name: "Registered Office", type: "registered office", city: "", country: "Netherlands", externalUrl: "", facilityClass: [], processType: [], primaryClass: "", googlePlaceId: "ChIJjcZSgoIwxkcR7KX9C-A-gnQ" }
+  ],
+  "snowtech-equipments-private-limited": [
+    { name: "Registered Office", type: "registered office", city: "", country: "India", externalUrl: "", facilityClass: [], processType: [], primaryClass: "", googlePlaceId: "ChIJvxOcY8jD5zsR-XZN4Ju_8tI" }
+  ],
+  "shalkoot-mechanique-private-limited": [
+    { name: "Registered Office", type: "registered office", city: "", country: "India", externalUrl: "", facilityClass: [], processType: [], primaryClass: "", googlePlaceId: "ChIJN6cllZS_DDkR1XMdMBA8h-s" }
+  ],
+  "dipesh-engineering-works": [
+    { name: "Registered Office", type: "registered office", city: "", country: "India", externalUrl: "", facilityClass: [], processType: [], primaryClass: "", googlePlaceId: "ChIJxc4KK6K25zsRnUZFFvNUiMg" }
+  ],
+  "milton-roy-india-private-limited": [
+    { name: "Registered Office", type: "registered office", city: "", country: "India", externalUrl: "", facilityClass: [], processType: [], primaryClass: "", googlePlaceId: "ChIJryFojmD5UjoRvBhNiub52u4" }
+  ],
+  "galaxy-industrial-equipments-private-limited": [
+    { name: "Registered Office", type: "registered office", city: "", country: "India", externalUrl: "", facilityClass: [], processType: [], primaryClass: "", googlePlaceId: "ChIJWf1c6nm4wjsRI0WxaeI-vjI" }
+  ],
+  "world-bridge-industrial-co-ltd": [
+    { name: "Registered Office", type: "registered office", city: "", country: "South Korea", externalUrl: "", facilityClass: [], processType: [], primaryClass: "", googlePlaceId: "ChIJFYhHp26ffDURIExd8rTTSR0" }
+  ],
+  "ateco-global-industries-co": [
+    { name: "Registered Office", type: "registered office", city: "", country: "Turkey", externalUrl: "", facilityClass: [], processType: [], primaryClass: "", googlePlaceId: "ChIJO4UejafHyhQR7b4LJu41chE" }
+  ],
+  "acuren-inspection-inc": [
+    { name: "USA Head Office", type: "registered office", city: "Tomball, TX", country: "United States", externalUrl: "", facilityClass: [], processType: [], primaryClass: "", googlePlaceId: "" }
+  ],
+  "dronedeploy-inc": [
+    { name: "Registered Office", type: "registered office", city: "San Francisco, CA", country: "United States", externalUrl: "", facilityClass: [], processType: [], primaryClass: "", googlePlaceId: "ChIJPYOUb96BhYARW9ORZcmRjxc" }
+  ],
+  "xboom-utilities-private-limited": [
+    { name: "Bangalore Headquarters", type: "registered office", city: "Bangalore", country: "India", externalUrl: "", facilityClass: [], processType: [], primaryClass: "", googlePlaceId: "ChIJixBC03wVrjsR8kNsRy6Xvx8" }
+  ],
+  "specialty-products-and-services-india-llp": [
+    { name: "Registered Office", type: "registered office", city: "Jamshedpur", country: "India", externalUrl: "", facilityClass: [], processType: [], primaryClass: "", googlePlaceId: "ChIJAQAAQGfj9TkRZ7SfyZNM4M8" }
+  ],
+  "volar-alta-private-limited": [
+    { name: "Registered Office", type: "registered office", city: "Pune", country: "India", externalUrl: "", facilityClass: [], processType: [], primaryClass: "", googlePlaceId: "ChIJAQC0Vzu_wjsRFLbsNbFf5kc" }
+  ],
+  "agmay-technologies-private-limited": [
+    { name: "Registered Office", type: "registered office", city: "Hyderabad", country: "India", externalUrl: "", facilityClass: [], processType: [], primaryClass: "", googlePlaceId: "ChIJU1ZRVgCZyzsRoEpjosyAv6c" }
+  ],
+  "genesys-international-corporation-limited": [
+    { name: "Registered Office", type: "registered office", city: "Mumbai", country: "India", externalUrl: "", facilityClass: [], processType: [], primaryClass: "", googlePlaceId: "ChIJnc9v7yHI5zsR2NDMVEc6jL8" }
+  ],
+  "geokno-india-private-limited": [
+    { name: "Registered Office", type: "registered office", city: "Bangalore", country: "India", externalUrl: "", facilityClass: [], processType: [], primaryClass: "", googlePlaceId: "ChIJbbq5kH4WrjsRs_sU6Lm0aVc" }
+  ],
+  "qubotix-technology-private-limited": [
+    { name: "Registered Office", type: "registered office", city: "Bangalore", country: "India", externalUrl: "", facilityClass: [], processType: [], primaryClass: "", googlePlaceId: "ChIJaWphwNU9rjsR3E6kYz2SKkU" }
+  ],
+  "arcelormittal-nippon-steel-india-private-limited": [
+    { name: "Registered Office", type: "registered office", city: "Surat", country: "India", externalUrl: "", facilityClass: [], processType: [], primaryClass: "", googlePlaceId: "ChIJC2uJm4Ot4TsRE1o695xbHow" }
+  ],
+  "jsw-steel-limited": [
+    { name: "Registered Office", type: "registered office", city: "Mumbai", country: "India", externalUrl: "", facilityClass: [], processType: [], primaryClass: "", googlePlaceId: "ChIJn4KXveXI5zsRV2ADRnnzFRc" }
+  ],
+  "jindal-steel-limited": [
+    { name: "Registered Office", type: "registered office", city: "Hisar", country: "India", externalUrl: "", facilityClass: [], processType: [], primaryClass: "", googlePlaceId: "ChIJ6RFiRfczEjkRxX3LsLKRptg" }
+  ],
+  "tata-steel-limited": [
+    { name: "Registered Office", type: "registered office", city: "Mumbai", country: "India", externalUrl: "", facilityClass: [], processType: [], primaryClass: "", googlePlaceId: "ChIJPUlptNzR5zsR3siL4p421TM" }
+  ],
+  "steel-authority-of-india-limited": [
+    { name: "Registered Office", type: "registered office", city: "New Delhi", country: "India", externalUrl: "", facilityClass: [], processType: [], primaryClass: "", googlePlaceId: "ChIJq11ZZh3jDDkRoFyXpC-96lA" }
+  ],
+  "jindal-stainless-limited": [
+    { name: "Registered Office", type: "registered office", city: "Hisar", country: "India", externalUrl: "", facilityClass: [], processType: [], primaryClass: "", googlePlaceId: "ChIJ7V-oTw8zEjkRCzWiNfpAbqA" }
+  ],
+  "hindalco-industries-limited": [
+    { name: "Registered Office", type: "registered office", city: "Mumbai", country: "India", externalUrl: "", facilityClass: [], processType: [], primaryClass: "", googlePlaceId: "ChIJaSvGNIfP5zsR5PI2Molv44Q" }
+  ],
+  "national-aluminium-company-limited": [
+    { name: "Registered Office", type: "registered office", city: "Bhubaneswar", country: "India", externalUrl: "", facilityClass: [], processType: [], primaryClass: "", googlePlaceId: "ChIJTdL1bscJGToRRs5J-DpcByY" }
+  ],
+  "vedanta-aluminium-metal-limited": [
+    { name: "Registered Office", type: "registered office", city: "Mumbai", country: "India", externalUrl: "", facilityClass: [], processType: [], primaryClass: "", googlePlaceId: "ChIJs0lZzzbI5zsRUCS9LJ_wlVI" }
+  ],
+  "lloyds-metals-and-energy-limited": [
+    { name: "Registered Office", type: "registered office", city: "Chandrapur", country: "India", externalUrl: "", facilityClass: [], processType: [], primaryClass: "", googlePlaceId: "ChIJi9sTsDDZ0jsRMS5Y35BvOuI" }
+  ],
+  "indian-metals-and-ferro-alloys-limited": [
+    { name: "Registered Office", type: "registered office", city: "Bhubaneswar", country: "India", externalUrl: "", facilityClass: [], processType: [], primaryClass: "", googlePlaceId: "ChIJ56TUrKELGToRIThYiwuldWs" }
+  ],
+  "ratnamani-metals-and-tubes-limited": [
+    { name: "Registered Office", type: "registered office", city: "Ahmedabad", country: "India", externalUrl: "", facilityClass: [], processType: [], primaryClass: "", googlePlaceId: "ChIJdW5d_oSEXjkRmrDkO-YwlqE" }
+  ],
+  "jindal-saw-limited": [
+    { name: "Registered Office", type: "registered office", city: "Mathura", country: "India", externalUrl: "", facilityClass: [], processType: [], primaryClass: "", googlePlaceId: "ChIJbzf5qEY8czkRZl6RQKFEELE" }
+  ],
+  "welspun-corp-limited": [
+    { name: "Registered Office", type: "registered office", city: "Anjar", country: "India", externalUrl: "", facilityClass: [], processType: [], primaryClass: "", googlePlaceId: "ChIJfcdHw2W5UDkR8KKFpPjOenI" }
+  ],
+  "jindal-pipes-limited": [
+    { name: "Registered Office", type: "registered office", city: "Ghaziabad", country: "India", externalUrl: "", facilityClass: [], processType: [], primaryClass: "", googlePlaceId: "ChIJze1adL-FDDkRnhg3Xg6tR6c" }
+  ],
+  "dee-piping-systems-limited": [
+    { name: "Registered Office", type: "registered office", city: "Palwal", country: "India", externalUrl: "", facilityClass: [], processType: [], primaryClass: "", googlePlaceId: "ChIJ3yNFqsLQDDkReW3f72zrsps" }
+  ],
+  "apl-apollo-tubes-limited": [
+    { name: "Registered Office", type: "registered office", city: "Delhi", country: "India", externalUrl: "", facilityClass: [], processType: [], primaryClass: "", googlePlaceId: "" }
+  ],
+  "zenith-steel-pipes-and-industries-limited": [
+    { name: "Registered Office", type: "registered office", city: "Mumbai", country: "India", externalUrl: "", facilityClass: [], processType: [], primaryClass: "", googlePlaceId: "" }
+  ],
+  "nezone-tubes-limited": [
+    { name: "Registered Office", type: "registered office", city: "Kolkata", country: "India", externalUrl: "", facilityClass: [], processType: [], primaryClass: "", googlePlaceId: "ChIJ_4UthUN3AjoRdjSrrzV7THA" }
+  ],
+  "mega-pipes-private-limited": [
+    { name: "Registered Office", type: "registered office", city: "Khopoli", country: "India", externalUrl: "", facilityClass: [], processType: [], primaryClass: "", googlePlaceId: "ChIJ46O2kEQF6DsRWdRiZzUxO9s" }
+  ],
+  "ramkrishna-forgings-limited": [
+    { name: "Registered Office", type: "registered office", city: "Kolkata", country: "India", externalUrl: "", facilityClass: [], processType: [], primaryClass: "", googlePlaceId: "ChIJQxDdrKp3AjoRjI08LuROH7M" }
+  ],
+  "hilton-metal-forging-limited": [
+    { name: "Registered Office", type: "registered office", city: "Mumbai", country: "India", externalUrl: "", facilityClass: [], processType: [], primaryClass: "", googlePlaceId: "ChIJbQGJOT635zsRWqqSggny5LM" }
+  ],
+  "petromet-flange-inc": [
+    { name: "Registered Office", type: "registered office", city: "Mumbai", country: "India", externalUrl: "", facilityClass: [], processType: [], primaryClass: "", googlePlaceId: "ChIJ_29f-BXO5zsR_r-BF3lMq9A" }
+  ],
+  "metal-forge-india-private-limited": [
+    { name: "Registered Office", type: "registered office", city: "Mumbai", country: "India", externalUrl: "", facilityClass: [], processType: [], primaryClass: "", googlePlaceId: "ChIJR4P9ciHP5zsRZIj4BU_3FAc" }
+  ],
+  "steelcast-limited": [
+    { name: "Registered Office", type: "registered office", city: "Bhavnagar", country: "India", externalUrl: "", facilityClass: [], processType: [], primaryClass: "", googlePlaceId: "ChIJ4XUFBZJaXzkRuVd_fS8S0Xg" }
+  ],
+  "nitin-castings-limited": [
+    { name: "Registered Office", type: "registered office", city: "Mumbai", country: "India", externalUrl: "", facilityClass: [], processType: [], primaryClass: "", googlePlaceId: "ChIJ__8v-2zI5zsRLrqEtcaS0tQ" }
+  ],
+  "rdc-concrete-india-limited": [
+    { name: "Head Office", type: "registered office", city: "Thane", country: "India", externalUrl: "", facilityClass: [], processType: [], primaryClass: "", googlePlaceId: "ChIJy9KdJzvI5zsRTcqGH_ibLkw" }
+  ],
+  "qcrete-readymix-india-private-limited": [
+    { name: "Registered Office", type: "registered office", city: "Mangaluru", country: "India", externalUrl: "", facilityClass: [], processType: [], primaryClass: "", googlePlaceId: "ChIJ0w9fxrlRozsRF84A3IrKpeI" }
+  ],
+  "prism-johnson-limited": [
+    { name: "Registered Office", type: "registered office", city: "Hyderabad", country: "India", externalUrl: "", facilityClass: [], processType: [], primaryClass: "", googlePlaceId: "ChIJBcTd2gvJ5zsRX7m7rKzfDzM" }
+  ],
+  "skyway-rmc-plants-private-limited": [
+    { name: "Registered Office", type: "registered office", city: "Mumbai", country: "India", externalUrl: "", facilityClass: [], processType: [], primaryClass: "", googlePlaceId: "ChIJ4eGloyO25zsRxTxsQG6PDYM" }
+  ],
+  "ultratech-cement-limited": [
+    { name: "Registered Office", type: "registered office", city: "Mumbai", country: "India", externalUrl: "", facilityClass: [], processType: [], primaryClass: "", googlePlaceId: "ChIJq6rqUSXI5zsRnjiOB4fxpR0" }
+  ],
+  "epp-composites-private-limited": [
+    { name: "Registered Office", type: "registered office", city: "Rajkot", country: "India", externalUrl: "", facilityClass: [], processType: [], primaryClass: "", googlePlaceId: "ChIJ8zD8qfbMWTkREAS1h17Lh54" }
+  ],
+  "chemical-process-piping-private-limited": [
+    { name: "Registered Office", type: "registered office", city: "Mumbai", country: "India", externalUrl: "", facilityClass: [], processType: [], primaryClass: "", googlePlaceId: "ChIJtTEqJgzG5zsRTELRFLffDak" }
+  ],
+  "supreme-industries-limited": [
+    { name: "Registered Office", type: "registered office", city: "Mumbai", country: "India", externalUrl: "", facilityClass: [], processType: [], primaryClass: "", googlePlaceId: "ChIJ____DzTI5zsR-4EFvSu5edA" }
+  ],
+  "prince-pipes-and-fittings-limited": [
+    { name: "Registered Office", type: "registered office", city: "Goa", country: "India", externalUrl: "", facilityClass: [], processType: [], primaryClass: "", googlePlaceId: "ChIJAWIr89DO5zsRbAf32tEXH3g" }
+  ],
+  "polycab-india-limited": [
+    { name: "Registered Office", type: "registered office", city: "Panchmahal", country: "India", externalUrl: "", facilityClass: [], processType: [], primaryClass: "", googlePlaceId: "ChIJt6tlEmPVXzkRN_HskYtHLdQ" }
+  ],
+  "kei-industries-limited": [
+    { name: "Registered Office", type: "registered office", city: "New Delhi", country: "India", externalUrl: "", facilityClass: [], processType: [], primaryClass: "", googlePlaceId: "ChIJR68nqk7hDDkRXiAm12YTSJo" }
+  ],
+  "finolex-cables-limited": [
+    { name: "Registered Office", type: "registered office", city: "Pune", country: "India", externalUrl: "", facilityClass: [], processType: [], primaryClass: "", googlePlaceId: "ChIJaypI5E24wjsR7YpyTmRMGJQ" }
+  ],
+  "rhi-magnesita-india-limited": [
+    { name: "Registered Office", type: "registered office", city: "Mumbai", country: "India", externalUrl: "", facilityClass: [], processType: [], primaryClass: "", googlePlaceId: "" }
+  ],
+  "ifgl-refractories-limited": [
+    { name: "Registered Office", type: "registered office", city: "Rourkela", country: "India", externalUrl: "", facilityClass: [], processType: [], primaryClass: "", googlePlaceId: "ChIJm8a47GsXIDoRpOGIwMDMVCI" }
+  ],
+  "saint-gobain-india-private-limited": [
+    { name: "Registered Office", type: "registered office", city: "Chennai", country: "India", externalUrl: "", facilityClass: [], processType: [], primaryClass: "", googlePlaceId: "ChIJ1YWcNzhnUjoROkjH14hnAHo" }
+  ],
+  "trl-krosaki-refractories-limited": [
+    { name: "Registered Office", type: "registered office", city: "Jharsuguda", country: "India", externalUrl: "", facilityClass: [], processType: [], primaryClass: "", googlePlaceId: "ChIJL2XCC9veIDoRYW66v6cpEhU" }
+  ],
+  "acc-limited": [
+    { name: "Registered Office", type: "registered office", city: "Mumbai", country: "India", externalUrl: "", facilityClass: [], processType: [], primaryClass: "", googlePlaceId: "ChIJj36cYefR5zsR2PHVSqU_1x0" }
+  ],
+  "va-tech-wabag-limited": [
+    { name: "Registered Office", type: "registered office", city: "Chennai", country: "India", externalUrl: "", facilityClass: [], processType: [], primaryClass: "", googlePlaceId: "ChIJSRBPjdFdUjoRpdbpflKhmRE" }
+  ],
+  "ion-exchange-india-limited": [
+    { name: "Registered Office", type: "registered office", city: "Mumbai", country: "India", externalUrl: "", facilityClass: [], processType: [], primaryClass: "", googlePlaceId: "ChIJc7G6sGHO5zsRk8rj7RXLbvQ" }
+  ],
+  "thermax-limited": [
+    { name: "Registered Office", type: "registered office", city: "Pune", country: "India", externalUrl: "", facilityClass: [], processType: [], primaryClass: "", googlePlaceId: "ChIJOdc6I9W5wjsRtYgUflRrm88" }
+  ],
+  "kirloskar-pneumatic-company-limited": [
+    { name: "Registered Office", type: "registered office", city: "Pune", country: "India", externalUrl: "", facilityClass: [], processType: [], primaryClass: "", googlePlaceId: "ChIJhXJul-vBwjsRyRPrJbxInRo" }
+  ],
+  "schneider-electric-india-private-limited": [
+    { name: "Registered Office", type: "registered office", city: "New Delhi", country: "India", externalUrl: "", facilityClass: [], processType: [], primaryClass: "", googlePlaceId: "ChIJ0TQMKk8DDTkRrtBuPf4gZV8" }
+  ],
+  "abb-india-limited": [
+    { name: "Registered Office", type: "registered office", city: "Bengaluru", country: "India", externalUrl: "", facilityClass: [], processType: [], primaryClass: "", googlePlaceId: "ChIJIzFHIvA9rjsRnCt3o5dRY4A" }
+  ],
+  "tata-power-renewable-energy-limited": [
+    { name: "Registered Office", type: "registered office", city: "Mumbai", country: "India", externalUrl: "", facilityClass: [], processType: [], primaryClass: "", googlePlaceId: "ChIJq6q6_iXO5zsRFjWPwCHHTB8" }
+  ],
+  "amara-raja-energy-and-mobility-limited": [
+    { name: "Registered Office", type: "registered office", city: "Tirupati", country: "India", externalUrl: "", facilityClass: [], processType: [], primaryClass: "", googlePlaceId: "ChIJdRQdCs9JTToR2nmweW5rk4g" }
+  ],
+  "adani-enterprises-limited": [
+    { name: "Registered Office", type: "registered office", city: "Ahmedabad", country: "India", externalUrl: "", facilityClass: [], processType: [], primaryClass: "", googlePlaceId: "ChIJXSRA4_WEXjkRQyWFrDfMNq0" }
+  ],
+  "jsw-energy-limited": [
+    { name: "Registered Office", type: "registered office", city: "Mumbai", country: "India", externalUrl: "", facilityClass: [], processType: [], primaryClass: "", googlePlaceId: "ChIJn4KXveXI5zsRV2ADRnnzFRc" }
+  ],
+  "power-grid-corporation-of-india-limited": [
+    { name: "Registered Office", type: "registered office", city: "New Delhi", country: "India", externalUrl: "", facilityClass: [], processType: [], primaryClass: "", googlePlaceId: "ChIJbw7dOAAdDTkRrOos5UsejHE" }
+  ],
+  "ntpc-limited": [
+    { name: "Registered Office", type: "registered office", city: "New Delhi", country: "India", externalUrl: "", facilityClass: [], processType: [], primaryClass: "", googlePlaceId: "ChIJI-jrjcbjDDkRbODnh2xH4lI" }
+  ],
+  "mvs-engineering-private-limited": [
+    { name: "Registered Office", type: "registered office", city: "New Delhi", country: "India", externalUrl: "", facilityClass: [], processType: [], primaryClass: "", googlePlaceId: "ChIJ-TfvsZbhDDkRDtgtjIJVE40" }
+  ],
+  "hygreen-energy": [
+    { name: "Headquarters", type: "registered office", city: "Beijing", country: "China", externalUrl: "", facilityClass: [], processType: [], primaryClass: "", googlePlaceId: "" }
+  ],
+  "linde-india-limited": [
+    { name: "Registered Office", type: "registered office", city: "Kolkata", country: "India", externalUrl: "", facilityClass: [], processType: [], primaryClass: "", googlePlaceId: "ChIJZbTlqq55AjoR_fLTw__hhTU" }
+  ],
+  "safex-fire-services-limited": [
+    { name: "Registered Office", type: "registered office", city: "Mumbai", country: "India", externalUrl: "", facilityClass: [], processType: [], primaryClass: "", googlePlaceId: "ChIJ8_10I_PO5zsRGjUkjQ9RgwM" }
+  ],
+  "integrated-fire-protection-private-limited": [
+    { name: "Registered Office", type: "registered office", city: "Kolkata", country: "India", externalUrl: "", facilityClass: [], processType: [], primaryClass: "", googlePlaceId: "ChIJxzG1Xzt3AjoRyjhKOBYWudE" }
+  ],
+  "padmini-industries-limited": [
+    { name: "Registered Office", type: "registered office", city: "Delhi", country: "India", externalUrl: "", facilityClass: [], processType: [], primaryClass: "", googlePlaceId: "ChIJd-3rnjD9DDkR6zbj0X8CgJk" }
+  ],
+  "uniphos-envirotronic-private-limited": [
+    { name: "Registered Office", type: "registered office", city: "Valsad", country: "India", externalUrl: "", facilityClass: [], processType: [], primaryClass: "", googlePlaceId: "ChIJn_sS_QHO4DsRc76ert0wDew" }
+  ],
+  "prateek-explosionproof-private-limited": [
+    { name: "Registered Office", type: "registered office", city: "Thane", country: "India", externalUrl: "", facilityClass: [], processType: [], primaryClass: "", googlePlaceId: "ChIJ9YiTlhvt5zsRoME38GIgUgM" }
+  ],
+  "petronash-engineering-services-private-limited": [
+    { name: "Registered Office", type: "registered office", city: "Sriperumbudur", country: "India", externalUrl: "", facilityClass: [], processType: [], primaryClass: "", googlePlaceId: "ChIJh_fERUaLUjoRVgp1IEEvLgI" }
+  ],
+  "obo-bettermann-india-private-limited": [
+    { name: "Registered Office", type: "registered office", city: "Kancheepuram", country: "India", externalUrl: "", facilityClass: [], processType: [], primaryClass: "", googlePlaceId: "ChIJE9EkL9hmUjoRrPQ3Vp-LBLI" }
+  ],
+  "dehn-india-private-limited": [
+    { name: "Registered Office", type: "registered office", city: "Gurugram", country: "India", externalUrl: "", facilityClass: [], processType: [], primaryClass: "", googlePlaceId: "ChIJuX1aG3o-DTkRGYJgYXj7w5k" }
+  ],
+  "ocean-non-wovens-private-limited": [
+    { name: "Registered Office", type: "registered office", city: "New Delhi", country: "India", externalUrl: "", facilityClass: [], processType: [], primaryClass: "", googlePlaceId: "ChIJDRMfXR8FDTkRDJQCWEKTYkE" }
+  ],
+  "karam-safety-private-limited": [
+    { name: "Registered Office", type: "registered office", city: "Sitarganj", country: "India", externalUrl: "", facilityClass: [], processType: [], primaryClass: "", googlePlaceId: "ChIJgcg_cnCLoDkRgcoeL_hpAHA" }
+  ],
+  "bureau-veritas-india-private-limited": [
+    { name: "Registered Office", type: "registered office", city: "Mumbai", country: "India", externalUrl: "", facilityClass: [], processType: [], primaryClass: "", googlePlaceId: "ChIJN4uZ7SLI5zsRE275eJ8-LLY" }
+  ],
+  "agasti-tank-works-private-limited": [
+    { name: "Registered Office", type: "registered office", city: "Thane", country: "India", externalUrl: "", facilityClass: [], processType: [], primaryClass: "", googlePlaceId: "ChIJM59wiRWT5zsRV9DsS_DC0sA" }
+  ],
+  "enviroguard-solutions-llp": [
+    { name: "Registered Office", type: "registered office", city: "Mumbai", country: "India", externalUrl: "", facilityClass: [], processType: [], primaryClass: "", googlePlaceId: "ChIJ5-rEVNLH5zsRNix6gXLdfao" }
+  ],
+  "blue-star-engineering-and-electronics-limited": [
+    { name: "Registered Office", type: "registered office", city: "Mumbai", country: "India", externalUrl: "", facilityClass: [], processType: [], primaryClass: "", googlePlaceId: "" }
+  ],
+  "mistras-group-inc": [
+    { name: "India Regional Headquarters", type: "branch office", city: "Mumbai", country: "United States", externalUrl: "", facilityClass: [], processType: [], primaryClass: "", googlePlaceId: "" }
+  ],
+  "jotun-powder-coatings-india-private-limited": [
+    { name: "Registered Office", type: "registered office", city: "Mumbai", country: "India", externalUrl: "", facilityClass: [], processType: [], primaryClass: "", googlePlaceId: "ChIJx-6GCjLI5zsRCveFkh9xzqo" }
+  ],
+  "irc-engineering-services-india-private-limited": [
+    { name: "Registered Office", type: "registered office", city: "New Delhi", country: "India", externalUrl: "", facilityClass: [], processType: [], primaryClass: "", googlePlaceId: "ChIJ-efT_M_jDDkR871kRud7zpE" }
+  ],
+  "ndt-and-pwht-solutions-private-limited": [
+    { name: "Registered Office", type: "registered office", city: "Chennai", country: "India", externalUrl: "", facilityClass: [], processType: [], primaryClass: "", googlePlaceId: "ChIJVVVVxT1hUjoR20Vghvn9XWc" }
+  ],
+  "inox-india-limited": [
+    { name: "Registered Office", type: "registered office", city: "Vadodara", country: "India", externalUrl: "", facilityClass: [], processType: [], primaryClass: "", googlePlaceId: "ChIJbflSXwktXjkRbqubkV4BwNk" }
+  ],
+  "irm-offshore-and-marine-engineers-private-limited": [
+    { name: "Registered Office", type: "registered office", city: "Ahmedabad", country: "India", externalUrl: "", facilityClass: [], processType: [], primaryClass: "", googlePlaceId: "ChIJpyWEflmFXjkRjevDCXTdb5Q" }
+  ],
+  "aegis-scaffolding-services-private-limited": [
+    { name: "Registered Office", type: "registered office", city: "Mumbai", country: "India", externalUrl: "", facilityClass: [], processType: [], primaryClass: "", googlePlaceId: "ChIJu7AIYpzH5zsRCbVAl-Wskv0" }
+  ],
+  "sgb-brandsafway-private-limited": [
+    { name: "Registered Office", type: "registered office", city: "Hyderabad", country: "India", externalUrl: "", facilityClass: [], processType: [], primaryClass: "", googlePlaceId: "ChIJq6qqatuTyzsRi_sk7vlBqKw" }
+  ],
+  "tremco-cpg-india-private-limited": [
+    { name: "Registered Office", type: "registered office", city: "Chennai", country: "India", externalUrl: "", facilityClass: [], processType: [], primaryClass: "", googlePlaceId: "ChIJ0-Qr_-BmUjoRQPx0msAMZts" }
+  ],
+  "symcom-exim-private-limited": [
+    { name: "Registered Office", type: "registered office", city: "Mumbai", country: "India", externalUrl: "", facilityClass: [], processType: [], primaryClass: "", googlePlaceId: "ChIJ0ZSTyNnR5zsRSHAAz616IZE" }
+  ],
+  "powertronix-engineering-private-limited": [
+    { name: "Registered Office", type: "registered office", city: "Kolkata", country: "India", externalUrl: "", facilityClass: [], processType: [], primaryClass: "", googlePlaceId: "ChIJtSB3jpFwAjoRjR25-8709Wc" }
+  ],
+  "praj-industries-limited": [
+    { name: "Registered Office", type: "registered office", city: "Pune", country: "India", externalUrl: "", facilityClass: [], processType: [], primaryClass: "", googlePlaceId: "ChIJO_yOXdm7wjsRsGNfBlCKSIE" }
+  ],
+  "trualt-bioenergy-limited": [
+    { name: "Registered Office", type: "registered office", city: "Bengaluru", country: "India", externalUrl: "", facilityClass: [], processType: [], primaryClass: "", googlePlaceId: "ChIJU0ysNH89rjsRExG4BsuNOS4" }
+  ],
+  "waaree-energies-limited": [
+    { name: "Registered Office", type: "registered office", city: "Mumbai", country: "India", externalUrl: "", facilityClass: [], processType: [], primaryClass: "", googlePlaceId: "ChIJRxrdVjK35zsRPIYrUGoW2mo" }
+  ],
+  "hbl-engineering-limited": [
+    { name: "Registered Office", type: "registered office", city: "Hyderabad", country: "India", externalUrl: "", facilityClass: [], processType: [], primaryClass: "", googlePlaceId: "ChIJ_____y6XyzsRx1Lt8vs4jOg" }
+  ],
+  "climeworks-ag": [
+    { name: "Headquarters", type: "headquarters", city: "Zurich", country: "Switzerland", externalUrl: "", facilityClass: [], processType: [], primaryClass: "", googlePlaceId: "ChIJzx86aKOgmkcRf-X80yr-_ro" }
+  ],
+  "premier-energies-limited": [
+    { name: "Registered Office", type: "registered office", city: "Hyderabad", country: "India", externalUrl: "", facilityClass: [], processType: [], primaryClass: "", googlePlaceId: "ChIJ____v0OayzsRNHWq0P1BfRw" }
+  ],
+  "vikram-solar-limited": [
+    { name: "Registered Office", type: "registered office", city: "Kolkata", country: "India", externalUrl: "", facilityClass: [], processType: [], primaryClass: "", googlePlaceId: "ChIJR707B1NxAjoRIudt9LRfw2g" }
+  ],
+  "borosil-renewables-limited": [
+    { name: "Registered Office", type: "registered office", city: "Mumbai", country: "India", externalUrl: "", facilityClass: [], processType: [], primaryClass: "", googlePlaceId: "ChIJJasJJt7I5zsRdI3nt1MZVPg" }
+  ],
+  "exide-industries-limited": [
+    { name: "Registered Office", type: "registered office", city: "Kolkata", country: "India", externalUrl: "", facilityClass: [], processType: [], primaryClass: "", googlePlaceId: "ChIJt5ZUJQB3AjoRW-cVIXBYM5g" }
+  ],
+  "concord-enviro-systems-limited": [
+    { name: "Registered Office", type: "registered office", city: "Mumbai", country: "India", externalUrl: "", facilityClass: [], processType: [], primaryClass: "", googlePlaceId: "ChIJZTS2tyPJ5zsR2fChHUSRrpQ" }
+  ],
+  "shakti-pumps-india-limited": [
+    { name: "Registered Office", type: "registered office", city: "Pithampur", country: "India", externalUrl: "", facilityClass: [], processType: [], primaryClass: "", googlePlaceId: "ChIJEfp0DH5RYjkRFTr82i_So6A" }
+  ],
+  "gravita-india-limited": [
+    { name: "Registered Office", type: "registered office", city: "Jaipur", country: "India", externalUrl: "", facilityClass: [], processType: [], primaryClass: "", googlePlaceId: "ChIJgR8mtpK2bTkRUoYVmBpJbfE" }
+  ],
+  "pondy-oxides-and-chemicals-limited": [
+    { name: "Registered Office", type: "registered office", city: "Chennai", country: "India", externalUrl: "", facilityClass: [], processType: [], primaryClass: "", googlePlaceId: "ChIJpyE7gmRmUjoRyw-UGJ4g8p0" }
+  ],
+  "jain-resource-recycling-limited": [
+    { name: "Registered Office", type: "registered office", city: "Chennai", country: "India", externalUrl: "", facilityClass: [], processType: [], primaryClass: "", googlePlaceId: "ChIJG4qHKgBnUjoR4S6g377Bhls" }
+  ],
+  "ems-limited": [
+    { name: "Registered Office", type: "registered office", city: "New Delhi", country: "India", externalUrl: "", facilityClass: [], processType: [], primaryClass: "", googlePlaceId: "" }
+  ],
+  "denta-water-and-infra-solutions-limited": [
+    { name: "Registered Office", type: "registered office", city: "Bengaluru", country: "India", externalUrl: "", facilityClass: [], processType: [], primaryClass: "", googlePlaceId: "ChIJMZNhbwAVrjsRQaF-Eh6F7YU" }
+  ],
+  "enviro-infra-engineers-limited": [
+    { name: "Registered Office", type: "registered office", city: "New Delhi", country: "India", externalUrl: "", facilityClass: [], processType: [], primaryClass: "", googlePlaceId: "ChIJcwCwaTgBDTkRtmsxrxxPeNM" }
+  ],
+  "felix-industries-limited": [
+    { name: "Registered Office", type: "registered office", city: "Ahmedabad", country: "India", externalUrl: "", facilityClass: [], processType: [], primaryClass: "", googlePlaceId: "ChIJG_DqZfeEXjkRXeNVZLqqZWM" }
+  ],
+  "indian-hume-pipe-company-limited": [
+    { name: "Registered Office", type: "registered office", city: "Mumbai", country: "India", externalUrl: "", facilityClass: [], processType: [], primaryClass: "", googlePlaceId: "ChIJS6pTvNDR5zsRNlcyBiXOjhY" }
+  ],
+  "jash-engineering-limited": [
+    { name: "Registered Office", type: "registered office", city: "Indore", country: "India", externalUrl: "", facilityClass: [], processType: [], primaryClass: "", googlePlaceId: "ChIJxyQ0VWACYzkRLCttrp7cGKM" }
+  ],
+  "sbm-offshore-nv": [
+    { name: "Headquarters", type: "headquarters", city: "Schiphol", country: "Netherlands", externalUrl: "", facilityClass: [], processType: [], primaryClass: "", googlePlaceId: "ChIJg95qINXgxUcR4b8cHsZoZks" }
+  ],
+  "modec-inc": [
+    { name: "Headquarters", type: "headquarters", city: "Tokyo", country: "Japan", externalUrl: "", facilityClass: [], processType: [], primaryClass: "", googlePlaceId: "ChIJd-FBe_2LGGARLV26ZC4Ij74" }
+  ],
+  "bw-offshore-limited": [
+    { name: "Headquarters", type: "headquarters", city: "Hamilton", country: "Bermuda", externalUrl: "", facilityClass: [], processType: [], primaryClass: "", googlePlaceId: "" }
+  ],
+  "yinson-holdings-berhad": [
+    { name: "Headquarters", type: "headquarters", city: "Kuala Lumpur", country: "Malaysia", externalUrl: "", facilityClass: [], processType: [], primaryClass: "", googlePlaceId: "ChIJMVIfIYxJzDERIP4YaIi2oyU" }
+  ],
+  "golar-lng-limited": [
+    { name: "Headquarters", type: "headquarters", city: "Hamilton", country: "Bermuda", externalUrl: "", facilityClass: [], processType: [], primaryClass: "", googlePlaceId: "" }
+  ],
+  "surabhi-transport-private-limited": [
+    { name: "Registered Office", type: "registered office", city: "Navi Mumbai", country: "India", externalUrl: "", facilityClass: [], processType: [], primaryClass: "", googlePlaceId: "ChIJ499h0V_B5zsRa8FQURBlbkQ" }
+  ],
+  "interstate-oil-carrier-limited": [
+    { name: "Registered Office", type: "registered office", city: "Kolkata", country: "India", externalUrl: "", facilityClass: [], processType: [], primaryClass: "", googlePlaceId: "ChIJO6uTo-F2AjoRXSKeSnp8bYw" }
+  ],
+  "rishi-kiran-logistics-private-limited": [
+    { name: "Registered Office", type: "registered office", city: "Gandhidham", country: "India", externalUrl: "", facilityClass: [], processType: [], primaryClass: "", googlePlaceId: "ChIJ86JyZPO5UDkRRrhe7RLa_os" }
+  ],
+  "adani-ports-and-special-economic-zone-limited": [
+    { name: "Registered Office", type: "registered office", city: "Ahmedabad", country: "India", externalUrl: "", facilityClass: [], processType: [], primaryClass: "", googlePlaceId: "ChIJhVDm8B8oXDkRM7dQuXBZyN8" }
+  ],
+  "ocean-sparkle-limited": [
+    { name: "Registered Office", type: "registered office", city: "Hyderabad", country: "India", externalUrl: "", facilityClass: [], processType: [], primaryClass: "", googlePlaceId: "ChIJVVVVFdSQyzsRh3R4vk0xQQQ" }
+  ],
+  "shipping-corporation-of-india-limited": [
+    { name: "Registered Office", type: "registered office", city: "Mumbai", country: "India", externalUrl: "", facilityClass: [], processType: [], primaryClass: "", googlePlaceId: "ChIJ-VdB-P225zsRZ00ruLkARaQ" }
+  ],
+  "container-corporation-of-india-limited": [
+    { name: "Registered Office", type: "registered office", city: "New Delhi", country: "India", externalUrl: "", facilityClass: [], processType: [], primaryClass: "", googlePlaceId: "ChIJcQT-rszmDDkREyIxkwv2rNU" }
+  ],
+  "allcargo-logistics-limited": [
+    { name: "Registered Office", type: "registered office", city: "Mumbai", country: "India", externalUrl: "", facilityClass: [], processType: [], primaryClass: "", googlePlaceId: "ChIJm5NhetDR5zsRDTb9XRxypuc" }
+  ],
+  "jm-baxi-ports-and-logistics-private-limited": [
+    { name: "Registered Office", type: "registered office", city: "Mumbai", country: "India", externalUrl: "", facilityClass: [], processType: [], primaryClass: "", googlePlaceId: "ChIJZQmdTgDJ5zsRLYN7O3JHEP8" }
+  ],
+  "central-warehousing-corporation": [
+    { name: "Headquarters", type: "headquarters", city: "New Delhi", country: "India", externalUrl: "", facilityClass: [], processType: [], primaryClass: "", googlePlaceId: "ChIJ9859dRUeDTkRogBg67jWXvg" }
+  ],
+  "snowman-logistics-limited": [
+    { name: "Registered Office", type: "registered office", city: "Navi Mumbai", country: "India", externalUrl: "", facilityClass: [], processType: [], primaryClass: "", googlePlaceId: "ChIJ9ae2n8zr5zsRpvC5MRpC7eI" }
+  ],
+  "rhenus-logistics-india-private-limited": [
+    { name: "Registered Office", type: "registered office", city: "Mumbai", country: "India", externalUrl: "", facilityClass: [], processType: [], primaryClass: "", googlePlaceId: "ChIJycnUeujI5zsRqYZl6EHhoz4" }
+  ],
+  "assam-inland-waterways-company-limited": [
+    { name: "Registered Office", type: "registered office", city: "Guwahati", country: "India", externalUrl: "", facilityClass: [], processType: [], primaryClass: "", googlePlaceId: "" }
+  ],
+  "inland-and-coastal-shipping-limited": [
+    { name: "Registered Office", type: "registered office", city: "Kolkata", country: "India", externalUrl: "", facilityClass: [], processType: [], primaryClass: "", googlePlaceId: "" }
+  ],
+  "tuv-sud-south-asia-private-limited": [
+    { name: "Registered Office", type: "registered office", city: "Mumbai", country: "India", externalUrl: "", facilityClass: [], processType: [], primaryClass: "", googlePlaceId: "ChIJQxekcQ7I5zsRaHn1VnJLbE8" }
+  ],
+  "sgs-india-private-limited": [
+    { name: "Registered Office", type: "registered office", city: "Mumbai", country: "India", externalUrl: "", facilityClass: [], processType: [], primaryClass: "", googlePlaceId: "ChIJpZcdbY3H5zsRegzCbGO_454" }
+  ],
+  "sgurrenergy-india-private-limited": [
+    { name: "Registered Office", type: "registered office", city: "Pune", country: "India", externalUrl: "", facilityClass: [], processType: [], primaryClass: "", googlePlaceId: "ChIJuaJ9gWjqwjsRaSBlQtUMeQw" }
+  ],
+  "stup-consultants-private-limited": [
+    { name: "Registered Office", type: "registered office", city: "Navi Mumbai", country: "India", externalUrl: "", facilityClass: [], processType: [], primaryClass: "", googlePlaceId: "ChIJLd3mozDB5zsRTMdl72azKGU" }
+  ],
+  "qq-engineering-and-consulting": [
+    { name: "Registered Office", type: "registered office", city: "Anand", country: "India", externalUrl: "", facilityClass: [], processType: [], primaryClass: "", googlePlaceId: "ChIJT1bdsntPXjkR7TReR5Ue_3U" }
+  ],
+  "nilsan-nishotech-systems-private-limited": [
+    { name: "Registered Office", type: "registered office", city: "Navi Mumbai", country: "India", externalUrl: "", facilityClass: [], processType: [], primaryClass: "", googlePlaceId: "ChIJ53CH_x_B5zsRuCyn7Np1zmQ" }
+  ],
+  "hytera-communications-corporation-limited": [
+    { name: "Headquarters", type: "headquarters", city: "Shenzhen", country: "China", externalUrl: "", facilityClass: [], processType: [], primaryClass: "", googlePlaceId: "ChIJS-LTfdDtAzQRzNtOz48nvf4" }
+  ],
+  "energy-efficiency-services-limited": [
+    { name: "Registered Office", type: "registered office", city: "New Delhi", country: "India", externalUrl: "", facilityClass: [], processType: [], primaryClass: "", googlePlaceId: "ChIJj3DtZIQdDTkRDwKiOI_DkF4" }
+  ],
+  "tata-consulting-engineers-limited": [
+    { name: "Registered Office", type: "registered office", city: "Mumbai", country: "India", externalUrl: "", facilityClass: [], processType: [], primaryClass: "", googlePlaceId: "ChIJn7f4pVrR5zsRyfi0bLjk-CQ" }
+  ],
+  "sanjana-cryogenic-storages-limited": [
+    { name: "Registered Office", type: "registered office", city: "Mumbai", country: "India", externalUrl: "", facilityClass: [], processType: [], primaryClass: "", googlePlaceId: "ChIJWb27SenR5zsRzaAYzV25AiI" }
+  ],
+  "thyssenkrupp-industrial-solutions-india-private-limited": [
+    { name: "Registered Office", type: "registered office", city: "Mumbai", country: "India", externalUrl: "", facilityClass: [], processType: [], primaryClass: "", googlePlaceId: "ChIJs3ZuM77H5zsRj8WZxkjqCKA" }
+  ],
+  "sun-engineering-services": [
+    { name: "Registered Office", type: "registered office", city: "Ahmedabad", country: "India", externalUrl: "", facilityClass: [], processType: [], primaryClass: "", googlePlaceId: "ChIJJdVPYuaHXjkRvZv5EcpKEPE" }
+  ],
+  "chase-associates": [
+    { name: "Headquarters", type: "headquarters", city: "Edgecomb", country: "United States", externalUrl: "", facilityClass: [], processType: [], primaryClass: "", googlePlaceId: "ChIJ6fIxNriTrUwRcQ1p3iN3MGI" }
+  ],
+  "y-access-manufacturing-private-limited": [
+    { name: "Registered Office", type: "registered office", city: "Greater Noida", country: "India", externalUrl: "", facilityClass: [], processType: [], primaryClass: "", googlePlaceId: "ChIJLSmipg_BDDkR564wn7K6uBc" }
   ],
 };
