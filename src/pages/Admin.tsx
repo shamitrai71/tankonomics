@@ -503,34 +503,75 @@ export default function Admin() {
     const total = Object.values(LOCATION_SEED).reduce((n, a) => n + a.length, 0);
     if (!window.confirm(
       `Seed locations for ${slugs.length} compan${slugs.length === 1 ? "y" : "ies"} (${total} locations)?\n\n` +
-      `This SETS each listed company's locations[] to its seed set (authoritative for those companies). ` +
-      `Companies not listed here are untouched. Re-running re-syncs to the seed. Run the company seed first.`
+      `Locations now live as their own documents under companies/{slug}/locations/{id} ` +
+      `(see docs/LOCATION_CLAIMING_DRAFT.md), not as an array field. This writes/updates the ` +
+      `descriptive fields (name, city, googlePlaceId, etc.) for each listed location. Ownership ` +
+      `fields (ownerUid/ownerSource/assignedBy/assignedAt) are set to null only on first creation — ` +
+      `re-running never touches them on locations that already exist, so delegated or claimed ` +
+      `locations are safe to reseed. Companies not listed here are untouched. Run the company seed first.`
     )) return;
     setIsSeedingLocations(true);
     try {
       let done = 0;
-      const failures: { slug: string; reason: string }[] = [];
+      let created = 0;
+      let updated = 0;
+      const failures: { slug: string; location: string; reason: string }[] = [];
+      // Same slugify used elsewhere in this file, for deterministic per-location
+      // doc ids: stable across re-runs (so reseeding updates in place rather
+      // than creating duplicates), but scoped to this one company's own
+      // subcollection so it only needs to be unique among that company's
+      // locations, not globally.
+      const slugify = (s: string) => s.normalize("NFKD").replace(/[^a-zA-Z0-9]+/g, "-").replace(/^-+|-+$/g, "").toLowerCase();
+
       for (const slug of slugs) {
-        try {
-          const ref = doc(db, "companies", slug);
-          const snap = await getDoc(ref);
-          if (!snap.exists()) { failures.push({ slug, reason: "company not found — run the company seed first" }); continue; }
-          await setDoc(ref, { locations: LOCATION_SEED[slug], updatedAt: serverTimestamp() }, { merge: true });
-          done++;
-        } catch (err: any) {
-          // Continue rather than stop — same fix as the company/category/
-          // taxonomy seeds and TankWorldIndia's seeder, for the same reason:
-          // stopping early silently truncates the run.
-          failures.push({ slug, reason: err?.code ? `${err.code}: ${err.message}` : (err?.message || String(err)) });
+        const companyRef = doc(db, "companies", slug);
+        const companySnap = await getDoc(companyRef);
+        if (!companySnap.exists()) {
+          failures.push({ slug, location: "(all)", reason: "company not found — run the company seed first" });
+          continue;
+        }
+        const seedLocations = LOCATION_SEED[slug];
+        const seenIds = new Set<string>();
+        for (let i = 0; i < seedLocations.length; i++) {
+          const loc = seedLocations[i];
+          let locId = slugify(loc.type || loc.name || `location-${i}`);
+          if (seenIds.has(locId)) locId = `${locId}-${i}`; // disambiguate same-type siblings, e.g. two "plant" entries
+          seenIds.add(locId);
+          const locRef = doc(db, "companies", slug, "locations", locId);
+          try {
+            const locSnap = await getDoc(locRef);
+            const descriptiveFields = {
+              name: loc.name, type: loc.type, city: loc.city, country: loc.country,
+              externalUrl: loc.externalUrl, facilityClass: loc.facilityClass,
+              processType: loc.processType, primaryClass: loc.primaryClass,
+              googlePlaceId: loc.googlePlaceId,
+            };
+            if (!locSnap.exists()) {
+              await setDoc(locRef, {
+                ...descriptiveFields,
+                ownerUid: null, ownerSource: null, assignedBy: null, assignedAt: null,
+                createdAt: serverTimestamp(), updatedAt: serverTimestamp(),
+              });
+              created++;
+            } else {
+              // Merge only the descriptive fields — never touch ownership
+              // state on an already-existing location (see confirm() text).
+              await setDoc(locRef, { ...descriptiveFields, updatedAt: serverTimestamp() }, { merge: true });
+              updated++;
+            }
+            done++;
+          } catch (err: any) {
+            failures.push({ slug, location: loc.name || locId, reason: err?.code ? `${err.code}: ${err.message}` : (err?.message || String(err)) });
+          }
         }
       }
       if (failures.length > 0) {
         console.error("Location seed failures:", failures);
       }
       alert(
-        `Seeded locations for ${done} compan${done === 1 ? "y" : "ies"} (${total} locations).` +
+        `Seeded locations: ${done} of ${total} (${created} created, ${updated} updated).` +
         (failures.length > 0
-          ? `\n\n${failures.length} failed:\n` + failures.slice(0, 10).map(f => `${f.slug}: ${f.reason}`).join("\n") +
+          ? `\n\n${failures.length} failed:\n` + failures.slice(0, 10).map(f => `${f.slug} / ${f.location}: ${f.reason}`).join("\n") +
             (failures.length > 10 ? `\n…and ${failures.length - 10} more (see console)` : "")
           : "")
       );
@@ -780,21 +821,65 @@ export default function Admin() {
       tier3CategoryId: newCompany.tier3CategoryId ||"",
       isFeatured: !!newCompany.isFeatured,
       products: Array.isArray(newCompany.products) ? newCompany.products : [],
-      locations: Array.isArray(newCompany.locations) ? newCompany.locations : [],
+      // NOTE: locations intentionally excluded — they live in the
+      // companies/{id}/locations subcollection now, written separately below
+      // once the company doc's real id is known (see docs/LOCATION_CLAIMING_DRAFT.md).
       updatedAt: serverTimestamp(),
     };
 
     try {
+      let companyDocId: string;
       if (editingCompanyId) {
         await updateDocument("companies", editingCompanyId, payload);
+        companyDocId = editingCompanyId;
         setEditingCompanyId(null);
       } else {
-        await createDocument("companies", {
+        const ref = await createDocument("companies", {
           ...payload,
           isClaimed: false,
           ownerUid:"",
           createdAt: serverTimestamp(),
         });
+        // NOTE: createDocument uses addDoc, which assigns a random id — new
+        // companies made through this form are NOT slug-addressable the way
+        // every bulk-seeded company is (doc id = slug elsewhere in the app,
+        // per ENGINEERING_NOTES.md §5.1). Pre-existing behavior, unrelated
+        // to this change — flagging it here since it's directly relevant to
+        // this company's location subcollection path, not because it was
+        // introduced by this edit.
+        companyDocId = ref!.id;
+      }
+
+      // Write each location in the form's local list to its own subcollection
+      // doc. Entries carried forward from handleEditCompany already have a
+      // real `id` (update in place, descriptive fields only — never touch
+      // ownership fields here); entries added fresh in this session don't,
+      // and get a deterministic id the same way handleSeedLocations does.
+      // KNOWN GAP: removing a location from the form's mini-list (trash icon)
+      // only removes it from local state — it does not delete the
+      // corresponding Firestore doc. A real "delete location" action isn't
+      // built yet; this save path is additive/update-only by design for now.
+      const slugify = (s: string) => s.normalize("NFKD").replace(/[^a-zA-Z0-9]+/g, "-").replace(/^-+|-+$/g, "").toLowerCase();
+      const usedIds = new Set<string>(newCompany.locations.filter((l: any) => l.id).map((l: any) => l.id));
+      for (const loc of newCompany.locations) {
+        const descriptiveFields = {
+          name: loc.name, type: loc.type, city: loc.city, country: loc.country,
+          externalUrl: loc.externalUrl || "", facilityClass: loc.facilityClass || [],
+          processType: loc.processType || [], primaryClass: loc.primaryClass || "",
+          googlePlaceId: loc.googlePlaceId || "",
+        };
+        if (loc.id) {
+          await setDoc(doc(db, "companies", companyDocId, "locations", loc.id), { ...descriptiveFields, updatedAt: serverTimestamp() }, { merge: true });
+        } else {
+          let locId = slugify(loc.type || loc.name || "location");
+          while (usedIds.has(locId)) locId = `${locId}-${Date.now().toString(36)}`;
+          usedIds.add(locId);
+          await setDoc(doc(db, "companies", companyDocId, "locations", locId), {
+            ...descriptiveFields,
+            ownerUid: null, ownerSource: null, assignedBy: null, assignedAt: null,
+            createdAt: serverTimestamp(), updatedAt: serverTimestamp(),
+          });
+        }
       }
 
       setNewCompany({
@@ -820,7 +905,17 @@ export default function Admin() {
     }
   };
 
-const handleEditCompany = (company: any) => {
+const handleEditCompany = async (company: any) => {
+  // Locations no longer live on the company doc — fetch them from their own
+  // subcollection. Each fetched location carries its real doc `id` forward
+  // so a later save updates it in place instead of creating a duplicate.
+  let existingLocations: any[] = [];
+  try {
+    const locsSnap = await getDocs(collection(db, "companies", company.id, "locations"));
+    existingLocations = locsSnap.docs.map(d => ({ id: d.id, ...d.data() }));
+  } catch (err) {
+    console.error("Failed to load locations for edit:", err);
+  }
   setNewCompany({
     name: company.name,
     description: company.description,
@@ -841,7 +936,7 @@ const handleEditCompany = (company: any) => {
     categoryIds: company.categoryIds || [],
     isFeatured: company.isFeatured || false,
     products: company.products || [],
-    locations: company.locations || []
+    locations: existingLocations
   });
   setEditingCompanyId(company.id);
   window.scrollTo({ top: 0, behavior: 'smooth' });

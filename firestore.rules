@@ -560,6 +560,18 @@ service cloud.firestore {
       allow write: if isAdmin() && (request.method == 'delete' || isValidCompany(incoming()));
     }
 
+    // Locations now live as their own documents under a company, not an
+    // array field on the company doc (see docs/LOCATION_CLAIMING_DRAFT.md).
+    // Admin-only writes for now — same posture as `companies` itself, which
+    // has no owner-write exception either. Delegation / location-claim
+    // approval / revoke are deferred; when built, those specific actions
+    // should route through a Cloud Function that checks the caller's
+    // authority server-side, not a broadened rule here (see that doc, §5).
+    match /companies/{companyId}/locations/{locationId} {
+      allow read: if isSignedIn();
+      allow write: if isAdmin();
+    }
+
     match /company_categories/{categoryId} {
       allow read: if isSignedIn();
       allow write: if isAdmin();

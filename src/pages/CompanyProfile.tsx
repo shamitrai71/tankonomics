@@ -183,6 +183,9 @@ export default function CompanyProfile() {
   const [isPosting, setIsPosting] = useState(false);
 
   const { data: companies, loading } = useCollection<any>("companies", [where("__name__", "==", id)]);
+  // Locations now live in their own subcollection (companies/{id}/locations),
+  // not an array field on the company doc — see docs/LOCATION_CLAIMING_DRAFT.md.
+  const { data: locations } = useCollection<any>(id ? `companies/${id}/locations` : "companies", [], !!id);
   const { data: categories } = useCollection<any>("company_categories");
   const { data: employees } = useCollection<any>("users", [where("companyId", "==", id)]);
   const { data: companyPosts } = useCollection<any>("posts", [where("companyId", "==", id), orderBy("createdAt", "desc")]);
@@ -560,7 +563,7 @@ export default function CompanyProfile() {
               {([
                 { key: "about", label: "About" },
                 ...(company.products?.length > 0 ? [{ key: "products", label: `Products · ${company.products.length}` }] : []),
-                ...(company.locations?.length > 0 ? [{ key: "locations", label: `Locations · ${company.locations.length}` }] : []),
+                ...(locations.length > 0 ? [{ key: "locations", label: `Locations · ${locations.length}` }] : []),
                 { key: "feed", label: "Feed" },
                 { key: "team", label: `Team · ${employees.length}` },
               ] as { key: typeof activeTab; label: string }[]).map((tab) => (
@@ -693,7 +696,7 @@ export default function CompanyProfile() {
                       <div className="flex items-center gap-3 min-w-0">
                         <MapPin className="w-5 h-5 text-accent shrink-0" strokeWidth={1.75} />
                         <span className="text-[14px] font-medium text-text-heading truncate">
-                          Explore all {company.locations.length} {company.locations.length === 1 ? "site" : "sites"} on TankBazaar
+                          Explore all {locations.length} {locations.length === 1 ? "site" : "sites"} on TankBazaar
                         </span>
                       </div>
                       <ExternalLink className="w-4 h-4 text-accent shrink-0 group-hover:translate-x-0.5 transition-transform" strokeWidth={1.75} />
@@ -701,8 +704,17 @@ export default function CompanyProfile() {
                   )}
 
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    {company.locations.map((loc: any, i: number) => (
-                      <div key={i} className="bg-bg-card border border-border-main rounded-2xl p-5 flex flex-col hover:border-text-heading transition-all">
+                    {locations.map((loc: any) => {
+                      // Effective owner: an explicit per-location ownerUid
+                      // (set by delegation or an approved location claim —
+                      // neither built yet) overrides the parent company's
+                      // owner; otherwise a claimed company's owner is the
+                      // default owner of every one of its locations, with
+                      // no extra data needed to express that. Not yet
+                      // surfaced in this UI — see docs/LOCATION_CLAIMING_DRAFT.md.
+                      const effectiveOwnerUid = loc.ownerUid || company.ownerUid || null;
+                      return (
+                      <div key={loc.id} className="bg-bg-card border border-border-main rounded-2xl p-5 flex flex-col hover:border-text-heading transition-all">
                         <div className="flex items-start justify-between gap-3 mb-3">
                           <div className="min-w-0">
                             <h4 className="font-display text-lg text-text-heading leading-tight truncate">{loc.name}</h4>
@@ -758,7 +770,8 @@ export default function CompanyProfile() {
                           )}
                         </div>
                       </div>
-                    ))}
+                      );
+                    })}
                   </div>
                 </motion.div>
               )}
