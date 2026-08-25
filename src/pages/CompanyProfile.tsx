@@ -323,7 +323,11 @@ export default function CompanyProfile() {
           className="w-full h-full object-cover"
           alt={`${company.name} hero`}
         />
-        <div className="absolute inset-0 bg-gradient-to-t from-primary/95 via-primary/55 to-transparent" />
+        {/* Fixed near-black scrim, not the theme's `primary` color — `primary`
+            flips to a warm orange (#f0a868) in dark mode, which washed this
+            gradient into a hazy orange fog instead of a clean vignette. A
+            photo-legibility scrim should read the same in both themes. */}
+        <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/50 to-transparent" />
         <div className="absolute inset-0 bp-grid opacity-25 pointer-events-none" />
 
         {/* Back to directory pill */}
@@ -596,10 +600,40 @@ export default function CompanyProfile() {
                     <div className="p-4 bg-bg-card border border-border-main rounded-xl">
                       <p className="eyebrow tabular text-text-body/55 mb-1">Classification</p>
                       <p className="text-[14px] font-medium text-text-heading truncate">
-                        {categories.find((c: any) => c.id === company.categoryId)?.name || "—"}
-                        {company.categoryIds?.length > 1 && (
-                          <span className="text-text-body/45 font-normal"> +{company.categoryIds.length - 1}</span>
-                        )}
+                        {(() => {
+                          // Show the top-level SECTOR (e.g. "Tank Systems &
+                          // Equipment"), not one specific leaf tag — the
+                          // Directory Taxonomy panel below already lists every
+                          // individual specialization, so repeating one of
+                          // them here (which is all the old direct-id lookup
+                          // did) was redundant and, worse, arbitrary: it just
+                          // showed whichever tag happened to be categoryIds[0].
+                          // Most companies here are tagged only at leaf level
+                          // (TWI never assigns a section-level tag directly),
+                          // so this walks each tag up its parentId chain to
+                          // find the level-1 ancestor, then dedupes by name.
+                          const ids: string[] = company.categoryIds?.length ? company.categoryIds : [company.categoryId].filter(Boolean);
+                          const sectorNames = new Set<string>();
+                          for (const id of ids) {
+                            let node = categories.find((c: any) => c.id === id);
+                            let guard = 0;
+                            while (node && node.level !== 1 && node.parentId && guard < 5) {
+                              node = categories.find((c: any) => c.id === node.parentId);
+                              guard++;
+                            }
+                            if (node?.level === 1) sectorNames.add(node.name);
+                          }
+                          const names = Array.from(sectorNames);
+                          if (names.length === 0) return "—";
+                          return (
+                            <>
+                              {names[0]}
+                              {names.length > 1 && (
+                                <span className="text-text-body/45 font-normal"> +{names.length - 1}</span>
+                              )}
+                            </>
+                          );
+                        })()}
                       </p>
                     </div>
                     <div className="p-4 bg-bg-card border border-border-main rounded-xl">

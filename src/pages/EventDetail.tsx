@@ -165,7 +165,8 @@ export default function EventDetail() {
         ) : (
           <div className="w-full h-full bg-gradient-to-br from-blueprint to-primary" />
         )}
-        <div className="absolute inset-0 bg-gradient-to-t from-primary/95 via-primary/45 to-primary/10" />
+        {/* Fixed near-black scrim — see CompanyProfile.tsx for why not `primary`. */}
+        <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/45 to-black/10" />
         <div className="absolute inset-0 bp-grid opacity-20 pointer-events-none" />
 
         <div className="absolute top-6 left-0 right-0">

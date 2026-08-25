@@ -458,7 +458,8 @@ export default function GroupDetail() {
         ) : (
           <div className="w-full h-full bg-gradient-to-br from-blueprint via-primary to-ink" />
         )}
-        <div className="absolute inset-0 bg-gradient-to-t from-primary/95 via-primary/55 to-transparent" />
+        {/* Fixed near-black scrim — see CompanyProfile.tsx for why not `primary`. */}
+        <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/50 to-transparent" />
         <div className="absolute inset-0 bp-grid opacity-25 pointer-events-none" />
 
         {/* Back to groups */}
