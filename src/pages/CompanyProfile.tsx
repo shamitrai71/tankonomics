@@ -596,46 +596,50 @@ export default function CompanyProfile() {
                     </p>
                   </section>
 
-                  <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
-                    <div className="p-4 bg-bg-card border border-border-main rounded-xl">
-                      <p className="eyebrow tabular text-text-body/55 mb-1">Classification</p>
-                      <p className="text-[14px] font-medium text-text-heading truncate">
-                        {(() => {
-                          // Show the top-level SECTOR (e.g. "Tank Systems &
-                          // Equipment"), not one specific leaf tag — the
-                          // Directory Taxonomy panel below already lists every
-                          // individual specialization, so repeating one of
-                          // them here (which is all the old direct-id lookup
-                          // did) was redundant and, worse, arbitrary: it just
-                          // showed whichever tag happened to be categoryIds[0].
-                          // Most companies here are tagged only at leaf level
-                          // (TWI never assigns a section-level tag directly),
-                          // so this walks each tag up its parentId chain to
-                          // find the level-1 ancestor, then dedupes by name.
-                          const ids: string[] = company.categoryIds?.length ? company.categoryIds : [company.categoryId].filter(Boolean);
-                          const sectorNames = new Set<string>();
-                          for (const id of ids) {
-                            let node = categories.find((c: any) => c.id === id);
-                            let guard = 0;
-                            while (node && node.level !== 1 && node.parentId && guard < 5) {
-                              node = categories.find((c: any) => c.id === node.parentId);
-                              guard++;
-                            }
-                            if (node?.level === 1) sectorNames.add(node.name);
-                          }
-                          const names = Array.from(sectorNames);
-                          if (names.length === 0) return "—";
-                          return (
-                            <>
-                              {names[0]}
-                              {names.length > 1 && (
-                                <span className="text-text-body/45 font-normal"> +{names.length - 1}</span>
-                              )}
-                            </>
-                          );
-                        })()}
-                      </p>
-                    </div>
+                  {(() => {
+                    // Every applicable top-level SECTOR (e.g. "Tank Systems &
+                    // Equipment", "Fire, Safety & Environment") as wrapping
+                    // chips — not one truncated line. This used to live as a
+                    // single-line stat box in the grid below, sized for short
+                    // values like "0 linked" or "Unclaimed"; a company tagged
+                    // across two sectors (e.g. Agasti Tank Works: Tank Systems
+                    // + Fire, Safety & Environment) simply doesn't fit a
+                    // one-line truncated box — the second name, and even the
+                    // "+1" count, got clipped off entirely, silently. Most
+                    // companies here are tagged only at leaf level (TWI never
+                    // assigns a section-level tag directly), so this walks
+                    // each tag up its parentId chain to find its level-1
+                    // ancestor, then dedupes by name.
+                    const ids: string[] = company.categoryIds?.length ? company.categoryIds : [company.categoryId].filter(Boolean);
+                    const sectorNames = new Set<string>();
+                    for (const id of ids) {
+                      let node = categories.find((c: any) => c.id === id);
+                      let guard = 0;
+                      while (node && node.level !== 1 && node.parentId && guard < 5) {
+                        node = categories.find((c: any) => c.id === node.parentId);
+                        guard++;
+                      }
+                      if (node?.level === 1) sectorNames.add(node.name);
+                    }
+                    const names = Array.from(sectorNames);
+                    if (names.length === 0) return null;
+                    return (
+                      <div className="mb-6">
+                        <p className="eyebrow tabular text-text-body/55 mb-2">
+                          Classification{names.length > 1 ? ` (${names.length})` : ""}
+                        </p>
+                        <div className="flex flex-wrap gap-1.5">
+                          {names.map((name) => (
+                            <span key={name} className="px-2.5 py-1 bg-accent/10 text-accent rounded-lg text-[13px] font-medium">
+                              {name}
+                            </span>
+                          ))}
+                        </div>
+                      </div>
+                    );
+                  })()}
+
+                  <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
                     <div className="p-4 bg-bg-card border border-border-main rounded-xl">
                       <p className="eyebrow tabular text-text-body/55 mb-1">Members</p>
                       <p className="text-[14px] font-medium text-text-heading">
