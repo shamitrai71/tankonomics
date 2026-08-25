@@ -44,6 +44,7 @@ import {
   Loader2,
   Send,
   ChevronRight,
+  Search,
 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { serverTimestamp, where, orderBy } from "firebase/firestore";
@@ -179,6 +180,7 @@ export default function CompanyProfile() {
   const { user } = useAuth();
   const [isClaiming, setIsClaiming] = useState(false);
   const [activeTab, setActiveTab] = useState<"about" | "products" | "locations" | "feed" | "team">("about");
+  const [locationSearch, setLocationSearch] = useState("");
   const [newsContent, setNewsContent] = useState("");
   const [isPosting, setIsPosting] = useState(false);
 
@@ -741,8 +743,50 @@ export default function CompanyProfile() {
                     </a>
                   )}
 
+                  {locations.length > 6 && (
+                    <div className="relative w-full md:w-80">
+                      <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-text-body/40" strokeWidth={1.75} />
+                      <input
+                        type="text"
+                        placeholder="Search locations…"
+                        value={locationSearch}
+                        onChange={(e) => setLocationSearch(e.target.value)}
+                        className="w-full pl-11 pr-10 py-3 bg-bg-card border border-border-main rounded-xl text-[14px] text-text-heading placeholder:text-text-body/40 outline-none focus:border-text-heading transition-all"
+                      />
+                      {locationSearch && (
+                        <button
+                          onClick={() => setLocationSearch("")}
+                          className="absolute right-3 top-1/2 -translate-y-1/2 w-6 h-6 rounded-md hover:bg-bg-main flex items-center justify-center text-text-body/50"
+                        >
+                          <X className="w-3.5 h-3.5" />
+                        </button>
+                      )}
+                    </div>
+                  )}
+
+                  {(() => {
+                    // Only 43+ locations is exactly the case that needed this
+                    // (IOCL, and any similarly large refiner/PSU) — matches
+                    // name, city, country and type, so "Bengaluru" or
+                    // "storage" both work as well as a depot's own name.
+                    const q = locationSearch.trim().toLowerCase();
+                    const filteredLocations = q
+                      ? locations.filter((loc: any) =>
+                          [loc.name, loc.city, loc.country, loc.type].some(
+                            (f: any) => typeof f === "string" && f.toLowerCase().includes(q)
+                          )
+                        )
+                      : locations;
+                    if (q && filteredLocations.length === 0) {
+                      return (
+                        <p className="text-[14px] text-text-body/50 py-8 text-center">
+                          No locations match "{locationSearch}".
+                        </p>
+                      );
+                    }
+                    return (
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    {locations.map((loc: any) => {
+                    {filteredLocations.map((loc: any) => {
                       // Effective owner: an explicit per-location ownerUid
                       // (set by delegation or an approved location claim —
                       // neither built yet) overrides the parent company's
@@ -811,6 +855,8 @@ export default function CompanyProfile() {
                       );
                     })}
                   </div>
+                    );
+                  })()}
                 </motion.div>
               )}
 
