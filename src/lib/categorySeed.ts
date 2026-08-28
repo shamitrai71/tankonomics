@@ -409,4 +409,25 @@ export const CATEGORY_SEED: CategorySeedNode[] = [
   { id: "acoustic-emission-systems", slug: "acoustic-emission-systems", name: "Acoustic Emission Systems", level: 2, parentId: "inspection-equipment", order: 5 },
   { id: "borescopes-and-visual-inspection", slug: "borescopes-and-visual-inspection", name: "Borescopes & Visual Inspection", level: 2, parentId: "inspection-equipment", order: 6 },
   { id: "inspection-drones-and-crawlers", slug: "inspection-drones-and-crawlers", name: "Inspection Drones & Crawlers", level: 2, parentId: "inspection-equipment", order: 7 },
+
+  // Contractor Compliance: distinct from Regulatory Compliance (fire-safety-
+  // and-environment L2) — that's about complying with government regulation;
+  // this is third-party verification of OTHER contractors' safety records,
+  // insurance and certifications before site access (the ISNetworld/Avetta/
+  // Veriforce category). Filed under Training & Workforce alongside
+  // Certification Bodies since both are third-party verification services,
+  // not under Fire/Safety/Environment where Regulatory Compliance lives.
+  { id: "contractor-compliance", slug: "contractor-compliance", name: "Contractor Compliance", level: 2, parentId: "training-and-workforce", order: 10 },
+
+  // ── Rental (L1) ──────────────────────────────────────────────────────
+  // Equipment rental (scaffolding, generators, cranes, pumps, temporary
+  // storage) is a genuinely distinct business model from equipment
+  // manufacture/sale, which is what the rest of the tree assumes — a
+  // turnaround/maintenance project routinely runs on rented, not owned,
+  // equipment. Previously had no home anywhere in the tree.
+  { id: "rental", slug: "rental", name: "Rental", level: 1, parentId: "", order: 21 },
+  { id: "scaffolding-rental", slug: "scaffolding-rental", name: "Scaffolding Rental", level: 2, parentId: "rental", order: 1 },
+  { id: "generator-and-power-equipment-rental", slug: "generator-and-power-equipment-rental", name: "Generator & Power Equipment Rental", level: 2, parentId: "rental", order: 2 },
+  { id: "crane-and-lifting-equipment-rental", slug: "crane-and-lifting-equipment-rental", name: "Crane & Lifting Equipment Rental", level: 2, parentId: "rental", order: 3 },
+  { id: "pump-and-compressor-rental", slug: "pump-and-compressor-rental", name: "Pump & Compressor Rental", level: 2, parentId: "rental", order: 4 },
 ];
