@@ -31,6 +31,7 @@ export const TAXONOMY_ENUMS = {
 
 export interface TaxonomyNode {
   id: string;
+  slug: string;
   type: string;
   name: string;
   parentId: string | null;
@@ -43,6 +44,7 @@ export interface TaxonomyNode {
 export const TAXONOMY_SEED: TaxonomyNode[] = [
  {
   "id": "ind-petroleum-liquid-fuels",
+  "slug": "ind-petroleum-liquid-fuels",
   "type": "industry",
   "name": "Petroleum & Liquid Fuels",
   "parentId": null,
@@ -52,6 +54,7 @@ export const TAXONOMY_SEED: TaxonomyNode[] = [
  },
  {
   "id": "ind-crude-oil",
+  "slug": "ind-crude-oil",
   "type": "industry",
   "name": "Crude Oil",
   "parentId": "ind-petroleum-liquid-fuels",
@@ -61,6 +64,7 @@ export const TAXONOMY_SEED: TaxonomyNode[] = [
  },
  {
   "id": "ind-refined-products",
+  "slug": "ind-refined-products",
   "type": "industry",
   "name": "Refined Products",
   "parentId": "ind-petroleum-liquid-fuels",
@@ -70,6 +74,7 @@ export const TAXONOMY_SEED: TaxonomyNode[] = [
  },
  {
   "id": "ind-aviation-fuel",
+  "slug": "ind-aviation-fuel",
   "type": "industry",
   "name": "Aviation Fuel",
   "parentId": "ind-petroleum-liquid-fuels",
@@ -79,6 +84,7 @@ export const TAXONOMY_SEED: TaxonomyNode[] = [
  },
  {
   "id": "ind-marine-fuels",
+  "slug": "ind-marine-fuels",
   "type": "industry",
   "name": "Marine Fuels",
   "parentId": "ind-petroleum-liquid-fuels",
@@ -88,6 +94,7 @@ export const TAXONOMY_SEED: TaxonomyNode[] = [
  },
  {
   "id": "ind-lubricants",
+  "slug": "ind-lubricants",
   "type": "industry",
   "name": "Lubricants",
   "parentId": "ind-petroleum-liquid-fuels",
@@ -97,6 +104,7 @@ export const TAXONOMY_SEED: TaxonomyNode[] = [
  },
  {
   "id": "ind-bitumen",
+  "slug": "ind-bitumen",
   "type": "industry",
   "name": "Bitumen",
   "parentId": "ind-petroleum-liquid-fuels",
@@ -106,6 +114,7 @@ export const TAXONOMY_SEED: TaxonomyNode[] = [
  },
  {
   "id": "ind-ethanol",
+  "slug": "ind-ethanol",
   "type": "industry",
   "name": "Ethanol",
   "parentId": "ind-petroleum-liquid-fuels",
@@ -115,6 +124,7 @@ export const TAXONOMY_SEED: TaxonomyNode[] = [
  },
  {
   "id": "ind-methanol",
+  "slug": "ind-methanol",
   "type": "industry",
   "name": "Methanol",
   "parentId": "ind-petroleum-liquid-fuels",
@@ -124,6 +134,7 @@ export const TAXONOMY_SEED: TaxonomyNode[] = [
  },
  {
   "id": "ind-chemicals",
+  "slug": "ind-chemicals",
   "type": "industry",
   "name": "Chemicals",
   "parentId": null,
@@ -133,6 +144,7 @@ export const TAXONOMY_SEED: TaxonomyNode[] = [
  },
  {
   "id": "ind-petrochemicals",
+  "slug": "ind-petrochemicals",
   "type": "industry",
   "name": "Petrochemicals",
   "parentId": "ind-chemicals",
@@ -142,6 +154,7 @@ export const TAXONOMY_SEED: TaxonomyNode[] = [
  },
  {
   "id": "ind-specialty-chemicals",
+  "slug": "ind-specialty-chemicals",
   "type": "industry",
   "name": "Specialty Chemicals",
   "parentId": "ind-chemicals",
@@ -151,6 +164,7 @@ export const TAXONOMY_SEED: TaxonomyNode[] = [
  },
  {
   "id": "ind-industrial-chemicals",
+  "slug": "ind-industrial-chemicals",
   "type": "industry",
   "name": "Industrial Chemicals",
   "parentId": "ind-chemicals",
@@ -160,6 +174,7 @@ export const TAXONOMY_SEED: TaxonomyNode[] = [
  },
  {
   "id": "ind-solvents",
+  "slug": "ind-solvents",
   "type": "industry",
   "name": "Solvents",
   "parentId": "ind-chemicals",
@@ -169,6 +184,7 @@ export const TAXONOMY_SEED: TaxonomyNode[] = [
  },
  {
   "id": "ind-acids",
+  "slug": "ind-acids",
   "type": "industry",
   "name": "Acids",
   "parentId": "ind-chemicals",
@@ -178,6 +194,7 @@ export const TAXONOMY_SEED: TaxonomyNode[] = [
  },
  {
   "id": "ind-alkalis",
+  "slug": "ind-alkalis",
   "type": "industry",
   "name": "Alkalis",
   "parentId": "ind-chemicals",
@@ -187,6 +204,7 @@ export const TAXONOMY_SEED: TaxonomyNode[] = [
  },
  {
   "id": "ind-fertilizers",
+  "slug": "ind-fertilizers",
   "type": "industry",
   "name": "Fertilizers",
   "parentId": "ind-chemicals",
@@ -196,6 +214,7 @@ export const TAXONOMY_SEED: TaxonomyNode[] = [
  },
  {
   "id": "ind-polymers",
+  "slug": "ind-polymers",
   "type": "industry",
   "name": "Polymers",
   "parentId": "ind-chemicals",
@@ -205,6 +224,7 @@ export const TAXONOMY_SEED: TaxonomyNode[] = [
  },
  {
   "id": "ind-resins",
+  "slug": "ind-resins",
   "type": "industry",
   "name": "Resins",
   "parentId": "ind-chemicals",
@@ -214,6 +234,7 @@ export const TAXONOMY_SEED: TaxonomyNode[] = [
  },
  {
   "id": "ind-bulk-chemical-storage",
+  "slug": "ind-bulk-chemical-storage",
   "type": "industry",
   "name": "Bulk Chemical Storage",
   "parentId": "ind-chemicals",
@@ -223,6 +244,7 @@ export const TAXONOMY_SEED: TaxonomyNode[] = [
  },
  {
   "id": "ind-lng-cryogenic",
+  "slug": "ind-lng-cryogenic",
   "type": "industry",
   "name": "LNG & Cryogenic",
   "parentId": null,
@@ -232,6 +254,7 @@ export const TAXONOMY_SEED: TaxonomyNode[] = [
  },
  {
   "id": "ind-lng-import",
+  "slug": "ind-lng-import",
   "type": "industry",
   "name": "LNG Import",
   "parentId": "ind-lng-cryogenic",
@@ -241,6 +264,7 @@ export const TAXONOMY_SEED: TaxonomyNode[] = [
  },
  {
   "id": "ind-lng-export",
+  "slug": "ind-lng-export",
   "type": "industry",
   "name": "LNG Export",
   "parentId": "ind-lng-cryogenic",
@@ -250,6 +274,7 @@ export const TAXONOMY_SEED: TaxonomyNode[] = [
  },
  {
   "id": "ind-lng-peak-shaving",
+  "slug": "ind-lng-peak-shaving",
   "type": "industry",
   "name": "LNG Peak Shaving",
   "parentId": "ind-lng-cryogenic",
@@ -259,6 +284,7 @@ export const TAXONOMY_SEED: TaxonomyNode[] = [
  },
  {
   "id": "ind-lpg",
+  "slug": "ind-lpg",
   "type": "industry",
   "name": "LPG",
   "parentId": "ind-lng-cryogenic",
@@ -268,6 +294,7 @@ export const TAXONOMY_SEED: TaxonomyNode[] = [
  },
  {
   "id": "ind-ammonia",
+  "slug": "ind-ammonia",
   "type": "industry",
   "name": "Ammonia",
   "parentId": "ind-lng-cryogenic",
@@ -277,6 +304,7 @@ export const TAXONOMY_SEED: TaxonomyNode[] = [
  },
  {
   "id": "ind-liquid-hydrogen",
+  "slug": "ind-liquid-hydrogen",
   "type": "industry",
   "name": "Liquid Hydrogen",
   "parentId": "ind-lng-cryogenic",
@@ -288,6 +316,7 @@ export const TAXONOMY_SEED: TaxonomyNode[] = [
  },
  {
   "id": "ind-liquid-nitrogen",
+  "slug": "ind-liquid-nitrogen",
   "type": "industry",
   "name": "Liquid Nitrogen",
   "parentId": "ind-lng-cryogenic",
@@ -297,6 +326,7 @@ export const TAXONOMY_SEED: TaxonomyNode[] = [
  },
  {
   "id": "ind-liquid-oxygen",
+  "slug": "ind-liquid-oxygen",
   "type": "industry",
   "name": "Liquid Oxygen",
   "parentId": "ind-lng-cryogenic",
@@ -306,6 +336,7 @@ export const TAXONOMY_SEED: TaxonomyNode[] = [
  },
  {
   "id": "ind-co2-storage",
+  "slug": "ind-co2-storage",
   "type": "industry",
   "name": "CO2 Storage",
   "parentId": "ind-lng-cryogenic",
@@ -317,6 +348,7 @@ export const TAXONOMY_SEED: TaxonomyNode[] = [
  },
  {
   "id": "ind-tank-storage",
+  "slug": "ind-tank-storage",
   "type": "industry",
   "name": "Tank Storage",
   "parentId": null,
@@ -326,6 +358,7 @@ export const TAXONOMY_SEED: TaxonomyNode[] = [
  },
  {
   "id": "ind-independent-terminals",
+  "slug": "ind-independent-terminals",
   "type": "industry",
   "name": "Independent Terminals",
   "parentId": "ind-tank-storage",
@@ -335,6 +368,7 @@ export const TAXONOMY_SEED: TaxonomyNode[] = [
  },
  {
   "id": "ind-strategic-petroleum-reserves",
+  "slug": "ind-strategic-petroleum-reserves",
   "type": "industry",
   "name": "Strategic Petroleum Reserves",
   "parentId": "ind-tank-storage",
@@ -344,6 +378,7 @@ export const TAXONOMY_SEED: TaxonomyNode[] = [
  },
  {
   "id": "ind-inland-tank-farms",
+  "slug": "ind-inland-tank-farms",
   "type": "industry",
   "name": "Inland Tank Farms",
   "parentId": "ind-tank-storage",
@@ -353,6 +388,7 @@ export const TAXONOMY_SEED: TaxonomyNode[] = [
  },
  {
   "id": "ind-marine-terminals",
+  "slug": "ind-marine-terminals",
   "type": "industry",
   "name": "Marine Terminals",
   "parentId": "ind-tank-storage",
@@ -362,6 +398,7 @@ export const TAXONOMY_SEED: TaxonomyNode[] = [
  },
  {
   "id": "ind-distribution-terminals",
+  "slug": "ind-distribution-terminals",
   "type": "industry",
   "name": "Distribution Terminals",
   "parentId": "ind-tank-storage",
@@ -371,6 +408,7 @@ export const TAXONOMY_SEED: TaxonomyNode[] = [
  },
  {
   "id": "ind-pipeline-tank-farms",
+  "slug": "ind-pipeline-tank-farms",
   "type": "industry",
   "name": "Pipeline Tank Farms",
   "parentId": "ind-tank-storage",
@@ -380,6 +418,7 @@ export const TAXONOMY_SEED: TaxonomyNode[] = [
  },
  {
   "id": "ind-ports-marine",
+  "slug": "ind-ports-marine",
   "type": "industry",
   "name": "Ports & Marine",
   "parentId": null,
@@ -389,6 +428,7 @@ export const TAXONOMY_SEED: TaxonomyNode[] = [
  },
  {
   "id": "ind-port-authorities",
+  "slug": "ind-port-authorities",
   "type": "industry",
   "name": "Port Authorities",
   "parentId": "ind-ports-marine",
@@ -398,6 +438,7 @@ export const TAXONOMY_SEED: TaxonomyNode[] = [
  },
  {
   "id": "ind-jetty-operations",
+  "slug": "ind-jetty-operations",
   "type": "industry",
   "name": "Jetty Operations",
   "parentId": "ind-ports-marine",
@@ -407,6 +448,7 @@ export const TAXONOMY_SEED: TaxonomyNode[] = [
  },
  {
   "id": "ind-berths",
+  "slug": "ind-berths",
   "type": "industry",
   "name": "Berths",
   "parentId": "ind-ports-marine",
@@ -416,6 +458,7 @@ export const TAXONOMY_SEED: TaxonomyNode[] = [
  },
  {
   "id": "ind-harbour-infrastructure",
+  "slug": "ind-harbour-infrastructure",
   "type": "industry",
   "name": "Harbour Infrastructure",
   "parentId": "ind-ports-marine",
@@ -425,6 +468,7 @@ export const TAXONOMY_SEED: TaxonomyNode[] = [
  },
  {
   "id": "ind-bulk-liquid-ports",
+  "slug": "ind-bulk-liquid-ports",
   "type": "industry",
   "name": "Bulk Liquid Ports",
   "parentId": "ind-ports-marine",
@@ -434,6 +478,7 @@ export const TAXONOMY_SEED: TaxonomyNode[] = [
  },
  {
   "id": "ind-pipelines",
+  "slug": "ind-pipelines",
   "type": "industry",
   "name": "Pipelines",
   "parentId": null,
@@ -443,6 +488,7 @@ export const TAXONOMY_SEED: TaxonomyNode[] = [
  },
  {
   "id": "ind-cross-country-pipelines",
+  "slug": "ind-cross-country-pipelines",
   "type": "industry",
   "name": "Cross-country Pipelines",
   "parentId": "ind-pipelines",
@@ -452,6 +498,7 @@ export const TAXONOMY_SEED: TaxonomyNode[] = [
  },
  {
   "id": "ind-gathering-pipelines",
+  "slug": "ind-gathering-pipelines",
   "type": "industry",
   "name": "Gathering Pipelines",
   "parentId": "ind-pipelines",
@@ -461,6 +508,7 @@ export const TAXONOMY_SEED: TaxonomyNode[] = [
  },
  {
   "id": "ind-distribution-pipelines",
+  "slug": "ind-distribution-pipelines",
   "type": "industry",
   "name": "Distribution Pipelines",
   "parentId": "ind-pipelines",
@@ -470,6 +518,7 @@ export const TAXONOMY_SEED: TaxonomyNode[] = [
  },
  {
   "id": "ind-product-pipelines",
+  "slug": "ind-product-pipelines",
   "type": "industry",
   "name": "Product Pipelines",
   "parentId": "ind-pipelines",
@@ -479,6 +528,7 @@ export const TAXONOMY_SEED: TaxonomyNode[] = [
  },
  {
   "id": "ind-gas-pipelines",
+  "slug": "ind-gas-pipelines",
   "type": "industry",
   "name": "Gas Pipelines",
   "parentId": "ind-pipelines",
@@ -488,6 +538,7 @@ export const TAXONOMY_SEED: TaxonomyNode[] = [
  },
  {
   "id": "ind-hydrogen-pipelines",
+  "slug": "ind-hydrogen-pipelines",
   "type": "industry",
   "name": "Hydrogen Pipelines",
   "parentId": "ind-pipelines",
@@ -497,6 +548,7 @@ export const TAXONOMY_SEED: TaxonomyNode[] = [
  },
  {
   "id": "ind-renewables",
+  "slug": "ind-renewables",
   "type": "industry",
   "name": "Renewables",
   "parentId": null,
@@ -506,6 +558,7 @@ export const TAXONOMY_SEED: TaxonomyNode[] = [
  },
  {
   "id": "ind-hydrogen",
+  "slug": "ind-hydrogen",
   "type": "industry",
   "name": "Hydrogen",
   "parentId": "ind-renewables",
@@ -515,6 +568,7 @@ export const TAXONOMY_SEED: TaxonomyNode[] = [
  },
  {
   "id": "ind-green-ammonia",
+  "slug": "ind-green-ammonia",
   "type": "industry",
   "name": "Green Ammonia",
   "parentId": "ind-renewables",
@@ -524,6 +578,7 @@ export const TAXONOMY_SEED: TaxonomyNode[] = [
  },
  {
   "id": "ind-biofuels",
+  "slug": "ind-biofuels",
   "type": "industry",
   "name": "Biofuels",
   "parentId": "ind-renewables",
@@ -536,6 +591,7 @@ export const TAXONOMY_SEED: TaxonomyNode[] = [
  },
  {
   "id": "ind-renewable-diesel",
+  "slug": "ind-renewable-diesel",
   "type": "industry",
   "name": "Renewable Diesel",
   "parentId": "ind-renewables",
@@ -545,6 +601,7 @@ export const TAXONOMY_SEED: TaxonomyNode[] = [
  },
  {
   "id": "ind-sustainable-aviation-fuel",
+  "slug": "ind-sustainable-aviation-fuel",
   "type": "industry",
   "name": "Sustainable Aviation Fuel",
   "parentId": "ind-renewables",
@@ -557,6 +614,7 @@ export const TAXONOMY_SEED: TaxonomyNode[] = [
  },
  {
   "id": "ind-carbon-capture",
+  "slug": "ind-carbon-capture",
   "type": "industry",
   "name": "Carbon Capture",
   "parentId": "ind-renewables",
@@ -566,6 +624,7 @@ export const TAXONOMY_SEED: TaxonomyNode[] = [
  },
  {
   "id": "ind-carbon-storage",
+  "slug": "ind-carbon-storage",
   "type": "industry",
   "name": "Carbon Storage",
   "parentId": "ind-renewables",
@@ -575,6 +634,7 @@ export const TAXONOMY_SEED: TaxonomyNode[] = [
  },
  {
   "id": "ind-battery-energy-storage",
+  "slug": "ind-battery-energy-storage",
   "type": "industry",
   "name": "Battery Energy Storage",
   "parentId": "ind-renewables",
@@ -584,6 +644,7 @@ export const TAXONOMY_SEED: TaxonomyNode[] = [
  },
  {
   "id": "ind-carbon-markets",
+  "slug": "ind-carbon-markets",
   "type": "industry",
   "name": "Carbon Markets",
   "parentId": "ind-renewables",
@@ -592,7 +653,38 @@ export const TAXONOMY_SEED: TaxonomyNode[] = [
   "order": 8
  },
  {
+  "id": "ind-solar",
+  "slug": "ind-solar",
+  "type": "industry",
+  "name": "Solar",
+  "parentId": "ind-renewables",
+  "level": 2,
+  "aliases": [],
+  "order": 9
+ },
+ {
+  "id": "ind-wind",
+  "slug": "ind-wind",
+  "type": "industry",
+  "name": "Wind",
+  "parentId": "ind-renewables",
+  "level": 2,
+  "aliases": [],
+  "order": 10
+ },
+ {
+  "id": "ind-nuclear",
+  "slug": "ind-nuclear",
+  "type": "industry",
+  "name": "Nuclear",
+  "parentId": "ind-renewables",
+  "level": 2,
+  "aliases": [],
+  "order": 11
+ },
+ {
   "id": "ind-mining-bulk-liquids",
+  "slug": "ind-mining-bulk-liquids",
   "type": "industry",
   "name": "Mining & Bulk Liquids",
   "parentId": null,
@@ -602,6 +694,7 @@ export const TAXONOMY_SEED: TaxonomyNode[] = [
  },
  {
   "id": "ind-slurry",
+  "slug": "ind-slurry",
   "type": "industry",
   "name": "Slurry",
   "parentId": "ind-mining-bulk-liquids",
@@ -611,6 +704,7 @@ export const TAXONOMY_SEED: TaxonomyNode[] = [
  },
  {
   "id": "ind-mining-chemicals",
+  "slug": "ind-mining-chemicals",
   "type": "industry",
   "name": "Mining Chemicals",
   "parentId": "ind-mining-bulk-liquids",
@@ -620,6 +714,7 @@ export const TAXONOMY_SEED: TaxonomyNode[] = [
  },
  {
   "id": "ind-acid-storage",
+  "slug": "ind-acid-storage",
   "type": "industry",
   "name": "Acid Storage",
   "parentId": "ind-mining-bulk-liquids",
@@ -629,6 +724,7 @@ export const TAXONOMY_SEED: TaxonomyNode[] = [
  },
  {
   "id": "ind-process-liquids",
+  "slug": "ind-process-liquids",
   "type": "industry",
   "name": "Process Liquids",
   "parentId": "ind-mining-bulk-liquids",
@@ -638,6 +734,7 @@ export const TAXONOMY_SEED: TaxonomyNode[] = [
  },
  {
   "id": "ind-utilities",
+  "slug": "ind-utilities",
   "type": "industry",
   "name": "Utilities",
   "parentId": null,
@@ -647,6 +744,7 @@ export const TAXONOMY_SEED: TaxonomyNode[] = [
  },
  {
   "id": "ind-water",
+  "slug": "ind-water",
   "type": "industry",
   "name": "Water",
   "parentId": "ind-utilities",
@@ -656,6 +754,7 @@ export const TAXONOMY_SEED: TaxonomyNode[] = [
  },
  {
   "id": "ind-wastewater",
+  "slug": "ind-wastewater",
   "type": "industry",
   "name": "Wastewater",
   "parentId": "ind-utilities",
@@ -665,6 +764,7 @@ export const TAXONOMY_SEED: TaxonomyNode[] = [
  },
  {
   "id": "ind-fire-water",
+  "slug": "ind-fire-water",
   "type": "industry",
   "name": "Fire Water",
   "parentId": "ind-utilities",
@@ -674,6 +774,7 @@ export const TAXONOMY_SEED: TaxonomyNode[] = [
  },
  {
   "id": "ind-cooling-water",
+  "slug": "ind-cooling-water",
   "type": "industry",
   "name": "Cooling Water",
   "parentId": "ind-utilities",
@@ -683,6 +784,7 @@ export const TAXONOMY_SEED: TaxonomyNode[] = [
  },
  {
   "id": "ind-industrial-water",
+  "slug": "ind-industrial-water",
   "type": "industry",
   "name": "Industrial Water",
   "parentId": "ind-utilities",
@@ -692,6 +794,7 @@ export const TAXONOMY_SEED: TaxonomyNode[] = [
  },
  {
   "id": "vert-terminal-operators",
+  "slug": "vert-terminal-operators",
   "type": "vertical",
   "name": "Terminal Operators",
   "parentId": null,
@@ -703,6 +806,7 @@ export const TAXONOMY_SEED: TaxonomyNode[] = [
  },
  {
   "id": "vert-epc-contractors",
+  "slug": "vert-epc-contractors",
   "type": "vertical",
   "name": "EPC Contractors",
   "parentId": null,
@@ -715,6 +819,7 @@ export const TAXONOMY_SEED: TaxonomyNode[] = [
  },
  {
   "id": "vert-tank-manufacturers",
+  "slug": "vert-tank-manufacturers",
   "type": "vertical",
   "name": "Tank Manufacturers",
   "parentId": null,
@@ -728,6 +833,7 @@ export const TAXONOMY_SEED: TaxonomyNode[] = [
  },
  {
   "id": "vert-equipment-oems",
+  "slug": "vert-equipment-oems",
   "type": "vertical",
   "name": "Equipment OEMs",
   "parentId": null,
@@ -739,6 +845,7 @@ export const TAXONOMY_SEED: TaxonomyNode[] = [
  },
  {
   "id": "vert-inspection-companies",
+  "slug": "vert-inspection-companies",
   "type": "vertical",
   "name": "Inspection Companies",
   "parentId": null,
@@ -753,6 +860,7 @@ export const TAXONOMY_SEED: TaxonomyNode[] = [
  },
  {
   "id": "vert-engineering-consultants",
+  "slug": "vert-engineering-consultants",
   "type": "vertical",
   "name": "Engineering Consultants",
   "parentId": null,
@@ -766,6 +874,7 @@ export const TAXONOMY_SEED: TaxonomyNode[] = [
  },
  {
   "id": "vert-maintenance-contractors",
+  "slug": "vert-maintenance-contractors",
   "type": "vertical",
   "name": "Maintenance Contractors",
   "parentId": null,
@@ -775,6 +884,7 @@ export const TAXONOMY_SEED: TaxonomyNode[] = [
  },
  {
   "id": "vert-logistics-companies",
+  "slug": "vert-logistics-companies",
   "type": "vertical",
   "name": "Logistics Companies",
   "parentId": null,
@@ -786,6 +896,7 @@ export const TAXONOMY_SEED: TaxonomyNode[] = [
  },
  {
   "id": "vert-port-operators",
+  "slug": "vert-port-operators",
   "type": "vertical",
   "name": "Port Operators",
   "parentId": null,
@@ -795,6 +906,7 @@ export const TAXONOMY_SEED: TaxonomyNode[] = [
  },
  {
   "id": "vert-pipeline-operators",
+  "slug": "vert-pipeline-operators",
   "type": "vertical",
   "name": "Pipeline Operators",
   "parentId": null,
@@ -804,6 +916,7 @@ export const TAXONOMY_SEED: TaxonomyNode[] = [
  },
  {
   "id": "vert-refineries",
+  "slug": "vert-refineries",
   "type": "vertical",
   "name": "Refineries",
   "parentId": null,
@@ -813,6 +926,7 @@ export const TAXONOMY_SEED: TaxonomyNode[] = [
  },
  {
   "id": "vert-petrochemical-plants",
+  "slug": "vert-petrochemical-plants",
   "type": "vertical",
   "name": "Petrochemical Plants",
   "parentId": null,
@@ -822,6 +936,7 @@ export const TAXONOMY_SEED: TaxonomyNode[] = [
  },
  {
   "id": "vert-chemical-manufacturers",
+  "slug": "vert-chemical-manufacturers",
   "type": "vertical",
   "name": "Chemical Manufacturers",
   "parentId": null,
@@ -831,6 +946,7 @@ export const TAXONOMY_SEED: TaxonomyNode[] = [
  },
  {
   "id": "vert-power-plants",
+  "slug": "vert-power-plants",
   "type": "vertical",
   "name": "Power Plants",
   "parentId": null,
@@ -840,6 +956,7 @@ export const TAXONOMY_SEED: TaxonomyNode[] = [
  },
  {
   "id": "vert-lng-operators",
+  "slug": "vert-lng-operators",
   "type": "vertical",
   "name": "LNG Operators",
   "parentId": null,
@@ -849,6 +966,7 @@ export const TAXONOMY_SEED: TaxonomyNode[] = [
  },
  {
   "id": "vert-government-agencies",
+  "slug": "vert-government-agencies",
   "type": "vertical",
   "name": "Government Agencies",
   "parentId": null,
@@ -858,6 +976,7 @@ export const TAXONOMY_SEED: TaxonomyNode[] = [
  },
  {
   "id": "vert-defence-storage",
+  "slug": "vert-defence-storage",
   "type": "vertical",
   "name": "Defence Storage",
   "parentId": null,
@@ -867,6 +986,7 @@ export const TAXONOMY_SEED: TaxonomyNode[] = [
  },
  {
   "id": "vert-fire-safety-companies",
+  "slug": "vert-fire-safety-companies",
   "type": "vertical",
   "name": "Fire & Safety Companies",
   "parentId": null,
@@ -876,6 +996,7 @@ export const TAXONOMY_SEED: TaxonomyNode[] = [
  },
  {
   "id": "vert-environmental-companies",
+  "slug": "vert-environmental-companies",
   "type": "vertical",
   "name": "Environmental Companies",
   "parentId": null,
@@ -885,6 +1006,7 @@ export const TAXONOMY_SEED: TaxonomyNode[] = [
  },
  {
   "id": "vert-software-vendors",
+  "slug": "vert-software-vendors",
   "type": "vertical",
   "name": "Software Vendors",
   "parentId": null,
@@ -899,6 +1021,7 @@ export const TAXONOMY_SEED: TaxonomyNode[] = [
  },
  {
   "id": "vert-equipment-suppliers",
+  "slug": "vert-equipment-suppliers",
   "type": "vertical",
   "name": "Equipment Suppliers",
   "parentId": null,
@@ -910,7 +1033,23 @@ export const TAXONOMY_SEED: TaxonomyNode[] = [
   "order": 20
  },
  {
+  "id": "vert-oilfield-services",
+  "slug": "vert-oilfield-services",
+  "type": "vertical",
+  "name": "Oilfield Services",
+  "parentId": null,
+  "level": 1,
+  "aliases": [
+   "Well Services",
+   "Drilling Contractors",
+   "Wireline Services",
+   "Completion Services"
+  ],
+  "order": 21
+ },
+ {
   "id": "dom-operations",
+  "slug": "dom-operations",
   "type": "domain",
   "name": "Operations",
   "parentId": null,
@@ -920,6 +1059,7 @@ export const TAXONOMY_SEED: TaxonomyNode[] = [
  },
  {
   "id": "dom-engineering",
+  "slug": "dom-engineering",
   "type": "domain",
   "name": "Engineering",
   "parentId": null,
@@ -929,6 +1069,7 @@ export const TAXONOMY_SEED: TaxonomyNode[] = [
  },
  {
   "id": "dom-engineering-mechanical",
+  "slug": "dom-engineering-mechanical",
   "type": "domain",
   "name": "Mechanical",
   "parentId": "dom-engineering",
@@ -938,6 +1079,7 @@ export const TAXONOMY_SEED: TaxonomyNode[] = [
  },
  {
   "id": "dom-engineering-civil",
+  "slug": "dom-engineering-civil",
   "type": "domain",
   "name": "Civil",
   "parentId": "dom-engineering",
@@ -947,6 +1089,7 @@ export const TAXONOMY_SEED: TaxonomyNode[] = [
  },
  {
   "id": "dom-engineering-electrical",
+  "slug": "dom-engineering-electrical",
   "type": "domain",
   "name": "Electrical",
   "parentId": "dom-engineering",
@@ -956,6 +1099,7 @@ export const TAXONOMY_SEED: TaxonomyNode[] = [
  },
  {
   "id": "dom-engineering-instrumentation",
+  "slug": "dom-engineering-instrumentation",
   "type": "domain",
   "name": "Instrumentation",
   "parentId": "dom-engineering",
@@ -965,6 +1109,7 @@ export const TAXONOMY_SEED: TaxonomyNode[] = [
  },
  {
   "id": "dom-engineering-automation",
+  "slug": "dom-engineering-automation",
   "type": "domain",
   "name": "Automation",
   "parentId": "dom-engineering",
@@ -974,6 +1119,7 @@ export const TAXONOMY_SEED: TaxonomyNode[] = [
  },
  {
   "id": "dom-engineering-pipeline",
+  "slug": "dom-engineering-pipeline",
   "type": "domain",
   "name": "Pipeline",
   "parentId": "dom-engineering",
@@ -983,6 +1129,7 @@ export const TAXONOMY_SEED: TaxonomyNode[] = [
  },
  {
   "id": "dom-engineering-marine",
+  "slug": "dom-engineering-marine",
   "type": "domain",
   "name": "Marine",
   "parentId": "dom-engineering",
@@ -992,6 +1139,7 @@ export const TAXONOMY_SEED: TaxonomyNode[] = [
  },
  {
   "id": "dom-engineering-structural",
+  "slug": "dom-engineering-structural",
   "type": "domain",
   "name": "Structural",
   "parentId": "dom-engineering",
@@ -1001,6 +1149,7 @@ export const TAXONOMY_SEED: TaxonomyNode[] = [
  },
  {
   "id": "dom-engineering-process",
+  "slug": "dom-engineering-process",
   "type": "domain",
   "name": "Process",
   "parentId": "dom-engineering",
@@ -1010,6 +1159,7 @@ export const TAXONOMY_SEED: TaxonomyNode[] = [
  },
  {
   "id": "dom-engineering-projects",
+  "slug": "dom-engineering-projects",
   "type": "domain",
   "name": "Projects",
   "parentId": "dom-engineering",
@@ -1019,6 +1169,7 @@ export const TAXONOMY_SEED: TaxonomyNode[] = [
  },
  {
   "id": "dom-engineering-reliability",
+  "slug": "dom-engineering-reliability",
   "type": "domain",
   "name": "Reliability",
   "parentId": "dom-engineering",
@@ -1028,6 +1179,7 @@ export const TAXONOMY_SEED: TaxonomyNode[] = [
  },
  {
   "id": "dom-engineering-asset-integrity",
+  "slug": "dom-engineering-asset-integrity",
   "type": "domain",
   "name": "Asset Integrity",
   "parentId": "dom-engineering",
@@ -1037,6 +1189,7 @@ export const TAXONOMY_SEED: TaxonomyNode[] = [
  },
  {
   "id": "dom-engineering-rotating-equipment",
+  "slug": "dom-engineering-rotating-equipment",
   "type": "domain",
   "name": "Rotating Equipment",
   "parentId": "dom-engineering",
@@ -1046,6 +1199,7 @@ export const TAXONOMY_SEED: TaxonomyNode[] = [
  },
  {
   "id": "dom-engineering-static-equipment",
+  "slug": "dom-engineering-static-equipment",
   "type": "domain",
   "name": "Static Equipment",
   "parentId": "dom-engineering",
@@ -1055,6 +1209,7 @@ export const TAXONOMY_SEED: TaxonomyNode[] = [
  },
  {
   "id": "dom-engineering-corrosion",
+  "slug": "dom-engineering-corrosion",
   "type": "domain",
   "name": "Corrosion",
   "parentId": "dom-engineering",
@@ -1064,6 +1219,7 @@ export const TAXONOMY_SEED: TaxonomyNode[] = [
  },
  {
   "id": "dom-engineering-inspection",
+  "slug": "dom-engineering-inspection",
   "type": "domain",
   "name": "Inspection",
   "parentId": "dom-engineering",
@@ -1073,6 +1229,7 @@ export const TAXONOMY_SEED: TaxonomyNode[] = [
  },
  {
   "id": "dom-maintenance",
+  "slug": "dom-maintenance",
   "type": "domain",
   "name": "Maintenance",
   "parentId": null,
@@ -1082,6 +1239,7 @@ export const TAXONOMY_SEED: TaxonomyNode[] = [
  },
  {
   "id": "dom-maintenance-mechanical",
+  "slug": "dom-maintenance-mechanical",
   "type": "domain",
   "name": "Mechanical",
   "parentId": "dom-maintenance",
@@ -1091,6 +1249,7 @@ export const TAXONOMY_SEED: TaxonomyNode[] = [
  },
  {
   "id": "dom-maintenance-electrical",
+  "slug": "dom-maintenance-electrical",
   "type": "domain",
   "name": "Electrical",
   "parentId": "dom-maintenance",
@@ -1100,6 +1259,7 @@ export const TAXONOMY_SEED: TaxonomyNode[] = [
  },
  {
   "id": "dom-maintenance-instrumentation",
+  "slug": "dom-maintenance-instrumentation",
   "type": "domain",
   "name": "Instrumentation",
   "parentId": "dom-maintenance",
@@ -1109,6 +1269,7 @@ export const TAXONOMY_SEED: TaxonomyNode[] = [
  },
  {
   "id": "dom-maintenance-predictive",
+  "slug": "dom-maintenance-predictive",
   "type": "domain",
   "name": "Predictive",
   "parentId": "dom-maintenance",
@@ -1118,6 +1279,7 @@ export const TAXONOMY_SEED: TaxonomyNode[] = [
  },
  {
   "id": "dom-maintenance-preventive",
+  "slug": "dom-maintenance-preventive",
   "type": "domain",
   "name": "Preventive",
   "parentId": "dom-maintenance",
@@ -1127,6 +1289,7 @@ export const TAXONOMY_SEED: TaxonomyNode[] = [
  },
  {
   "id": "dom-maintenance-shutdown",
+  "slug": "dom-maintenance-shutdown",
   "type": "domain",
   "name": "Shutdown",
   "parentId": "dom-maintenance",
@@ -1136,6 +1299,7 @@ export const TAXONOMY_SEED: TaxonomyNode[] = [
  },
  {
   "id": "dom-maintenance-turnaround",
+  "slug": "dom-maintenance-turnaround",
   "type": "domain",
   "name": "Turnaround",
   "parentId": "dom-maintenance",
@@ -1145,6 +1309,7 @@ export const TAXONOMY_SEED: TaxonomyNode[] = [
  },
  {
   "id": "dom-maintenance-workshop",
+  "slug": "dom-maintenance-workshop",
   "type": "domain",
   "name": "Workshop",
   "parentId": "dom-maintenance",
@@ -1154,6 +1319,7 @@ export const TAXONOMY_SEED: TaxonomyNode[] = [
  },
  {
   "id": "dom-maintenance-reliability",
+  "slug": "dom-maintenance-reliability",
   "type": "domain",
   "name": "Reliability",
   "parentId": "dom-maintenance",
@@ -1163,6 +1329,7 @@ export const TAXONOMY_SEED: TaxonomyNode[] = [
  },
  {
   "id": "dom-maintenance-condition-monitoring",
+  "slug": "dom-maintenance-condition-monitoring",
   "type": "domain",
   "name": "Condition Monitoring",
   "parentId": "dom-maintenance",
@@ -1172,6 +1339,7 @@ export const TAXONOMY_SEED: TaxonomyNode[] = [
  },
  {
   "id": "dom-projects",
+  "slug": "dom-projects",
   "type": "domain",
   "name": "Projects",
   "parentId": null,
@@ -1181,6 +1349,7 @@ export const TAXONOMY_SEED: TaxonomyNode[] = [
  },
  {
   "id": "dom-projects-planning",
+  "slug": "dom-projects-planning",
   "type": "domain",
   "name": "Planning",
   "parentId": "dom-projects",
@@ -1190,6 +1359,7 @@ export const TAXONOMY_SEED: TaxonomyNode[] = [
  },
  {
   "id": "dom-projects-construction",
+  "slug": "dom-projects-construction",
   "type": "domain",
   "name": "Construction",
   "parentId": "dom-projects",
@@ -1199,6 +1369,7 @@ export const TAXONOMY_SEED: TaxonomyNode[] = [
  },
  {
   "id": "dom-projects-commissioning",
+  "slug": "dom-projects-commissioning",
   "type": "domain",
   "name": "Commissioning",
   "parentId": "dom-projects",
@@ -1208,6 +1379,7 @@ export const TAXONOMY_SEED: TaxonomyNode[] = [
  },
  {
   "id": "dom-projects-start-up",
+  "slug": "dom-projects-start-up",
   "type": "domain",
   "name": "Start-up",
   "parentId": "dom-projects",
@@ -1217,6 +1389,7 @@ export const TAXONOMY_SEED: TaxonomyNode[] = [
  },
  {
   "id": "dom-projects-project-controls",
+  "slug": "dom-projects-project-controls",
   "type": "domain",
   "name": "Project Controls",
   "parentId": "dom-projects",
@@ -1226,6 +1399,7 @@ export const TAXONOMY_SEED: TaxonomyNode[] = [
  },
  {
   "id": "dom-projects-cost-engineering",
+  "slug": "dom-projects-cost-engineering",
   "type": "domain",
   "name": "Cost Engineering",
   "parentId": "dom-projects",
@@ -1235,6 +1409,7 @@ export const TAXONOMY_SEED: TaxonomyNode[] = [
  },
  {
   "id": "dom-projects-contracts",
+  "slug": "dom-projects-contracts",
   "type": "domain",
   "name": "Contracts",
   "parentId": "dom-projects",
@@ -1244,6 +1419,7 @@ export const TAXONOMY_SEED: TaxonomyNode[] = [
  },
  {
   "id": "dom-projects-pmc",
+  "slug": "dom-projects-pmc",
   "type": "domain",
   "name": "PMC",
   "parentId": "dom-projects",
@@ -1253,6 +1429,7 @@ export const TAXONOMY_SEED: TaxonomyNode[] = [
  },
  {
   "id": "dom-hse",
+  "slug": "dom-hse",
   "type": "domain",
   "name": "HSE",
   "parentId": null,
@@ -1262,6 +1439,7 @@ export const TAXONOMY_SEED: TaxonomyNode[] = [
  },
  {
   "id": "dom-hse-safety",
+  "slug": "dom-hse-safety",
   "type": "domain",
   "name": "Safety",
   "parentId": "dom-hse",
@@ -1271,6 +1449,7 @@ export const TAXONOMY_SEED: TaxonomyNode[] = [
  },
  {
   "id": "dom-hse-fire",
+  "slug": "dom-hse-fire",
   "type": "domain",
   "name": "Fire",
   "parentId": "dom-hse",
@@ -1280,6 +1459,7 @@ export const TAXONOMY_SEED: TaxonomyNode[] = [
  },
  {
   "id": "dom-hse-emergency-response",
+  "slug": "dom-hse-emergency-response",
   "type": "domain",
   "name": "Emergency Response",
   "parentId": "dom-hse",
@@ -1289,6 +1469,7 @@ export const TAXONOMY_SEED: TaxonomyNode[] = [
  },
  {
   "id": "dom-hse-environmental",
+  "slug": "dom-hse-environmental",
   "type": "domain",
   "name": "Environmental",
   "parentId": "dom-hse",
@@ -1298,6 +1479,7 @@ export const TAXONOMY_SEED: TaxonomyNode[] = [
  },
  {
   "id": "dom-hse-process-safety",
+  "slug": "dom-hse-process-safety",
   "type": "domain",
   "name": "Process Safety",
   "parentId": "dom-hse",
@@ -1307,6 +1489,7 @@ export const TAXONOMY_SEED: TaxonomyNode[] = [
  },
  {
   "id": "dom-hse-risk",
+  "slug": "dom-hse-risk",
   "type": "domain",
   "name": "Risk",
   "parentId": "dom-hse",
@@ -1316,6 +1499,7 @@ export const TAXONOMY_SEED: TaxonomyNode[] = [
  },
  {
   "id": "dom-hse-permit-to-work",
+  "slug": "dom-hse-permit-to-work",
   "type": "domain",
   "name": "Permit to Work",
   "parentId": "dom-hse",
@@ -1325,6 +1509,7 @@ export const TAXONOMY_SEED: TaxonomyNode[] = [
  },
  {
   "id": "dom-inspection",
+  "slug": "dom-inspection",
   "type": "domain",
   "name": "Inspection",
   "parentId": null,
@@ -1334,6 +1519,7 @@ export const TAXONOMY_SEED: TaxonomyNode[] = [
  },
  {
   "id": "dom-inspection-api-inspection",
+  "slug": "dom-inspection-api-inspection",
   "type": "domain",
   "name": "API Inspection",
   "parentId": "dom-inspection",
@@ -1343,6 +1529,7 @@ export const TAXONOMY_SEED: TaxonomyNode[] = [
  },
  {
   "id": "dom-inspection-tank-inspection",
+  "slug": "dom-inspection-tank-inspection",
   "type": "domain",
   "name": "Tank Inspection",
   "parentId": "dom-inspection",
@@ -1352,6 +1539,7 @@ export const TAXONOMY_SEED: TaxonomyNode[] = [
  },
  {
   "id": "dom-inspection-pipeline-inspection",
+  "slug": "dom-inspection-pipeline-inspection",
   "type": "domain",
   "name": "Pipeline Inspection",
   "parentId": "dom-inspection",
@@ -1361,6 +1549,7 @@ export const TAXONOMY_SEED: TaxonomyNode[] = [
  },
  {
   "id": "dom-inspection-ndt",
+  "slug": "dom-inspection-ndt",
   "type": "domain",
   "name": "NDT",
   "parentId": "dom-inspection",
@@ -1370,6 +1559,7 @@ export const TAXONOMY_SEED: TaxonomyNode[] = [
  },
  {
   "id": "dom-inspection-corrosion",
+  "slug": "dom-inspection-corrosion",
   "type": "domain",
   "name": "Corrosion",
   "parentId": "dom-inspection",
@@ -1379,6 +1569,7 @@ export const TAXONOMY_SEED: TaxonomyNode[] = [
  },
  {
   "id": "dom-inspection-fitness-for-service",
+  "slug": "dom-inspection-fitness-for-service",
   "type": "domain",
   "name": "Fitness for Service",
   "parentId": "dom-inspection",
@@ -1388,6 +1579,7 @@ export const TAXONOMY_SEED: TaxonomyNode[] = [
  },
  {
   "id": "dom-inspection-rbi",
+  "slug": "dom-inspection-rbi",
   "type": "domain",
   "name": "RBI",
   "parentId": "dom-inspection",
@@ -1397,6 +1589,7 @@ export const TAXONOMY_SEED: TaxonomyNode[] = [
  },
  {
   "id": "dom-integrity",
+  "slug": "dom-integrity",
   "type": "domain",
   "name": "Integrity",
   "parentId": null,
@@ -1406,6 +1599,7 @@ export const TAXONOMY_SEED: TaxonomyNode[] = [
  },
  {
   "id": "dom-integrity-asset-integrity",
+  "slug": "dom-integrity-asset-integrity",
   "type": "domain",
   "name": "Asset Integrity",
   "parentId": "dom-integrity",
@@ -1415,6 +1609,7 @@ export const TAXONOMY_SEED: TaxonomyNode[] = [
  },
  {
   "id": "dom-integrity-mechanical-integrity",
+  "slug": "dom-integrity-mechanical-integrity",
   "type": "domain",
   "name": "Mechanical Integrity",
   "parentId": "dom-integrity",
@@ -1424,6 +1619,7 @@ export const TAXONOMY_SEED: TaxonomyNode[] = [
  },
  {
   "id": "dom-integrity-pipeline-integrity",
+  "slug": "dom-integrity-pipeline-integrity",
   "type": "domain",
   "name": "Pipeline Integrity",
   "parentId": "dom-integrity",
@@ -1433,6 +1629,7 @@ export const TAXONOMY_SEED: TaxonomyNode[] = [
  },
  {
   "id": "dom-integrity-tank-integrity",
+  "slug": "dom-integrity-tank-integrity",
   "type": "domain",
   "name": "Tank Integrity",
   "parentId": "dom-integrity",
@@ -1442,6 +1639,7 @@ export const TAXONOMY_SEED: TaxonomyNode[] = [
  },
  {
   "id": "dom-integrity-cathodic-protection",
+  "slug": "dom-integrity-cathodic-protection",
   "type": "domain",
   "name": "Cathodic Protection",
   "parentId": "dom-integrity",
@@ -1451,6 +1649,7 @@ export const TAXONOMY_SEED: TaxonomyNode[] = [
  },
  {
   "id": "dom-integrity-corrosion",
+  "slug": "dom-integrity-corrosion",
   "type": "domain",
   "name": "Corrosion",
   "parentId": "dom-integrity",
@@ -1460,6 +1659,7 @@ export const TAXONOMY_SEED: TaxonomyNode[] = [
  },
  {
   "id": "dom-integrity-coatings",
+  "slug": "dom-integrity-coatings",
   "type": "domain",
   "name": "Coatings",
   "parentId": "dom-integrity",
@@ -1469,6 +1669,7 @@ export const TAXONOMY_SEED: TaxonomyNode[] = [
  },
  {
   "id": "dom-automation",
+  "slug": "dom-automation",
   "type": "domain",
   "name": "Automation",
   "parentId": null,
@@ -1478,6 +1679,7 @@ export const TAXONOMY_SEED: TaxonomyNode[] = [
  },
  {
   "id": "dom-automation-scada",
+  "slug": "dom-automation-scada",
   "type": "domain",
   "name": "SCADA",
   "parentId": "dom-automation",
@@ -1487,6 +1689,7 @@ export const TAXONOMY_SEED: TaxonomyNode[] = [
  },
  {
   "id": "dom-automation-plc",
+  "slug": "dom-automation-plc",
   "type": "domain",
   "name": "PLC",
   "parentId": "dom-automation",
@@ -1496,6 +1699,7 @@ export const TAXONOMY_SEED: TaxonomyNode[] = [
  },
  {
   "id": "dom-automation-dcs",
+  "slug": "dom-automation-dcs",
   "type": "domain",
   "name": "DCS",
   "parentId": "dom-automation",
@@ -1505,6 +1709,7 @@ export const TAXONOMY_SEED: TaxonomyNode[] = [
  },
  {
   "id": "dom-automation-terminal-automation",
+  "slug": "dom-automation-terminal-automation",
   "type": "domain",
   "name": "Terminal Automation",
   "parentId": "dom-automation",
@@ -1514,6 +1719,7 @@ export const TAXONOMY_SEED: TaxonomyNode[] = [
  },
  {
   "id": "dom-automation-cyber-security",
+  "slug": "dom-automation-cyber-security",
   "type": "domain",
   "name": "Cyber Security",
   "parentId": "dom-automation",
@@ -1523,6 +1729,7 @@ export const TAXONOMY_SEED: TaxonomyNode[] = [
  },
  {
   "id": "dom-automation-industrial-networks",
+  "slug": "dom-automation-industrial-networks",
   "type": "domain",
   "name": "Industrial Networks",
   "parentId": "dom-automation",
@@ -1532,6 +1739,7 @@ export const TAXONOMY_SEED: TaxonomyNode[] = [
  },
  {
   "id": "dom-automation-iiot",
+  "slug": "dom-automation-iiot",
   "type": "domain",
   "name": "IIoT",
   "parentId": "dom-automation",
@@ -1541,6 +1749,7 @@ export const TAXONOMY_SEED: TaxonomyNode[] = [
  },
  {
   "id": "dom-automation-ai",
+  "slug": "dom-automation-ai",
   "type": "domain",
   "name": "AI",
   "parentId": "dom-automation",
@@ -1550,6 +1759,7 @@ export const TAXONOMY_SEED: TaxonomyNode[] = [
  },
  {
   "id": "dom-automation-digital-twin",
+  "slug": "dom-automation-digital-twin",
   "type": "domain",
   "name": "Digital Twin",
   "parentId": "dom-automation",
@@ -1559,6 +1769,7 @@ export const TAXONOMY_SEED: TaxonomyNode[] = [
  },
  {
   "id": "dom-commercial",
+  "slug": "dom-commercial",
   "type": "domain",
   "name": "Commercial",
   "parentId": null,
@@ -1568,6 +1779,7 @@ export const TAXONOMY_SEED: TaxonomyNode[] = [
  },
  {
   "id": "dom-commercial-sales",
+  "slug": "dom-commercial-sales",
   "type": "domain",
   "name": "Sales",
   "parentId": "dom-commercial",
@@ -1577,6 +1789,7 @@ export const TAXONOMY_SEED: TaxonomyNode[] = [
  },
  {
   "id": "dom-commercial-marketing",
+  "slug": "dom-commercial-marketing",
   "type": "domain",
   "name": "Marketing",
   "parentId": "dom-commercial",
@@ -1586,6 +1799,7 @@ export const TAXONOMY_SEED: TaxonomyNode[] = [
  },
  {
   "id": "dom-commercial-business-development",
+  "slug": "dom-commercial-business-development",
   "type": "domain",
   "name": "Business Development",
   "parentId": "dom-commercial",
@@ -1595,6 +1809,7 @@ export const TAXONOMY_SEED: TaxonomyNode[] = [
  },
  {
   "id": "dom-commercial-pricing",
+  "slug": "dom-commercial-pricing",
   "type": "domain",
   "name": "Pricing",
   "parentId": "dom-commercial",
@@ -1604,6 +1819,7 @@ export const TAXONOMY_SEED: TaxonomyNode[] = [
  },
  {
   "id": "dom-commercial-tendering",
+  "slug": "dom-commercial-tendering",
   "type": "domain",
   "name": "Tendering",
   "parentId": "dom-commercial",
@@ -1613,6 +1829,7 @@ export const TAXONOMY_SEED: TaxonomyNode[] = [
  },
  {
   "id": "dom-commercial-contracts",
+  "slug": "dom-commercial-contracts",
   "type": "domain",
   "name": "Contracts",
   "parentId": "dom-commercial",
@@ -1622,6 +1839,7 @@ export const TAXONOMY_SEED: TaxonomyNode[] = [
  },
  {
   "id": "dom-commercial-estimating",
+  "slug": "dom-commercial-estimating",
   "type": "domain",
   "name": "Estimating",
   "parentId": "dom-commercial",
@@ -1631,6 +1849,7 @@ export const TAXONOMY_SEED: TaxonomyNode[] = [
  },
  {
   "id": "dom-commercial-customer-success",
+  "slug": "dom-commercial-customer-success",
   "type": "domain",
   "name": "Customer Success",
   "parentId": "dom-commercial",
@@ -1640,6 +1859,7 @@ export const TAXONOMY_SEED: TaxonomyNode[] = [
  },
  {
   "id": "dom-commercial-key-accounts",
+  "slug": "dom-commercial-key-accounts",
   "type": "domain",
   "name": "Key Accounts",
   "parentId": "dom-commercial",
@@ -1649,6 +1869,7 @@ export const TAXONOMY_SEED: TaxonomyNode[] = [
  },
  {
   "id": "dom-supply-chain",
+  "slug": "dom-supply-chain",
   "type": "domain",
   "name": "Supply Chain",
   "parentId": null,
@@ -1658,6 +1879,7 @@ export const TAXONOMY_SEED: TaxonomyNode[] = [
  },
  {
   "id": "dom-supply-chain-procurement",
+  "slug": "dom-supply-chain-procurement",
   "type": "domain",
   "name": "Procurement",
   "parentId": "dom-supply-chain",
@@ -1667,6 +1889,7 @@ export const TAXONOMY_SEED: TaxonomyNode[] = [
  },
  {
   "id": "dom-supply-chain-strategic-sourcing",
+  "slug": "dom-supply-chain-strategic-sourcing",
   "type": "domain",
   "name": "Strategic Sourcing",
   "parentId": "dom-supply-chain",
@@ -1676,6 +1899,7 @@ export const TAXONOMY_SEED: TaxonomyNode[] = [
  },
  {
   "id": "dom-supply-chain-warehouse",
+  "slug": "dom-supply-chain-warehouse",
   "type": "domain",
   "name": "Warehouse",
   "parentId": "dom-supply-chain",
@@ -1685,6 +1909,7 @@ export const TAXONOMY_SEED: TaxonomyNode[] = [
  },
  {
   "id": "dom-supply-chain-inventory",
+  "slug": "dom-supply-chain-inventory",
   "type": "domain",
   "name": "Inventory",
   "parentId": "dom-supply-chain",
@@ -1694,6 +1919,7 @@ export const TAXONOMY_SEED: TaxonomyNode[] = [
  },
  {
   "id": "dom-supply-chain-materials",
+  "slug": "dom-supply-chain-materials",
   "type": "domain",
   "name": "Materials",
   "parentId": "dom-supply-chain",
@@ -1703,6 +1929,7 @@ export const TAXONOMY_SEED: TaxonomyNode[] = [
  },
  {
   "id": "dom-supply-chain-stores",
+  "slug": "dom-supply-chain-stores",
   "type": "domain",
   "name": "Stores",
   "parentId": "dom-supply-chain",
@@ -1712,6 +1939,7 @@ export const TAXONOMY_SEED: TaxonomyNode[] = [
  },
  {
   "id": "dom-supply-chain-vendor-development",
+  "slug": "dom-supply-chain-vendor-development",
   "type": "domain",
   "name": "Vendor Development",
   "parentId": "dom-supply-chain",
@@ -1721,6 +1949,7 @@ export const TAXONOMY_SEED: TaxonomyNode[] = [
  },
  {
   "id": "dom-supply-chain-expediting",
+  "slug": "dom-supply-chain-expediting",
   "type": "domain",
   "name": "Expediting",
   "parentId": "dom-supply-chain",
@@ -1730,6 +1959,7 @@ export const TAXONOMY_SEED: TaxonomyNode[] = [
  },
  {
   "id": "dom-supply-chain-logistics",
+  "slug": "dom-supply-chain-logistics",
   "type": "domain",
   "name": "Logistics",
   "parentId": "dom-supply-chain",
@@ -1739,6 +1969,7 @@ export const TAXONOMY_SEED: TaxonomyNode[] = [
  },
  {
   "id": "dom-supply-chain-fleet",
+  "slug": "dom-supply-chain-fleet",
   "type": "domain",
   "name": "Fleet",
   "parentId": "dom-supply-chain",
@@ -1748,6 +1979,7 @@ export const TAXONOMY_SEED: TaxonomyNode[] = [
  },
  {
   "id": "dom-supply-chain-shipping",
+  "slug": "dom-supply-chain-shipping",
   "type": "domain",
   "name": "Shipping",
   "parentId": "dom-supply-chain",
@@ -1757,6 +1989,7 @@ export const TAXONOMY_SEED: TaxonomyNode[] = [
  },
  {
   "id": "dom-finance",
+  "slug": "dom-finance",
   "type": "domain",
   "name": "Finance",
   "parentId": null,
@@ -1766,6 +1999,7 @@ export const TAXONOMY_SEED: TaxonomyNode[] = [
  },
  {
   "id": "dom-finance-accounts",
+  "slug": "dom-finance-accounts",
   "type": "domain",
   "name": "Accounts",
   "parentId": "dom-finance",
@@ -1775,6 +2009,7 @@ export const TAXONOMY_SEED: TaxonomyNode[] = [
  },
  {
   "id": "dom-finance-audit",
+  "slug": "dom-finance-audit",
   "type": "domain",
   "name": "Audit",
   "parentId": "dom-finance",
@@ -1784,6 +2019,7 @@ export const TAXONOMY_SEED: TaxonomyNode[] = [
  },
  {
   "id": "dom-finance-treasury",
+  "slug": "dom-finance-treasury",
   "type": "domain",
   "name": "Treasury",
   "parentId": "dom-finance",
@@ -1793,6 +2029,7 @@ export const TAXONOMY_SEED: TaxonomyNode[] = [
  },
  {
   "id": "dom-finance-tax",
+  "slug": "dom-finance-tax",
   "type": "domain",
   "name": "Tax",
   "parentId": "dom-finance",
@@ -1802,6 +2039,7 @@ export const TAXONOMY_SEED: TaxonomyNode[] = [
  },
  {
   "id": "dom-finance-commercial-finance",
+  "slug": "dom-finance-commercial-finance",
   "type": "domain",
   "name": "Commercial Finance",
   "parentId": "dom-finance",
@@ -1811,6 +2049,7 @@ export const TAXONOMY_SEED: TaxonomyNode[] = [
  },
  {
   "id": "dom-finance-fp-a",
+  "slug": "dom-finance-fp-a",
   "type": "domain",
   "name": "FP&A",
   "parentId": "dom-finance",
@@ -1822,6 +2061,7 @@ export const TAXONOMY_SEED: TaxonomyNode[] = [
  },
  {
   "id": "dom-finance-payroll",
+  "slug": "dom-finance-payroll",
   "type": "domain",
   "name": "Payroll",
   "parentId": "dom-finance",
@@ -1832,6 +2072,7 @@ export const TAXONOMY_SEED: TaxonomyNode[] = [
  },
  {
   "id": "dom-finance-cost-control",
+  "slug": "dom-finance-cost-control",
   "type": "domain",
   "name": "Cost Control",
   "parentId": "dom-finance",
@@ -1841,6 +2082,7 @@ export const TAXONOMY_SEED: TaxonomyNode[] = [
  },
  {
   "id": "dom-human-resources",
+  "slug": "dom-human-resources",
   "type": "domain",
   "name": "Human Resources",
   "parentId": null,
@@ -1850,6 +2092,7 @@ export const TAXONOMY_SEED: TaxonomyNode[] = [
  },
  {
   "id": "dom-human-resources-recruitment",
+  "slug": "dom-human-resources-recruitment",
   "type": "domain",
   "name": "Recruitment",
   "parentId": "dom-human-resources",
@@ -1859,6 +2102,7 @@ export const TAXONOMY_SEED: TaxonomyNode[] = [
  },
  {
   "id": "dom-human-resources-talent-acquisition",
+  "slug": "dom-human-resources-talent-acquisition",
   "type": "domain",
   "name": "Talent Acquisition",
   "parentId": "dom-human-resources",
@@ -1868,6 +2112,7 @@ export const TAXONOMY_SEED: TaxonomyNode[] = [
  },
  {
   "id": "dom-human-resources-learning-development",
+  "slug": "dom-human-resources-learning-development",
   "type": "domain",
   "name": "Learning & Development",
   "parentId": "dom-human-resources",
@@ -1879,6 +2124,7 @@ export const TAXONOMY_SEED: TaxonomyNode[] = [
  },
  {
   "id": "dom-human-resources-industrial-relations",
+  "slug": "dom-human-resources-industrial-relations",
   "type": "domain",
   "name": "Industrial Relations",
   "parentId": "dom-human-resources",
@@ -1888,6 +2134,7 @@ export const TAXONOMY_SEED: TaxonomyNode[] = [
  },
  {
   "id": "dom-human-resources-compensation",
+  "slug": "dom-human-resources-compensation",
   "type": "domain",
   "name": "Compensation",
   "parentId": "dom-human-resources",
@@ -1897,6 +2144,7 @@ export const TAXONOMY_SEED: TaxonomyNode[] = [
  },
  {
   "id": "dom-human-resources-hrbp",
+  "slug": "dom-human-resources-hrbp",
   "type": "domain",
   "name": "HRBP",
   "parentId": "dom-human-resources",
@@ -1906,6 +2154,7 @@ export const TAXONOMY_SEED: TaxonomyNode[] = [
  },
  {
   "id": "dom-human-resources-training",
+  "slug": "dom-human-resources-training",
   "type": "domain",
   "name": "Training",
   "parentId": "dom-human-resources",
@@ -1915,6 +2164,7 @@ export const TAXONOMY_SEED: TaxonomyNode[] = [
  },
  {
   "id": "dom-quality",
+  "slug": "dom-quality",
   "type": "domain",
   "name": "Quality",
   "parentId": null,
@@ -1924,6 +2174,7 @@ export const TAXONOMY_SEED: TaxonomyNode[] = [
  },
  {
   "id": "dom-quality-qa",
+  "slug": "dom-quality-qa",
   "type": "domain",
   "name": "QA",
   "parentId": "dom-quality",
@@ -1933,6 +2184,7 @@ export const TAXONOMY_SEED: TaxonomyNode[] = [
  },
  {
   "id": "dom-quality-qc",
+  "slug": "dom-quality-qc",
   "type": "domain",
   "name": "QC",
   "parentId": "dom-quality",
@@ -1942,6 +2194,7 @@ export const TAXONOMY_SEED: TaxonomyNode[] = [
  },
  {
   "id": "dom-quality-iso",
+  "slug": "dom-quality-iso",
   "type": "domain",
   "name": "ISO",
   "parentId": "dom-quality",
@@ -1951,6 +2204,7 @@ export const TAXONOMY_SEED: TaxonomyNode[] = [
  },
  {
   "id": "dom-quality-auditing",
+  "slug": "dom-quality-auditing",
   "type": "domain",
   "name": "Auditing",
   "parentId": "dom-quality",
@@ -1960,6 +2214,7 @@ export const TAXONOMY_SEED: TaxonomyNode[] = [
  },
  {
   "id": "dom-quality-documentation",
+  "slug": "dom-quality-documentation",
   "type": "domain",
   "name": "Documentation",
   "parentId": "dom-quality",
@@ -1969,6 +2224,7 @@ export const TAXONOMY_SEED: TaxonomyNode[] = [
  },
  {
   "id": "dom-it",
+  "slug": "dom-it",
   "type": "domain",
   "name": "IT",
   "parentId": null,
@@ -1978,6 +2234,7 @@ export const TAXONOMY_SEED: TaxonomyNode[] = [
  },
  {
   "id": "dom-it-erp",
+  "slug": "dom-it-erp",
   "type": "domain",
   "name": "ERP",
   "parentId": "dom-it",
@@ -1990,6 +2247,7 @@ export const TAXONOMY_SEED: TaxonomyNode[] = [
  },
  {
   "id": "dom-it-infrastructure",
+  "slug": "dom-it-infrastructure",
   "type": "domain",
   "name": "Infrastructure",
   "parentId": "dom-it",
@@ -1999,6 +2257,7 @@ export const TAXONOMY_SEED: TaxonomyNode[] = [
  },
  {
   "id": "dom-it-networking",
+  "slug": "dom-it-networking",
   "type": "domain",
   "name": "Networking",
   "parentId": "dom-it",
@@ -2008,6 +2267,7 @@ export const TAXONOMY_SEED: TaxonomyNode[] = [
  },
  {
   "id": "dom-it-cybersecurity",
+  "slug": "dom-it-cybersecurity",
   "type": "domain",
   "name": "Cybersecurity",
   "parentId": "dom-it",
@@ -2017,6 +2277,7 @@ export const TAXONOMY_SEED: TaxonomyNode[] = [
  },
  {
   "id": "dom-it-data-analytics",
+  "slug": "dom-it-data-analytics",
   "type": "domain",
   "name": "Data Analytics",
   "parentId": "dom-it",
@@ -2026,6 +2287,7 @@ export const TAXONOMY_SEED: TaxonomyNode[] = [
  },
  {
   "id": "dom-it-ai",
+  "slug": "dom-it-ai",
   "type": "domain",
   "name": "AI",
   "parentId": "dom-it",
@@ -2035,6 +2297,7 @@ export const TAXONOMY_SEED: TaxonomyNode[] = [
  },
  {
   "id": "dom-it-cloud",
+  "slug": "dom-it-cloud",
   "type": "domain",
   "name": "Cloud",
   "parentId": "dom-it",
@@ -2044,6 +2307,7 @@ export const TAXONOMY_SEED: TaxonomyNode[] = [
  },
  {
   "id": "dom-legal",
+  "slug": "dom-legal",
   "type": "domain",
   "name": "Legal",
   "parentId": null,
@@ -2053,6 +2317,7 @@ export const TAXONOMY_SEED: TaxonomyNode[] = [
  },
  {
   "id": "dom-legal-contracts",
+  "slug": "dom-legal-contracts",
   "type": "domain",
   "name": "Contracts",
   "parentId": "dom-legal",
@@ -2062,6 +2327,7 @@ export const TAXONOMY_SEED: TaxonomyNode[] = [
  },
  {
   "id": "dom-legal-compliance",
+  "slug": "dom-legal-compliance",
   "type": "domain",
   "name": "Compliance",
   "parentId": "dom-legal",
@@ -2071,6 +2337,7 @@ export const TAXONOMY_SEED: TaxonomyNode[] = [
  },
  {
   "id": "dom-legal-corporate",
+  "slug": "dom-legal-corporate",
   "type": "domain",
   "name": "Corporate",
   "parentId": "dom-legal",
@@ -2080,6 +2347,7 @@ export const TAXONOMY_SEED: TaxonomyNode[] = [
  },
  {
   "id": "dom-legal-insurance",
+  "slug": "dom-legal-insurance",
   "type": "domain",
   "name": "Insurance",
   "parentId": "dom-legal",
@@ -2089,6 +2357,7 @@ export const TAXONOMY_SEED: TaxonomyNode[] = [
  },
  {
   "id": "dom-legal-claims",
+  "slug": "dom-legal-claims",
   "type": "domain",
   "name": "Claims",
   "parentId": "dom-legal",
@@ -2098,6 +2367,7 @@ export const TAXONOMY_SEED: TaxonomyNode[] = [
  },
  {
   "id": "dom-administration",
+  "slug": "dom-administration",
   "type": "domain",
   "name": "Administration",
   "parentId": null,
@@ -2107,6 +2377,7 @@ export const TAXONOMY_SEED: TaxonomyNode[] = [
  },
  {
   "id": "dom-administration-facilities",
+  "slug": "dom-administration-facilities",
   "type": "domain",
   "name": "Facilities",
   "parentId": "dom-administration",
@@ -2116,6 +2387,7 @@ export const TAXONOMY_SEED: TaxonomyNode[] = [
  },
  {
   "id": "dom-administration-office-management",
+  "slug": "dom-administration-office-management",
   "type": "domain",
   "name": "Office Management",
   "parentId": "dom-administration",
@@ -2125,6 +2397,7 @@ export const TAXONOMY_SEED: TaxonomyNode[] = [
  },
  {
   "id": "dom-administration-travel",
+  "slug": "dom-administration-travel",
   "type": "domain",
   "name": "Travel",
   "parentId": "dom-administration",
@@ -2134,6 +2407,7 @@ export const TAXONOMY_SEED: TaxonomyNode[] = [
  },
  {
   "id": "dom-administration-security",
+  "slug": "dom-administration-security",
   "type": "domain",
   "name": "Security",
   "parentId": "dom-administration",
@@ -2143,6 +2417,7 @@ export const TAXONOMY_SEED: TaxonomyNode[] = [
  },
  {
   "id": "dom-administration-reception",
+  "slug": "dom-administration-reception",
   "type": "domain",
   "name": "Reception",
   "parentId": "dom-administration",
@@ -2152,6 +2427,7 @@ export const TAXONOMY_SEED: TaxonomyNode[] = [
  },
  {
   "id": "dom-administration-document-control",
+  "slug": "dom-administration-document-control",
   "type": "domain",
   "name": "Document Control",
   "parentId": "dom-administration",
@@ -2160,7 +2436,208 @@ export const TAXONOMY_SEED: TaxonomyNode[] = [
   "order": 5
  },
  {
+  "id": "dom-esg-sustainability",
+  "slug": "dom-esg-sustainability",
+  "type": "domain",
+  "name": "ESG / Sustainability",
+  "parentId": null,
+  "level": 1,
+  "aliases": [],
+  "order": 16
+ },
+ {
+  "id": "dom-esg-sustainability-emissions-reporting",
+  "slug": "dom-esg-sustainability-emissions-reporting",
+  "type": "domain",
+  "name": "Emissions Reporting",
+  "parentId": "dom-esg-sustainability",
+  "level": 2,
+  "aliases": [],
+  "order": 0
+ },
+ {
+  "id": "dom-esg-sustainability-carbon-accounting",
+  "slug": "dom-esg-sustainability-carbon-accounting",
+  "type": "domain",
+  "name": "Carbon Accounting",
+  "parentId": "dom-esg-sustainability",
+  "level": 2,
+  "aliases": [],
+  "order": 1
+ },
+ {
+  "id": "dom-esg-sustainability-sustainability-strategy",
+  "slug": "dom-esg-sustainability-sustainability-strategy",
+  "type": "domain",
+  "name": "Sustainability Strategy",
+  "parentId": "dom-esg-sustainability",
+  "level": 2,
+  "aliases": [],
+  "order": 2
+ },
+ {
+  "id": "dom-esg-sustainability-esg-reporting",
+  "slug": "dom-esg-sustainability-esg-reporting",
+  "type": "domain",
+  "name": "ESG Reporting",
+  "parentId": "dom-esg-sustainability",
+  "level": 2,
+  "aliases": [],
+  "order": 3
+ },
+ {
+  "id": "dom-esg-sustainability-climate-risk",
+  "slug": "dom-esg-sustainability-climate-risk",
+  "type": "domain",
+  "name": "Climate Risk",
+  "parentId": "dom-esg-sustainability",
+  "level": 2,
+  "aliases": [],
+  "order": 4
+ },
+ {
+  "id": "dom-esg-sustainability-decarbonization",
+  "slug": "dom-esg-sustainability-decarbonization",
+  "type": "domain",
+  "name": "Decarbonization",
+  "parentId": "dom-esg-sustainability",
+  "level": 2,
+  "aliases": [],
+  "order": 5
+ },
+ {
+  "id": "dom-drilling-rig",
+  "slug": "dom-drilling-rig",
+  "type": "domain",
+  "name": "Drilling & Rig",
+  "parentId": null,
+  "level": 1,
+  "aliases": [],
+  "order": 17
+ },
+ {
+  "id": "dom-drilling-rig-drilling-engineering",
+  "slug": "dom-drilling-rig-drilling-engineering",
+  "type": "domain",
+  "name": "Drilling Engineering",
+  "parentId": "dom-drilling-rig",
+  "level": 2,
+  "aliases": [],
+  "order": 0
+ },
+ {
+  "id": "dom-drilling-rig-well-services",
+  "slug": "dom-drilling-rig-well-services",
+  "type": "domain",
+  "name": "Well Services",
+  "parentId": "dom-drilling-rig",
+  "level": 2,
+  "aliases": [],
+  "order": 1
+ },
+ {
+  "id": "dom-drilling-rig-rig-operations",
+  "slug": "dom-drilling-rig-rig-operations",
+  "type": "domain",
+  "name": "Rig Operations",
+  "parentId": "dom-drilling-rig",
+  "level": 2,
+  "aliases": [],
+  "order": 2
+ },
+ {
+  "id": "dom-drilling-rig-directional-drilling",
+  "slug": "dom-drilling-rig-directional-drilling",
+  "type": "domain",
+  "name": "Directional Drilling",
+  "parentId": "dom-drilling-rig",
+  "level": 2,
+  "aliases": [],
+  "order": 3
+ },
+ {
+  "id": "dom-drilling-rig-mud-engineering",
+  "slug": "dom-drilling-rig-mud-engineering",
+  "type": "domain",
+  "name": "Mud Engineering",
+  "parentId": "dom-drilling-rig",
+  "level": 2,
+  "aliases": [],
+  "order": 4
+ },
+ {
+  "id": "dom-drilling-rig-wireline",
+  "slug": "dom-drilling-rig-wireline",
+  "type": "domain",
+  "name": "Wireline",
+  "parentId": "dom-drilling-rig",
+  "level": 2,
+  "aliases": [],
+  "order": 5
+ },
+ {
+  "id": "dom-geosciences",
+  "slug": "dom-geosciences",
+  "type": "domain",
+  "name": "Geosciences",
+  "parentId": null,
+  "level": 1,
+  "aliases": [],
+  "order": 18
+ },
+ {
+  "id": "dom-geosciences-geology",
+  "slug": "dom-geosciences-geology",
+  "type": "domain",
+  "name": "Geology",
+  "parentId": "dom-geosciences",
+  "level": 2,
+  "aliases": [],
+  "order": 0
+ },
+ {
+  "id": "dom-geosciences-geophysics",
+  "slug": "dom-geosciences-geophysics",
+  "type": "domain",
+  "name": "Geophysics",
+  "parentId": "dom-geosciences",
+  "level": 2,
+  "aliases": [],
+  "order": 1
+ },
+ {
+  "id": "dom-geosciences-petrophysics",
+  "slug": "dom-geosciences-petrophysics",
+  "type": "domain",
+  "name": "Petrophysics",
+  "parentId": "dom-geosciences",
+  "level": 2,
+  "aliases": [],
+  "order": 2
+ },
+ {
+  "id": "dom-geosciences-reservoir-engineering",
+  "slug": "dom-geosciences-reservoir-engineering",
+  "type": "domain",
+  "name": "Reservoir Engineering",
+  "parentId": "dom-geosciences",
+  "level": 2,
+  "aliases": [],
+  "order": 3
+ },
+ {
+  "id": "dom-geosciences-seismic-interpretation",
+  "slug": "dom-geosciences-seismic-interpretation",
+  "type": "domain",
+  "name": "Seismic Interpretation",
+  "parentId": "dom-geosciences",
+  "level": 2,
+  "aliases": [],
+  "order": 4
+ },
+ {
   "id": "fam-operations",
+  "slug": "fam-operations",
   "type": "family",
   "name": "Operations",
   "parentId": null,
@@ -2170,6 +2647,7 @@ export const TAXONOMY_SEED: TaxonomyNode[] = [
  },
  {
   "id": "role-terminal-operator",
+  "slug": "role-terminal-operator",
   "type": "role",
   "name": "Terminal Operator",
   "parentId": "fam-operations",
@@ -2179,6 +2657,7 @@ export const TAXONOMY_SEED: TaxonomyNode[] = [
  },
  {
   "id": "role-control-room-operator",
+  "slug": "role-control-room-operator",
   "type": "role",
   "name": "Control Room Operator",
   "parentId": "fam-operations",
@@ -2188,6 +2667,7 @@ export const TAXONOMY_SEED: TaxonomyNode[] = [
  },
  {
   "id": "role-loading-operator",
+  "slug": "role-loading-operator",
   "type": "role",
   "name": "Loading Operator",
   "parentId": "fam-operations",
@@ -2197,6 +2677,7 @@ export const TAXONOMY_SEED: TaxonomyNode[] = [
  },
  {
   "id": "role-jetty-operator",
+  "slug": "role-jetty-operator",
   "type": "role",
   "name": "Jetty Operator",
   "parentId": "fam-operations",
@@ -2206,6 +2687,7 @@ export const TAXONOMY_SEED: TaxonomyNode[] = [
  },
  {
   "id": "role-tank-farm-operator",
+  "slug": "role-tank-farm-operator",
   "type": "role",
   "name": "Tank Farm Operator",
   "parentId": "fam-operations",
@@ -2215,6 +2697,7 @@ export const TAXONOMY_SEED: TaxonomyNode[] = [
  },
  {
   "id": "role-shift-supervisor",
+  "slug": "role-shift-supervisor",
   "type": "role",
   "name": "Shift Supervisor",
   "parentId": "fam-operations",
@@ -2226,6 +2709,7 @@ export const TAXONOMY_SEED: TaxonomyNode[] = [
  },
  {
   "id": "role-operations-engineer",
+  "slug": "role-operations-engineer",
   "type": "role",
   "name": "Operations Engineer",
   "parentId": "fam-operations",
@@ -2235,6 +2719,7 @@ export const TAXONOMY_SEED: TaxonomyNode[] = [
  },
  {
   "id": "role-operations-manager",
+  "slug": "role-operations-manager",
   "type": "role",
   "name": "Operations Manager",
   "parentId": "fam-operations",
@@ -2244,6 +2729,7 @@ export const TAXONOMY_SEED: TaxonomyNode[] = [
  },
  {
   "id": "role-terminal-manager",
+  "slug": "role-terminal-manager",
   "type": "role",
   "name": "Terminal Manager",
   "parentId": "fam-operations",
@@ -2253,6 +2739,7 @@ export const TAXONOMY_SEED: TaxonomyNode[] = [
  },
  {
   "id": "role-regional-manager",
+  "slug": "role-regional-manager",
   "type": "role",
   "name": "Regional Manager",
   "parentId": "fam-operations",
@@ -2262,6 +2749,7 @@ export const TAXONOMY_SEED: TaxonomyNode[] = [
  },
  {
   "id": "fam-mechanical",
+  "slug": "fam-mechanical",
   "type": "family",
   "name": "Mechanical",
   "parentId": null,
@@ -2271,6 +2759,7 @@ export const TAXONOMY_SEED: TaxonomyNode[] = [
  },
  {
   "id": "role-mechanical-technician",
+  "slug": "role-mechanical-technician",
   "type": "role",
   "name": "Mechanical Technician",
   "parentId": "fam-mechanical",
@@ -2282,6 +2771,7 @@ export const TAXONOMY_SEED: TaxonomyNode[] = [
  },
  {
   "id": "role-mechanical-engineer",
+  "slug": "role-mechanical-engineer",
   "type": "role",
   "name": "Mechanical Engineer",
   "parentId": "fam-mechanical",
@@ -2291,6 +2781,7 @@ export const TAXONOMY_SEED: TaxonomyNode[] = [
  },
  {
   "id": "role-maintenance-manager",
+  "slug": "role-maintenance-manager",
   "type": "role",
   "name": "Maintenance Manager",
   "parentId": "fam-mechanical",
@@ -2300,6 +2791,7 @@ export const TAXONOMY_SEED: TaxonomyNode[] = [
  },
  {
   "id": "role-asset-manager",
+  "slug": "role-asset-manager",
   "type": "role",
   "name": "Asset Manager",
   "parentId": "fam-mechanical",
@@ -2309,6 +2801,7 @@ export const TAXONOMY_SEED: TaxonomyNode[] = [
  },
  {
   "id": "fam-electrical",
+  "slug": "fam-electrical",
   "type": "family",
   "name": "Electrical",
   "parentId": null,
@@ -2318,6 +2811,7 @@ export const TAXONOMY_SEED: TaxonomyNode[] = [
  },
  {
   "id": "role-electrician",
+  "slug": "role-electrician",
   "type": "role",
   "name": "Electrician",
   "parentId": "fam-electrical",
@@ -2327,6 +2821,7 @@ export const TAXONOMY_SEED: TaxonomyNode[] = [
  },
  {
   "id": "role-electrical-technician",
+  "slug": "role-electrical-technician",
   "type": "role",
   "name": "Electrical Technician",
   "parentId": "fam-electrical",
@@ -2336,6 +2831,7 @@ export const TAXONOMY_SEED: TaxonomyNode[] = [
  },
  {
   "id": "role-electrical-engineer",
+  "slug": "role-electrical-engineer",
   "type": "role",
   "name": "Electrical Engineer",
   "parentId": "fam-electrical",
@@ -2345,6 +2841,7 @@ export const TAXONOMY_SEED: TaxonomyNode[] = [
  },
  {
   "id": "role-electrical-manager",
+  "slug": "role-electrical-manager",
   "type": "role",
   "name": "Electrical Manager",
   "parentId": "fam-electrical",
@@ -2354,6 +2851,7 @@ export const TAXONOMY_SEED: TaxonomyNode[] = [
  },
  {
   "id": "fam-instrumentation",
+  "slug": "fam-instrumentation",
   "type": "family",
   "name": "Instrumentation",
   "parentId": null,
@@ -2363,6 +2861,7 @@ export const TAXONOMY_SEED: TaxonomyNode[] = [
  },
  {
   "id": "role-instrument-technician",
+  "slug": "role-instrument-technician",
   "type": "role",
   "name": "Instrument Technician",
   "parentId": "fam-instrumentation",
@@ -2372,6 +2871,7 @@ export const TAXONOMY_SEED: TaxonomyNode[] = [
  },
  {
   "id": "role-calibration-engineer",
+  "slug": "role-calibration-engineer",
   "type": "role",
   "name": "Calibration Engineer",
   "parentId": "fam-instrumentation",
@@ -2381,6 +2881,7 @@ export const TAXONOMY_SEED: TaxonomyNode[] = [
  },
  {
   "id": "role-instrument-engineer",
+  "slug": "role-instrument-engineer",
   "type": "role",
   "name": "Instrument Engineer",
   "parentId": "fam-instrumentation",
@@ -2390,6 +2891,7 @@ export const TAXONOMY_SEED: TaxonomyNode[] = [
  },
  {
   "id": "role-instrumentation-manager",
+  "slug": "role-instrumentation-manager",
   "type": "role",
   "name": "Instrumentation Manager",
   "parentId": "fam-instrumentation",
@@ -2399,6 +2901,7 @@ export const TAXONOMY_SEED: TaxonomyNode[] = [
  },
  {
   "id": "fam-civil",
+  "slug": "fam-civil",
   "type": "family",
   "name": "Civil",
   "parentId": null,
@@ -2408,6 +2911,7 @@ export const TAXONOMY_SEED: TaxonomyNode[] = [
  },
  {
   "id": "role-site-engineer",
+  "slug": "role-site-engineer",
   "type": "role",
   "name": "Site Engineer",
   "parentId": "fam-civil",
@@ -2417,6 +2921,7 @@ export const TAXONOMY_SEED: TaxonomyNode[] = [
  },
  {
   "id": "role-structural-engineer",
+  "slug": "role-structural-engineer",
   "type": "role",
   "name": "Structural Engineer",
   "parentId": "fam-civil",
@@ -2426,6 +2931,7 @@ export const TAXONOMY_SEED: TaxonomyNode[] = [
  },
  {
   "id": "role-civil-engineer",
+  "slug": "role-civil-engineer",
   "type": "role",
   "name": "Civil Engineer",
   "parentId": "fam-civil",
@@ -2435,6 +2941,7 @@ export const TAXONOMY_SEED: TaxonomyNode[] = [
  },
  {
   "id": "role-construction-manager",
+  "slug": "role-construction-manager",
   "type": "role",
   "name": "Construction Manager",
   "parentId": "fam-civil",
@@ -2444,6 +2951,7 @@ export const TAXONOMY_SEED: TaxonomyNode[] = [
  },
  {
   "id": "fam-inspection",
+  "slug": "fam-inspection",
   "type": "family",
   "name": "Inspection",
   "parentId": null,
@@ -2453,6 +2961,7 @@ export const TAXONOMY_SEED: TaxonomyNode[] = [
  },
  {
   "id": "role-api-inspector",
+  "slug": "role-api-inspector",
   "type": "role",
   "name": "API Inspector",
   "parentId": "fam-inspection",
@@ -2466,6 +2975,7 @@ export const TAXONOMY_SEED: TaxonomyNode[] = [
  },
  {
   "id": "role-tank-inspector",
+  "slug": "role-tank-inspector",
   "type": "role",
   "name": "Tank Inspector",
   "parentId": "fam-inspection",
@@ -2475,6 +2985,7 @@ export const TAXONOMY_SEED: TaxonomyNode[] = [
  },
  {
   "id": "role-pipeline-inspector",
+  "slug": "role-pipeline-inspector",
   "type": "role",
   "name": "Pipeline Inspector",
   "parentId": "fam-inspection",
@@ -2484,6 +2995,7 @@ export const TAXONOMY_SEED: TaxonomyNode[] = [
  },
  {
   "id": "role-ndt-technician",
+  "slug": "role-ndt-technician",
   "type": "role",
   "name": "NDT Technician",
   "parentId": "fam-inspection",
@@ -2495,6 +3007,7 @@ export const TAXONOMY_SEED: TaxonomyNode[] = [
  },
  {
   "id": "role-corrosion-engineer",
+  "slug": "role-corrosion-engineer",
   "type": "role",
   "name": "Corrosion Engineer",
   "parentId": "fam-inspection",
@@ -2504,6 +3017,7 @@ export const TAXONOMY_SEED: TaxonomyNode[] = [
  },
  {
   "id": "role-chief-inspector",
+  "slug": "role-chief-inspector",
   "type": "role",
   "name": "Chief Inspector",
   "parentId": "fam-inspection",
@@ -2513,6 +3027,7 @@ export const TAXONOMY_SEED: TaxonomyNode[] = [
  },
  {
   "id": "role-integrity-manager",
+  "slug": "role-integrity-manager",
   "type": "role",
   "name": "Integrity Manager",
   "parentId": "fam-inspection",
@@ -2522,6 +3037,7 @@ export const TAXONOMY_SEED: TaxonomyNode[] = [
  },
  {
   "id": "fam-fire-safety",
+  "slug": "fam-fire-safety",
   "type": "family",
   "name": "Fire & Safety",
   "parentId": null,
@@ -2531,6 +3047,7 @@ export const TAXONOMY_SEED: TaxonomyNode[] = [
  },
  {
   "id": "role-fireman",
+  "slug": "role-fireman",
   "type": "role",
   "name": "Fireman",
   "parentId": "fam-fire-safety",
@@ -2540,6 +3057,7 @@ export const TAXONOMY_SEED: TaxonomyNode[] = [
  },
  {
   "id": "role-fire-officer",
+  "slug": "role-fire-officer",
   "type": "role",
   "name": "Fire Officer",
   "parentId": "fam-fire-safety",
@@ -2549,6 +3067,7 @@ export const TAXONOMY_SEED: TaxonomyNode[] = [
  },
  {
   "id": "role-fire-chief",
+  "slug": "role-fire-chief",
   "type": "role",
   "name": "Fire Chief",
   "parentId": "fam-fire-safety",
@@ -2558,6 +3077,7 @@ export const TAXONOMY_SEED: TaxonomyNode[] = [
  },
  {
   "id": "role-safety-officer",
+  "slug": "role-safety-officer",
   "type": "role",
   "name": "Safety Officer",
   "parentId": "fam-fire-safety",
@@ -2567,6 +3087,7 @@ export const TAXONOMY_SEED: TaxonomyNode[] = [
  },
  {
   "id": "role-hse-manager",
+  "slug": "role-hse-manager",
   "type": "role",
   "name": "HSE Manager",
   "parentId": "fam-fire-safety",
@@ -2578,6 +3099,7 @@ export const TAXONOMY_SEED: TaxonomyNode[] = [
  },
  {
   "id": "role-emergency-response-manager",
+  "slug": "role-emergency-response-manager",
   "type": "role",
   "name": "Emergency Response Manager",
   "parentId": "fam-fire-safety",
@@ -2587,6 +3109,7 @@ export const TAXONOMY_SEED: TaxonomyNode[] = [
  },
  {
   "id": "fam-process",
+  "slug": "fam-process",
   "type": "family",
   "name": "Process",
   "parentId": null,
@@ -2596,6 +3119,7 @@ export const TAXONOMY_SEED: TaxonomyNode[] = [
  },
  {
   "id": "role-process-engineer",
+  "slug": "role-process-engineer",
   "type": "role",
   "name": "Process Engineer",
   "parentId": "fam-process",
@@ -2605,6 +3129,7 @@ export const TAXONOMY_SEED: TaxonomyNode[] = [
  },
  {
   "id": "role-technical-authority",
+  "slug": "role-technical-authority",
   "type": "role",
   "name": "Technical Authority",
   "parentId": "fam-process",
@@ -2614,6 +3139,7 @@ export const TAXONOMY_SEED: TaxonomyNode[] = [
  },
  {
   "id": "fam-marine",
+  "slug": "fam-marine",
   "type": "family",
   "name": "Marine",
   "parentId": null,
@@ -2623,6 +3149,7 @@ export const TAXONOMY_SEED: TaxonomyNode[] = [
  },
  {
   "id": "role-marine-pilot",
+  "slug": "role-marine-pilot",
   "type": "role",
   "name": "Marine Pilot",
   "parentId": "fam-marine",
@@ -2632,6 +3159,7 @@ export const TAXONOMY_SEED: TaxonomyNode[] = [
  },
  {
   "id": "role-harbour-master",
+  "slug": "role-harbour-master",
   "type": "role",
   "name": "Harbour Master",
   "parentId": "fam-marine",
@@ -2641,6 +3169,7 @@ export const TAXONOMY_SEED: TaxonomyNode[] = [
  },
  {
   "id": "role-jetty-superintendent",
+  "slug": "role-jetty-superintendent",
   "type": "role",
   "name": "Jetty Superintendent",
   "parentId": "fam-marine",
@@ -2650,6 +3179,7 @@ export const TAXONOMY_SEED: TaxonomyNode[] = [
  },
  {
   "id": "role-marine-coordinator",
+  "slug": "role-marine-coordinator",
   "type": "role",
   "name": "Marine Coordinator",
   "parentId": "fam-marine",
@@ -2659,6 +3189,7 @@ export const TAXONOMY_SEED: TaxonomyNode[] = [
  },
  {
   "id": "role-mooring-master",
+  "slug": "role-mooring-master",
   "type": "role",
   "name": "Mooring Master",
   "parentId": "fam-marine",
@@ -2668,6 +3199,7 @@ export const TAXONOMY_SEED: TaxonomyNode[] = [
  },
  {
   "id": "role-loading-master",
+  "slug": "role-loading-master",
   "type": "role",
   "name": "Loading Master",
   "parentId": "fam-marine",
@@ -2677,6 +3209,7 @@ export const TAXONOMY_SEED: TaxonomyNode[] = [
  },
  {
   "id": "fam-projects",
+  "slug": "fam-projects",
   "type": "family",
   "name": "Projects",
   "parentId": null,
@@ -2686,6 +3219,7 @@ export const TAXONOMY_SEED: TaxonomyNode[] = [
  },
  {
   "id": "role-project-engineer",
+  "slug": "role-project-engineer",
   "type": "role",
   "name": "Project Engineer",
   "parentId": "fam-projects",
@@ -2695,6 +3229,7 @@ export const TAXONOMY_SEED: TaxonomyNode[] = [
  },
  {
   "id": "role-planning-engineer",
+  "slug": "role-planning-engineer",
   "type": "role",
   "name": "Planning Engineer",
   "parentId": "fam-projects",
@@ -2704,6 +3239,7 @@ export const TAXONOMY_SEED: TaxonomyNode[] = [
  },
  {
   "id": "role-commissioning-engineer",
+  "slug": "role-commissioning-engineer",
   "type": "role",
   "name": "Commissioning Engineer",
   "parentId": "fam-projects",
@@ -2715,6 +3251,7 @@ export const TAXONOMY_SEED: TaxonomyNode[] = [
  },
  {
   "id": "role-project-controls-engineer",
+  "slug": "role-project-controls-engineer",
   "type": "role",
   "name": "Project Controls Engineer",
   "parentId": "fam-projects",
@@ -2724,6 +3261,7 @@ export const TAXONOMY_SEED: TaxonomyNode[] = [
  },
  {
   "id": "role-cost-engineer",
+  "slug": "role-cost-engineer",
   "type": "role",
   "name": "Cost Engineer",
   "parentId": "fam-projects",
@@ -2733,6 +3271,7 @@ export const TAXONOMY_SEED: TaxonomyNode[] = [
  },
  {
   "id": "role-contracts-engineer",
+  "slug": "role-contracts-engineer",
   "type": "role",
   "name": "Contracts Engineer",
   "parentId": "fam-projects",
@@ -2742,6 +3281,7 @@ export const TAXONOMY_SEED: TaxonomyNode[] = [
  },
  {
   "id": "role-project-manager",
+  "slug": "role-project-manager",
   "type": "role",
   "name": "Project Manager",
   "parentId": "fam-projects",
@@ -2753,6 +3293,7 @@ export const TAXONOMY_SEED: TaxonomyNode[] = [
  },
  {
   "id": "fam-commercial",
+  "slug": "fam-commercial",
   "type": "family",
   "name": "Commercial",
   "parentId": null,
@@ -2762,6 +3303,7 @@ export const TAXONOMY_SEED: TaxonomyNode[] = [
  },
  {
   "id": "role-sales-engineer",
+  "slug": "role-sales-engineer",
   "type": "role",
   "name": "Sales Engineer",
   "parentId": "fam-commercial",
@@ -2771,6 +3313,7 @@ export const TAXONOMY_SEED: TaxonomyNode[] = [
  },
  {
   "id": "role-sales-manager",
+  "slug": "role-sales-manager",
   "type": "role",
   "name": "Sales Manager",
   "parentId": "fam-commercial",
@@ -2780,6 +3323,7 @@ export const TAXONOMY_SEED: TaxonomyNode[] = [
  },
  {
   "id": "role-business-development-manager",
+  "slug": "role-business-development-manager",
   "type": "role",
   "name": "Business Development Manager",
   "parentId": "fam-commercial",
@@ -2789,6 +3333,7 @@ export const TAXONOMY_SEED: TaxonomyNode[] = [
  },
  {
   "id": "role-commercial-manager",
+  "slug": "role-commercial-manager",
   "type": "role",
   "name": "Commercial Manager",
   "parentId": "fam-commercial",
@@ -2798,6 +3343,7 @@ export const TAXONOMY_SEED: TaxonomyNode[] = [
  },
  {
   "id": "role-key-account-manager",
+  "slug": "role-key-account-manager",
   "type": "role",
   "name": "Key Account Manager",
   "parentId": "fam-commercial",
@@ -2807,6 +3353,7 @@ export const TAXONOMY_SEED: TaxonomyNode[] = [
  },
  {
   "id": "fam-procurement",
+  "slug": "fam-procurement",
   "type": "family",
   "name": "Procurement",
   "parentId": null,
@@ -2816,6 +3363,7 @@ export const TAXONOMY_SEED: TaxonomyNode[] = [
  },
  {
   "id": "role-buyer",
+  "slug": "role-buyer",
   "type": "role",
   "name": "Buyer",
   "parentId": "fam-procurement",
@@ -2825,6 +3373,7 @@ export const TAXONOMY_SEED: TaxonomyNode[] = [
  },
  {
   "id": "role-category-manager",
+  "slug": "role-category-manager",
   "type": "role",
   "name": "Category Manager",
   "parentId": "fam-procurement",
@@ -2834,6 +3383,7 @@ export const TAXONOMY_SEED: TaxonomyNode[] = [
  },
  {
   "id": "role-procurement-manager",
+  "slug": "role-procurement-manager",
   "type": "role",
   "name": "Procurement Manager",
   "parentId": "fam-procurement",
@@ -2843,6 +3393,7 @@ export const TAXONOMY_SEED: TaxonomyNode[] = [
  },
  {
   "id": "role-strategic-sourcing-specialist",
+  "slug": "role-strategic-sourcing-specialist",
   "type": "role",
   "name": "Strategic Sourcing Specialist",
   "parentId": "fam-procurement",
@@ -2852,6 +3403,7 @@ export const TAXONOMY_SEED: TaxonomyNode[] = [
  },
  {
   "id": "fam-warehouse",
+  "slug": "fam-warehouse",
   "type": "family",
   "name": "Warehouse",
   "parentId": null,
@@ -2861,6 +3413,7 @@ export const TAXONOMY_SEED: TaxonomyNode[] = [
  },
  {
   "id": "role-storekeeper",
+  "slug": "role-storekeeper",
   "type": "role",
   "name": "Storekeeper",
   "parentId": "fam-warehouse",
@@ -2870,6 +3423,7 @@ export const TAXONOMY_SEED: TaxonomyNode[] = [
  },
  {
   "id": "role-warehouse-executive",
+  "slug": "role-warehouse-executive",
   "type": "role",
   "name": "Warehouse Executive",
   "parentId": "fam-warehouse",
@@ -2879,6 +3433,7 @@ export const TAXONOMY_SEED: TaxonomyNode[] = [
  },
  {
   "id": "role-inventory-controller",
+  "slug": "role-inventory-controller",
   "type": "role",
   "name": "Inventory Controller",
   "parentId": "fam-warehouse",
@@ -2888,6 +3443,7 @@ export const TAXONOMY_SEED: TaxonomyNode[] = [
  },
  {
   "id": "role-warehouse-manager",
+  "slug": "role-warehouse-manager",
   "type": "role",
   "name": "Warehouse Manager",
   "parentId": "fam-warehouse",
@@ -2897,6 +3453,7 @@ export const TAXONOMY_SEED: TaxonomyNode[] = [
  },
  {
   "id": "fam-logistics",
+  "slug": "fam-logistics",
   "type": "family",
   "name": "Logistics",
   "parentId": null,
@@ -2906,6 +3463,7 @@ export const TAXONOMY_SEED: TaxonomyNode[] = [
  },
  {
   "id": "role-fleet-coordinator",
+  "slug": "role-fleet-coordinator",
   "type": "role",
   "name": "Fleet Coordinator",
   "parentId": "fam-logistics",
@@ -2915,6 +3473,7 @@ export const TAXONOMY_SEED: TaxonomyNode[] = [
  },
  {
   "id": "role-transport-planner",
+  "slug": "role-transport-planner",
   "type": "role",
   "name": "Transport Planner",
   "parentId": "fam-logistics",
@@ -2924,6 +3483,7 @@ export const TAXONOMY_SEED: TaxonomyNode[] = [
  },
  {
   "id": "role-logistics-manager",
+  "slug": "role-logistics-manager",
   "type": "role",
   "name": "Logistics Manager",
   "parentId": "fam-logistics",
@@ -2933,6 +3493,7 @@ export const TAXONOMY_SEED: TaxonomyNode[] = [
  },
  {
   "id": "role-shipping-manager",
+  "slug": "role-shipping-manager",
   "type": "role",
   "name": "Shipping Manager",
   "parentId": "fam-logistics",
@@ -2942,6 +3503,7 @@ export const TAXONOMY_SEED: TaxonomyNode[] = [
  },
  {
   "id": "fam-digital",
+  "slug": "fam-digital",
   "type": "family",
   "name": "Digital",
   "parentId": null,
@@ -2951,6 +3513,7 @@ export const TAXONOMY_SEED: TaxonomyNode[] = [
  },
  {
   "id": "role-scada-engineer",
+  "slug": "role-scada-engineer",
   "type": "role",
   "name": "SCADA Engineer",
   "parentId": "fam-digital",
@@ -2960,6 +3523,7 @@ export const TAXONOMY_SEED: TaxonomyNode[] = [
  },
  {
   "id": "role-plc-engineer",
+  "slug": "role-plc-engineer",
   "type": "role",
   "name": "PLC Engineer",
   "parentId": "fam-digital",
@@ -2969,6 +3533,7 @@ export const TAXONOMY_SEED: TaxonomyNode[] = [
  },
  {
   "id": "role-automation-engineer",
+  "slug": "role-automation-engineer",
   "type": "role",
   "name": "Automation Engineer",
   "parentId": "fam-digital",
@@ -2978,6 +3543,7 @@ export const TAXONOMY_SEED: TaxonomyNode[] = [
  },
  {
   "id": "role-cybersecurity-engineer",
+  "slug": "role-cybersecurity-engineer",
   "type": "role",
   "name": "Cybersecurity Engineer",
   "parentId": "fam-digital",
@@ -2987,6 +3553,7 @@ export const TAXONOMY_SEED: TaxonomyNode[] = [
  },
  {
   "id": "role-data-scientist",
+  "slug": "role-data-scientist",
   "type": "role",
   "name": "Data Scientist",
   "parentId": "fam-digital",
@@ -2996,6 +3563,7 @@ export const TAXONOMY_SEED: TaxonomyNode[] = [
  },
  {
   "id": "role-ai-engineer",
+  "slug": "role-ai-engineer",
   "type": "role",
   "name": "AI Engineer",
   "parentId": "fam-digital",
@@ -3005,6 +3573,7 @@ export const TAXONOMY_SEED: TaxonomyNode[] = [
  },
  {
   "id": "role-digital-transformation-manager",
+  "slug": "role-digital-transformation-manager",
   "type": "role",
   "name": "Digital Transformation Manager",
   "parentId": "fam-digital",
@@ -3014,6 +3583,7 @@ export const TAXONOMY_SEED: TaxonomyNode[] = [
  },
  {
   "id": "std-grp-engineering-standards",
+  "slug": "std-grp-engineering-standards",
   "type": "standard",
   "name": "Engineering Standards",
   "parentId": null,
@@ -3023,6 +3593,7 @@ export const TAXONOMY_SEED: TaxonomyNode[] = [
  },
  {
   "id": "disc-api-650",
+  "slug": "disc-api-650",
   "type": "standard",
   "name": "API 650",
   "parentId": "std-grp-engineering-standards",
@@ -3032,6 +3603,7 @@ export const TAXONOMY_SEED: TaxonomyNode[] = [
  },
  {
   "id": "disc-api-620",
+  "slug": "disc-api-620",
   "type": "standard",
   "name": "API 620",
   "parentId": "std-grp-engineering-standards",
@@ -3041,6 +3613,7 @@ export const TAXONOMY_SEED: TaxonomyNode[] = [
  },
  {
   "id": "disc-api-653",
+  "slug": "disc-api-653",
   "type": "standard",
   "name": "API 653",
   "parentId": "std-grp-engineering-standards",
@@ -3050,6 +3623,7 @@ export const TAXONOMY_SEED: TaxonomyNode[] = [
  },
  {
   "id": "disc-api-2610",
+  "slug": "disc-api-2610",
   "type": "standard",
   "name": "API 2610",
   "parentId": "std-grp-engineering-standards",
@@ -3059,6 +3633,7 @@ export const TAXONOMY_SEED: TaxonomyNode[] = [
  },
  {
   "id": "disc-api-2350",
+  "slug": "disc-api-2350",
   "type": "standard",
   "name": "API 2350",
   "parentId": "std-grp-engineering-standards",
@@ -3071,6 +3646,7 @@ export const TAXONOMY_SEED: TaxonomyNode[] = [
  },
  {
   "id": "disc-api-510",
+  "slug": "disc-api-510",
   "type": "standard",
   "name": "API 510",
   "parentId": "std-grp-engineering-standards",
@@ -3080,6 +3656,7 @@ export const TAXONOMY_SEED: TaxonomyNode[] = [
  },
  {
   "id": "disc-api-570",
+  "slug": "disc-api-570",
   "type": "standard",
   "name": "API 570",
   "parentId": "std-grp-engineering-standards",
@@ -3089,6 +3666,7 @@ export const TAXONOMY_SEED: TaxonomyNode[] = [
  },
  {
   "id": "disc-api-580",
+  "slug": "disc-api-580",
   "type": "standard",
   "name": "API 580",
   "parentId": "std-grp-engineering-standards",
@@ -3098,6 +3676,7 @@ export const TAXONOMY_SEED: TaxonomyNode[] = [
  },
  {
   "id": "disc-api-581",
+  "slug": "disc-api-581",
   "type": "standard",
   "name": "API 581",
   "parentId": "std-grp-engineering-standards",
@@ -3107,6 +3686,7 @@ export const TAXONOMY_SEED: TaxonomyNode[] = [
  },
  {
   "id": "std-api-571-damage-mechanisms",
+  "slug": "std-api-571-damage-mechanisms",
   "type": "standard",
   "name": "API 571 Damage Mechanisms",
   "parentId": "std-grp-engineering-standards",
@@ -3116,6 +3696,7 @@ export const TAXONOMY_SEED: TaxonomyNode[] = [
  },
  {
   "id": "std-api-682-mechanical-seals",
+  "slug": "std-api-682-mechanical-seals",
   "type": "standard",
   "name": "API 682 Mechanical Seals",
   "parentId": "std-grp-engineering-standards",
@@ -3125,6 +3706,7 @@ export const TAXONOMY_SEED: TaxonomyNode[] = [
  },
  {
   "id": "std-api-610-centrifugal-pumps",
+  "slug": "std-api-610-centrifugal-pumps",
   "type": "standard",
   "name": "API 610 Centrifugal Pumps",
   "parentId": "std-grp-engineering-standards",
@@ -3134,6 +3716,7 @@ export const TAXONOMY_SEED: TaxonomyNode[] = [
  },
  {
   "id": "std-api-674-675-pd-metering-pumps",
+  "slug": "std-api-674-675-pd-metering-pumps",
   "type": "standard",
   "name": "API 674/675 PD & Metering Pumps",
   "parentId": "std-grp-engineering-standards",
@@ -3143,6 +3726,7 @@ export const TAXONOMY_SEED: TaxonomyNode[] = [
  },
  {
   "id": "std-api-686-machinery-installation",
+  "slug": "std-api-686-machinery-installation",
   "type": "standard",
   "name": "API 686 Machinery Installation",
   "parentId": "std-grp-engineering-standards",
@@ -3152,6 +3736,7 @@ export const TAXONOMY_SEED: TaxonomyNode[] = [
  },
  {
   "id": "std-api-2000-tank-venting",
+  "slug": "std-api-2000-tank-venting",
   "type": "standard",
   "name": "API 2000 Tank Venting",
   "parentId": "std-grp-engineering-standards",
@@ -3161,6 +3746,7 @@ export const TAXONOMY_SEED: TaxonomyNode[] = [
  },
  {
   "id": "std-api-rp-2003-static-electricity",
+  "slug": "std-api-rp-2003-static-electricity",
   "type": "standard",
   "name": "API RP 2003 Static Electricity",
   "parentId": "std-grp-engineering-standards",
@@ -3170,6 +3756,7 @@ export const TAXONOMY_SEED: TaxonomyNode[] = [
  },
  {
   "id": "std-api-rp-2218-safe-tank-entry",
+  "slug": "std-api-rp-2218-safe-tank-entry",
   "type": "standard",
   "name": "API RP 2218 Safe Tank Entry",
   "parentId": "std-grp-engineering-standards",
@@ -3179,6 +3766,7 @@ export const TAXONOMY_SEED: TaxonomyNode[] = [
  },
  {
   "id": "std-api-rp-752-753-facility-siting",
+  "slug": "std-api-rp-752-753-facility-siting",
   "type": "standard",
   "name": "API RP 752/753 Facility Siting",
   "parentId": "std-grp-engineering-standards",
@@ -3188,6 +3776,7 @@ export const TAXONOMY_SEED: TaxonomyNode[] = [
  },
  {
   "id": "std-api-rp-754-process-safety-kpis",
+  "slug": "std-api-rp-754-process-safety-kpis",
   "type": "standard",
   "name": "API RP 754 Process Safety KPIs",
   "parentId": "std-grp-engineering-standards",
@@ -3197,6 +3786,7 @@ export const TAXONOMY_SEED: TaxonomyNode[] = [
  },
  {
   "id": "disc-asme",
+  "slug": "disc-asme",
   "type": "standard",
   "name": "ASME",
   "parentId": "std-grp-engineering-standards",
@@ -3206,6 +3796,7 @@ export const TAXONOMY_SEED: TaxonomyNode[] = [
  },
  {
   "id": "std-asme-bpvc-section-viii",
+  "slug": "std-asme-bpvc-section-viii",
   "type": "standard",
   "name": "ASME BPVC Section VIII",
   "parentId": "std-grp-engineering-standards",
@@ -3215,6 +3806,7 @@ export const TAXONOMY_SEED: TaxonomyNode[] = [
  },
  {
   "id": "std-asme-section-ix",
+  "slug": "std-asme-section-ix",
   "type": "standard",
   "name": "ASME Section IX",
   "parentId": "std-grp-engineering-standards",
@@ -3224,6 +3816,7 @@ export const TAXONOMY_SEED: TaxonomyNode[] = [
  },
  {
   "id": "std-asme-b31-3-process-piping",
+  "slug": "std-asme-b31-3-process-piping",
   "type": "standard",
   "name": "ASME B31.3 Process Piping",
   "parentId": "std-grp-engineering-standards",
@@ -3233,6 +3826,7 @@ export const TAXONOMY_SEED: TaxonomyNode[] = [
  },
  {
   "id": "std-asme-b31-4",
+  "slug": "std-asme-b31-4",
   "type": "standard",
   "name": "ASME B31.4",
   "parentId": "std-grp-engineering-standards",
@@ -3242,6 +3836,7 @@ export const TAXONOMY_SEED: TaxonomyNode[] = [
  },
  {
   "id": "std-asme-b31-8",
+  "slug": "std-asme-b31-8",
   "type": "standard",
   "name": "ASME B31.8",
   "parentId": "std-grp-engineering-standards",
@@ -3251,6 +3846,7 @@ export const TAXONOMY_SEED: TaxonomyNode[] = [
  },
  {
   "id": "std-asme-pcc-1",
+  "slug": "std-asme-pcc-1",
   "type": "standard",
   "name": "ASME PCC-1",
   "parentId": "std-grp-engineering-standards",
@@ -3260,6 +3856,7 @@ export const TAXONOMY_SEED: TaxonomyNode[] = [
  },
  {
   "id": "std-asme-pcc-2",
+  "slug": "std-asme-pcc-2",
   "type": "standard",
   "name": "ASME PCC-2",
   "parentId": "std-grp-engineering-standards",
@@ -3269,6 +3866,7 @@ export const TAXONOMY_SEED: TaxonomyNode[] = [
  },
  {
   "id": "std-astm-material-testing",
+  "slug": "std-astm-material-testing",
   "type": "standard",
   "name": "ASTM Material Testing",
   "parentId": "std-grp-engineering-standards",
@@ -3280,6 +3878,7 @@ export const TAXONOMY_SEED: TaxonomyNode[] = [
  },
  {
   "id": "std-iso-13623-pipeline",
+  "slug": "std-iso-13623-pipeline",
   "type": "standard",
   "name": "ISO 13623 Pipeline",
   "parentId": "std-grp-engineering-standards",
@@ -3289,6 +3888,7 @@ export const TAXONOMY_SEED: TaxonomyNode[] = [
  },
  {
   "id": "std-iso-19900-series-offshore-structures",
+  "slug": "std-iso-19900-series-offshore-structures",
   "type": "standard",
   "name": "ISO 19900-series Offshore Structures",
   "parentId": "std-grp-engineering-standards",
@@ -3302,6 +3902,7 @@ export const TAXONOMY_SEED: TaxonomyNode[] = [
  },
  {
   "id": "std-grp-fire-hazardous-area-standards",
+  "slug": "std-grp-fire-hazardous-area-standards",
   "type": "standard",
   "name": "Fire & Hazardous Area Standards",
   "parentId": null,
@@ -3311,6 +3912,7 @@ export const TAXONOMY_SEED: TaxonomyNode[] = [
  },
  {
   "id": "disc-nfpa",
+  "slug": "disc-nfpa",
   "type": "standard",
   "name": "NFPA",
   "parentId": "std-grp-fire-hazardous-area-standards",
@@ -3320,6 +3922,7 @@ export const TAXONOMY_SEED: TaxonomyNode[] = [
  },
  {
   "id": "disc-iec",
+  "slug": "disc-iec",
   "type": "standard",
   "name": "IEC",
   "parentId": "std-grp-fire-hazardous-area-standards",
@@ -3329,6 +3932,7 @@ export const TAXONOMY_SEED: TaxonomyNode[] = [
  },
  {
   "id": "disc-atex",
+  "slug": "disc-atex",
   "type": "standard",
   "name": "ATEX",
   "parentId": "std-grp-fire-hazardous-area-standards",
@@ -3338,6 +3942,7 @@ export const TAXONOMY_SEED: TaxonomyNode[] = [
  },
  {
   "id": "std-nfpa-11-foam",
+  "slug": "std-nfpa-11-foam",
   "type": "standard",
   "name": "NFPA 11 Foam",
   "parentId": "std-grp-fire-hazardous-area-standards",
@@ -3347,6 +3952,7 @@ export const TAXONOMY_SEED: TaxonomyNode[] = [
  },
  {
   "id": "std-nfpa-13-sprinklers",
+  "slug": "std-nfpa-13-sprinklers",
   "type": "standard",
   "name": "NFPA 13 Sprinklers",
   "parentId": "std-grp-fire-hazardous-area-standards",
@@ -3356,6 +3962,7 @@ export const TAXONOMY_SEED: TaxonomyNode[] = [
  },
  {
   "id": "std-nfpa-15-water-spray",
+  "slug": "std-nfpa-15-water-spray",
   "type": "standard",
   "name": "NFPA 15 Water Spray",
   "parentId": "std-grp-fire-hazardous-area-standards",
@@ -3365,6 +3972,7 @@ export const TAXONOMY_SEED: TaxonomyNode[] = [
  },
  {
   "id": "std-nfpa-20-fire-pumps",
+  "slug": "std-nfpa-20-fire-pumps",
   "type": "standard",
   "name": "NFPA 20 Fire Pumps",
   "parentId": "std-grp-fire-hazardous-area-standards",
@@ -3374,6 +3982,7 @@ export const TAXONOMY_SEED: TaxonomyNode[] = [
  },
  {
   "id": "std-nfpa-24-underground-fire-mains",
+  "slug": "std-nfpa-24-underground-fire-mains",
   "type": "standard",
   "name": "NFPA 24 Underground Fire Mains",
   "parentId": "std-grp-fire-hazardous-area-standards",
@@ -3383,6 +3992,7 @@ export const TAXONOMY_SEED: TaxonomyNode[] = [
  },
  {
   "id": "std-nfpa-30-flammable-liquids",
+  "slug": "std-nfpa-30-flammable-liquids",
   "type": "standard",
   "name": "NFPA 30 Flammable Liquids",
   "parentId": "std-grp-fire-hazardous-area-standards",
@@ -3392,6 +4002,7 @@ export const TAXONOMY_SEED: TaxonomyNode[] = [
  },
  {
   "id": "std-nfpa-72-fire-alarm",
+  "slug": "std-nfpa-72-fire-alarm",
   "type": "standard",
   "name": "NFPA 72 Fire Alarm",
   "parentId": "std-grp-fire-hazardous-area-standards",
@@ -3401,6 +4012,7 @@ export const TAXONOMY_SEED: TaxonomyNode[] = [
  },
  {
   "id": "std-nfpa-70",
+  "slug": "std-nfpa-70",
   "type": "standard",
   "name": "NFPA 70",
   "parentId": "std-grp-fire-hazardous-area-standards",
@@ -3412,6 +4024,7 @@ export const TAXONOMY_SEED: TaxonomyNode[] = [
  },
  {
   "id": "std-nfpa-101-life-safety",
+  "slug": "std-nfpa-101-life-safety",
   "type": "standard",
   "name": "NFPA 101 Life Safety",
   "parentId": "std-grp-fire-hazardous-area-standards",
@@ -3421,6 +4034,7 @@ export const TAXONOMY_SEED: TaxonomyNode[] = [
  },
  {
   "id": "std-nfpa-25-fire-system-inspection",
+  "slug": "std-nfpa-25-fire-system-inspection",
   "type": "standard",
   "name": "NFPA 25 Fire System Inspection",
   "parentId": "std-grp-fire-hazardous-area-standards",
@@ -3430,6 +4044,7 @@ export const TAXONOMY_SEED: TaxonomyNode[] = [
  },
  {
   "id": "std-iec-61508",
+  "slug": "std-iec-61508",
   "type": "standard",
   "name": "IEC 61508",
   "parentId": "std-grp-fire-hazardous-area-standards",
@@ -3439,6 +4054,7 @@ export const TAXONOMY_SEED: TaxonomyNode[] = [
  },
  {
   "id": "std-iec-61511",
+  "slug": "std-iec-61511",
   "type": "standard",
   "name": "IEC 61511",
   "parentId": "std-grp-fire-hazardous-area-standards",
@@ -3450,6 +4066,7 @@ export const TAXONOMY_SEED: TaxonomyNode[] = [
  },
  {
   "id": "std-grp-management-system-standards",
+  "slug": "std-grp-management-system-standards",
   "type": "standard",
   "name": "Management System Standards",
   "parentId": null,
@@ -3459,6 +4076,7 @@ export const TAXONOMY_SEED: TaxonomyNode[] = [
  },
  {
   "id": "disc-iso-9001",
+  "slug": "disc-iso-9001",
   "type": "standard",
   "name": "ISO 9001",
   "parentId": "std-grp-management-system-standards",
@@ -3468,6 +4086,7 @@ export const TAXONOMY_SEED: TaxonomyNode[] = [
  },
  {
   "id": "disc-iso-14001",
+  "slug": "disc-iso-14001",
   "type": "standard",
   "name": "ISO 14001",
   "parentId": "std-grp-management-system-standards",
@@ -3477,6 +4096,7 @@ export const TAXONOMY_SEED: TaxonomyNode[] = [
  },
  {
   "id": "disc-iso-45001",
+  "slug": "disc-iso-45001",
   "type": "standard",
   "name": "ISO 45001",
   "parentId": "std-grp-management-system-standards",
@@ -3486,6 +4106,7 @@ export const TAXONOMY_SEED: TaxonomyNode[] = [
  },
  {
   "id": "std-iso-50001",
+  "slug": "std-iso-50001",
   "type": "standard",
   "name": "ISO 50001",
   "parentId": "std-grp-management-system-standards",
@@ -3495,6 +4116,7 @@ export const TAXONOMY_SEED: TaxonomyNode[] = [
  },
  {
   "id": "std-iso-31000",
+  "slug": "std-iso-31000",
   "type": "standard",
   "name": "ISO 31000",
   "parentId": "std-grp-management-system-standards",
@@ -3504,6 +4126,7 @@ export const TAXONOMY_SEED: TaxonomyNode[] = [
  },
  {
   "id": "std-iso-55001",
+  "slug": "std-iso-55001",
   "type": "standard",
   "name": "ISO 55001",
   "parentId": "std-grp-management-system-standards",
@@ -3513,6 +4136,7 @@ export const TAXONOMY_SEED: TaxonomyNode[] = [
  },
  {
   "id": "std-iso-27001",
+  "slug": "std-iso-27001",
   "type": "standard",
   "name": "ISO 27001",
   "parentId": "std-grp-management-system-standards",
@@ -3522,6 +4146,7 @@ export const TAXONOMY_SEED: TaxonomyNode[] = [
  },
  {
   "id": "std-iso-17025",
+  "slug": "std-iso-17025",
   "type": "standard",
   "name": "ISO 17025",
   "parentId": "std-grp-management-system-standards",
@@ -3531,6 +4156,7 @@ export const TAXONOMY_SEED: TaxonomyNode[] = [
  },
  {
   "id": "std-grp-welding-standards",
+  "slug": "std-grp-welding-standards",
   "type": "standard",
   "name": "Welding Standards",
   "parentId": null,
@@ -3540,6 +4166,7 @@ export const TAXONOMY_SEED: TaxonomyNode[] = [
  },
  {
   "id": "std-aws-d1-1-structural-welding",
+  "slug": "std-aws-d1-1-structural-welding",
   "type": "standard",
   "name": "AWS D1.1 Structural Welding",
   "parentId": "std-grp-welding-standards",
@@ -3549,6 +4176,7 @@ export const TAXONOMY_SEED: TaxonomyNode[] = [
  },
  {
   "id": "std-iso-3834-welding-quality",
+  "slug": "std-iso-3834-welding-quality",
   "type": "standard",
   "name": "ISO 3834 Welding Quality",
   "parentId": "std-grp-welding-standards",
@@ -3558,6 +4186,7 @@ export const TAXONOMY_SEED: TaxonomyNode[] = [
  },
  {
   "id": "std-iso-9606-welder-qualification",
+  "slug": "std-iso-9606-welder-qualification",
   "type": "standard",
   "name": "ISO 9606 Welder Qualification",
   "parentId": "std-grp-welding-standards",
@@ -3567,6 +4196,7 @@ export const TAXONOMY_SEED: TaxonomyNode[] = [
  },
  {
   "id": "std-grp-indian-regulatory-codes",
+  "slug": "std-grp-indian-regulatory-codes",
   "type": "standard",
   "name": "Indian Regulatory & Codes",
   "parentId": null,
@@ -3576,6 +4206,7 @@ export const TAXONOMY_SEED: TaxonomyNode[] = [
  },
  {
   "id": "std-oisd-standards",
+  "slug": "std-oisd-standards",
   "type": "standard",
   "name": "OISD Standards",
   "parentId": "std-grp-indian-regulatory-codes",
@@ -3587,6 +4218,7 @@ export const TAXONOMY_SEED: TaxonomyNode[] = [
  },
  {
   "id": "std-oisd-std-117-fire-protection",
+  "slug": "std-oisd-std-117-fire-protection",
   "type": "standard",
   "name": "OISD-STD-117 Fire Protection",
   "parentId": "std-grp-indian-regulatory-codes",
@@ -3597,6 +4229,7 @@ export const TAXONOMY_SEED: TaxonomyNode[] = [
  },
  {
   "id": "std-oisd-std-118-facility-layouts",
+  "slug": "std-oisd-std-118-facility-layouts",
   "type": "standard",
   "name": "OISD-STD-118 Facility Layouts",
   "parentId": "std-grp-indian-regulatory-codes",
@@ -3607,6 +4240,7 @@ export const TAXONOMY_SEED: TaxonomyNode[] = [
  },
  {
   "id": "std-oisd-std-129-storage-tank-inspection",
+  "slug": "std-oisd-std-129-storage-tank-inspection",
   "type": "standard",
   "name": "OISD-STD-129 Storage Tank Inspection",
   "parentId": "std-grp-indian-regulatory-codes",
@@ -3617,6 +4251,7 @@ export const TAXONOMY_SEED: TaxonomyNode[] = [
  },
  {
   "id": "std-peso-petroleum-rules-2002",
+  "slug": "std-peso-petroleum-rules-2002",
   "type": "standard",
   "name": "PESO / Petroleum Rules 2002",
   "parentId": "std-grp-indian-regulatory-codes",
@@ -3628,6 +4263,7 @@ export const TAXONOMY_SEED: TaxonomyNode[] = [
  },
  {
   "id": "std-smpv-rules-2016",
+  "slug": "std-smpv-rules-2016",
   "type": "standard",
   "name": "SMPV Rules 2016",
   "parentId": "std-grp-indian-regulatory-codes",
@@ -3639,6 +4275,7 @@ export const TAXONOMY_SEED: TaxonomyNode[] = [
  },
  {
   "id": "std-gas-cylinder-rules-2016",
+  "slug": "std-gas-cylinder-rules-2016",
   "type": "standard",
   "name": "Gas Cylinder Rules 2016",
   "parentId": "std-grp-indian-regulatory-codes",
@@ -3648,6 +4285,7 @@ export const TAXONOMY_SEED: TaxonomyNode[] = [
  },
  {
   "id": "std-indian-boiler-regulations",
+  "slug": "std-indian-boiler-regulations",
   "type": "standard",
   "name": "Indian Boiler Regulations",
   "parentId": "std-grp-indian-regulatory-codes",
@@ -3659,6 +4297,7 @@ export const TAXONOMY_SEED: TaxonomyNode[] = [
  },
  {
   "id": "std-is-803-ms-storage-tanks",
+  "slug": "std-is-803-ms-storage-tanks",
   "type": "standard",
   "name": "IS 803 MS Storage Tanks",
   "parentId": "std-grp-indian-regulatory-codes",
@@ -3668,6 +4307,7 @@ export const TAXONOMY_SEED: TaxonomyNode[] = [
  },
  {
   "id": "std-is-1893-seismic-design",
+  "slug": "std-is-1893-seismic-design",
   "type": "standard",
   "name": "IS 1893 Seismic Design",
   "parentId": "std-grp-indian-regulatory-codes",
@@ -3678,6 +4318,7 @@ export const TAXONOMY_SEED: TaxonomyNode[] = [
  },
  {
   "id": "std-bis-standards",
+  "slug": "std-bis-standards",
   "type": "standard",
   "name": "BIS Standards",
   "parentId": "std-grp-indian-regulatory-codes",
@@ -3689,6 +4330,7 @@ export const TAXONOMY_SEED: TaxonomyNode[] = [
  },
  {
   "id": "std-grp-labour-statutory-compliance",
+  "slug": "std-grp-labour-statutory-compliance",
   "type": "standard",
   "name": "Labour & Statutory Compliance",
   "parentId": null,
@@ -3698,6 +4340,7 @@ export const TAXONOMY_SEED: TaxonomyNode[] = [
  },
  {
   "id": "std-factories-act-1948",
+  "slug": "std-factories-act-1948",
   "type": "standard",
   "name": "Factories Act 1948",
   "parentId": "std-grp-labour-statutory-compliance",
@@ -3707,6 +4350,7 @@ export const TAXONOMY_SEED: TaxonomyNode[] = [
  },
  {
   "id": "std-contract-labour-r-a-act-1970",
+  "slug": "std-contract-labour-r-a-act-1970",
   "type": "standard",
   "name": "Contract Labour (R&A) Act 1970",
   "parentId": "std-grp-labour-statutory-compliance",
@@ -3718,6 +4362,7 @@ export const TAXONOMY_SEED: TaxonomyNode[] = [
  },
  {
   "id": "std-bocw-act-1996",
+  "slug": "std-bocw-act-1996",
   "type": "standard",
   "name": "BOCW Act 1996",
   "parentId": "std-grp-labour-statutory-compliance",
@@ -3727,6 +4372,7 @@ export const TAXONOMY_SEED: TaxonomyNode[] = [
  },
  {
   "id": "std-code-on-wages-2019",
+  "slug": "std-code-on-wages-2019",
   "type": "standard",
   "name": "Code on Wages 2019",
   "parentId": "std-grp-labour-statutory-compliance",
@@ -3736,6 +4382,7 @@ export const TAXONOMY_SEED: TaxonomyNode[] = [
  },
  {
   "id": "std-industrial-relations-code-2020",
+  "slug": "std-industrial-relations-code-2020",
   "type": "standard",
   "name": "Industrial Relations Code 2020",
   "parentId": "std-grp-labour-statutory-compliance",
@@ -3745,6 +4392,7 @@ export const TAXONOMY_SEED: TaxonomyNode[] = [
  },
  {
   "id": "std-osh-working-conditions-code-2020",
+  "slug": "std-osh-working-conditions-code-2020",
   "type": "standard",
   "name": "OSH & Working Conditions Code 2020",
   "parentId": "std-grp-labour-statutory-compliance",
@@ -3754,6 +4402,7 @@ export const TAXONOMY_SEED: TaxonomyNode[] = [
  },
  {
   "id": "std-code-on-social-security-2020",
+  "slug": "std-code-on-social-security-2020",
   "type": "standard",
   "name": "Code on Social Security 2020",
   "parentId": "std-grp-labour-statutory-compliance",
@@ -3763,6 +4412,7 @@ export const TAXONOMY_SEED: TaxonomyNode[] = [
  },
  {
   "id": "std-epf-esi-compliance",
+  "slug": "std-epf-esi-compliance",
   "type": "standard",
   "name": "EPF & ESI Compliance",
   "parentId": "std-grp-labour-statutory-compliance",
@@ -3772,6 +4422,7 @@ export const TAXONOMY_SEED: TaxonomyNode[] = [
  },
  {
   "id": "std-ilo-conventions",
+  "slug": "std-ilo-conventions",
   "type": "standard",
   "name": "ILO Conventions",
   "parentId": "std-grp-labour-statutory-compliance",
@@ -3781,6 +4432,7 @@ export const TAXONOMY_SEED: TaxonomyNode[] = [
  },
  {
   "id": "comp-grp-storage-terminal-operations",
+  "slug": "comp-grp-storage-terminal-operations",
   "type": "competency",
   "name": "Storage & Terminal Operations",
   "parentId": null,
@@ -3790,6 +4442,7 @@ export const TAXONOMY_SEED: TaxonomyNode[] = [
  },
  {
   "id": "disc-floating-roof",
+  "slug": "disc-floating-roof",
   "type": "competency",
   "name": "Floating Roof",
   "parentId": "comp-grp-storage-terminal-operations",
@@ -3801,6 +4454,7 @@ export const TAXONOMY_SEED: TaxonomyNode[] = [
  },
  {
   "id": "disc-internal-floating-roof",
+  "slug": "disc-internal-floating-roof",
   "type": "competency",
   "name": "Internal Floating Roof",
   "parentId": "comp-grp-storage-terminal-operations",
@@ -3810,6 +4464,7 @@ export const TAXONOMY_SEED: TaxonomyNode[] = [
  },
  {
   "id": "disc-external-floating-roof",
+  "slug": "disc-external-floating-roof",
   "type": "competency",
   "name": "External Floating Roof",
   "parentId": "comp-grp-storage-terminal-operations",
@@ -3819,6 +4474,7 @@ export const TAXONOMY_SEED: TaxonomyNode[] = [
  },
  {
   "id": "disc-cone-roof",
+  "slug": "disc-cone-roof",
   "type": "competency",
   "name": "Cone Roof",
   "parentId": "comp-grp-storage-terminal-operations",
@@ -3828,6 +4484,7 @@ export const TAXONOMY_SEED: TaxonomyNode[] = [
  },
  {
   "id": "disc-dome-roof",
+  "slug": "disc-dome-roof",
   "type": "competency",
   "name": "Dome Roof",
   "parentId": "comp-grp-storage-terminal-operations",
@@ -3837,6 +4494,7 @@ export const TAXONOMY_SEED: TaxonomyNode[] = [
  },
  {
   "id": "disc-cryogenic-tanks",
+  "slug": "disc-cryogenic-tanks",
   "type": "competency",
   "name": "Cryogenic Tanks",
   "parentId": "comp-grp-storage-terminal-operations",
@@ -3846,6 +4504,7 @@ export const TAXONOMY_SEED: TaxonomyNode[] = [
  },
  {
   "id": "disc-tank-calibration",
+  "slug": "disc-tank-calibration",
   "type": "competency",
   "name": "Tank Calibration",
   "parentId": "comp-grp-storage-terminal-operations",
@@ -3855,6 +4514,7 @@ export const TAXONOMY_SEED: TaxonomyNode[] = [
  },
  {
   "id": "disc-custody-transfer",
+  "slug": "disc-custody-transfer",
   "type": "competency",
   "name": "Custody Transfer",
   "parentId": "comp-grp-storage-terminal-operations",
@@ -3864,6 +4524,7 @@ export const TAXONOMY_SEED: TaxonomyNode[] = [
  },
  {
   "id": "disc-metering",
+  "slug": "disc-metering",
   "type": "competency",
   "name": "Metering",
   "parentId": "comp-grp-storage-terminal-operations",
@@ -3873,6 +4534,7 @@ export const TAXONOMY_SEED: TaxonomyNode[] = [
  },
  {
   "id": "disc-tank-gauging",
+  "slug": "disc-tank-gauging",
   "type": "competency",
   "name": "Tank Gauging",
   "parentId": "comp-grp-storage-terminal-operations",
@@ -3882,6 +4544,7 @@ export const TAXONOMY_SEED: TaxonomyNode[] = [
  },
  {
   "id": "disc-vapour-recovery",
+  "slug": "disc-vapour-recovery",
   "type": "competency",
   "name": "Vapour Recovery",
   "parentId": "comp-grp-storage-terminal-operations",
@@ -3894,6 +4557,7 @@ export const TAXONOMY_SEED: TaxonomyNode[] = [
  },
  {
   "id": "disc-floating-suction",
+  "slug": "disc-floating-suction",
   "type": "competency",
   "name": "Floating Suction",
   "parentId": "comp-grp-storage-terminal-operations",
@@ -3903,6 +4567,7 @@ export const TAXONOMY_SEED: TaxonomyNode[] = [
  },
  {
   "id": "disc-marine-loading-arms",
+  "slug": "disc-marine-loading-arms",
   "type": "competency",
   "name": "Marine Loading Arms",
   "parentId": "comp-grp-storage-terminal-operations",
@@ -3915,6 +4580,7 @@ export const TAXONOMY_SEED: TaxonomyNode[] = [
  },
  {
   "id": "disc-tank-cleaning",
+  "slug": "disc-tank-cleaning",
   "type": "competency",
   "name": "Tank Cleaning",
   "parentId": "comp-grp-storage-terminal-operations",
@@ -3924,6 +4590,7 @@ export const TAXONOMY_SEED: TaxonomyNode[] = [
  },
  {
   "id": "disc-tank-inspection",
+  "slug": "disc-tank-inspection",
   "type": "competency",
   "name": "Tank Inspection",
   "parentId": "comp-grp-storage-terminal-operations",
@@ -3933,6 +4600,7 @@ export const TAXONOMY_SEED: TaxonomyNode[] = [
  },
  {
   "id": "comp-tank-farm-operations",
+  "slug": "comp-tank-farm-operations",
   "type": "competency",
   "name": "Tank Farm Operations",
   "parentId": "comp-grp-storage-terminal-operations",
@@ -3942,6 +4610,7 @@ export const TAXONOMY_SEED: TaxonomyNode[] = [
  },
  {
   "id": "comp-terminal-operations",
+  "slug": "comp-terminal-operations",
   "type": "competency",
   "name": "Terminal Operations",
   "parentId": "comp-grp-storage-terminal-operations",
@@ -3951,6 +4620,7 @@ export const TAXONOMY_SEED: TaxonomyNode[] = [
  },
  {
   "id": "comp-marine-terminal-operations",
+  "slug": "comp-marine-terminal-operations",
   "type": "competency",
   "name": "Marine Terminal Operations",
   "parentId": "comp-grp-storage-terminal-operations",
@@ -3960,6 +4630,7 @@ export const TAXONOMY_SEED: TaxonomyNode[] = [
  },
  {
   "id": "comp-lng-terminal-operations",
+  "slug": "comp-lng-terminal-operations",
   "type": "competency",
   "name": "LNG Terminal Operations",
   "parentId": "comp-grp-storage-terminal-operations",
@@ -3969,6 +4640,7 @@ export const TAXONOMY_SEED: TaxonomyNode[] = [
  },
  {
   "id": "comp-tank-settlement-analysis",
+  "slug": "comp-tank-settlement-analysis",
   "type": "competency",
   "name": "Tank Settlement Analysis",
   "parentId": "comp-grp-storage-terminal-operations",
@@ -3978,6 +4650,7 @@ export const TAXONOMY_SEED: TaxonomyNode[] = [
  },
  {
   "id": "comp-loading-master-operations",
+  "slug": "comp-loading-master-operations",
   "type": "competency",
   "name": "Loading Master Operations",
   "parentId": "comp-grp-storage-terminal-operations",
@@ -3989,6 +4662,7 @@ export const TAXONOMY_SEED: TaxonomyNode[] = [
  },
  {
   "id": "comp-grp-product-cargo-knowledge",
+  "slug": "comp-grp-product-cargo-knowledge",
   "type": "competency",
   "name": "Product & Cargo Knowledge",
   "parentId": null,
@@ -3998,6 +4672,7 @@ export const TAXONOMY_SEED: TaxonomyNode[] = [
  },
  {
   "id": "disc-lng",
+  "slug": "disc-lng",
   "type": "competency",
   "name": "LNG",
   "parentId": "comp-grp-product-cargo-knowledge",
@@ -4007,6 +4682,7 @@ export const TAXONOMY_SEED: TaxonomyNode[] = [
  },
  {
   "id": "disc-lpg",
+  "slug": "disc-lpg",
   "type": "competency",
   "name": "LPG",
   "parentId": "comp-grp-product-cargo-knowledge",
@@ -4016,6 +4692,7 @@ export const TAXONOMY_SEED: TaxonomyNode[] = [
  },
  {
   "id": "disc-jet-fuel",
+  "slug": "disc-jet-fuel",
   "type": "competency",
   "name": "Jet Fuel",
   "parentId": "comp-grp-product-cargo-knowledge",
@@ -4025,6 +4702,7 @@ export const TAXONOMY_SEED: TaxonomyNode[] = [
  },
  {
   "id": "disc-hydrogen",
+  "slug": "disc-hydrogen",
   "type": "competency",
   "name": "Hydrogen",
   "parentId": "comp-grp-product-cargo-knowledge",
@@ -4034,6 +4712,7 @@ export const TAXONOMY_SEED: TaxonomyNode[] = [
  },
  {
   "id": "disc-ammonia",
+  "slug": "disc-ammonia",
   "type": "competency",
   "name": "Ammonia",
   "parentId": "comp-grp-product-cargo-knowledge",
@@ -4045,6 +4724,7 @@ export const TAXONOMY_SEED: TaxonomyNode[] = [
  },
  {
   "id": "comp-grp-process-safety-risk",
+  "slug": "comp-grp-process-safety-risk",
   "type": "competency",
   "name": "Process Safety & Risk",
   "parentId": null,
@@ -4054,6 +4734,7 @@ export const TAXONOMY_SEED: TaxonomyNode[] = [
  },
  {
   "id": "disc-sil",
+  "slug": "disc-sil",
   "type": "competency",
   "name": "SIL",
   "parentId": "comp-grp-process-safety-risk",
@@ -4065,6 +4746,7 @@ export const TAXONOMY_SEED: TaxonomyNode[] = [
  },
  {
   "id": "disc-hazop",
+  "slug": "disc-hazop",
   "type": "competency",
   "name": "HAZOP",
   "parentId": "comp-grp-process-safety-risk",
@@ -4074,6 +4756,7 @@ export const TAXONOMY_SEED: TaxonomyNode[] = [
  },
  {
   "id": "disc-lopa",
+  "slug": "disc-lopa",
   "type": "competency",
   "name": "LOPA",
   "parentId": "comp-grp-process-safety-risk",
@@ -4083,6 +4766,7 @@ export const TAXONOMY_SEED: TaxonomyNode[] = [
  },
  {
   "id": "comp-hazid",
+  "slug": "comp-hazid",
   "type": "competency",
   "name": "HAZID",
   "parentId": "comp-grp-process-safety-risk",
@@ -4092,6 +4776,7 @@ export const TAXONOMY_SEED: TaxonomyNode[] = [
  },
  {
   "id": "comp-bowtie-analysis",
+  "slug": "comp-bowtie-analysis",
   "type": "competency",
   "name": "BowTie Analysis",
   "parentId": "comp-grp-process-safety-risk",
@@ -4101,6 +4786,7 @@ export const TAXONOMY_SEED: TaxonomyNode[] = [
  },
  {
   "id": "comp-process-safety-management",
+  "slug": "comp-process-safety-management",
   "type": "competency",
   "name": "Process Safety Management",
   "parentId": "comp-grp-process-safety-risk",
@@ -4112,6 +4798,7 @@ export const TAXONOMY_SEED: TaxonomyNode[] = [
  },
  {
   "id": "comp-incident-investigation",
+  "slug": "comp-incident-investigation",
   "type": "competency",
   "name": "Incident Investigation",
   "parentId": "comp-grp-process-safety-risk",
@@ -4121,6 +4808,7 @@ export const TAXONOMY_SEED: TaxonomyNode[] = [
  },
  {
   "id": "comp-root-cause-analysis",
+  "slug": "comp-root-cause-analysis",
   "type": "competency",
   "name": "Root Cause Analysis",
   "parentId": "comp-grp-process-safety-risk",
@@ -4132,6 +4820,7 @@ export const TAXONOMY_SEED: TaxonomyNode[] = [
  },
  {
   "id": "comp-hazardous-area-classification",
+  "slug": "comp-hazardous-area-classification",
   "type": "competency",
   "name": "Hazardous Area Classification",
   "parentId": "comp-grp-process-safety-risk",
@@ -4141,6 +4830,7 @@ export const TAXONOMY_SEED: TaxonomyNode[] = [
  },
  {
   "id": "comp-grp-inspection-integrity",
+  "slug": "comp-grp-inspection-integrity",
   "type": "competency",
   "name": "Inspection & Integrity",
   "parentId": null,
@@ -4150,6 +4840,7 @@ export const TAXONOMY_SEED: TaxonomyNode[] = [
  },
  {
   "id": "disc-rbi",
+  "slug": "disc-rbi",
   "type": "competency",
   "name": "RBI",
   "parentId": "comp-grp-inspection-integrity",
@@ -4159,6 +4850,7 @@ export const TAXONOMY_SEED: TaxonomyNode[] = [
  },
  {
   "id": "disc-fitness-for-service",
+  "slug": "disc-fitness-for-service",
   "type": "competency",
   "name": "Fitness for Service",
   "parentId": "comp-grp-inspection-integrity",
@@ -4171,6 +4863,7 @@ export const TAXONOMY_SEED: TaxonomyNode[] = [
  },
  {
   "id": "disc-cathodic-protection",
+  "slug": "disc-cathodic-protection",
   "type": "competency",
   "name": "Cathodic Protection",
   "parentId": "comp-grp-inspection-integrity",
@@ -4180,6 +4873,7 @@ export const TAXONOMY_SEED: TaxonomyNode[] = [
  },
  {
   "id": "comp-internal-corrosion",
+  "slug": "comp-internal-corrosion",
   "type": "competency",
   "name": "Internal Corrosion",
   "parentId": "comp-grp-inspection-integrity",
@@ -4189,6 +4883,7 @@ export const TAXONOMY_SEED: TaxonomyNode[] = [
  },
  {
   "id": "comp-pipeline-corrosion",
+  "slug": "comp-pipeline-corrosion",
   "type": "competency",
   "name": "Pipeline Corrosion",
   "parentId": "comp-grp-inspection-integrity",
@@ -4198,6 +4893,7 @@ export const TAXONOMY_SEED: TaxonomyNode[] = [
  },
  {
   "id": "comp-tank-bottom-corrosion",
+  "slug": "comp-tank-bottom-corrosion",
   "type": "competency",
   "name": "Tank Bottom Corrosion",
   "parentId": "comp-grp-inspection-integrity",
@@ -4207,6 +4903,7 @@ export const TAXONOMY_SEED: TaxonomyNode[] = [
  },
  {
   "id": "comp-corrosion-assessment",
+  "slug": "comp-corrosion-assessment",
   "type": "competency",
   "name": "Corrosion Assessment",
   "parentId": "comp-grp-inspection-integrity",
@@ -4216,6 +4913,7 @@ export const TAXONOMY_SEED: TaxonomyNode[] = [
  },
  {
   "id": "comp-radiographic-testing",
+  "slug": "comp-radiographic-testing",
   "type": "competency",
   "name": "Radiographic Testing",
   "parentId": "comp-grp-inspection-integrity",
@@ -4227,6 +4925,7 @@ export const TAXONOMY_SEED: TaxonomyNode[] = [
  },
  {
   "id": "comp-ultrasonic-testing",
+  "slug": "comp-ultrasonic-testing",
   "type": "competency",
   "name": "Ultrasonic Testing",
   "parentId": "comp-grp-inspection-integrity",
@@ -4239,6 +4938,7 @@ export const TAXONOMY_SEED: TaxonomyNode[] = [
  },
  {
   "id": "comp-phased-array-ut",
+  "slug": "comp-phased-array-ut",
   "type": "competency",
   "name": "Phased Array UT",
   "parentId": "comp-grp-inspection-integrity",
@@ -4250,6 +4950,7 @@ export const TAXONOMY_SEED: TaxonomyNode[] = [
  },
  {
   "id": "comp-time-of-flight-diffraction",
+  "slug": "comp-time-of-flight-diffraction",
   "type": "competency",
   "name": "Time of Flight Diffraction",
   "parentId": "comp-grp-inspection-integrity",
@@ -4261,6 +4962,7 @@ export const TAXONOMY_SEED: TaxonomyNode[] = [
  },
  {
   "id": "comp-magnetic-particle-testing",
+  "slug": "comp-magnetic-particle-testing",
   "type": "competency",
   "name": "Magnetic Particle Testing",
   "parentId": "comp-grp-inspection-integrity",
@@ -4272,6 +4974,7 @@ export const TAXONOMY_SEED: TaxonomyNode[] = [
  },
  {
   "id": "comp-penetrant-testing",
+  "slug": "comp-penetrant-testing",
   "type": "competency",
   "name": "Penetrant Testing",
   "parentId": "comp-grp-inspection-integrity",
@@ -4283,6 +4986,7 @@ export const TAXONOMY_SEED: TaxonomyNode[] = [
  },
  {
   "id": "comp-visual-testing",
+  "slug": "comp-visual-testing",
   "type": "competency",
   "name": "Visual Testing",
   "parentId": "comp-grp-inspection-integrity",
@@ -4294,6 +4998,7 @@ export const TAXONOMY_SEED: TaxonomyNode[] = [
  },
  {
   "id": "comp-eddy-current-testing",
+  "slug": "comp-eddy-current-testing",
   "type": "competency",
   "name": "Eddy Current Testing",
   "parentId": "comp-grp-inspection-integrity",
@@ -4305,6 +5010,7 @@ export const TAXONOMY_SEED: TaxonomyNode[] = [
  },
  {
   "id": "comp-acoustic-emission",
+  "slug": "comp-acoustic-emission",
   "type": "competency",
   "name": "Acoustic Emission",
   "parentId": "comp-grp-inspection-integrity",
@@ -4316,6 +5022,7 @@ export const TAXONOMY_SEED: TaxonomyNode[] = [
  },
  {
   "id": "comp-marine-classification-rules",
+  "slug": "comp-marine-classification-rules",
   "type": "competency",
   "name": "Marine Classification Rules",
   "parentId": "comp-grp-inspection-integrity",
@@ -4329,6 +5036,7 @@ export const TAXONOMY_SEED: TaxonomyNode[] = [
  },
  {
   "id": "comp-grp-pipeline-operations",
+  "slug": "comp-grp-pipeline-operations",
   "type": "competency",
   "name": "Pipeline Operations",
   "parentId": null,
@@ -4338,6 +5046,7 @@ export const TAXONOMY_SEED: TaxonomyNode[] = [
  },
  {
   "id": "disc-pigging",
+  "slug": "disc-pigging",
   "type": "competency",
   "name": "Pigging",
   "parentId": "comp-grp-pipeline-operations",
@@ -4347,6 +5056,7 @@ export const TAXONOMY_SEED: TaxonomyNode[] = [
  },
  {
   "id": "disc-pipeline-commissioning",
+  "slug": "disc-pipeline-commissioning",
   "type": "competency",
   "name": "Pipeline Commissioning",
   "parentId": "comp-grp-pipeline-operations",
@@ -4356,6 +5066,7 @@ export const TAXONOMY_SEED: TaxonomyNode[] = [
  },
  {
   "id": "comp-grp-project-execution",
+  "slug": "comp-grp-project-execution",
   "type": "competency",
   "name": "Project Execution",
   "parentId": null,
@@ -4365,6 +5076,7 @@ export const TAXONOMY_SEED: TaxonomyNode[] = [
  },
  {
   "id": "disc-shutdown",
+  "slug": "disc-shutdown",
   "type": "competency",
   "name": "Shutdown",
   "parentId": "comp-grp-project-execution",
@@ -4374,6 +5086,7 @@ export const TAXONOMY_SEED: TaxonomyNode[] = [
  },
  {
   "id": "disc-turnaround",
+  "slug": "disc-turnaround",
   "type": "competency",
   "name": "Turnaround",
   "parentId": "comp-grp-project-execution",
@@ -4383,6 +5096,7 @@ export const TAXONOMY_SEED: TaxonomyNode[] = [
  },
  {
   "id": "disc-commissioning",
+  "slug": "disc-commissioning",
   "type": "competency",
   "name": "Commissioning",
   "parentId": "comp-grp-project-execution",
@@ -4392,6 +5106,7 @@ export const TAXONOMY_SEED: TaxonomyNode[] = [
  },
  {
   "id": "disc-decommissioning",
+  "slug": "disc-decommissioning",
   "type": "competency",
   "name": "Decommissioning",
   "parentId": "comp-grp-project-execution",
@@ -4401,6 +5116,7 @@ export const TAXONOMY_SEED: TaxonomyNode[] = [
  },
  {
   "id": "disc-brownfield",
+  "slug": "disc-brownfield",
   "type": "competency",
   "name": "Brownfield",
   "parentId": "comp-grp-project-execution",
@@ -4410,6 +5126,7 @@ export const TAXONOMY_SEED: TaxonomyNode[] = [
  },
  {
   "id": "disc-greenfield",
+  "slug": "disc-greenfield",
   "type": "competency",
   "name": "Greenfield",
   "parentId": "comp-grp-project-execution",
@@ -4419,6 +5136,7 @@ export const TAXONOMY_SEED: TaxonomyNode[] = [
  },
  {
   "id": "comp-grp-welding-fabrication",
+  "slug": "comp-grp-welding-fabrication",
   "type": "competency",
   "name": "Welding & Fabrication",
   "parentId": null,
@@ -4428,6 +5146,7 @@ export const TAXONOMY_SEED: TaxonomyNode[] = [
  },
  {
   "id": "comp-wps-pqr-development",
+  "slug": "comp-wps-pqr-development",
   "type": "competency",
   "name": "WPS/PQR Development",
   "parentId": "comp-grp-welding-fabrication",
@@ -4437,6 +5156,7 @@ export const TAXONOMY_SEED: TaxonomyNode[] = [
  },
  {
   "id": "comp-grp-digital-automation-platforms",
+  "slug": "comp-grp-digital-automation-platforms",
   "type": "competency",
   "name": "Digital & Automation Platforms",
   "parentId": null,
@@ -4446,6 +5166,7 @@ export const TAXONOMY_SEED: TaxonomyNode[] = [
  },
  {
   "id": "comp-honeywell-experion",
+  "slug": "comp-honeywell-experion",
   "type": "competency",
   "name": "Honeywell Experion",
   "parentId": "comp-grp-digital-automation-platforms",
@@ -4455,6 +5176,7 @@ export const TAXONOMY_SEED: TaxonomyNode[] = [
  },
  {
   "id": "comp-yokogawa-centum",
+  "slug": "comp-yokogawa-centum",
   "type": "competency",
   "name": "Yokogawa CENTUM",
   "parentId": "comp-grp-digital-automation-platforms",
@@ -4464,6 +5186,7 @@ export const TAXONOMY_SEED: TaxonomyNode[] = [
  },
  {
   "id": "comp-emerson-deltav",
+  "slug": "comp-emerson-deltav",
   "type": "competency",
   "name": "Emerson DeltaV",
   "parentId": "comp-grp-digital-automation-platforms",
@@ -4473,6 +5196,7 @@ export const TAXONOMY_SEED: TaxonomyNode[] = [
  },
  {
   "id": "comp-siemens-pcs7",
+  "slug": "comp-siemens-pcs7",
   "type": "competency",
   "name": "Siemens PCS7",
   "parentId": "comp-grp-digital-automation-platforms",
@@ -4482,6 +5206,7 @@ export const TAXONOMY_SEED: TaxonomyNode[] = [
  },
  {
   "id": "comp-abb-800xa",
+  "slug": "comp-abb-800xa",
   "type": "competency",
   "name": "ABB 800xA",
   "parentId": "comp-grp-digital-automation-platforms",
@@ -4491,6 +5216,7 @@ export const TAXONOMY_SEED: TaxonomyNode[] = [
  },
  {
   "id": "comp-ics-cybersecurity",
+  "slug": "comp-ics-cybersecurity",
   "type": "competency",
   "name": "ICS Cybersecurity",
   "parentId": "comp-grp-digital-automation-platforms",
@@ -4502,6 +5228,7 @@ export const TAXONOMY_SEED: TaxonomyNode[] = [
  },
  {
   "id": "comp-sap-mm",
+  "slug": "comp-sap-mm",
   "type": "competency",
   "name": "SAP MM",
   "parentId": "comp-grp-digital-automation-platforms",
@@ -4511,6 +5238,7 @@ export const TAXONOMY_SEED: TaxonomyNode[] = [
  },
  {
   "id": "comp-sap-ewm-wm",
+  "slug": "comp-sap-ewm-wm",
   "type": "competency",
   "name": "SAP EWM/WM",
   "parentId": "comp-grp-digital-automation-platforms",
@@ -4520,6 +5248,7 @@ export const TAXONOMY_SEED: TaxonomyNode[] = [
  },
  {
   "id": "comp-sap-pm",
+  "slug": "comp-sap-pm",
   "type": "competency",
   "name": "SAP PM",
   "parentId": "comp-grp-digital-automation-platforms",
@@ -4529,6 +5258,7 @@ export const TAXONOMY_SEED: TaxonomyNode[] = [
  },
  {
   "id": "comp-ibm-maximo",
+  "slug": "comp-ibm-maximo",
   "type": "competency",
   "name": "IBM Maximo",
   "parentId": "comp-grp-digital-automation-platforms",
@@ -4540,6 +5270,7 @@ export const TAXONOMY_SEED: TaxonomyNode[] = [
  },
  {
   "id": "comp-infor-eam",
+  "slug": "comp-infor-eam",
   "type": "competency",
   "name": "Infor EAM",
   "parentId": "comp-grp-digital-automation-platforms",
@@ -4549,6 +5280,7 @@ export const TAXONOMY_SEED: TaxonomyNode[] = [
  },
  {
   "id": "comp-osisoft-pi-system",
+  "slug": "comp-osisoft-pi-system",
   "type": "competency",
   "name": "OSIsoft PI System",
   "parentId": "comp-grp-digital-automation-platforms",
@@ -4560,6 +5292,7 @@ export const TAXONOMY_SEED: TaxonomyNode[] = [
  },
  {
   "id": "comp-autocad",
+  "slug": "comp-autocad",
   "type": "competency",
   "name": "AutoCAD",
   "parentId": "comp-grp-digital-automation-platforms",
@@ -4569,6 +5302,7 @@ export const TAXONOMY_SEED: TaxonomyNode[] = [
  },
  {
   "id": "comp-navisworks",
+  "slug": "comp-navisworks",
   "type": "competency",
   "name": "Navisworks",
   "parentId": "comp-grp-digital-automation-platforms",
@@ -4578,6 +5312,7 @@ export const TAXONOMY_SEED: TaxonomyNode[] = [
  },
  {
   "id": "comp-aveva",
+  "slug": "comp-aveva",
   "type": "competency",
   "name": "Aveva",
   "parentId": "comp-grp-digital-automation-platforms",
@@ -4590,6 +5325,7 @@ export const TAXONOMY_SEED: TaxonomyNode[] = [
  },
  {
   "id": "comp-hexagon",
+  "slug": "comp-hexagon",
   "type": "competency",
   "name": "Hexagon",
   "parentId": "comp-grp-digital-automation-platforms",
@@ -4601,6 +5337,7 @@ export const TAXONOMY_SEED: TaxonomyNode[] = [
  },
  {
   "id": "comp-grp-logistics-trade-compliance",
+  "slug": "comp-grp-logistics-trade-compliance",
   "type": "competency",
   "name": "Logistics & Trade Compliance",
   "parentId": null,
@@ -4610,6 +5347,7 @@ export const TAXONOMY_SEED: TaxonomyNode[] = [
  },
  {
   "id": "comp-dangerous-goods-handling",
+  "slug": "comp-dangerous-goods-handling",
   "type": "competency",
   "name": "Dangerous Goods Handling",
   "parentId": "comp-grp-logistics-trade-compliance",
@@ -4621,6 +5359,7 @@ export const TAXONOMY_SEED: TaxonomyNode[] = [
  },
  {
   "id": "comp-incoterms",
+  "slug": "comp-incoterms",
   "type": "competency",
   "name": "Incoterms",
   "parentId": "comp-grp-logistics-trade-compliance",
@@ -4630,6 +5369,7 @@ export const TAXONOMY_SEED: TaxonomyNode[] = [
  },
  {
   "id": "comp-customs-compliance",
+  "slug": "comp-customs-compliance",
   "type": "competency",
   "name": "Customs Compliance",
   "parentId": "comp-grp-logistics-trade-compliance",
@@ -4639,6 +5379,7 @@ export const TAXONOMY_SEED: TaxonomyNode[] = [
  },
  {
   "id": "comp-grp-hse-practices",
+  "slug": "comp-grp-hse-practices",
   "type": "competency",
   "name": "HSE Practices",
   "parentId": null,
@@ -4648,6 +5389,7 @@ export const TAXONOMY_SEED: TaxonomyNode[] = [
  },
  {
   "id": "comp-lockout-tagout",
+  "slug": "comp-lockout-tagout",
   "type": "competency",
   "name": "Lockout Tagout",
   "parentId": "comp-grp-hse-practices",
@@ -4659,6 +5401,7 @@ export const TAXONOMY_SEED: TaxonomyNode[] = [
  },
  {
   "id": "comp-grp-energy-transition",
+  "slug": "comp-grp-energy-transition",
   "type": "competency",
   "name": "Energy Transition",
   "parentId": null,
@@ -4668,6 +5411,7 @@ export const TAXONOMY_SEED: TaxonomyNode[] = [
  },
  {
   "id": "comp-hydrogen-safety",
+  "slug": "comp-hydrogen-safety",
   "type": "competency",
   "name": "Hydrogen Safety",
   "parentId": "comp-grp-energy-transition",
@@ -4677,6 +5421,7 @@ export const TAXONOMY_SEED: TaxonomyNode[] = [
  },
  {
   "id": "comp-cryogenic-safety",
+  "slug": "comp-cryogenic-safety",
   "type": "competency",
   "name": "Cryogenic Safety",
   "parentId": "comp-grp-energy-transition",
@@ -4686,6 +5431,7 @@ export const TAXONOMY_SEED: TaxonomyNode[] = [
  },
  {
   "id": "comp-carbon-capture-storage",
+  "slug": "comp-carbon-capture-storage",
   "type": "competency",
   "name": "Carbon Capture & Storage",
   "parentId": "comp-grp-energy-transition",
@@ -4698,6 +5444,7 @@ export const TAXONOMY_SEED: TaxonomyNode[] = [
  },
  {
   "id": "comp-battery-energy-storage-systems",
+  "slug": "comp-battery-energy-storage-systems",
   "type": "competency",
   "name": "Battery Energy Storage Systems",
   "parentId": "comp-grp-energy-transition",
@@ -4709,6 +5456,7 @@ export const TAXONOMY_SEED: TaxonomyNode[] = [
  },
  {
   "id": "comp-biofuel-operations",
+  "slug": "comp-biofuel-operations",
   "type": "competency",
   "name": "Biofuel Operations",
   "parentId": "comp-grp-energy-transition",
@@ -4718,6 +5466,7 @@ export const TAXONOMY_SEED: TaxonomyNode[] = [
  },
  {
   "id": "cert-grp-api-personnel-certifications",
+  "slug": "cert-grp-api-personnel-certifications",
   "type": "certification",
   "name": "API Personnel Certifications",
   "parentId": null,
@@ -4727,6 +5476,7 @@ export const TAXONOMY_SEED: TaxonomyNode[] = [
  },
  {
   "id": "cert-api-510",
+  "slug": "cert-api-510",
   "type": "certification",
   "name": "API 510",
   "parentId": "cert-grp-api-personnel-certifications",
@@ -4736,6 +5486,7 @@ export const TAXONOMY_SEED: TaxonomyNode[] = [
  },
  {
   "id": "cert-api-570",
+  "slug": "cert-api-570",
   "type": "certification",
   "name": "API 570",
   "parentId": "cert-grp-api-personnel-certifications",
@@ -4745,6 +5496,7 @@ export const TAXONOMY_SEED: TaxonomyNode[] = [
  },
  {
   "id": "cert-api-653",
+  "slug": "cert-api-653",
   "type": "certification",
   "name": "API 653",
   "parentId": "cert-grp-api-personnel-certifications",
@@ -4754,6 +5506,7 @@ export const TAXONOMY_SEED: TaxonomyNode[] = [
  },
  {
   "id": "cert-api-580",
+  "slug": "cert-api-580",
   "type": "certification",
   "name": "API 580",
   "parentId": "cert-grp-api-personnel-certifications",
@@ -4763,6 +5516,7 @@ export const TAXONOMY_SEED: TaxonomyNode[] = [
  },
  {
   "id": "cert-api-936",
+  "slug": "cert-api-936",
   "type": "certification",
   "name": "API 936",
   "parentId": "cert-grp-api-personnel-certifications",
@@ -4772,6 +5526,7 @@ export const TAXONOMY_SEED: TaxonomyNode[] = [
  },
  {
   "id": "cert-api-571-specialist",
+  "slug": "cert-api-571-specialist",
   "type": "certification",
   "name": "API 571 Specialist",
   "parentId": "cert-grp-api-personnel-certifications",
@@ -4781,6 +5536,7 @@ export const TAXONOMY_SEED: TaxonomyNode[] = [
  },
  {
   "id": "cert-api-577-welding-inspector",
+  "slug": "cert-api-577-welding-inspector",
   "type": "certification",
   "name": "API 577 Welding Inspector",
   "parentId": "cert-grp-api-personnel-certifications",
@@ -4790,6 +5546,7 @@ export const TAXONOMY_SEED: TaxonomyNode[] = [
  },
  {
   "id": "cert-api-sife-source-inspector",
+  "slug": "cert-api-sife-source-inspector",
   "type": "certification",
   "name": "API SIFE Source Inspector",
   "parentId": "cert-grp-api-personnel-certifications",
@@ -4799,6 +5556,7 @@ export const TAXONOMY_SEED: TaxonomyNode[] = [
  },
  {
   "id": "cert-api-1169-pipeline-inspector",
+  "slug": "cert-api-1169-pipeline-inspector",
   "type": "certification",
   "name": "API 1169 Pipeline Inspector",
   "parentId": "cert-grp-api-personnel-certifications",
@@ -4808,6 +5566,7 @@ export const TAXONOMY_SEED: TaxonomyNode[] = [
  },
  {
   "id": "cert-grp-welding-certifications",
+  "slug": "cert-grp-welding-certifications",
   "type": "certification",
   "name": "Welding Certifications",
   "parentId": null,
@@ -4817,6 +5576,7 @@ export const TAXONOMY_SEED: TaxonomyNode[] = [
  },
  {
   "id": "cert-aws-cwi",
+  "slug": "cert-aws-cwi",
   "type": "certification",
   "name": "AWS CWI",
   "parentId": "cert-grp-welding-certifications",
@@ -4828,6 +5588,7 @@ export const TAXONOMY_SEED: TaxonomyNode[] = [
  },
  {
   "id": "cert-aws-senior-cwi",
+  "slug": "cert-aws-senior-cwi",
   "type": "certification",
   "name": "AWS Senior CWI",
   "parentId": "cert-grp-welding-certifications",
@@ -4837,6 +5598,7 @@ export const TAXONOMY_SEED: TaxonomyNode[] = [
  },
  {
   "id": "cert-certified-welding-supervisor",
+  "slug": "cert-certified-welding-supervisor",
   "type": "certification",
   "name": "Certified Welding Supervisor",
   "parentId": "cert-grp-welding-certifications",
@@ -4846,6 +5608,7 @@ export const TAXONOMY_SEED: TaxonomyNode[] = [
  },
  {
   "id": "cert-certified-welding-educator",
+  "slug": "cert-certified-welding-educator",
   "type": "certification",
   "name": "Certified Welding Educator",
   "parentId": "cert-grp-welding-certifications",
@@ -4855,6 +5618,7 @@ export const TAXONOMY_SEED: TaxonomyNode[] = [
  },
  {
   "id": "cert-iiw-international-welding-engineer",
+  "slug": "cert-iiw-international-welding-engineer",
   "type": "certification",
   "name": "IIW International Welding Engineer",
   "parentId": "cert-grp-welding-certifications",
@@ -4866,6 +5630,7 @@ export const TAXONOMY_SEED: TaxonomyNode[] = [
  },
  {
   "id": "cert-iiw-welding-technologist",
+  "slug": "cert-iiw-welding-technologist",
   "type": "certification",
   "name": "IIW Welding Technologist",
   "parentId": "cert-grp-welding-certifications",
@@ -4877,6 +5642,7 @@ export const TAXONOMY_SEED: TaxonomyNode[] = [
  },
  {
   "id": "cert-iiw-welding-specialist",
+  "slug": "cert-iiw-welding-specialist",
   "type": "certification",
   "name": "IIW Welding Specialist",
   "parentId": "cert-grp-welding-certifications",
@@ -4888,6 +5654,7 @@ export const TAXONOMY_SEED: TaxonomyNode[] = [
  },
  {
   "id": "cert-iiw-welding-practitioner",
+  "slug": "cert-iiw-welding-practitioner",
   "type": "certification",
   "name": "IIW Welding Practitioner",
   "parentId": "cert-grp-welding-certifications",
@@ -4899,6 +5666,7 @@ export const TAXONOMY_SEED: TaxonomyNode[] = [
  },
  {
   "id": "cert-cswip-3-1",
+  "slug": "cert-cswip-3-1",
   "type": "certification",
   "name": "CSWIP 3.1",
   "parentId": "cert-grp-welding-certifications",
@@ -4908,6 +5676,7 @@ export const TAXONOMY_SEED: TaxonomyNode[] = [
  },
  {
   "id": "cert-cswip-3-2",
+  "slug": "cert-cswip-3-2",
   "type": "certification",
   "name": "CSWIP 3.2",
   "parentId": "cert-grp-welding-certifications",
@@ -4917,6 +5686,7 @@ export const TAXONOMY_SEED: TaxonomyNode[] = [
  },
  {
   "id": "cert-ibr-certified-welder",
+  "slug": "cert-ibr-certified-welder",
   "type": "certification",
   "name": "IBR Certified Welder",
   "parentId": "cert-grp-welding-certifications",
@@ -4926,6 +5696,7 @@ export const TAXONOMY_SEED: TaxonomyNode[] = [
  },
  {
   "id": "cert-grp-ndt-certifications",
+  "slug": "cert-grp-ndt-certifications",
   "type": "certification",
   "name": "NDT Certifications",
   "parentId": null,
@@ -4935,6 +5706,7 @@ export const TAXONOMY_SEED: TaxonomyNode[] = [
  },
  {
   "id": "cert-asnt-ndt-level-i",
+  "slug": "cert-asnt-ndt-level-i",
   "type": "certification",
   "name": "ASNT NDT Level I",
   "parentId": "cert-grp-ndt-certifications",
@@ -4944,6 +5716,7 @@ export const TAXONOMY_SEED: TaxonomyNode[] = [
  },
  {
   "id": "cert-asnt-ndt-level-ii",
+  "slug": "cert-asnt-ndt-level-ii",
   "type": "certification",
   "name": "ASNT NDT Level II",
   "parentId": "cert-grp-ndt-certifications",
@@ -4953,6 +5726,7 @@ export const TAXONOMY_SEED: TaxonomyNode[] = [
  },
  {
   "id": "cert-asnt-ndt-level-iii",
+  "slug": "cert-asnt-ndt-level-iii",
   "type": "certification",
   "name": "ASNT NDT Level III",
   "parentId": "cert-grp-ndt-certifications",
@@ -4962,6 +5736,7 @@ export const TAXONOMY_SEED: TaxonomyNode[] = [
  },
  {
   "id": "cert-iso-9712-pcn-ndt",
+  "slug": "cert-iso-9712-pcn-ndt",
   "type": "certification",
   "name": "ISO 9712 / PCN NDT",
   "parentId": "cert-grp-ndt-certifications",
@@ -4973,6 +5748,7 @@ export const TAXONOMY_SEED: TaxonomyNode[] = [
  },
  {
   "id": "cert-grp-corrosion-coatings",
+  "slug": "cert-grp-corrosion-coatings",
   "type": "certification",
   "name": "Corrosion & Coatings",
   "parentId": null,
@@ -4982,6 +5758,7 @@ export const TAXONOMY_SEED: TaxonomyNode[] = [
  },
  {
   "id": "cert-ampp-cathodic-protection",
+  "slug": "cert-ampp-cathodic-protection",
   "type": "certification",
   "name": "AMPP Cathodic Protection",
   "parentId": "cert-grp-corrosion-coatings",
@@ -4994,6 +5771,7 @@ export const TAXONOMY_SEED: TaxonomyNode[] = [
  },
  {
   "id": "cert-ampp-coating-inspector",
+  "slug": "cert-ampp-coating-inspector",
   "type": "certification",
   "name": "AMPP Coating Inspector",
   "parentId": "cert-grp-corrosion-coatings",
@@ -5006,6 +5784,7 @@ export const TAXONOMY_SEED: TaxonomyNode[] = [
  },
  {
   "id": "cert-ampp-corrosion-technician",
+  "slug": "cert-ampp-corrosion-technician",
   "type": "certification",
   "name": "AMPP Corrosion Technician",
   "parentId": "cert-grp-corrosion-coatings",
@@ -5015,6 +5794,7 @@ export const TAXONOMY_SEED: TaxonomyNode[] = [
  },
  {
   "id": "cert-grp-hse-occupational",
+  "slug": "cert-grp-hse-occupational",
   "type": "certification",
   "name": "HSE & Occupational",
   "parentId": null,
@@ -5024,6 +5804,7 @@ export const TAXONOMY_SEED: TaxonomyNode[] = [
  },
  {
   "id": "cert-nebosh",
+  "slug": "cert-nebosh",
   "type": "certification",
   "name": "NEBOSH",
   "parentId": "cert-grp-hse-occupational",
@@ -5033,6 +5814,7 @@ export const TAXONOMY_SEED: TaxonomyNode[] = [
  },
  {
   "id": "cert-iosh",
+  "slug": "cert-iosh",
   "type": "certification",
   "name": "IOSH",
   "parentId": "cert-grp-hse-occupational",
@@ -5042,6 +5824,7 @@ export const TAXONOMY_SEED: TaxonomyNode[] = [
  },
  {
   "id": "cert-nebosh-igc",
+  "slug": "cert-nebosh-igc",
   "type": "certification",
   "name": "NEBOSH IGC",
   "parentId": "cert-grp-hse-occupational",
@@ -5051,6 +5834,7 @@ export const TAXONOMY_SEED: TaxonomyNode[] = [
  },
  {
   "id": "cert-nebosh-oil-gas",
+  "slug": "cert-nebosh-oil-gas",
   "type": "certification",
   "name": "NEBOSH Oil & Gas",
   "parentId": "cert-grp-hse-occupational",
@@ -5062,6 +5846,7 @@ export const TAXONOMY_SEED: TaxonomyNode[] = [
  },
  {
   "id": "cert-osha-30-hour",
+  "slug": "cert-osha-30-hour",
   "type": "certification",
   "name": "OSHA 30 Hour",
   "parentId": "cert-grp-hse-occupational",
@@ -5071,6 +5856,7 @@ export const TAXONOMY_SEED: TaxonomyNode[] = [
  },
  {
   "id": "cert-osha-10-hour",
+  "slug": "cert-osha-10-hour",
   "type": "certification",
   "name": "OSHA 10 Hour",
   "parentId": "cert-grp-hse-occupational",
@@ -5080,6 +5866,7 @@ export const TAXONOMY_SEED: TaxonomyNode[] = [
  },
  {
   "id": "cert-confined-space-entry",
+  "slug": "cert-confined-space-entry",
   "type": "certification",
   "name": "Confined Space Entry",
   "parentId": "cert-grp-hse-occupational",
@@ -5089,6 +5876,7 @@ export const TAXONOMY_SEED: TaxonomyNode[] = [
  },
  {
   "id": "cert-working-at-height",
+  "slug": "cert-working-at-height",
   "type": "certification",
   "name": "Working at Height",
   "parentId": "cert-grp-hse-occupational",
@@ -5098,6 +5886,7 @@ export const TAXONOMY_SEED: TaxonomyNode[] = [
  },
  {
   "id": "cert-authorised-gas-tester",
+  "slug": "cert-authorised-gas-tester",
   "type": "certification",
   "name": "Authorised Gas Tester",
   "parentId": "cert-grp-hse-occupational",
@@ -5107,6 +5896,7 @@ export const TAXONOMY_SEED: TaxonomyNode[] = [
  },
  {
   "id": "cert-first-aid",
+  "slug": "cert-first-aid",
   "type": "certification",
   "name": "First Aid",
   "parentId": "cert-grp-hse-occupational",
@@ -5116,6 +5906,7 @@ export const TAXONOMY_SEED: TaxonomyNode[] = [
  },
  {
   "id": "cert-h2s-training",
+  "slug": "cert-h2s-training",
   "type": "certification",
   "name": "H2S Training",
   "parentId": "cert-grp-hse-occupational",
@@ -5128,6 +5919,7 @@ export const TAXONOMY_SEED: TaxonomyNode[] = [
  },
  {
   "id": "cert-grp-process-functional-safety",
+  "slug": "cert-grp-process-functional-safety",
   "type": "certification",
   "name": "Process & Functional Safety",
   "parentId": null,
@@ -5137,6 +5929,7 @@ export const TAXONOMY_SEED: TaxonomyNode[] = [
  },
  {
   "id": "cert-hazop-leader",
+  "slug": "cert-hazop-leader",
   "type": "certification",
   "name": "HAZOP Leader",
   "parentId": "cert-grp-process-functional-safety",
@@ -5146,6 +5939,7 @@ export const TAXONOMY_SEED: TaxonomyNode[] = [
  },
  {
   "id": "cert-tuv-functional-safety-engineer",
+  "slug": "cert-tuv-functional-safety-engineer",
   "type": "certification",
   "name": "TUV Functional Safety Engineer",
   "parentId": "cert-grp-process-functional-safety",
@@ -5157,6 +5951,7 @@ export const TAXONOMY_SEED: TaxonomyNode[] = [
  },
  {
   "id": "cert-tuv-functional-safety-professional",
+  "slug": "cert-tuv-functional-safety-professional",
   "type": "certification",
   "name": "TUV Functional Safety Professional",
   "parentId": "cert-grp-process-functional-safety",
@@ -5166,6 +5961,7 @@ export const TAXONOMY_SEED: TaxonomyNode[] = [
  },
  {
   "id": "cert-compex",
+  "slug": "cert-compex",
   "type": "certification",
   "name": "CompEx",
   "parentId": "cert-grp-process-functional-safety",
@@ -5175,6 +5971,7 @@ export const TAXONOMY_SEED: TaxonomyNode[] = [
  },
  {
   "id": "cert-iecex-copc",
+  "slug": "cert-iecex-copc",
   "type": "certification",
   "name": "IECEx CoPC",
   "parentId": "cert-grp-process-functional-safety",
@@ -5184,6 +5981,7 @@ export const TAXONOMY_SEED: TaxonomyNode[] = [
  },
  {
   "id": "cert-grp-offshore-opito",
+  "slug": "cert-grp-offshore-opito",
   "type": "certification",
   "name": "Offshore (OPITO)",
   "parentId": null,
@@ -5193,6 +5991,7 @@ export const TAXONOMY_SEED: TaxonomyNode[] = [
  },
  {
   "id": "cert-bosiet",
+  "slug": "cert-bosiet",
   "type": "certification",
   "name": "BOSIET",
   "parentId": "cert-grp-offshore-opito",
@@ -5204,6 +6003,7 @@ export const TAXONOMY_SEED: TaxonomyNode[] = [
  },
  {
   "id": "cert-foet",
+  "slug": "cert-foet",
   "type": "certification",
   "name": "FOET",
   "parentId": "cert-grp-offshore-opito",
@@ -5213,6 +6013,7 @@ export const TAXONOMY_SEED: TaxonomyNode[] = [
  },
  {
   "id": "cert-huet",
+  "slug": "cert-huet",
   "type": "certification",
   "name": "HUET",
   "parentId": "cert-grp-offshore-opito",
@@ -5222,6 +6023,7 @@ export const TAXONOMY_SEED: TaxonomyNode[] = [
  },
  {
   "id": "cert-mist",
+  "slug": "cert-mist",
   "type": "certification",
   "name": "MIST",
   "parentId": "cert-grp-offshore-opito",
@@ -5231,6 +6033,7 @@ export const TAXONOMY_SEED: TaxonomyNode[] = [
  },
  {
   "id": "cert-banksman-slinger",
+  "slug": "cert-banksman-slinger",
   "type": "certification",
   "name": "Banksman & Slinger",
   "parentId": "cert-grp-offshore-opito",
@@ -5240,6 +6043,7 @@ export const TAXONOMY_SEED: TaxonomyNode[] = [
  },
  {
   "id": "cert-rigger",
+  "slug": "cert-rigger",
   "type": "certification",
   "name": "Rigger",
   "parentId": "cert-grp-offshore-opito",
@@ -5249,6 +6053,7 @@ export const TAXONOMY_SEED: TaxonomyNode[] = [
  },
  {
   "id": "cert-crane-operator",
+  "slug": "cert-crane-operator",
   "type": "certification",
   "name": "Crane Operator",
   "parentId": "cert-grp-offshore-opito",
@@ -5258,6 +6063,7 @@ export const TAXONOMY_SEED: TaxonomyNode[] = [
  },
  {
   "id": "cert-helideck-operations",
+  "slug": "cert-helideck-operations",
   "type": "certification",
   "name": "Helideck Operations",
   "parentId": "cert-grp-offshore-opito",
@@ -5267,6 +6073,7 @@ export const TAXONOMY_SEED: TaxonomyNode[] = [
  },
  {
   "id": "cert-grp-maritime-stcw",
+  "slug": "cert-grp-maritime-stcw",
   "type": "certification",
   "name": "Maritime (STCW)",
   "parentId": null,
@@ -5276,6 +6083,7 @@ export const TAXONOMY_SEED: TaxonomyNode[] = [
  },
  {
   "id": "cert-stcw-basic-safety-training",
+  "slug": "cert-stcw-basic-safety-training",
   "type": "certification",
   "name": "STCW Basic Safety Training",
   "parentId": "cert-grp-maritime-stcw",
@@ -5287,6 +6095,7 @@ export const TAXONOMY_SEED: TaxonomyNode[] = [
  },
  {
   "id": "cert-stcw-advanced-fire-fighting",
+  "slug": "cert-stcw-advanced-fire-fighting",
   "type": "certification",
   "name": "STCW Advanced Fire Fighting",
   "parentId": "cert-grp-maritime-stcw",
@@ -5298,6 +6107,7 @@ export const TAXONOMY_SEED: TaxonomyNode[] = [
  },
  {
   "id": "cert-tanker-familiarization",
+  "slug": "cert-tanker-familiarization",
   "type": "certification",
   "name": "Tanker Familiarization",
   "parentId": "cert-grp-maritime-stcw",
@@ -5307,6 +6117,7 @@ export const TAXONOMY_SEED: TaxonomyNode[] = [
  },
  {
   "id": "cert-advanced-oil-tanker-operations",
+  "slug": "cert-advanced-oil-tanker-operations",
   "type": "certification",
   "name": "Advanced Oil Tanker Operations",
   "parentId": "cert-grp-maritime-stcw",
@@ -5316,6 +6127,7 @@ export const TAXONOMY_SEED: TaxonomyNode[] = [
  },
  {
   "id": "cert-advanced-chemical-tanker-operations",
+  "slug": "cert-advanced-chemical-tanker-operations",
   "type": "certification",
   "name": "Advanced Chemical Tanker Operations",
   "parentId": "cert-grp-maritime-stcw",
@@ -5325,6 +6137,7 @@ export const TAXONOMY_SEED: TaxonomyNode[] = [
  },
  {
   "id": "cert-advanced-gas-lng-tanker-operations",
+  "slug": "cert-advanced-gas-lng-tanker-operations",
   "type": "certification",
   "name": "Advanced Gas/LNG Tanker Operations",
   "parentId": "cert-grp-maritime-stcw",
@@ -5334,6 +6147,7 @@ export const TAXONOMY_SEED: TaxonomyNode[] = [
  },
  {
   "id": "cert-grp-dangerous-goods",
+  "slug": "cert-grp-dangerous-goods",
   "type": "certification",
   "name": "Dangerous Goods",
   "parentId": null,
@@ -5343,6 +6157,7 @@ export const TAXONOMY_SEED: TaxonomyNode[] = [
  },
  {
   "id": "cert-imdg-code",
+  "slug": "cert-imdg-code",
   "type": "certification",
   "name": "IMDG Code",
   "parentId": "cert-grp-dangerous-goods",
@@ -5352,6 +6167,7 @@ export const TAXONOMY_SEED: TaxonomyNode[] = [
  },
  {
   "id": "cert-iata-dgr",
+  "slug": "cert-iata-dgr",
   "type": "certification",
   "name": "IATA DGR",
   "parentId": "cert-grp-dangerous-goods",
@@ -5363,6 +6179,7 @@ export const TAXONOMY_SEED: TaxonomyNode[] = [
  },
  {
   "id": "cert-adr-rid",
+  "slug": "cert-adr-rid",
   "type": "certification",
   "name": "ADR/RID",
   "parentId": "cert-grp-dangerous-goods",
@@ -5372,6 +6189,7 @@ export const TAXONOMY_SEED: TaxonomyNode[] = [
  },
  {
   "id": "cert-grp-auditing-quality",
+  "slug": "cert-grp-auditing-quality",
   "type": "certification",
   "name": "Auditing & Quality",
   "parentId": null,
@@ -5381,6 +6199,7 @@ export const TAXONOMY_SEED: TaxonomyNode[] = [
  },
  {
   "id": "cert-iso-9001-lead-auditor",
+  "slug": "cert-iso-9001-lead-auditor",
   "type": "certification",
   "name": "ISO 9001 Lead Auditor",
   "parentId": "cert-grp-auditing-quality",
@@ -5390,6 +6209,7 @@ export const TAXONOMY_SEED: TaxonomyNode[] = [
  },
  {
   "id": "cert-iso-14001-lead-auditor",
+  "slug": "cert-iso-14001-lead-auditor",
   "type": "certification",
   "name": "ISO 14001 Lead Auditor",
   "parentId": "cert-grp-auditing-quality",
@@ -5399,6 +6219,7 @@ export const TAXONOMY_SEED: TaxonomyNode[] = [
  },
  {
   "id": "cert-iso-45001-lead-auditor",
+  "slug": "cert-iso-45001-lead-auditor",
   "type": "certification",
   "name": "ISO 45001 Lead Auditor",
   "parentId": "cert-grp-auditing-quality",
@@ -5408,6 +6229,7 @@ export const TAXONOMY_SEED: TaxonomyNode[] = [
  },
  {
   "id": "cert-iso-50001-lead-auditor",
+  "slug": "cert-iso-50001-lead-auditor",
   "type": "certification",
   "name": "ISO 50001 Lead Auditor",
   "parentId": "cert-grp-auditing-quality",
@@ -5417,6 +6239,7 @@ export const TAXONOMY_SEED: TaxonomyNode[] = [
  },
  {
   "id": "cert-iso-27001-lead-auditor",
+  "slug": "cert-iso-27001-lead-auditor",
   "type": "certification",
   "name": "ISO 27001 Lead Auditor",
   "parentId": "cert-grp-auditing-quality",
@@ -5426,6 +6249,7 @@ export const TAXONOMY_SEED: TaxonomyNode[] = [
  },
  {
   "id": "equip-storage-equipment",
+  "slug": "equip-storage-equipment",
   "type": "equipment",
   "name": "Storage Equipment",
   "parentId": null,
@@ -5435,6 +6259,7 @@ export const TAXONOMY_SEED: TaxonomyNode[] = [
  },
  {
   "id": "equip-above-ground-storage-tanks",
+  "slug": "equip-above-ground-storage-tanks",
   "type": "equipment",
   "name": "Above-ground Storage Tanks",
   "parentId": "equip-storage-equipment",
@@ -5446,6 +6271,7 @@ export const TAXONOMY_SEED: TaxonomyNode[] = [
  },
  {
   "id": "equip-underground-storage-tanks",
+  "slug": "equip-underground-storage-tanks",
   "type": "equipment",
   "name": "Underground Storage Tanks",
   "parentId": "equip-storage-equipment",
@@ -5457,6 +6283,7 @@ export const TAXONOMY_SEED: TaxonomyNode[] = [
  },
  {
   "id": "equip-cryogenic-tanks",
+  "slug": "equip-cryogenic-tanks",
   "type": "equipment",
   "name": "Cryogenic Tanks",
   "parentId": "equip-storage-equipment",
@@ -5466,6 +6293,7 @@ export const TAXONOMY_SEED: TaxonomyNode[] = [
  },
  {
   "id": "equip-pressure-vessels",
+  "slug": "equip-pressure-vessels",
   "type": "equipment",
   "name": "Pressure Vessels",
   "parentId": "equip-storage-equipment",
@@ -5475,6 +6303,7 @@ export const TAXONOMY_SEED: TaxonomyNode[] = [
  },
  {
   "id": "equip-spheres-and-bullets",
+  "slug": "equip-spheres-and-bullets",
   "type": "equipment",
   "name": "Spheres and Bullets",
   "parentId": "equip-storage-equipment",
@@ -5484,6 +6313,7 @@ export const TAXONOMY_SEED: TaxonomyNode[] = [
  },
  {
   "id": "equip-silos-and-hoppers",
+  "slug": "equip-silos-and-hoppers",
   "type": "equipment",
   "name": "Silos and Hoppers",
   "parentId": "equip-storage-equipment",
@@ -5493,6 +6323,7 @@ export const TAXONOMY_SEED: TaxonomyNode[] = [
  },
  {
   "id": "equip-tank-components",
+  "slug": "equip-tank-components",
   "type": "equipment",
   "name": "Tank Components",
   "parentId": null,
@@ -5502,6 +6333,7 @@ export const TAXONOMY_SEED: TaxonomyNode[] = [
  },
  {
   "id": "equip-floating-roof-systems",
+  "slug": "equip-floating-roof-systems",
   "type": "equipment",
   "name": "Floating Roof Systems",
   "parentId": "equip-tank-components",
@@ -5511,6 +6343,7 @@ export const TAXONOMY_SEED: TaxonomyNode[] = [
  },
  {
   "id": "equip-rim-seals",
+  "slug": "equip-rim-seals",
   "type": "equipment",
   "name": "Rim Seals",
   "parentId": "equip-tank-components",
@@ -5520,6 +6353,7 @@ export const TAXONOMY_SEED: TaxonomyNode[] = [
  },
  {
   "id": "equip-gauge-hatches",
+  "slug": "equip-gauge-hatches",
   "type": "equipment",
   "name": "Gauge Hatches",
   "parentId": "equip-tank-components",
@@ -5529,6 +6363,7 @@ export const TAXONOMY_SEED: TaxonomyNode[] = [
  },
  {
   "id": "equip-roof-drains",
+  "slug": "equip-roof-drains",
   "type": "equipment",
   "name": "Roof Drains",
   "parentId": "equip-tank-components",
@@ -5538,6 +6373,7 @@ export const TAXONOMY_SEED: TaxonomyNode[] = [
  },
  {
   "id": "equip-foam-systems",
+  "slug": "equip-foam-systems",
   "type": "equipment",
   "name": "Foam Systems",
   "parentId": "equip-tank-components",
@@ -5547,6 +6383,7 @@ export const TAXONOMY_SEED: TaxonomyNode[] = [
  },
  {
   "id": "equip-manways",
+  "slug": "equip-manways",
   "type": "equipment",
   "name": "Manways",
   "parentId": "equip-tank-components",
@@ -5556,6 +6393,7 @@ export const TAXONOMY_SEED: TaxonomyNode[] = [
  },
  {
   "id": "equip-nozzles",
+  "slug": "equip-nozzles",
   "type": "equipment",
   "name": "Nozzles",
   "parentId": "equip-tank-components",
@@ -5565,6 +6403,7 @@ export const TAXONOMY_SEED: TaxonomyNode[] = [
  },
  {
   "id": "equip-shell-plates",
+  "slug": "equip-shell-plates",
   "type": "equipment",
   "name": "Shell Plates",
   "parentId": "equip-tank-components",
@@ -5574,6 +6413,7 @@ export const TAXONOMY_SEED: TaxonomyNode[] = [
  },
  {
   "id": "equip-stairways-and-platforms",
+  "slug": "equip-stairways-and-platforms",
   "type": "equipment",
   "name": "Stairways and Platforms",
   "parentId": "equip-tank-components",
@@ -5583,6 +6423,7 @@ export const TAXONOMY_SEED: TaxonomyNode[] = [
  },
  {
   "id": "equip-valves-flow-control",
+  "slug": "equip-valves-flow-control",
   "type": "equipment",
   "name": "Valves & Flow Control",
   "parentId": null,
@@ -5592,6 +6433,7 @@ export const TAXONOMY_SEED: TaxonomyNode[] = [
  },
  {
   "id": "equip-pressure-vacuum-vents",
+  "slug": "equip-pressure-vacuum-vents",
   "type": "equipment",
   "name": "Pressure/Vacuum Vents",
   "parentId": "equip-valves-flow-control",
@@ -5601,6 +6443,7 @@ export const TAXONOMY_SEED: TaxonomyNode[] = [
  },
  {
   "id": "equip-flame-arresters",
+  "slug": "equip-flame-arresters",
   "type": "equipment",
   "name": "Flame Arresters",
   "parentId": "equip-valves-flow-control",
@@ -5610,6 +6453,7 @@ export const TAXONOMY_SEED: TaxonomyNode[] = [
  },
  {
   "id": "equip-emergency-vents",
+  "slug": "equip-emergency-vents",
   "type": "equipment",
   "name": "Emergency Vents",
   "parentId": "equip-valves-flow-control",
@@ -5619,6 +6463,7 @@ export const TAXONOMY_SEED: TaxonomyNode[] = [
  },
  {
   "id": "equip-control-valves",
+  "slug": "equip-control-valves",
   "type": "equipment",
   "name": "Control Valves",
   "parentId": "equip-valves-flow-control",
@@ -5628,6 +6473,7 @@ export const TAXONOMY_SEED: TaxonomyNode[] = [
  },
  {
   "id": "equip-isolation-valves",
+  "slug": "equip-isolation-valves",
   "type": "equipment",
   "name": "Isolation Valves",
   "parentId": "equip-valves-flow-control",
@@ -5637,6 +6483,7 @@ export const TAXONOMY_SEED: TaxonomyNode[] = [
  },
  {
   "id": "equip-relief-valves",
+  "slug": "equip-relief-valves",
   "type": "equipment",
   "name": "Relief Valves",
   "parentId": "equip-valves-flow-control",
@@ -5646,6 +6493,7 @@ export const TAXONOMY_SEED: TaxonomyNode[] = [
  },
  {
   "id": "equip-check-valves",
+  "slug": "equip-check-valves",
   "type": "equipment",
   "name": "Check Valves",
   "parentId": "equip-valves-flow-control",
@@ -5655,6 +6503,7 @@ export const TAXONOMY_SEED: TaxonomyNode[] = [
  },
  {
   "id": "equip-measurement-instrumentation",
+  "slug": "equip-measurement-instrumentation",
   "type": "equipment",
   "name": "Measurement & Instrumentation",
   "parentId": null,
@@ -5664,6 +6513,7 @@ export const TAXONOMY_SEED: TaxonomyNode[] = [
  },
  {
   "id": "equip-radar-level-gauges",
+  "slug": "equip-radar-level-gauges",
   "type": "equipment",
   "name": "Radar Level Gauges",
   "parentId": "equip-measurement-instrumentation",
@@ -5673,6 +6523,7 @@ export const TAXONOMY_SEED: TaxonomyNode[] = [
  },
  {
   "id": "equip-servo-gauges",
+  "slug": "equip-servo-gauges",
   "type": "equipment",
   "name": "Servo Gauges",
   "parentId": "equip-measurement-instrumentation",
@@ -5682,6 +6533,7 @@ export const TAXONOMY_SEED: TaxonomyNode[] = [
  },
  {
   "id": "equip-temperature-systems",
+  "slug": "equip-temperature-systems",
   "type": "equipment",
   "name": "Temperature Systems",
   "parentId": "equip-measurement-instrumentation",
@@ -5691,6 +6543,7 @@ export const TAXONOMY_SEED: TaxonomyNode[] = [
  },
  {
   "id": "equip-pressure-transmitters",
+  "slug": "equip-pressure-transmitters",
   "type": "equipment",
   "name": "Pressure Transmitters",
   "parentId": "equip-measurement-instrumentation",
@@ -5700,6 +6553,7 @@ export const TAXONOMY_SEED: TaxonomyNode[] = [
  },
  {
   "id": "equip-flow-meters",
+  "slug": "equip-flow-meters",
   "type": "equipment",
   "name": "Flow Meters",
   "parentId": "equip-measurement-instrumentation",
@@ -5709,6 +6563,7 @@ export const TAXONOMY_SEED: TaxonomyNode[] = [
  },
  {
   "id": "equip-tank-gauging-systems",
+  "slug": "equip-tank-gauging-systems",
   "type": "equipment",
   "name": "Tank Gauging Systems",
   "parentId": "equip-measurement-instrumentation",
@@ -5718,6 +6573,7 @@ export const TAXONOMY_SEED: TaxonomyNode[] = [
  },
  {
   "id": "equip-overfill-prevention-systems",
+  "slug": "equip-overfill-prevention-systems",
   "type": "equipment",
   "name": "Overfill Prevention Systems",
   "parentId": "equip-measurement-instrumentation",
@@ -5727,6 +6583,7 @@ export const TAXONOMY_SEED: TaxonomyNode[] = [
  },
  {
   "id": "equip-leak-detection-systems",
+  "slug": "equip-leak-detection-systems",
   "type": "equipment",
   "name": "Leak Detection Systems",
   "parentId": "equip-measurement-instrumentation",
@@ -5736,6 +6593,7 @@ export const TAXONOMY_SEED: TaxonomyNode[] = [
  },
  {
   "id": "equip-loading-transfer",
+  "slug": "equip-loading-transfer",
   "type": "equipment",
   "name": "Loading & Transfer",
   "parentId": null,
@@ -5745,6 +6603,7 @@ export const TAXONOMY_SEED: TaxonomyNode[] = [
  },
  {
   "id": "equip-marine-loading-arms",
+  "slug": "equip-marine-loading-arms",
   "type": "equipment",
   "name": "Marine Loading Arms",
   "parentId": "equip-loading-transfer",
@@ -5754,6 +6613,7 @@ export const TAXONOMY_SEED: TaxonomyNode[] = [
  },
  {
   "id": "equip-loading-skids",
+  "slug": "equip-loading-skids",
   "type": "equipment",
   "name": "Loading Skids",
   "parentId": "equip-loading-transfer",
@@ -5763,6 +6623,7 @@ export const TAXONOMY_SEED: TaxonomyNode[] = [
  },
  {
   "id": "equip-bottom-loading-systems",
+  "slug": "equip-bottom-loading-systems",
   "type": "equipment",
   "name": "Bottom Loading Systems",
   "parentId": "equip-loading-transfer",
@@ -5772,6 +6633,7 @@ export const TAXONOMY_SEED: TaxonomyNode[] = [
  },
  {
   "id": "equip-top-loading-systems",
+  "slug": "equip-top-loading-systems",
   "type": "equipment",
   "name": "Top Loading Systems",
   "parentId": "equip-loading-transfer",
@@ -5781,6 +6643,7 @@ export const TAXONOMY_SEED: TaxonomyNode[] = [
  },
  {
   "id": "equip-hoses-and-couplings",
+  "slug": "equip-hoses-and-couplings",
   "type": "equipment",
   "name": "Hoses and Couplings",
   "parentId": "equip-loading-transfer",
@@ -5790,6 +6653,7 @@ export const TAXONOMY_SEED: TaxonomyNode[] = [
  },
  {
   "id": "equip-swivel-joints",
+  "slug": "equip-swivel-joints",
   "type": "equipment",
   "name": "Swivel Joints",
   "parentId": "equip-loading-transfer",
@@ -5799,6 +6663,7 @@ export const TAXONOMY_SEED: TaxonomyNode[] = [
  },
  {
   "id": "equip-dry-disconnect-couplings",
+  "slug": "equip-dry-disconnect-couplings",
   "type": "equipment",
   "name": "Dry Disconnect Couplings",
   "parentId": "equip-loading-transfer",
@@ -5808,6 +6673,7 @@ export const TAXONOMY_SEED: TaxonomyNode[] = [
  },
  {
   "id": "equip-pumps-rotating-equipment",
+  "slug": "equip-pumps-rotating-equipment",
   "type": "equipment",
   "name": "Pumps & Rotating Equipment",
   "parentId": null,
@@ -5817,6 +6683,7 @@ export const TAXONOMY_SEED: TaxonomyNode[] = [
  },
  {
   "id": "equip-centrifugal-pumps",
+  "slug": "equip-centrifugal-pumps",
   "type": "equipment",
   "name": "Centrifugal Pumps",
   "parentId": "equip-pumps-rotating-equipment",
@@ -5826,6 +6693,7 @@ export const TAXONOMY_SEED: TaxonomyNode[] = [
  },
  {
   "id": "equip-positive-displacement-pumps",
+  "slug": "equip-positive-displacement-pumps",
   "type": "equipment",
   "name": "Positive Displacement Pumps",
   "parentId": "equip-pumps-rotating-equipment",
@@ -5835,6 +6703,7 @@ export const TAXONOMY_SEED: TaxonomyNode[] = [
  },
  {
   "id": "equip-compressors",
+  "slug": "equip-compressors",
   "type": "equipment",
   "name": "Compressors",
   "parentId": "equip-pumps-rotating-equipment",
@@ -5844,6 +6713,7 @@ export const TAXONOMY_SEED: TaxonomyNode[] = [
  },
  {
   "id": "equip-blowers",
+  "slug": "equip-blowers",
   "type": "equipment",
   "name": "Blowers",
   "parentId": "equip-pumps-rotating-equipment",
@@ -5853,6 +6723,7 @@ export const TAXONOMY_SEED: TaxonomyNode[] = [
  },
  {
   "id": "equip-gearboxes",
+  "slug": "equip-gearboxes",
   "type": "equipment",
   "name": "Gearboxes",
   "parentId": "equip-pumps-rotating-equipment",
@@ -5862,6 +6733,7 @@ export const TAXONOMY_SEED: TaxonomyNode[] = [
  },
  {
   "id": "equip-mechanical-seals",
+  "slug": "equip-mechanical-seals",
   "type": "equipment",
   "name": "Mechanical Seals",
   "parentId": "equip-pumps-rotating-equipment",
@@ -5871,6 +6743,7 @@ export const TAXONOMY_SEED: TaxonomyNode[] = [
  },
  {
   "id": "equip-piping-systems",
+  "slug": "equip-piping-systems",
   "type": "equipment",
   "name": "Piping Systems",
   "parentId": null,
@@ -5880,6 +6753,7 @@ export const TAXONOMY_SEED: TaxonomyNode[] = [
  },
  {
   "id": "equip-pipelines",
+  "slug": "equip-pipelines",
   "type": "equipment",
   "name": "Pipelines",
   "parentId": "equip-piping-systems",
@@ -5889,6 +6763,7 @@ export const TAXONOMY_SEED: TaxonomyNode[] = [
  },
  {
   "id": "equip-manifolds",
+  "slug": "equip-manifolds",
   "type": "equipment",
   "name": "Manifolds",
   "parentId": "equip-piping-systems",
@@ -5898,6 +6773,7 @@ export const TAXONOMY_SEED: TaxonomyNode[] = [
  },
  {
   "id": "equip-pig-launchers-and-receivers",
+  "slug": "equip-pig-launchers-and-receivers",
   "type": "equipment",
   "name": "Pig Launchers and Receivers",
   "parentId": "equip-piping-systems",
@@ -5907,6 +6783,7 @@ export const TAXONOMY_SEED: TaxonomyNode[] = [
  },
  {
   "id": "equip-expansion-joints",
+  "slug": "equip-expansion-joints",
   "type": "equipment",
   "name": "Expansion Joints",
   "parentId": "equip-piping-systems",
@@ -5916,6 +6793,7 @@ export const TAXONOMY_SEED: TaxonomyNode[] = [
  },
  {
   "id": "equip-strainers",
+  "slug": "equip-strainers",
   "type": "equipment",
   "name": "Strainers",
   "parentId": "equip-piping-systems",
@@ -5925,6 +6803,7 @@ export const TAXONOMY_SEED: TaxonomyNode[] = [
  },
  {
   "id": "equip-heat-exchangers",
+  "slug": "equip-heat-exchangers",
   "type": "equipment",
   "name": "Heat Exchangers",
   "parentId": "equip-piping-systems",
@@ -5934,6 +6813,7 @@ export const TAXONOMY_SEED: TaxonomyNode[] = [
  },
  {
   "id": "equip-fire-protection-safety",
+  "slug": "equip-fire-protection-safety",
   "type": "equipment",
   "name": "Fire Protection & Safety",
   "parentId": null,
@@ -5943,6 +6823,7 @@ export const TAXONOMY_SEED: TaxonomyNode[] = [
  },
  {
   "id": "equip-foam-chambers",
+  "slug": "equip-foam-chambers",
   "type": "equipment",
   "name": "Foam Chambers",
   "parentId": "equip-fire-protection-safety",
@@ -5952,6 +6833,7 @@ export const TAXONOMY_SEED: TaxonomyNode[] = [
  },
  {
   "id": "equip-foam-pourers",
+  "slug": "equip-foam-pourers",
   "type": "equipment",
   "name": "Foam Pourers",
   "parentId": "equip-fire-protection-safety",
@@ -5961,6 +6843,7 @@ export const TAXONOMY_SEED: TaxonomyNode[] = [
  },
  {
   "id": "equip-deluge-systems",
+  "slug": "equip-deluge-systems",
   "type": "equipment",
   "name": "Deluge Systems",
   "parentId": "equip-fire-protection-safety",
@@ -5970,6 +6853,7 @@ export const TAXONOMY_SEED: TaxonomyNode[] = [
  },
  {
   "id": "equip-fire-monitors",
+  "slug": "equip-fire-monitors",
   "type": "equipment",
   "name": "Fire Monitors",
   "parentId": "equip-fire-protection-safety",
@@ -5979,6 +6863,7 @@ export const TAXONOMY_SEED: TaxonomyNode[] = [
  },
  {
   "id": "equip-hydrants",
+  "slug": "equip-hydrants",
   "type": "equipment",
   "name": "Hydrants",
   "parentId": "equip-fire-protection-safety",
@@ -5988,6 +6873,7 @@ export const TAXONOMY_SEED: TaxonomyNode[] = [
  },
  {
   "id": "equip-gas-detectors",
+  "slug": "equip-gas-detectors",
   "type": "equipment",
   "name": "Gas Detectors",
   "parentId": "equip-fire-protection-safety",
@@ -5997,6 +6883,7 @@ export const TAXONOMY_SEED: TaxonomyNode[] = [
  },
  {
   "id": "equip-flame-detectors",
+  "slug": "equip-flame-detectors",
   "type": "equipment",
   "name": "Flame Detectors",
   "parentId": "equip-fire-protection-safety",
@@ -6006,6 +6893,7 @@ export const TAXONOMY_SEED: TaxonomyNode[] = [
  },
  {
   "id": "equip-emergency-shutdown-systems",
+  "slug": "equip-emergency-shutdown-systems",
   "type": "equipment",
   "name": "Emergency Shutdown Systems",
   "parentId": "equip-fire-protection-safety",
@@ -6017,6 +6905,7 @@ export const TAXONOMY_SEED: TaxonomyNode[] = [
  },
  {
   "id": "equip-fire-alarm-systems",
+  "slug": "equip-fire-alarm-systems",
   "type": "equipment",
   "name": "Fire Alarm Systems",
   "parentId": "equip-fire-protection-safety",
@@ -6026,6 +6915,7 @@ export const TAXONOMY_SEED: TaxonomyNode[] = [
  },
  {
   "id": "equip-electrical-automation",
+  "slug": "equip-electrical-automation",
   "type": "equipment",
   "name": "Electrical & Automation",
   "parentId": null,
@@ -6035,6 +6925,7 @@ export const TAXONOMY_SEED: TaxonomyNode[] = [
  },
  {
   "id": "equip-plcs",
+  "slug": "equip-plcs",
   "type": "equipment",
   "name": "PLCs",
   "parentId": "equip-electrical-automation",
@@ -6044,6 +6935,7 @@ export const TAXONOMY_SEED: TaxonomyNode[] = [
  },
  {
   "id": "equip-dcs",
+  "slug": "equip-dcs",
   "type": "equipment",
   "name": "DCS",
   "parentId": "equip-electrical-automation",
@@ -6053,6 +6945,7 @@ export const TAXONOMY_SEED: TaxonomyNode[] = [
  },
  {
   "id": "equip-scada",
+  "slug": "equip-scada",
   "type": "equipment",
   "name": "SCADA",
   "parentId": "equip-electrical-automation",
@@ -6062,6 +6955,7 @@ export const TAXONOMY_SEED: TaxonomyNode[] = [
  },
  {
   "id": "equip-motor-control-centers",
+  "slug": "equip-motor-control-centers",
   "type": "equipment",
   "name": "Motor Control Centers",
   "parentId": "equip-electrical-automation",
@@ -6073,6 +6967,7 @@ export const TAXONOMY_SEED: TaxonomyNode[] = [
  },
  {
   "id": "equip-variable-frequency-drives",
+  "slug": "equip-variable-frequency-drives",
   "type": "equipment",
   "name": "Variable Frequency Drives",
   "parentId": "equip-electrical-automation",
@@ -6084,6 +6979,7 @@ export const TAXONOMY_SEED: TaxonomyNode[] = [
  },
  {
   "id": "equip-industrial-networking-equipment",
+  "slug": "equip-industrial-networking-equipment",
   "type": "equipment",
   "name": "Industrial Networking Equipment",
   "parentId": "equip-electrical-automation",
@@ -6093,6 +6989,7 @@ export const TAXONOMY_SEED: TaxonomyNode[] = [
  },
  {
   "id": "equip-hazardous-area-electrical-equipment",
+  "slug": "equip-hazardous-area-electrical-equipment",
   "type": "equipment",
   "name": "Hazardous-area Electrical Equipment",
   "parentId": "equip-electrical-automation",
