@@ -286,6 +286,7 @@ export const CATEGORY_SEED: CategorySeedNode[] = [
   // copper) reclaimed from batteries and scrap, distinct from the primary
   // steel/aluminium producers above.
   { id: "secondary-metals-and-recycling", slug: "secondary-metals-and-recycling", name: "Secondary Metals & Recycling", level: 2, parentId: "materials-and-metallurgy", order: 18 },
+  { id: "catalysts-and-adsorbents", slug: "catalysts-and-adsorbents", name: "Catalysts & Adsorbents", level: 2, parentId: "materials-and-metallurgy", order: 19 },
   { id: "industrial-supplies-mro", slug: "industrial-supplies-mro", name: "Industrial Supplies (MRO)", level: 1, parentId: "", order: 12 },
   { id: "fasteners", slug: "fasteners", name: "Fasteners", level: 2, parentId: "industrial-supplies-mro", order: 1 },
   { id: "gaskets", slug: "gaskets", name: "Gaskets", level: 2, parentId: "industrial-supplies-mro", order: 2 },
@@ -315,6 +316,7 @@ export const CATEGORY_SEED: CategorySeedNode[] = [
   { id: "customs-and-port-services", slug: "customs-and-port-services", name: "Customs & Port Services", level: 2, parentId: "logistics-and-transportation", order: 9 },
   { id: "warehouse-operators", slug: "warehouse-operators", name: "Warehouse Operators", level: 2, parentId: "logistics-and-transportation", order: 10 },
   { id: "cold-storage", slug: "cold-storage", name: "Cold Storage", level: 2, parentId: "logistics-and-transportation", order: 11 },
+  { id: "heavy-lift-and-transport", slug: "heavy-lift-and-transport", name: "Heavy Lift & Transport", level: 2, parentId: "logistics-and-transportation", order: 12 },
   { id: "marine-and-port-equipment", slug: "marine-and-port-equipment", name: "Marine & Port Equipment", level: 2, parentId: "logistics-and-transportation", order: 12 },
   { id: "utilities-and-energy", slug: "utilities-and-energy", name: "Utilities & Energy", level: 1, parentId: "", order: 14 },
   { id: "industrial-water-systems", slug: "industrial-water-systems", name: "Industrial Water Systems", level: 2, parentId: "utilities-and-energy", order: 1 },
