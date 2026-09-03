@@ -8,6 +8,11 @@ export interface CompanySeed {
   logo: string; heroImage: string;
   linkedin: string; twitter: string; facebook: string; instagram: string;
   categoryIds: string[]; isFeatured: boolean;
+  // Contact details. countryCode is stored separately from phone (e.g. "+91"
+  // and "22 67525656") rather than pre-joined, so the UI can format/link
+  // (tel:) correctly regardless of locale. Both empty for companies with no
+  // contact info on file.
+  email?: string; countryCode?: string; phone?: string;
   // Deep link to this company's profile in a sibling app. Stored explicitly
   // rather than derived from the slug at render time — same discipline as the
   // slug itself: author once, propagate, never re-derive. Empty for companies
