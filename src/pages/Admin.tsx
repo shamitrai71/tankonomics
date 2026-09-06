@@ -3215,6 +3215,7 @@ const handleEditCompany = async (company: any) => {
                       <th className="px-6 py-4">Affiliation</th>
                       <th className="px-6 py-4">Industry Segment</th>
                       <th className="px-6 py-4">Bio / Summary</th>
+                      <th className="px-6 py-4">Access</th>
                       <th className="px-6 py-4">Tier</th>
                       <th className="px-6 py-4">Auth Metadata</th>
                     </tr>
@@ -3245,6 +3246,76 @@ const handleEditCompany = async (company: any) => {
                         </td>
                         <td className="px-6 py-4">
                            <p className="text-xs text-text-body max-w-xs truncate italic">{member.bio ||"No biography provided."}</p>
+                        </td>
+                        <td className="px-6 py-4">
+                           {/* Pre-launch access gate (REQUIRE_APPROVAL_TO_VIEW in
+                               App.tsx). No status field at all means the account
+                               predates this gate and is already treated as
+                               approved app-side — shown as "Approved" here too so
+                               the admin view matches what that member actually
+                               experiences, with an explicit re-check action
+                               available if you want to hold it for review anyway. */}
+                           {(member.status ?? "approved") === "pending" ? (
+                             <div className="flex flex-col gap-1.5">
+                               <span className="eyebrow tabular px-2.5 py-1 rounded-full border bg-amber-50 text-amber-700 border-amber-200 inline-block w-fit">
+                                 PENDING
+                               </span>
+                               <div className="flex gap-1.5">
+                                 <button
+                                   onClick={async () => {
+                                     try {
+                                       await updateDocument("users", member.id, {
+                                         status: "approved", updatedAt: serverTimestamp(),
+                                       });
+                                     } catch (err: any) {
+                                       alert(`Failed to approve: ${err?.message || "Unknown error"}`);
+                                     }
+                                   }}
+                                   className="eyebrow tabular px-2.5 py-1 rounded-full border bg-emerald-50 text-emerald-700 border-emerald-200 hover:bg-emerald-100 transition-all"
+                                 >
+                                   Approve
+                                 </button>
+                                 <button
+                                   onClick={async () => {
+                                     if (!window.confirm(`Reject access for ${member.displayName || member.email}?`)) return;
+                                     try {
+                                       await updateDocument("users", member.id, {
+                                         status: "rejected", updatedAt: serverTimestamp(),
+                                       });
+                                     } catch (err: any) {
+                                       alert(`Failed to reject: ${err?.message || "Unknown error"}`);
+                                     }
+                                   }}
+                                   className="eyebrow tabular px-2.5 py-1 rounded-full border bg-bg-main text-rust border-rust/30 hover:bg-rust/10 transition-all"
+                                 >
+                                   Reject
+                                 </button>
+                               </div>
+                             </div>
+                           ) : (
+                             <button
+                               onClick={async () => {
+                                 const revoke = (member.status ?? "approved") !== "rejected";
+                                 const label = revoke ? "reject" : "re-approve";
+                                 if (!window.confirm(`Click to ${label} access for ${member.displayName || member.email}?`)) return;
+                                 try {
+                                   await updateDocument("users", member.id, {
+                                     status: revoke ? "rejected" : "approved", updatedAt: serverTimestamp(),
+                                   });
+                                 } catch (err: any) {
+                                   alert(`Failed to update access: ${err?.message || "Unknown error"}`);
+                                 }
+                               }}
+                               className={`eyebrow tabular px-2.5 py-1 rounded-full border transition-all ${
+                                 (member.status ?? "approved") === "rejected"
+                                   ? "bg-bg-main text-rust border-rust/30 hover:bg-rust/10"
+                                   : "bg-emerald-50 text-emerald-700 border-emerald-200 hover:bg-rust/10 hover:text-rust hover:border-rust/30"
+                               }`}
+                               title={(member.status ?? "approved") === "rejected" ? "Click to re-approve" : "Click to reject"}
+                             >
+                               {(member.status ?? "approved") === "rejected" ? "REJECTED" : "Approved"}
+                             </button>
+                           )}
                         </td>
                         <td className="px-6 py-4">
                            <button

@@ -31,6 +31,28 @@ service cloud.firestore {
       );
     }
 
+    // Pre-launch access gate (see REQUIRE_APPROVAL_TO_VIEW in src/App.tsx).
+    // An account is approved if:
+    //   - it's an admin (always exempt), OR
+    //   - its users/{uid} doc has status == "approved", OR
+    //   - it has NO status field at all — the grandfather clause for every
+    //     account that existed before this gate was introduced, so this
+    //     migration doesn't lock out anyone already using the app. Only
+    //     accounts created after this change land with status == "pending"
+    //     and are actually held for review.
+    // To require re-approval of existing accounts too, remove the
+    // `!('status' in ...data)` branch below.
+    function isApprovedUser() {
+      return isAdmin() || (
+        isSignedIn() &&
+        exists(/databases/$(database)/documents/users/$(request.auth.uid)) &&
+        (
+          get(/databases/$(database)/documents/users/$(request.auth.uid)).data.status == "approved" ||
+          !('status' in get(/databases/$(database)/documents/users/$(request.auth.uid)).data)
+        )
+      );
+    }
+
     function isValidId(id) {
       return id is string && id.size() <= 128 && id.matches('^[a-zA-Z0-9_\\-]+$');
     }
@@ -550,13 +572,13 @@ service cloud.firestore {
     }
 
     match /taxonomy/{nodeId} {
-      allow read: if isSignedIn();
+      allow read: if isApprovedUser();
       allow create, update: if isAdmin() && isValidTaxonomyNode(incoming());
       allow delete: if isAdmin();
     }
 
     match /companies/{companyId} {
-      allow read: if isSignedIn();
+      allow read: if isApprovedUser();
       allow write: if isAdmin() && (request.method == 'delete' || isValidCompany(incoming()));
     }
 
@@ -568,12 +590,12 @@ service cloud.firestore {
     // should route through a Cloud Function that checks the caller's
     // authority server-side, not a broadened rule here (see that doc, §5).
     match /companies/{companyId}/locations/{locationId} {
-      allow read: if isSignedIn();
+      allow read: if isApprovedUser();
       allow write: if isAdmin();
     }
 
     match /company_categories/{categoryId} {
-      allow read: if isSignedIn();
+      allow read: if isApprovedUser();
       allow write: if isAdmin();
     }
 
@@ -583,7 +605,7 @@ service cloud.firestore {
     // company_categories: readable by any signed-in user, writable only by
     // admin via the Page Copy tab in /admin.
     match /pageCopy/{pageKey} {
-      allow read: if isSignedIn();
+      allow read: if isApprovedUser();
       allow write: if isAdmin();
     }
 
@@ -641,14 +663,14 @@ service cloud.firestore {
     }
 
     match /news/{newsId} {
-      allow read: if isSignedIn();
+      allow read: if isApprovedUser();
       allow create: if isAdmin() && isValidNews(incoming());
       allow update: if isAdmin() && isValidNews(incoming());
       allow delete: if isAdmin();
     }
 
     match /posts/{postId} {
-      allow read: if isSignedIn();
+      allow read: if isApprovedUser();
       allow create: if isVerifiedMember() && isValidPost(incoming());
       allow update: if (isOwner(existing().authorUid) && 
                         isValidPost(incoming()) && 
@@ -665,7 +687,7 @@ service cloud.firestore {
     }
 
     match /events/{eventId} {
-      allow read: if isSignedIn();
+      allow read: if isApprovedUser();
       allow create: if (isAdmin() || (isSignedIn() && isConnectedToCompany(request.auth.uid))) && isValidEvent(incoming());
       allow update: if (isOwner(existing().organizerUid) && isValidEvent(incoming())) || isAdmin();
       allow delete: if (isOwner(existing().organizerUid) || isAdmin());
@@ -680,14 +702,14 @@ service cloud.firestore {
     }
 
     match /forum_topics/{topicId} {
-      allow read: if isSignedIn();
+      allow read: if isApprovedUser();
       allow create: if isVerifiedMember() && isValidForumTopic(incoming());
       allow update: if (isOwner(existing().authorUid) && isValidForumTopic(incoming())) || 
                       (isSignedIn() && incoming().diff(existing()).affectedKeys().hasOnly(['replyCount', 'updatedAt'])) ||
                       isAdmin();
       
       match /posts/{postId} {
-        allow read: if isSignedIn();
+        allow read: if isApprovedUser();
         allow create: if isVerifiedMember() && incoming().topicId == topicId && isValidForumPost(incoming());
         allow delete: if isOwner(existing().authorUid) || isAdmin();
       }
@@ -695,7 +717,7 @@ service cloud.firestore {
       // The frontend code (PostDetail.tsx) writes/reads from a /comments
       // subcollection. Define rules so those operations succeed.
       match /comments/{commentId} {
-        allow read: if isSignedIn();
+        allow read: if isApprovedUser();
         allow create: if isSignedIn() && incoming().authorUid == request.auth.uid;
         allow update: if isOwner(existing().authorUid) || isAdmin();
         allow delete: if isOwner(existing().authorUid) || isAdmin();
@@ -776,12 +798,12 @@ service cloud.firestore {
     }
 
     match /surveys/{surveyId} {
-      allow read: if isSignedIn();
+      allow read: if isApprovedUser();
       allow create: if (isAdmin() || (isSignedIn() && isConnectedToCompany(request.auth.uid)));
       allow update: if (isSignedIn() && incoming().diff(existing()).affectedKeys().hasOnly(['options', 'totalVotes', 'updatedAt'])) || isAdmin();
       
       match /votes/{voteId} {
-        allow read: if isSignedIn();
+        allow read: if isApprovedUser();
         allow create: if isSignedIn() && isOwner(voteId); // voteId is userId for uniqueness
       }
     }

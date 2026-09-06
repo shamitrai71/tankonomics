@@ -84,6 +84,7 @@ import Messages from "./pages/Messages";
 import Groups from "./pages/Groups";
 import GroupDetail from "./pages/GroupDetail";
 import PostDetail from "./pages/PostDetail";
+import { ApprovalGate } from "./components/ApprovalGate";
 
 // --- Context & Types ---
 
@@ -96,6 +97,25 @@ const SUPER_ADMIN_EMAILS = [
   "esraigroup@gmail.com",
 ] as const;
 
+// ══════════════════════════════════════════════════════════════════════
+// ACCESS GATE — pre-launch only. Set to false to open the site back up
+// once ready for market; that's the only code change needed on this
+// side. This flag controls the UI only — it does NOT by itself protect
+// data. The matching Firestore rule (isApprovedUser(), firestore.rules)
+// must independently require approval for reads, or anyone can still
+// fetch data directly from the Firestore SDK/REST API without ever
+// loading the app shell that this flag gates.
+//
+// Existing accounts (created before this flag was introduced) have no
+// `status` field at all. They're treated as approved automatically —
+// see the `hasNoStatusField` grandfather clause below — so this migration
+// doesn't lock out anyone already using the app. Only sign-ups *from now
+// on* land in the pending queue. If you'd rather retroactively require
+// every existing account to be re-approved too, change the grandfather
+// line noted below.
+// ══════════════════════════════════════════════════════════════════════
+export const REQUIRE_APPROVAL_TO_VIEW = true;
+
 interface AuthContextType {
   user: User | null;
   profile: any | null;
@@ -106,6 +126,11 @@ interface AuthContextType {
   hasBlueprint: boolean;
   tier: "A" | "B" | "C" | "admin";
   isFounder: boolean;
+  // Access-gate status ("pending" | "approved" | "rejected"). Existing
+  // accounts with no status field at all read as null here — treated as
+  // approved by the grandfather clause in App()'s render, not by this
+  // type. Always "approved" for admins regardless of the stored value.
+  status: "pending" | "approved" | "rejected" | null;
   signIn: () => Promise<void>;
   logout: () => Promise<void>;
 }
@@ -1649,6 +1674,12 @@ export default function App() {
             photoURL: user.photoURL || "",
             createdAt: serverTimestamp(),
             updatedAt: serverTimestamp(),
+            // Pre-launch access gate (see REQUIRE_APPROVAL_TO_VIEW above) —
+            // every new sign-up starts pending until an admin approves it
+            // in Admin -> Members. Nothing here can set this to "approved";
+            // only approveMember()/rejectMember() (Admin.tsx) do that, and
+            // the Firestore rule enforces that server-side too.
+            status: "pending",
             isPro: false,
             isPublic: true,
             jobTitle: "",
@@ -1841,6 +1872,10 @@ export default function App() {
         : (user?.emailVerified && hasBlueprint) ? "B"
         : "A"
       ),
+      // Access-gate status — admins always read as approved regardless of
+      // their own profile doc, matching how isAdmin already bypasses every
+      // other tier check in this app.
+      status: isAdmin ? "approved" : (profile?.status ?? null),
       signIn, 
       logout 
     }}>
@@ -1849,6 +1884,18 @@ export default function App() {
           <div className="min-h-screen bg-bg-main text-text-body font-sans transition-colors duration-500">
           {!user ? (
             <AuthPanel onSignIn={signIn} theme={theme} />
+          ) : REQUIRE_APPROVAL_TO_VIEW && !isAdmin && profile?.status === "rejected" ? (
+            <ApprovalGate status="rejected" email={user.email} onSignOut={logout} />
+          ) : REQUIRE_APPROVAL_TO_VIEW && !isAdmin &&
+            // Grandfather clause: an existing account from before this gate
+            // existed has profile.status === undefined, not "pending" — that
+            // reads as approved here so nobody already using the app gets
+            // locked out by this migration. Only accounts explicitly created
+            // with status:"pending" (i.e. everyone signing up from now on)
+            // are held for review. To require re-approval of existing
+            // accounts too, change this to check `!== "approved"` instead.
+            profile?.status === "pending" ? (
+            <ApprovalGate status="pending" email={user.email} onSignOut={logout} />
           ) : (
             <>
               <Sidebar isOpen={isMenuOpen} onClose={() => setIsMenuOpen(false)} theme={theme} />
