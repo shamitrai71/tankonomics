@@ -152,6 +152,17 @@ export const CATEGORY_SEED: CategorySeedNode[] = [
   { id: "valves", slug: "valves", name: "Valves", level: 2, parentId: "flow-and-transfer-equipment", order: 7 },
   { id: "actuators", slug: "actuators", name: "Actuators", level: 2, parentId: "flow-and-transfer-equipment", order: 8 },
   { id: "flow-meters", slug: "flow-meters", name: "Flow Meters", level: 2, parentId: "flow-and-transfer-equipment", order: 9 },
+
+  // ── Flow Meters sub-types (L3, added after a side-by-side review against
+  // controlssupplychain.com, an instrumentation parts catalog with real
+  // depth here that Tankonomics/TWI's tree didn't have). Mirrors TWI's
+  // FT-09.1 through FT-09.5. A company tagged only "flow-meters" still
+  // appears under Flow Meters, same pattern as Tank Gauging above. ──
+  { id: "coriolis-meters", slug: "coriolis-meters", name: "Coriolis Meters", level: 3, parentId: "flow-meters", order: 1 },
+  { id: "turbine-flow-meters", slug: "turbine-flow-meters", name: "Turbine Flow Meters", level: 3, parentId: "flow-meters", order: 2 },
+  { id: "ultrasonic-flow-meters", slug: "ultrasonic-flow-meters", name: "Ultrasonic Flow Meters", level: 3, parentId: "flow-meters", order: 3 },
+  { id: "positive-displacement-meters", slug: "positive-displacement-meters", name: "Positive Displacement Meters", level: 3, parentId: "flow-meters", order: 4 },
+  { id: "cone-and-orifice-meters", slug: "cone-and-orifice-meters", name: "Cone & Orifice Meters", level: 3, parentId: "flow-meters", order: 5 },
   { id: "custody-transfer-metering", slug: "custody-transfer-metering", name: "Custody Transfer Metering", level: 2, parentId: "flow-and-transfer-equipment", order: 10 },
   { id: "pigging-systems", slug: "pigging-systems", name: "Pigging Systems", level: 2, parentId: "flow-and-transfer-equipment", order: 11 },
   { id: "strainers", slug: "strainers", name: "Strainers", level: 2, parentId: "flow-and-transfer-equipment", order: 12 },
@@ -182,6 +193,21 @@ export const CATEGORY_SEED: CategorySeedNode[] = [
   { id: "industrial-networking", slug: "industrial-networking", name: "Industrial Networking", level: 2, parentId: "instrumentation-and-automation", order: 6 },
   { id: "electrical-and-instrumentation", slug: "electrical-and-instrumentation", name: "Electrical & Instrumentation", level: 2, parentId: "instrumentation-and-automation", order: 7 },
   { id: "site-communication-systems", slug: "site-communication-systems", name: "Site Communication Systems", level: 2, parentId: "instrumentation-and-automation", order: 8 },
+
+  // ── Field instrumentation (L2, added after a side-by-side review against
+  // controlssupplychain.com, a pure field-instrumentation parts catalog).
+  // The gap: everything above under Instrumentation & Automation is
+  // systems/software layer (SCADA, PLC/DCS, networking) — none of it is a
+  // home for the physical field devices that feed data INTO those systems.
+  // Before this addition, this tree had zero categories anywhere
+  // containing "transmitter," "indicator," "switch" (as an instrument),
+  // "chart recorder," or "regulator." Mirrors TWI's IA-09 through IA-14. ──
+  { id: "pressure-transmitters", slug: "pressure-transmitters", name: "Pressure Transmitters", level: 2, parentId: "instrumentation-and-automation", order: 9 },
+  { id: "temperature-transmitters", slug: "temperature-transmitters", name: "Temperature Transmitters", level: 2, parentId: "instrumentation-and-automation", order: 10 },
+  { id: "dp-transmitters-and-instruments", slug: "dp-transmitters-and-instruments", name: "DP Transmitters & Instruments", level: 2, parentId: "instrumentation-and-automation", order: 11 },
+  { id: "pressure-and-temperature-switches", slug: "pressure-and-temperature-switches", name: "Pressure & Temperature Switches", level: 2, parentId: "instrumentation-and-automation", order: 12 },
+  { id: "indicators-and-chart-recorders", slug: "indicators-and-chart-recorders", name: "Indicators & Chart Recorders", level: 2, parentId: "instrumentation-and-automation", order: 13 },
+  { id: "regulators", slug: "regulators", name: "Regulators", level: 2, parentId: "instrumentation-and-automation", order: 14 },
   { id: "digital-ai-and-robotics", slug: "digital-ai-and-robotics", name: "Digital, AI & Robotics", level: 1, parentId: "", order: 8 },
   { id: "industrial-software", slug: "industrial-software", name: "Industrial Software", level: 2, parentId: "digital-ai-and-robotics", order: 1 },
   { id: "erp-solutions", slug: "erp-solutions", name: "ERP Solutions", level: 2, parentId: "digital-ai-and-robotics", order: 2 },
