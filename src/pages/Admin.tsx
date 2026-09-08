@@ -679,7 +679,8 @@ export default function Admin() {
         try {
           await setDoc(doc(db, "company_categories", node.id), {
             name: node.name, slug: node.slug, level: node.level,
-            parentId: node.parentId, order: node.order, updatedAt: serverTimestamp(),
+            parentId: node.parentId, order: node.order, source: node.source,
+            updatedAt: serverTimestamp(),
           });
           done++;
         } catch (err: any) {
@@ -1637,7 +1638,28 @@ const handleEditCompany = async (company: any) => {
                   Seed master tree ({CATEGORY_SEED.length})
                 </button>
               </div>
-              <p className="text-xs text-text-body mb-6 font-medium">Manage categories and sub-categories used across Directory, Jobs, Events, and Forums.</p>
+              <p className="text-xs text-text-body mb-2 font-medium">Manage categories and sub-categories used across Directory, Jobs, Events, and Forums.</p>
+              {/* Live source breakdown — reads the actual company_categories collection in
+                  Firestore (the `categories` hook above), not just the local CATEGORY_SEED file.
+                  This is the actual check for whether a seed run carried the `source` field:
+                  if this shows "0 TWI · 0 TankBazaar" after seeding, the write payload dropped
+                  the field (see handleSeedCategories) even though every node in categorySeed.ts
+                  has it. */}
+              <p className="text-xs text-text-body/70 mb-6">
+                Live in Firestore right now:{" "}
+                <span className="font-semibold text-text-heading">
+                  {categories.filter((c: any) => c.source === "TWI").length} TWI
+                </span>
+                {" · "}
+                <span className="font-semibold text-text-heading">
+                  {categories.filter((c: any) => c.source === "TankBazaar").length} TankBazaar
+                </span>
+                {" · "}
+                <span className={categories.filter((c: any) => !c.source).length > 0 ? "font-semibold text-rust" : "text-text-body/50"}>
+                  {categories.filter((c: any) => !c.source).length} untagged
+                </span>
+                {" "}(of {categories.length} total — master tree file has {CATEGORY_SEED.length})
+              </p>
               <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                 {[1, 2, 3].map((level) => (
                   <div key={level} className="space-y-4">
