@@ -12,10 +12,11 @@
  * the previous version.
  */
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { useCollection } from "../hooks/useFirestore";
 import { usePageCopy } from "../lib/pageCopy";
-import { orderBy } from "firebase/firestore";
+import { orderBy, query, collection, limit, startAfter, getDocs, where, QueryDocumentSnapshot } from "firebase/firestore";
+import { db } from "../firebase";
 import {
   Building2,
   Search,
@@ -56,7 +57,80 @@ export default function Companies() {
   }, [selectedCategories]);
 
   const { data: categories, loading: loadingCats } = useCollection<any>("company_categories", [orderBy("level", "asc"), orderBy("order", "asc")]);
-  const { data: companies, loading: loadingCompanies } = useCollection<any>("companies", [orderBy("createdAt", "desc")]);
+
+  // Paginated companies fetch, replacing the old useCollection("companies", ...)
+  // call that had no limit() at all -- every page view read the entire
+  // collection. See ENGINEERING_NOTES / the TWI+TankBazaar merge planning:
+  // at merge-time scale (thousands of companies) that was ~1 read per
+  // company per page view, exhausting the free daily quota after only a
+  // handful of visits. Firestore array-contains-any is capped at 10 values,
+  // so PAGE_SIZE and the 10-category cap below are both real constraints,
+  // not arbitrary numbers.
+  const PAGE_SIZE = 48;
+  const [companies, setCompanies] = useState<any[]>([]);
+  const [loadingCompanies, setLoadingCompanies] = useState(true);
+  const [loadingMore, setLoadingMore] = useState(false);
+  const [hasMore, setHasMore] = useState(true);
+  const [lastDoc, setLastDoc] = useState<QueryDocumentSnapshot | null>(null);
+
+  const fetchCompaniesPage = useCallback(async (categoryFilter: string[], cursor: QueryDocumentSnapshot | null) => {
+    const constraints: any[] = [orderBy("createdAt", "desc")];
+    // Server-side coarse narrowing: bounds WHICH page-worth of documents gets
+    // read, using the allCategoryIds field computed at write time (see
+    // getAncestorAndSelfIds in Admin.tsx). This does NOT replace the
+    // depth-aware "narrow to deepest selection" logic below -- it's a
+    // superset prefilter so that logic runs against a bounded result set
+    // instead of the whole collection. array-contains-any allows at most 10
+    // values; with more than 10 selected, fall back to no server-side filter
+    // (rare in practice -- the UI is a hierarchical drill-down, not a
+    // 10+-item multi-select) and rely on the client-side pass alone for that
+    // page, same as pre-fix behavior just for this edge case.
+    if (categoryFilter.length > 0 && categoryFilter.length <= 10) {
+      constraints.push(where("allCategoryIds", "array-contains-any", categoryFilter));
+    }
+    constraints.push(limit(PAGE_SIZE));
+    if (cursor) constraints.push(startAfter(cursor));
+    const snap = await getDocs(query(collection(db, "companies"), ...constraints));
+    const docs = snap.docs.map((d) => ({ id: d.id, ...d.data() }));
+    return { docs, lastVisible: snap.docs[snap.docs.length - 1] || null, gotFullPage: snap.docs.length === PAGE_SIZE };
+  }, []);
+
+  // Re-fetch from scratch whenever the category filter changes -- the server-side
+  // constraint itself changed, so old pages/cursor are no longer valid.
+  useEffect(() => {
+    let cancelled = false;
+    setLoadingCompanies(true);
+    setCompanies([]);
+    setLastDoc(null);
+    setHasMore(true);
+    fetchCompaniesPage(selectedCategories, null).then(({ docs, lastVisible, gotFullPage }) => {
+      if (cancelled) return;
+      setCompanies(docs);
+      setLastDoc(lastVisible);
+      setHasMore(gotFullPage);
+      setLoadingCompanies(false);
+    }).catch((err) => {
+      if (cancelled) return;
+      console.error("Companies fetch failed:", err);
+      setLoadingCompanies(false);
+    });
+    return () => { cancelled = true; };
+  }, [selectedCategories.join(","), fetchCompaniesPage]);
+
+  const loadMoreCompanies = async () => {
+    if (loadingMore || !hasMore) return;
+    setLoadingMore(true);
+    try {
+      const { docs, lastVisible, gotFullPage } = await fetchCompaniesPage(selectedCategories, lastDoc);
+      setCompanies((prev) => [...prev, ...docs]);
+      setLastDoc(lastVisible);
+      setHasMore(gotFullPage);
+    } catch (err) {
+      console.error("Companies load-more failed:", err);
+    } finally {
+      setLoadingMore(false);
+    }
+  };
 
   const toggleCategory = (id: string) => {
     setSelectedCategories((prev) => (prev.includes(id) ? prev.filter((c) => c !== id) : [...prev, id]));
@@ -385,6 +459,18 @@ export default function Companies() {
                     <CloseIcon className="w-3.5 h-3.5" />
                   </button>
                 )}
+                {searchTerm && hasMore && (
+                  // Honest, not silent: search only runs against companies already
+                  // loaded on this page. Firestore has no native substring/full-text
+                  // search, so this can't be fixed by the pagination change itself --
+                  // it needs a real search index (Algolia/Typesense) as a separate
+                  // piece of work. Narrowing by category first avoids this in
+                  // practice for most searches, which this note also nudges toward.
+                  <p className="absolute top-full left-0 mt-1.5 text-[11px] text-text-body/45">
+                    Searching {companies.length} loaded compan{companies.length === 1 ? "y" : "ies"} — narrow by category
+                    on the left, or load more below, to search further.
+                  </p>
+                )}
               </div>
             </div>
 
@@ -506,6 +592,18 @@ export default function Companies() {
                     )}
                   </div>
                 )}
+              </div>
+            )}
+
+            {!loadingCompanies && hasMore && (
+              <div className="mt-8 text-center">
+                <button
+                  onClick={loadMoreCompanies}
+                  disabled={loadingMore}
+                  className="inline-flex items-center gap-2 px-5 py-2.5 bg-bg-card border border-border-main rounded-xl text-[13px] font-medium hover:border-text-heading transition-all disabled:opacity-50"
+                >
+                  {loadingMore ? "Loading…" : `Load more companies`}
+                </button>
               </div>
             )}
           </div>

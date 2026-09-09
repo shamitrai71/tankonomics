@@ -88,6 +88,33 @@ function matchesCompanySearch(company: any, term: string): boolean {
   );
 }
 
+// Denormalized-ancestor helper for the Companies pagination fix. Firestore
+// can't natively query "this category OR any of its descendants" -- it can
+// only match exact array values. So instead of asking "does this company's
+// tag list contain a descendant of the selected category," every company
+// stores, at write time, the UNION of its own tags plus every ancestor of
+// each tag. A query for category X then becomes a plain, indexed
+// `where("allCategoryIds", "array-contains-any", [X])` -- correct, and
+// doesn't require reading the whole collection to filter client-side.
+// Companies.tsx still does its existing depth-aware client-side narrowing
+// on TOP of this (this only bounds which page-worth of candidates gets
+// fetched in the first place; it doesn't replace the existing "narrow to
+// deepest selection" logic, which still needs the real category tree).
+function getAncestorAndSelfIds(categoryIds: string[]): string[] {
+  const byId = new Map(CATEGORY_SEED.map((n) => [n.id, n]));
+  const result = new Set<string>();
+  for (const id of categoryIds || []) {
+    let current: string | undefined = id;
+    let guard = 0; // parentId chains are shallow (max 3 levels) but guard against bad data looping
+    while (current && guard < 10) {
+      result.add(current);
+      current = byId.get(current)?.parentId || undefined;
+      guard++;
+    }
+  }
+  return Array.from(result);
+}
+
 export default function Admin() {
   const [activeTab, setActiveTab] = useState<Tab>("analytics");
   // Filters the Active Directory list below — with 500+ companies and no
@@ -615,6 +642,7 @@ export default function Admin() {
             ...(c.heroImage ? { heroImage: c.heroImage } : {}),
             socialLinks: { linkedin: c.linkedin, twitter: c.twitter, facebook: c.facebook, instagram: c.instagram },
             categoryIds: c.categoryIds, categoryId: c.categoryIds[0] ?? null,
+            allCategoryIds: getAncestorAndSelfIds(c.categoryIds),
             externalDirectoryUrl: c.externalDirectoryUrl || "",
             externalDirectoryName: c.externalDirectoryName || "",
             subCategoryId: "", tier3CategoryId: "", isFeatured: c.isFeatured,
@@ -818,6 +846,7 @@ export default function Admin() {
       },
       categoryIds: newCompany.categoryIds,
       categoryId: newCompany.categoryIds[0], // first category for legacy readers
+      allCategoryIds: getAncestorAndSelfIds(newCompany.categoryIds),
       subCategoryId: newCompany.subCategoryId ||"",
       tier3CategoryId: newCompany.tier3CategoryId ||"",
       isFeatured: !!newCompany.isFeatured,
