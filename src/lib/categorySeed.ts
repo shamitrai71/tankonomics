@@ -75,6 +75,7 @@ export const CATEGORY_SEED: CategorySeedNode[] = [
   { id: "fpso-fso-design-and-conversion", slug: "fpso-fso-design-and-conversion", name: "FPSO/FSO Design & Conversion", level: 3, parentId: "offshore-floating-systems", order: 1, source: "TWI" },
   { id: "flng-systems", slug: "flng-systems", name: "FLNG Systems", level: 3, parentId: "offshore-floating-systems", order: 2, source: "TWI" },
   { id: "fsru-and-regasification-systems", slug: "fsru-and-regasification-systems", name: "FSRU & Regasification Systems", level: 3, parentId: "offshore-floating-systems", order: 3, source: "TWI" },
+  { id: "fpso-lifecycle-management", slug: "fpso-lifecycle-management", name: "FPSO Lifecycle Management", level: 3, parentId: "offshore-floating-systems", order: 4, source: "TWI" },
 
   // ── LNG Terminal Engineering (L2, added alongside Offshore Floating Systems) ─
   // EPC and technology-licensing companies for onshore LNG liquefaction/export
@@ -91,6 +92,7 @@ export const CATEGORY_SEED: CategorySeedNode[] = [
   // Upstream (LNG production) facilities, per the Licensor-Technology Tracker's
   // Category Grouping field.
   { id: "process-technology-licensors", slug: "process-technology-licensors", name: "Process Technology Licensors", level: 2, parentId: "engineering-and-construction", order: 21, source: "TWI" },
+  { id: "fire-engineering-and-systems", slug: "fire-engineering-and-systems", name: "Fire Engineering & Systems", level: 2, parentId: "engineering-and-construction", order: 22, source: "TWI" },
   { id: "refining-process-technologies", slug: "refining-process-technologies", name: "Refining Process Technologies", level: 3, parentId: "process-technology-licensors", order: 1, source: "TWI" },
   { id: "petrochemical-process-technologies", slug: "petrochemical-process-technologies", name: "Petrochemical Process Technologies", level: 3, parentId: "process-technology-licensors", order: 2, source: "TWI" },
   { id: "gas-processing-and-lng-technologies", slug: "gas-processing-and-lng-technologies", name: "Gas Processing & LNG Technologies", level: 3, parentId: "process-technology-licensors", order: 3, source: "TWI" },
@@ -160,6 +162,9 @@ export const CATEGORY_SEED: CategorySeedNode[] = [
   { id: "metering-pumps", slug: "metering-pumps", name: "Metering Pumps", level: 2, parentId: "flow-and-transfer-equipment", order: 6, source: "TWI" },
   { id: "valves", slug: "valves", name: "Valves", level: 2, parentId: "flow-and-transfer-equipment", order: 7, source: "TWI" },
   { id: "actuators", slug: "actuators", name: "Actuators", level: 2, parentId: "flow-and-transfer-equipment", order: 8, source: "TWI" },
+  { id: "pneumatic-actuators", slug: "pneumatic-actuators", name: "Pneumatic Actuators", level: 3, parentId: "actuators", order: 1, source: "TWI" },
+  { id: "electric-actuators", slug: "electric-actuators", name: "Electric Actuators", level: 3, parentId: "actuators", order: 2, source: "TWI" },
+  { id: "hydraulic-actuators", slug: "hydraulic-actuators", name: "Hydraulic Actuators", level: 3, parentId: "actuators", order: 3, source: "TWI" },
   { id: "flow-meters", slug: "flow-meters", name: "Flow Meters", level: 2, parentId: "flow-and-transfer-equipment", order: 9, source: "TWI" },
 
   // ── Flow Meters sub-types (L3, added after a side-by-side review against
@@ -217,6 +222,7 @@ export const CATEGORY_SEED: CategorySeedNode[] = [
   { id: "pressure-and-temperature-switches", slug: "pressure-and-temperature-switches", name: "Pressure & Temperature Switches", level: 2, parentId: "instrumentation-and-automation", order: 12, source: "TWI" },
   { id: "indicators-and-chart-recorders", slug: "indicators-and-chart-recorders", name: "Indicators & Chart Recorders", level: 2, parentId: "instrumentation-and-automation", order: 13, source: "TWI" },
   { id: "regulators", slug: "regulators", name: "Regulators", level: 2, parentId: "instrumentation-and-automation", order: 14, source: "TWI" },
+  { id: "instrumentation-installation-commissioning-and-testing", slug: "instrumentation-installation-commissioning-and-testing", name: "Instrumentation Installation, Commissioning & Testing", level: 2, parentId: "instrumentation-and-automation", order: 15, source: "TWI" },
   { id: "digital-ai-and-robotics", slug: "digital-ai-and-robotics", name: "Digital, AI & Robotics", level: 1, parentId: "", order: 8, source: "TWI" },
   { id: "industrial-software", slug: "industrial-software", name: "Industrial Software", level: 2, parentId: "digital-ai-and-robotics", order: 1, source: "TWI" },
   { id: "erp-solutions", slug: "erp-solutions", name: "ERP Solutions", level: 2, parentId: "digital-ai-and-robotics", order: 2, source: "TWI" },
@@ -526,6 +532,7 @@ export const CATEGORY_SEED: CategorySeedNode[] = [
   { id: "naval-architecture-and-marine-engineering", slug: "naval-architecture-and-marine-engineering", name: "Naval Architecture & Marine Engineering", level: 2, parentId: "offshore-and-subsea-systems", order: 9, source: "TWI" },
   { id: "shipbuilding", slug: "shipbuilding", name: "Shipbuilding", level: 2, parentId: "offshore-and-subsea-systems", order: 10, source: "TWI" },
   { id: "ship-repair-and-conversion", slug: "ship-repair-and-conversion", name: "Ship Repair & Conversion", level: 2, parentId: "offshore-and-subsea-systems", order: 11, source: "TWI" },
+  { id: "offshore-onshore-facility-om", slug: "offshore-onshore-facility-om", name: "Offshore/Onshore Facility O&M", level: 2, parentId: "offshore-and-subsea-systems", order: 12, source: "TWI" },
   { id: "process-plant-equipment", slug: "process-plant-equipment", name: "Process Plant Equipment", level: 1, parentId: "", order: 99, source: "TWI" },
   { id: "pressure-vessels-and-reactors", slug: "pressure-vessels-and-reactors", name: "Pressure Vessels & Reactors", level: 2, parentId: "process-plant-equipment", order: 1, source: "TWI" },
   { id: "distillation-columns-and-tower-internals", slug: "distillation-columns-and-tower-internals", name: "Distillation Columns & Tower Internals", level: 2, parentId: "process-plant-equipment", order: 2, source: "TWI" },

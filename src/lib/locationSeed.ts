@@ -177,7 +177,7 @@ export const LOCATION_SEED: Record<string, SeedLocation[]> = {
     { name: "Raipur Terminal", type: "inland terminal", city: "Raipur, Chhattisgarh", country: "India", externalUrl: "https://tankbazaar.com/#terminal-431", facilityClass: ["storage"], processType: [], primaryClass: "storage", googlePlaceId: "" },
     { name: "Ranchi Terminal", type: "inland terminal", city: "Ranchi, Jharkhand", country: "India", externalUrl: "https://tankbazaar.com/#terminal-430", facilityClass: ["storage"], processType: [], primaryClass: "storage", googlePlaceId: "" },
     { name: "Rangpo Depot", type: "inland terminal", city: "Rangpo, Sikkim", country: "India", externalUrl: "https://tankbazaar.com/#terminal-377", facilityClass: ["storage"], processType: [], primaryClass: "storage", googlePlaceId: "" },
-    { name: "Salaya Depot", type: "inland terminal", city: "Salaya, Gujarat", country: "India", externalUrl: "https://tankbazaar.com/#terminal-419", facilityClass: ["storage"], processType: [], primaryClass: "storage", googlePlaceId: "" },
+    { name: "Salaya Depot", type: "inland terminal", city: "Salaya, Gujarat", country: "India", externalUrl: "https://tankbazaar.com/#terminal-3406", facilityClass: ["storage"], processType: [], primaryClass: "storage", googlePlaceId: "" },
     { name: "Salem Depot", type: "inland terminal", city: "Salem, Tamil Nadu", country: "India", externalUrl: "https://tankbazaar.com/#terminal-428", facilityClass: ["storage"], processType: [], primaryClass: "storage", googlePlaceId: "" },
     { name: "Sanganer Terminal", type: "inland terminal", city: "Jaipur, Rajasthan", country: "India", externalUrl: "https://tankbazaar.com/#terminal-254", facilityClass: ["storage"], processType: [], primaryClass: "storage", googlePlaceId: "" },
     { name: "Sekerkote Terminal", type: "inland terminal", city: "Sekerkote, Tripura", country: "India", externalUrl: "https://tankbazaar.com/#terminal-713", facilityClass: ["storage"], processType: [], primaryClass: "storage", googlePlaceId: "" },
@@ -186,13 +186,13 @@ export const LOCATION_SEED: Record<string, SeedLocation[]> = {
     { name: "Siliguri Depot", type: "inland terminal", city: "Siliguri, West Bengal", country: "India", externalUrl: "https://tankbazaar.com/#terminal-715", facilityClass: ["storage"], processType: [], primaryClass: "storage", googlePlaceId: "" },
     { name: "Thoothukudi Terminal", type: "port terminal", city: "Thoothukudi, Tamil Nadu", country: "India", externalUrl: "https://tankbazaar.com/#terminal-399", facilityClass: ["storage"], processType: [], primaryClass: "storage", googlePlaceId: "" },
     { name: "Tinsukia Depot", type: "inland terminal", city: "Tinsukia, Assam", country: "India", externalUrl: "https://tankbazaar.com/#terminal-711", facilityClass: ["storage"], processType: [], primaryClass: "storage", googlePlaceId: "" },
-    { name: "Vadinar Terminal", type: "port terminal", city: "Vadinar, Gujarat", country: "India", externalUrl: "https://tankbazaar.com/#terminal-74", facilityClass: ["storage"], processType: [], primaryClass: "storage", googlePlaceId: "" },
-    { name: "Viramgam Depot", type: "inland terminal", city: "Viramgam, Gujarat", country: "India", externalUrl: "https://tankbazaar.com/#terminal-420", facilityClass: ["storage"], processType: [], primaryClass: "storage", googlePlaceId: "" },
+    { name: "Vadinar Terminal", type: "port terminal", city: "Vadinar, Gujarat", country: "India", externalUrl: "https://tankbazaar.com/#terminal-3406", facilityClass: ["storage"], processType: [], primaryClass: "storage", googlePlaceId: "" },
+    { name: "Viramgam Depot", type: "inland terminal", city: "Viramgam, Gujarat", country: "India", externalUrl: "https://tankbazaar.com/#terminal-3414", facilityClass: ["storage"], processType: [], primaryClass: "storage", googlePlaceId: "" },
   ],
   "mangalore-refinery-and-petrochemicals-limited": [
     { name: "Mangalore Refinery", type: "refinery", city: "Mangalore, Karnataka", country: "India", externalUrl: "https://tankbazaar.com/#terminal-76", facilityClass: ["process"], processType: ["refineries"], primaryClass: "process", googlePlaceId: "ChIJ0wG1uu5RozsR33BelXCrZJs" },
     { name: "Devangonthi Terminal", type: "inland terminal", city: "Bengaluru, Karnataka", country: "India", externalUrl: "https://tankbazaar.com/#terminal-522", facilityClass: ["storage"], processType: [], primaryClass: "storage", googlePlaceId: "" },
-    { name: "Katipalla Terminal", type: "port terminal", city: "Mangalore, Karnataka", country: "India", externalUrl: "https://tankbazaar.com/#terminal-521", facilityClass: ["storage"], processType: [], primaryClass: "storage", googlePlaceId: "" },
+    { name: "Katipalla Terminal", type: "port terminal", city: "Mangalore, Karnataka", country: "India", externalUrl: "https://tankbazaar.com/#terminal-76", facilityClass: ["storage"], processType: [], primaryClass: "storage", googlePlaceId: "" },
   ],
   "nayara-energy-limited": [
     { name: "Vadinar Refinery", type: "refinery", city: "Vadinar, Gujarat", country: "India", externalUrl: "https://tankbazaar.com/#terminal-23", facilityClass: ["process"], processType: ["refineries"], primaryClass: "process", googlePlaceId: "ChIJMa1G8BYdVzkRpo9VuvhNCys" },
@@ -446,7 +446,7 @@ export const LOCATION_SEED: Record<string, SeedLocation[]> = {
     { name: "Kandla Terminal", type: "port terminal", city: "Kandla, Gujarat", country: "India", externalUrl: "https://tankbazaar.com/#terminal-33", facilityClass: ["storage"], processType: [], primaryClass: "storage", googlePlaceId: "" },
     { name: "Kandla LPG Terminal", type: "port terminal", city: "Kandla, Gujarat", country: "India", externalUrl: "https://tankbazaar.com/#terminal-550", facilityClass: ["storage"], processType: [], primaryClass: "storage", googlePlaceId: "" },
     { name: "Kochi Terminal", type: "port terminal", city: "Kochi, Kerala", country: "India", externalUrl: "https://tankbazaar.com/#terminal-34", facilityClass: ["storage"], processType: [], primaryClass: "storage", googlePlaceId: "" },
-    { name: "Mangalore LPG Terminal", type: "port terminal", city: "Mangaluru, Karnataka", country: "India", externalUrl: "https://tankbazaar.com/#terminal-551", facilityClass: ["storage"], processType: [], primaryClass: "storage", googlePlaceId: "" },
+    { name: "Mangalore LPG Terminal", type: "port terminal", city: "Mangaluru, Karnataka", country: "India", externalUrl: "https://tankbazaar.com/#terminal-6434", facilityClass: ["storage"], processType: [], primaryClass: "storage", googlePlaceId: "" },
     { name: "Mangaluru Terminal", type: "port terminal", city: "Mangaluru, Karnataka", country: "India", externalUrl: "https://tankbazaar.com/#terminal-36", facilityClass: ["storage"], processType: [], primaryClass: "storage", googlePlaceId: "" },
     { name: "Nadella Terminal", type: "port terminal", city: "Kakinada, Andhra Pradesh", country: "India", externalUrl: "https://tankbazaar.com/#terminal-552", facilityClass: ["storage"], processType: [], primaryClass: "storage", googlePlaceId: "" },
     { name: "Pipavav LPG Terminal", type: "port terminal", city: "Pipavav, Gujarat", country: "India", externalUrl: "https://tankbazaar.com/#terminal-554", facilityClass: ["storage"], processType: [], primaryClass: "storage", googlePlaceId: "" },
@@ -1768,7 +1768,7 @@ export const LOCATION_SEED: Record<string, SeedLocation[]> = {
     { name: "QAPCO Mesaieed Terminal", type: "plant", city: "Mesaieed", country: "Qatar", externalUrl: "https://tankbazaar.com/#terminal-866", facilityClass: ["process"], processType: ["petrochemicals"], primaryClass: "process", googlePlaceId: "" },
   ],
   "qingdao-shihua-crude-oil-terminal-company-ltd": [
-    { name: "Oil Terminal", type: "port terminal", city: "Qingdao", country: "China", externalUrl: "https://tankbazaar.com/#terminal-96", facilityClass: ["storage"], processType: [], primaryClass: "storage", googlePlaceId: "" },
+    { name: "Oil Terminal", type: "port terminal", city: "Qingdao", country: "China", externalUrl: "https://tankbazaar.com/#terminal-685", facilityClass: ["storage"], processType: [], primaryClass: "storage", googlePlaceId: "" },
   ],
   "rabigh-refining-and-petrochemical-company-petrorabigh": [
     { name: "PetroRabigh Refinery", type: "refinery", city: "Rabigh", country: "Saudi Arabia", externalUrl: "https://tankbazaar.com/#terminal-755", facilityClass: ["process"], processType: ["refineries", "petrochemicals"], primaryClass: "process", googlePlaceId: "" },
