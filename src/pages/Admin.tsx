@@ -75,6 +75,7 @@ import { TAXONOMY_SEED } from "../lib/taxonomySeed";
 import { CATEGORY_SEED } from "../lib/categorySeed";
 import { COMPANY_SEED } from "../lib/companySeed";
 import { LOCATION_SEED } from "../lib/locationSeed";
+import { stableLocationDocId, tbIdFromUrl, resolveTbId, tbUrl } from "../lib/tbLocationId";
 import { Layers } from "lucide-react";
 
 // Case-insensitive match on name or id/slug — id === slug for every company
@@ -213,6 +214,7 @@ export default function Admin() {
   const [isSeedingCats, setIsSeedingCats] = useState(false);
   const [isSeedingCompanies, setIsSeedingCompanies] = useState(false);
   const [isSeedingLocations, setIsSeedingLocations] = useState(false);
+  const [isMigratingLocations, setIsMigratingLocations] = useState(false);
   const [eventData, setEventData] = useState({ 
     title:"", 
     date:"", 
@@ -559,11 +561,20 @@ export default function Admin() {
         }
         const seedLocations = LOCATION_SEED[slug];
         const seenIds = new Set<string>();
+        const stableIds = new Set<string>();
         for (let i = 0; i < seedLocations.length; i++) {
           const loc = seedLocations[i];
-          let locId = slugify(loc.type || loc.name || `location-${i}`);
-          if (seenIds.has(locId)) locId = `${locId}-${i}`; // disambiguate same-type siblings, e.g. two "plant" entries
-          seenIds.add(locId);
+          // Legacy id, computed exactly as before for EVERY entry (so locations
+          // without a TankBazaar id keep their existing ids unchanged).
+          let legacyId = slugify(loc.type || loc.name || `location-${i}`);
+          if (seenIds.has(legacyId)) legacyId = `${legacyId}-${i}`; // disambiguate same-type siblings, e.g. two "plant" entries
+          seenIds.add(legacyId);
+          // TankBazaar-sourced locations get a stable id (tb-<TB facility id>),
+          // independent of array position and type.
+          const stableId = stableLocationDocId(loc.externalUrl);
+          if (stableId && stableIds.has(stableId)) console.warn("Duplicate TankBazaar id in seed for", slug, loc.name, stableId);
+          if (stableId) stableIds.add(stableId);
+          const locId = stableId || legacyId;
           const locRef = doc(db, "companies", slug, "locations", locId);
           try {
             const locSnap = await getDoc(locRef);
@@ -607,6 +618,102 @@ export default function Admin() {
       alert(`Location seeding failed: ${err?.message || "Unknown error"}`);
     } finally {
       setIsSeedingLocations(false);
+    }
+  };
+
+  // One-off: move existing location documents from the legacy type-based ids
+  // to the stable `tb-<TB facility id>` ids, BEFORE running "Seed locations"
+  // with the new id rule. Safe to re-run (idempotent). Dry run writes nothing.
+  //  - A document is matched by its externalUrl (#terminal-N); N is first run
+  //    through TB_ID_REDIRECTS so merged TankBazaar records land on the survivor.
+  //  - Several documents that resolve to one id (duplicates) are merged into one:
+  //    ownership fields are carried over from whichever document has them; if two
+  //    documents carry DIFFERENT owners the group is skipped and reported.
+  //  - Documents with no TankBazaar id are left exactly as they are.
+  //  - Documents whose TankBazaar id is not in the seed are reported, never deleted.
+  //  - Apply mode first downloads a JSON backup of every location document.
+  const handleMigrateLocationIds = async (dryRun: boolean) => {
+    if (!window.confirm(
+      (dryRun ? "DRY RUN: " : "APPLY: ") +
+      "migrate location document ids to tb-<TankBazaar id> for every company?\n\n" +
+      (dryRun ? "Nothing is written; a report is shown." : "A JSON backup of all location documents downloads first, then documents are rewritten and the old ids deleted.")
+    )) return;
+    setIsMigratingLocations(true);
+    try {
+      const ownerKeys = ["ownerUid", "ownerSource", "assignedBy", "assignedAt"];
+      const toJson = (_k: string, v: any) => (v && typeof v.toDate === "function" ? v.toDate().toISOString() : v);
+      const companies = await getDocs(collection(db, "companies"));
+      const plan: { slug: string; target: string; from: string[]; action: string }[] = [];
+      const conflicts: string[] = [];
+      const orphans: string[] = [];
+      const backup: Record<string, any[]> = {};
+      let moved = 0, merged = 0, untouched = 0, noTb = 0, deletes = 0;
+      const work: (() => Promise<void>)[] = [];
+
+      for (const c of companies.docs) {
+        const slug = c.id;
+        const snap = await getDocs(collection(db, "companies", slug, "locations"));
+        if (snap.empty) continue;
+        backup[slug] = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+        const expected = new Set<string>(
+          (LOCATION_SEED[slug] || []).map(l => stableLocationDocId(l.externalUrl)).filter(Boolean) as string[]
+        );
+        const groups = new Map<string, any[]>();
+        for (const d of snap.docs) {
+          const data: any = d.data();
+          const n = tbIdFromUrl(data.externalUrl);
+          if (n === null) { noTb++; continue; }
+          const target = `tb-${resolveTbId(n)}`;
+          if (!groups.has(target)) groups.set(target, []);
+          groups.get(target)!.push({ id: d.id, data });
+        }
+        for (const [target, docs] of groups) {
+          if (LOCATION_SEED[slug] && !expected.has(target)) orphans.push(`${slug} / ${target} (${docs.map(x => x.data.name).join(" | ")})`);
+          const owners = new Set(docs.map(x => x.data.ownerUid).filter(Boolean));
+          if (owners.size > 1) { conflicts.push(`${slug} / ${target}: different owners ${[...owners].join(", ")}`); continue; }
+          if (docs.length === 1 && docs[0].id === target) { untouched++; continue; }
+          const winner = docs.find(x => x.id === target) || docs.find(x => x.data.ownerUid) || docs[0];
+          const out: any = { ...winner.data };
+          for (const k of ownerKeys) {
+            if (out[k] == null) { const src = docs.find(x => x.data[k] != null); if (src) out[k] = src.data[k]; }
+          }
+          out.externalUrl = tbUrl(resolveTbId(tbIdFromUrl(winner.data.externalUrl)!));
+          const stale = docs.filter(x => x.id !== target);
+          plan.push({ slug, target, from: docs.map(x => x.id), action: docs.length > 1 ? "merge" : "move" });
+          if (docs.length > 1) merged++; else moved++;
+          deletes += stale.length;
+          work.push(async () => {
+            await setDoc(doc(db, "companies", slug, "locations", target), out);
+            for (const x of stale) await deleteDoc(doc(db, "companies", slug, "locations", x.id));
+          });
+        }
+      }
+
+      const report =
+        `${dryRun ? "Dry run" : "Migration"}: ${moved} moved, ${merged} merged duplicates, ${untouched} already on a stable id, ` +
+        `${noTb} without a TankBazaar id (left alone), ${deletes} old documents to delete.` +
+        (conflicts.length ? `\n\nSKIPPED, different owners (${conflicts.length}):\n` + conflicts.slice(0, 10).join("\n") : "") +
+        (orphans.length ? `\n\nNot in the current seed (${orphans.length}, not deleted):\n` + orphans.slice(0, 10).join("\n") : "");
+      console.log("Location id migration plan", plan, { conflicts, orphans });
+
+      if (dryRun) { alert(report + "\n\n(Full plan in the browser console.)"); return; }
+
+      const blob = new Blob([JSON.stringify(backup, toJson, 1)], { type: "application/json" });
+      const a = document.createElement("a");
+      a.href = URL.createObjectURL(blob);
+      a.download = `tankonomics-locations-backup-${new Date().toISOString().slice(0, 10)}.json`;
+      a.click();
+      let done = 0;
+      const failures: string[] = [];
+      for (const w of work) {
+        try { await w(); done++; } catch (err: any) { failures.push(err?.message || String(err)); }
+      }
+      alert(report + `\n\nApplied ${done} of ${work.length} groups.` + (failures.length ? `\n${failures.length} failed: ${failures.slice(0, 5).join("; ")}` : "") + "\n\nNow run Seed locations.");
+    } catch (err: any) {
+      console.error("Location id migration failed:", err);
+      alert(`Migration failed: ${err?.message || "Unknown error"}`);
+    } finally {
+      setIsMigratingLocations(false);
     }
   };
 
@@ -1765,6 +1872,21 @@ const handleEditCompany = async (company: any) => {
                     >
                       {isSeedingLocations ? <Loader2 className="w-4 h-4 animate-spin" /> : <MapPin className="w-4 h-4" />}
                       Seed locations
+                    </button>
+                    <button
+                      onClick={() => handleMigrateLocationIds(true)}
+                      disabled={isMigratingLocations}
+                      className="inline-flex items-center gap-2 border border-border-main text-text-heading px-4 py-2.5 rounded-xl text-[13px] font-medium hover:bg-bg-main disabled:opacity-50 transition-all"
+                    >
+                      {isMigratingLocations ? <Loader2 className="w-4 h-4 animate-spin" /> : <MapPin className="w-4 h-4" />}
+                      Migrate location ids (dry run)
+                    </button>
+                    <button
+                      onClick={() => handleMigrateLocationIds(false)}
+                      disabled={isMigratingLocations}
+                      className="inline-flex items-center gap-2 border border-border-main text-text-heading px-4 py-2.5 rounded-xl text-[13px] font-medium hover:bg-bg-main disabled:opacity-50 transition-all"
+                    >
+                      Migrate location ids (apply)
                     </button>
                   </div>
                 )}
