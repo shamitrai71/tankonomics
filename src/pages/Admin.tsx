@@ -748,7 +748,7 @@ export default function Admin() {
             ...(c.logo ? { logo: c.logo } : {}),
             ...(c.heroImage ? { heroImage: c.heroImage } : {}),
             socialLinks: { linkedin: c.linkedin, twitter: c.twitter, facebook: c.facebook, instagram: c.instagram },
-            categoryIds: c.categoryIds, categoryId: c.categoryIds[0] ?? null,
+            categoryIds: c.categoryIds, categoryId: c.categoryIds[0] ?? "",
             allCategoryIds: getAncestorAndSelfIds(c.categoryIds),
             externalDirectoryUrl: c.externalDirectoryUrl || "",
             externalDirectoryName: c.externalDirectoryName || "",
