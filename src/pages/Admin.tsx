@@ -26,10 +26,7 @@ import {
   Layout,
   Save,
   ChevronRight,
-  Twitter,
   Linkedin,
-  Facebook,
-  Instagram,
   Activity,
   TrendingUp,
   PieChart as PieChartIcon,
@@ -43,7 +40,7 @@ import axios from "axios";
 import { createDocument, useCollection, removeDocument, updateDocument, setDocument } from "../hooks/useFirestore";
 import { PAGE_COPY_DEFAULTS, PAGE_COPY_KEYS } from "../lib/pageCopy";
 import { useAuth, useTheme } from "../App";
-import { orderBy, serverTimestamp, doc, getDoc, getDocs, collection, setDoc, deleteDoc } from "firebase/firestore";
+import { orderBy, serverTimestamp, doc, getDoc, getDocs, collection, setDoc, deleteDoc, deleteField } from "firebase/firestore";
 import { db, auth } from "../firebase";
 import { format, subDays, isWithinInterval, startOfDay, endOfDay } from "date-fns";
 import { motion, AnimatePresence } from "framer-motion";
@@ -275,10 +272,7 @@ export default function Admin() {
     heroImage:"",
     website:"", 
     socialLinks: {
-      linkedin:"",
-      twitter:"",
-      facebook:"",
-      instagram:""
+      linkedin:""
     },
     categoryId:"", 
     subCategoryId:"", 
@@ -747,7 +741,9 @@ export default function Admin() {
             address: c.address, website: c.website,
             ...(c.logo ? { logo: c.logo } : {}),
             ...(c.heroImage ? { heroImage: c.heroImage } : {}),
-            socialLinks: { linkedin: c.linkedin, twitter: c.twitter, facebook: c.facebook, instagram: c.instagram },
+            // LinkedIn is the only company social link. The deleteField() entries clear
+            // the retired Twitter/Facebook/Instagram keys from companies seeded earlier.
+            socialLinks: { linkedin: c.linkedin, twitter: deleteField(), facebook: deleteField(), instagram: deleteField() },
             categoryIds: c.categoryIds, categoryId: c.categoryIds[0] ?? "",
             allCategoryIds: getAncestorAndSelfIds(c.categoryIds),
             externalDirectoryUrl: c.externalDirectoryUrl || "",
@@ -947,9 +943,6 @@ export default function Admin() {
       website: (newCompany.website ||"").trim(),
       socialLinks: {
         linkedin: newCompany.socialLinks?.linkedin ||"",
-        twitter: newCompany.socialLinks?.twitter ||"",
-        facebook: newCompany.socialLinks?.facebook ||"",
-        instagram: newCompany.socialLinks?.instagram ||"",
       },
       categoryIds: newCompany.categoryIds,
       categoryId: newCompany.categoryIds[0], // first category for legacy readers
@@ -1027,7 +1020,7 @@ export default function Admin() {
         logo:"",
         heroImage:"",
         website:"",
-        socialLinks: { linkedin:"", twitter:"", facebook:"", instagram:"" },
+        socialLinks: { linkedin:"" },
         categoryId:"",
         subCategoryId:"",
         tier3CategoryId:"",
@@ -1061,12 +1054,7 @@ const handleEditCompany = async (company: any) => {
     logo: company.logo,
     heroImage: company.heroImage ||"",
     website: company.website,
-    socialLinks: company.socialLinks || {
-      linkedin:"",
-      twitter:"",
-      facebook:"",
-      instagram:""
-    },
+    socialLinks: { linkedin: company.socialLinks?.linkedin ||"" },
     categoryId: company.categoryId,
     subCategoryId: company.subCategoryId ||"",
     tier3CategoryId: company.tier3CategoryId ||"",
@@ -2001,7 +1989,7 @@ const handleEditCompany = async (company: any) => {
                       className="w-full p-3 bg-bg-main border border-border-main rounded-xl text-xs"
                     />
                   </div>
-                  <div className="grid grid-cols-2 gap-4">
+                  <div className="grid grid-cols-1 gap-4">
                     <div>
                       <label className="eyebrow tabular text-text-body/55 mb-1 block flex items-center gap-1.5">
                         <Linkedin className="w-3 h-3 text-blueprint" /> LinkedIn
@@ -2011,39 +1999,6 @@ const handleEditCompany = async (company: any) => {
                         onChange={(e) => setNewCompany({...newCompany, socialLinks: { ...newCompany.socialLinks, linkedin: e.target.value }})}
                         className="w-full p-3 bg-bg-main border border-border-main rounded-xl text-xs"
                         placeholder="LinkedIn Profile URL"
-                      />
-                    </div>
-                    <div>
-                      <label className="eyebrow tabular text-text-body/55 mb-1 block flex items-center gap-1.5">
-                        <Twitter className="w-3 h-3 text-sky-400" /> Twitter / X
-                      </label>
-                      <input 
-                        value={newCompany.socialLinks?.twitter ||""}
-                        onChange={(e) => setNewCompany({...newCompany, socialLinks: { ...newCompany.socialLinks, twitter: e.target.value }})}
-                        className="w-full p-3 bg-bg-main border border-border-main rounded-xl text-xs"
-                        placeholder="Twitter URL"
-                      />
-                    </div>
-                    <div>
-                      <label className="eyebrow tabular text-text-body/55 mb-1 block flex items-center gap-1.5">
-                        <Facebook className="w-3 h-3 text-blue-700" /> Facebook
-                      </label>
-                      <input 
-                        value={newCompany.socialLinks?.facebook ||""}
-                        onChange={(e) => setNewCompany({...newCompany, socialLinks: { ...newCompany.socialLinks, facebook: e.target.value }})}
-                        className="w-full p-3 bg-bg-main border border-border-main rounded-xl text-xs"
-                        placeholder="Facebook URL"
-                      />
-                    </div>
-                    <div>
-                      <label className="eyebrow tabular text-text-body/55 mb-1 block flex items-center gap-1.5">
-                        <Instagram className="w-3 h-3 text-pink-500" /> Instagram
-                      </label>
-                      <input 
-                        value={newCompany.socialLinks?.instagram ||""}
-                        onChange={(e) => setNewCompany({...newCompany, socialLinks: { ...newCompany.socialLinks, instagram: e.target.value }})}
-                        className="w-full p-3 bg-bg-main border border-border-main rounded-xl text-xs"
-                        placeholder="Instagram URL"
                       />
                     </div>
                   </div>

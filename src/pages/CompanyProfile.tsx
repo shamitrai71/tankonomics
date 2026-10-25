@@ -33,10 +33,7 @@ import {
   Check,
   X,
   Clock,
-  Twitter,
   Linkedin,
-  Facebook,
-  Instagram,
   ThumbsUp,
   Users,
   Heart,
@@ -451,21 +448,6 @@ export default function CompanyProfile() {
               {company.socialLinks?.linkedin && (
                 <a href={company.socialLinks.linkedin} target="_blank" rel="noopener noreferrer" className="p-2.5 bg-bg-card border border-border-main rounded-xl hover:border-text-heading transition-all" title="LinkedIn">
                   <Linkedin className="w-4 h-4 text-[#0077b5]" strokeWidth={1.75} />
-                </a>
-              )}
-              {company.socialLinks?.twitter && (
-                <a href={company.socialLinks.twitter} target="_blank" rel="noopener noreferrer" className="p-2.5 bg-bg-card border border-border-main rounded-xl hover:border-text-heading transition-all" title="Twitter / X">
-                  <Twitter className="w-4 h-4 text-text-heading" strokeWidth={1.75} />
-                </a>
-              )}
-              {company.socialLinks?.facebook && (
-                <a href={company.socialLinks.facebook} target="_blank" rel="noopener noreferrer" className="p-2.5 bg-bg-card border border-border-main rounded-xl hover:border-text-heading transition-all" title="Facebook">
-                  <Facebook className="w-4 h-4 text-[#1877f2]" strokeWidth={1.75} />
-                </a>
-              )}
-              {company.socialLinks?.instagram && (
-                <a href={company.socialLinks.instagram} target="_blank" rel="noopener noreferrer" className="p-2.5 bg-bg-card border border-border-main rounded-xl hover:border-text-heading transition-all" title="Instagram">
-                  <Instagram className="w-4 h-4 text-[#e4405f]" strokeWidth={1.75} />
                 </a>
               )}
               <button

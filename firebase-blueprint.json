@@ -269,10 +269,7 @@
         "socialLinks": {
           "type": "object",
           "properties": {
-            "linkedin": { "type": "string" },
-            "twitter": { "type": "string" },
-            "facebook": { "type": "string" },
-            "instagram": { "type": "string" }
+            "linkedin": { "type": "string" }
           }
         },
         "categoryId": { "type": "string" },
