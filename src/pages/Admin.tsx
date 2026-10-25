@@ -741,9 +741,8 @@ export default function Admin() {
             address: c.address, website: c.website,
             ...(c.logo ? { logo: c.logo } : {}),
             ...(c.heroImage ? { heroImage: c.heroImage } : {}),
-            // LinkedIn is the only company social link. The deleteField() entries clear
-            // the retired Twitter/Facebook/Instagram keys from companies seeded earlier.
-            socialLinks: { linkedin: c.linkedin, twitter: deleteField(), facebook: deleteField(), instagram: deleteField() },
+            // LinkedIn is the only company social link.
+            socialLinks: { linkedin: c.linkedin },
             categoryIds: c.categoryIds, categoryId: c.categoryIds[0] ?? "",
             allCategoryIds: getAncestorAndSelfIds(c.categoryIds),
             externalDirectoryUrl: c.externalDirectoryUrl || "",
@@ -753,7 +752,13 @@ export default function Admin() {
           };
           const snap = await getDoc(ref);
           if (snap.exists()) {
-            await setDoc(ref, content, { merge: true }); // preserve locations/products/claim
+            // Existing company: merge (preserves locations/products/claim) and clear the
+            // retired Twitter/Facebook/Instagram keys. deleteField() is only allowed in a
+            // merge, never when creating a new document.
+            await setDoc(ref, {
+              ...content,
+              socialLinks: { ...content.socialLinks, twitter: deleteField(), facebook: deleteField(), instagram: deleteField() },
+            }, { merge: true });
             updated++;
           } else {
             await setDoc(ref, { ...content, isClaimed: false, ownerUid: "", createdAt: serverTimestamp() });

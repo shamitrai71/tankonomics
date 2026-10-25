@@ -31,6 +31,9 @@ async function startServer() {
     helmet({
       contentSecurityPolicy: false,
       crossOriginEmbedderPolicy: false,
+      // helmet's default COOP ("same-origin") cuts the link between the page and
+      // the Google sign-in popup, so Firebase reports auth/popup-closed-by-user.
+      crossOriginOpenerPolicy: { policy: "same-origin-allow-popups" },
     })
   );
 
