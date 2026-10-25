@@ -56,7 +56,7 @@ export const COMPANY_SEED: CompanySeed[] = [
     logo: "https://res.cloudinary.com/petrodek/image/upload/v1785511648/IOC_LOGO_pwclxf.png",
     heroImage: "https://res.cloudinary.com/petrodek/image/upload/v1785497094/IOCIANS_qpgudb.png",
     linkedin: "https://www.linkedin.com/company/indian-oil-corp-limited/posts/?feedView=all", twitter: "", facebook: "", instagram: "",
-    categoryIds: ["process-industries", "refineries", "petrochemicals", "captive-terminals"], isFeatured: false,
+    categoryIds: ["lpg-amine-treating-merox-caustic-wash-and-lpg-sweetening-systems", "lpg-treating-and-processing-systems", "process-industries", "refineries", "petrochemicals", "captive-terminals"], isFeatured: false,
   },
   {
     id: "mangalore-refinery-and-petrochemicals-limited", slug: "mangalore-refinery-and-petrochemicals-limited", name: "Mangalore Refinery and Petrochemicals Limited",
@@ -101,7 +101,7 @@ export const COMPANY_SEED: CompanySeed[] = [
     logo: "https://res.cloudinary.com/petrodek/image/upload/v1785511649/RIL_axh1dy.png",
     heroImage: "https://res.cloudinary.com/petrodek/image/upload/v1785510039/RIL_Cover_Image_gkko1p.png",
     linkedin: "https://www.linkedin.com/company/reliance/posts/?feedView=all", twitter: "", facebook: "", instagram: "",
-    categoryIds: ["process-industries", "refineries", "petrochemicals", "captive-terminals"], isFeatured: false,
+    categoryIds: ["pipeline-operators", "process-industries", "refineries", "petrochemicals", "captive-terminals"], isFeatured: false,
   },
   {
     id: "tamil-nadu-petroproducts-limited", slug: "tamil-nadu-petroproducts-limited", name: "Tamil Nadu Petroproducts Limited",
@@ -128,7 +128,7 @@ export const COMPANY_SEED: CompanySeed[] = [
     logo: "https://res.cloudinary.com/petrodek/image/upload/v1786019732/kinder-morgan-logo-png-transparent_fdji2b.png",
     heroImage: "https://res.cloudinary.com/petrodek/image/upload/v1786019738/KMI_Cover_nonww0.png",
     linkedin: "", twitter: "", facebook: "", instagram: "",
-    categoryIds: ["storage-terminals", "independent-terminals"], isFeatured: false,
+    categoryIds: ["pipeline-operators", "storage-terminals", "independent-terminals"], isFeatured: false,
   },
   {
     id: "china-petroleum-and-chemical-corporation-sinopec-corp", slug: "china-petroleum-and-chemical-corporation-sinopec-corp", name: "China Petroleum & Chemical Corporation (Sinopec Corp.)",
@@ -479,7 +479,7 @@ export const COMPANY_SEED: CompanySeed[] = [
     logo: "",
     heroImage: "",
     linkedin: "", twitter: "", facebook: "", instagram: "",
-    categoryIds: ["process-industries", "petrochemicals", "captive-terminals"], isFeatured: false,
+    categoryIds: ["pipeline-operators", "process-industries", "petrochemicals", "captive-terminals"], isFeatured: false,
   },
   {
     id: "galp-energia-sgps-sa", slug: "galp-energia-sgps-sa", name: "Galp Energia SGPS, S.A.",
@@ -506,7 +506,7 @@ export const COMPANY_SEED: CompanySeed[] = [
     logo: "",
     heroImage: "",
     linkedin: "", twitter: "", facebook: "", instagram: "",
-    categoryIds: ["process-industries", "refineries", "petrochemicals", "captive-terminals"], isFeatured: false,
+    categoryIds: ["biofuel-and-ethanol-storage-systems", "process-industries", "refineries", "petrochemicals", "captive-terminals"], isFeatured: false,
   },
   {
     id: "imperial-oil-limited", slug: "imperial-oil-limited", name: "Imperial Oil Limited",
@@ -1460,7 +1460,7 @@ export const COMPANY_SEED: CompanySeed[] = [
     logo: "",
     heroImage: "",
     linkedin: "", twitter: "", facebook: "", instagram: "",
-    categoryIds: ["storage-terminals", "independent-terminals"], isFeatured: false,
+    categoryIds: ["port-operators", "pipeline-operators", "marine-logistics", "storage-terminals", "independent-terminals"], isFeatured: false,
   },
   {
     id: "buckeye-st-lucia-terminal-limited", slug: "buckeye-st-lucia-terminal-limited", name: "Buckeye St. Lucia Terminal Limited",
@@ -4826,7 +4826,7 @@ export const COMPANY_SEED: CompanySeed[] = [
     logo: "",
     heroImage: "",
     linkedin: "", twitter: "", facebook: "", instagram: "",
-    categoryIds: ["engineering-and-construction", "heavy-engineering-and-fabrication"], isFeatured: false,
+    categoryIds: ["welding-equipment-and-consumables"], isFeatured: false,
     externalDirectoryUrl: "https://tankworldindia.com/#/company/ador-welding-limited", externalDirectoryName: "TankWorld India",
   },
   {
@@ -4836,7 +4836,7 @@ export const COMPANY_SEED: CompanySeed[] = [
     logo: "",
     heroImage: "",
     linkedin: "", twitter: "", facebook: "", instagram: "",
-    categoryIds: ["flow-and-transfer-equipment", "flexible-hoses", "expansion-joints"], isFeatured: false,
+    categoryIds: ["flexible-hoses", "expansion-joints-and-bellows"], isFeatured: false,
     externalDirectoryUrl: "https://tankworldindia.com/#/company/aeroflex-industries-limited", externalDirectoryName: "TankWorld India",
   },
   {
@@ -4846,7 +4846,7 @@ export const COMPANY_SEED: CompanySeed[] = [
     logo: "",
     heroImage: "",
     linkedin: "", twitter: "", facebook: "", instagram: "",
-    categoryIds: ["engineering-and-construction", "civil-and-structural-engineering", "foundation-contractors"], isFeatured: false,
+    categoryIds: ["civil-and-structural-engineering", "foundation-contractors"], isFeatured: false,
     externalDirectoryUrl: "https://tankworldindia.com/#/company/afcons-infrastructure-limited", externalDirectoryName: "TankWorld India",
   },
   {
@@ -4856,7 +4856,7 @@ export const COMPANY_SEED: CompanySeed[] = [
     logo: "",
     heroImage: "",
     linkedin: "", twitter: "", facebook: "", instagram: "",
-    categoryIds: ["engineering-and-construction", "epc-contractors", "tank-construction", "heavy-engineering-and-fabrication"], isFeatured: false,
+    categoryIds: ["epc-contractors", "tank-construction"], isFeatured: false,
     externalDirectoryUrl: "https://tankworldindia.com/#/company/artson-limited", externalDirectoryName: "TankWorld India",
   },
   {
@@ -4866,7 +4866,7 @@ export const COMPANY_SEED: CompanySeed[] = [
     logo: "",
     heroImage: "",
     linkedin: "", twitter: "", facebook: "", instagram: "",
-    categoryIds: ["fire-safety-and-environment", "hazardous-area-equipment"], isFeatured: false,
+    categoryIds: ["hazardous-area-lighting", "hazardous-area-equipment", "electrical-equipment-and-transformers"], isFeatured: false,
     externalDirectoryUrl: "https://tankworldindia.com/#/company/baliga-lighting-equipments-private-limited", externalDirectoryName: "TankWorld India",
   },
   {
@@ -4876,7 +4876,7 @@ export const COMPANY_SEED: CompanySeed[] = [
     logo: "",
     heroImage: "",
     linkedin: "", twitter: "", facebook: "", instagram: "",
-    categoryIds: ["asset-integrity-and-inspection", "tank-cleaning"], isFeatured: false,
+    categoryIds: ["tank-cleaning", "sludge-removal"], isFeatured: false,
     externalDirectoryUrl: "https://tankworldindia.com/#/company/balmer-lawrie-and-co-limited", externalDirectoryName: "TankWorld India",
   },
   {
@@ -4896,7 +4896,7 @@ export const COMPANY_SEED: CompanySeed[] = [
     logo: "",
     heroImage: "",
     linkedin: "", twitter: "", facebook: "", instagram: "",
-    categoryIds: ["engineering-and-construction", "epc-contractors", "tank-construction", "civil-and-structural-engineering"], isFeatured: false,
+    categoryIds: ["epc-contractors", "tank-construction", "civil-and-structural-engineering", "pipes-and-tubes"], isFeatured: false,
     externalDirectoryUrl: "https://tankworldindia.com/#/company/bridge-and-roof-company-india-limited", externalDirectoryName: "TankWorld India",
   },
   {
@@ -4906,7 +4906,7 @@ export const COMPANY_SEED: CompanySeed[] = [
     logo: "",
     heroImage: "",
     linkedin: "", twitter: "", facebook: "", instagram: "",
-    categoryIds: ["fire-safety-and-environment", "asset-integrity-and-inspection", "inspection-and-certification", "non-destructive-testing-ndt", "tank-inspection"], isFeatured: false,
+    categoryIds: ["inspection-and-certification", "non-destructive-testing-ndt", "tank-inspection"], isFeatured: false,
     externalDirectoryUrl: "https://tankworldindia.com/#/company/bureau-veritas-sa", externalDirectoryName: "TankWorld India",
   },
   {
@@ -4916,7 +4916,7 @@ export const COMPANY_SEED: CompanySeed[] = [
     logo: "",
     heroImage: "",
     linkedin: "", twitter: "", facebook: "", instagram: "",
-    categoryIds: ["asset-integrity-and-inspection", "risk-based-inspection-rbi", "integrity-management"], isFeatured: false,
+    categoryIds: ["risk-based-inspection", "integrity-management"], isFeatured: false,
     externalDirectoryUrl: "https://tankworldindia.com/#/company/cholamandalam-ms-general-insurance", externalDirectoryName: "TankWorld India",
   },
   {
@@ -4926,7 +4926,7 @@ export const COMPANY_SEED: CompanySeed[] = [
     logo: "",
     heroImage: "",
     linkedin: "", twitter: "", facebook: "", instagram: "",
-    categoryIds: ["flow-and-transfer-equipment", "compressors", "blowers"], isFeatured: false,
+    categoryIds: ["compressors", "blowers", "compressed-air", "rotating-equipment-and-gearboxes"], isFeatured: false,
     externalDirectoryUrl: "https://tankworldindia.com/#/company/elgi-equipments-limited", externalDirectoryName: "TankWorld India",
   },
   {
@@ -4936,7 +4936,7 @@ export const COMPANY_SEED: CompanySeed[] = [
     logo: "",
     heroImage: "",
     linkedin: "", twitter: "", facebook: "", instagram: "",
-    categoryIds: ["sustainability-and-energy-transition", "esg-consulting"], isFeatured: false,
+    categoryIds: ["esg-consulting", "consultancy-services"], isFeatured: false,
     externalDirectoryUrl: "https://tankworldindia.com/#/company/erm-india-private-limited", externalDirectoryName: "TankWorld India",
   },
   {
@@ -4946,7 +4946,7 @@ export const COMPANY_SEED: CompanySeed[] = [
     logo: "",
     heroImage: "",
     linkedin: "", twitter: "", facebook: "", instagram: "",
-    categoryIds: ["instrumentation-and-automation", "scada-systems", "tank-inventory-systems", "terminal-automation"], isFeatured: false,
+    categoryIds: ["scada-systems", "tank-inventory-systems", "terminal-automation", "radar-level-gauges"], isFeatured: false,
     externalDirectoryUrl: "https://tankworldindia.com/#/company/emerson-electric-co", externalDirectoryName: "TankWorld India",
   },
   {
@@ -4956,7 +4956,7 @@ export const COMPANY_SEED: CompanySeed[] = [
     logo: "",
     heroImage: "",
     linkedin: "", twitter: "", facebook: "", instagram: "",
-    categoryIds: ["flow-and-transfer-equipment", "tank-systems-and-equipment", "flow-meters", "custody-transfer-metering", "tank-gauging"], isFeatured: false,
+    categoryIds: ["flow-meters", "custody-transfer-metering", "tank-gauging", "overfill-protection", "radar-level-gauges", "servo-gauges", "tank-inventory-systems"], isFeatured: false,
     externalDirectoryUrl: "https://tankworldindia.com/#/company/endress-hauser-group", externalDirectoryName: "TankWorld India",
   },
   {
@@ -4966,7 +4966,7 @@ export const COMPANY_SEED: CompanySeed[] = [
     logo: "",
     heroImage: "",
     linkedin: "", twitter: "", facebook: "", instagram: "",
-    categoryIds: ["professional-services", "project-consultants", "engineering-consultants"], isFeatured: false,
+    categoryIds: ["project-consultants", "engineering-consultants", "process-technology-licensors", "refining-process-technologies"], isFeatured: false,
     externalDirectoryUrl: "https://tankworldindia.com/#/company/engineers-india-limited", externalDirectoryName: "TankWorld India",
   },
   {
@@ -4976,7 +4976,7 @@ export const COMPANY_SEED: CompanySeed[] = [
     logo: "",
     heroImage: "",
     linkedin: "", twitter: "", facebook: "", instagram: "",
-    categoryIds: ["tank-systems-and-equipment", "flow-and-transfer-equipment", "flame-arresters", "gauge-hatches", "strainers", "breather-valves"], isFeatured: false,
+    categoryIds: ["flame-arresters", "gauge-hatches", "strainers", "pressure-vacuum-vents"], isFeatured: false,
     externalDirectoryUrl: "https://tankworldindia.com/#/company/fidicon-devices-india-private-limited", externalDirectoryName: "TankWorld India",
   },
   {
@@ -4986,7 +4986,7 @@ export const COMPANY_SEED: CompanySeed[] = [
     logo: "",
     heroImage: "",
     linkedin: "", twitter: "", facebook: "", instagram: "",
-    categoryIds: ["tank-systems-and-equipment", "breather-valves", "emergency-vents", "conservation-vents", "pressure-vacuum-vents"], isFeatured: false,
+    categoryIds: ["pressure-vacuum-vents", "emergency-vents"], isFeatured: false,
     externalDirectoryUrl: "https://tankworldindia.com/#/company/fluidyne-instruments-private-limited", externalDirectoryName: "TankWorld India",
   },
   {
@@ -5006,7 +5006,7 @@ export const COMPANY_SEED: CompanySeed[] = [
     logo: "",
     heroImage: "",
     linkedin: "", twitter: "", facebook: "", instagram: "",
-    categoryIds: ["engineering-and-construction", "heavy-engineering-and-fabrication", "tank-construction"], isFeatured: false,
+    categoryIds: ["tank-construction", "tank-engineering", "heavy-engineering-and-fabrication"], isFeatured: false,
     externalDirectoryUrl: "https://tankworldindia.com/#/company/godrej-and-boyce-mfg-co-ltd", externalDirectoryName: "TankWorld India",
   },
   {
@@ -5016,7 +5016,7 @@ export const COMPANY_SEED: CompanySeed[] = [
     logo: "",
     heroImage: "",
     linkedin: "", twitter: "", facebook: "", instagram: "",
-    categoryIds: ["tank-systems-and-equipment", "rim-seals", "seal-fittings", "floating-roof-systems", "internal-floating-roofs", "aluminium-dome-roofs", "roof-drains"], isFeatured: false,
+    categoryIds: ["rim-seals", "seal-fittings", "floating-roof-systems", "internal-floating-roofs", "aluminium-dome-roofs", "roof-drains", "tank-construction"], isFeatured: false,
     externalDirectoryUrl: "https://tankworldindia.com/#/company/hmt-llc", externalDirectoryName: "TankWorld India",
   },
   {
@@ -5026,7 +5026,7 @@ export const COMPANY_SEED: CompanySeed[] = [
     logo: "",
     heroImage: "",
     linkedin: "", twitter: "", facebook: "", instagram: "",
-    categoryIds: ["instrumentation-and-automation", "terminal-automation", "scada-systems", "plc-and-dcs"], isFeatured: false,
+    categoryIds: ["terminal-automation", "scada-systems", "plc-and-dcs"], isFeatured: false,
     externalDirectoryUrl: "https://tankworldindia.com/#/company/honeywell-international-inc", externalDirectoryName: "TankWorld India",
   },
   {
@@ -5046,7 +5046,7 @@ export const COMPANY_SEED: CompanySeed[] = [
     logo: "",
     heroImage: "",
     linkedin: "", twitter: "", facebook: "", instagram: "",
-    categoryIds: ["engineering-and-construction", "electrical-contractors"], isFeatured: false,
+    categoryIds: ["electrical-contractors", "utility-contractors", "electrical-equipment-and-transformers"], isFeatured: false,
     externalDirectoryUrl: "https://tankworldindia.com/#/company/kec-international-limited", externalDirectoryName: "TankWorld India",
   },
   {
@@ -5066,7 +5066,7 @@ export const COMPANY_SEED: CompanySeed[] = [
     logo: "",
     heroImage: "",
     linkedin: "", twitter: "", facebook: "", instagram: "",
-    categoryIds: ["flow-and-transfer-equipment", "pumps", "transfer-pumps", "loading-pumps"], isFeatured: false,
+    categoryIds: ["flow-and-transfer-equipment", "pumps", "transfer-pumps"], isFeatured: false,
     externalDirectoryUrl: "https://tankworldindia.com/#/company/kirloskar-brothers-limited", externalDirectoryName: "TankWorld India",
   },
   {
@@ -5076,7 +5076,7 @@ export const COMPANY_SEED: CompanySeed[] = [
     logo: "",
     heroImage: "",
     linkedin: "", twitter: "", facebook: "", instagram: "",
-    categoryIds: ["engineering-and-construction", "flow-and-transfer-equipment", "epc-contractors", "tank-construction", "heavy-engineering-and-fabrication", "valves", "actuators"], isFeatured: false,
+    categoryIds: ["epc-contractors", "tank-construction", "valves", "actuators", "hydrogen-infrastructure", "gate-globe-and-check-valves", "gas-detection", "heat-exchangers", "flare-tips-and-stacks", "flare-systems", "electrical-equipment-and-transformers", "heavy-engineering-and-fabrication", "shipbuilding"], isFeatured: false,
     externalDirectoryUrl: "https://tankworldindia.com/#/company/larsen-and-toubro-limited", externalDirectoryName: "TankWorld India",
   },
   {
@@ -5086,7 +5086,7 @@ export const COMPANY_SEED: CompanySeed[] = [
     logo: "",
     heroImage: "",
     linkedin: "", twitter: "", facebook: "", instagram: "",
-    categoryIds: ["engineering-and-construction", "insulation-contractors"], isFeatured: false,
+    categoryIds: ["insulation-contractors", "corrosion-protection", "pipeline-coatings-tapes-and-wraps", "insulation-materials"], isFeatured: false,
     externalDirectoryUrl: "https://tankworldindia.com/#/company/lloyd-insulations-india-limited", externalDirectoryName: "TankWorld India",
   },
   {
@@ -5096,7 +5096,7 @@ export const COMPANY_SEED: CompanySeed[] = [
     logo: "",
     heroImage: "",
     linkedin: "", twitter: "", facebook: "", instagram: "",
-    categoryIds: ["tank-systems-and-equipment", "rim-seals", "seal-fittings", "floating-roof-systems", "internal-floating-roofs", "roof-drains"], isFeatured: false,
+    categoryIds: ["rim-seals", "seal-fittings", "floating-roof-systems", "internal-floating-roofs", "roof-drains", "foam-dams"], isFeatured: false,
     externalDirectoryUrl: "https://tankworldindia.com/#/company/mesa-industries-inc", externalDirectoryName: "TankWorld India",
   },
   {
@@ -5106,7 +5106,7 @@ export const COMPANY_SEED: CompanySeed[] = [
     logo: "",
     heroImage: "",
     linkedin: "", twitter: "", facebook: "", instagram: "",
-    categoryIds: ["engineering-and-construction", "tank-construction", "piping-contractors", "electrical-contractors"], isFeatured: false,
+    categoryIds: ["tank-construction", "piping-contractors", "electrical-contractors", "mechanical-contractors", "equipment-erection-and-rigging"], isFeatured: false,
     externalDirectoryUrl: "https://tankworldindia.com/#/company/offshore-infrastructures-limited", externalDirectoryName: "TankWorld India",
   },
   {
@@ -5126,7 +5126,7 @@ export const COMPANY_SEED: CompanySeed[] = [
     logo: "",
     heroImage: "",
     linkedin: "", twitter: "", facebook: "", instagram: "",
-    categoryIds: ["engineering-and-construction", "epc-contractors", "tank-construction"], isFeatured: false,
+    categoryIds: ["epc-contractors", "tank-construction"], isFeatured: false,
     externalDirectoryUrl: "https://tankworldindia.com/#/company/prashanth-projects-limited", externalDirectoryName: "TankWorld India",
   },
   {
@@ -5136,7 +5136,7 @@ export const COMPANY_SEED: CompanySeed[] = [
     logo: "",
     heroImage: "",
     linkedin: "", twitter: "", facebook: "", instagram: "",
-    categoryIds: ["professional-services", "engineering-consultants", "environmental-consultants"], isFeatured: false,
+    categoryIds: ["engineering-consultants", "environmental-consultants"], isFeatured: false,
     externalDirectoryUrl: "https://tankworldindia.com/#/company/ramboll-group-a-s", externalDirectoryName: "TankWorld India",
   },
   {
@@ -5146,7 +5146,7 @@ export const COMPANY_SEED: CompanySeed[] = [
     logo: "",
     heroImage: "",
     linkedin: "", twitter: "", facebook: "", instagram: "",
-    categoryIds: ["asset-integrity-and-inspection", "fire-safety-and-environment", "non-destructive-testing-ndt", "inspection-and-certification", "calibration-services"], isFeatured: false,
+    categoryIds: ["non-destructive-testing-ndt", "inspection-and-certification", "calibration-services"], isFeatured: false,
     externalDirectoryUrl: "https://tankworldindia.com/#/company/sgs-sa", externalDirectoryName: "TankWorld India",
   },
   {
@@ -5156,7 +5156,7 @@ export const COMPANY_SEED: CompanySeed[] = [
     logo: "",
     heroImage: "",
     linkedin: "", twitter: "", facebook: "", instagram: "",
-    categoryIds: ["engineering-and-construction", "tank-construction", "heavy-engineering-and-fabrication"], isFeatured: false,
+    categoryIds: ["tank-construction", "pressure-vessels-and-reactors"], isFeatured: false,
     externalDirectoryUrl: "https://tankworldindia.com/#/company/sharp-tanks-and-structurals-private-limited", externalDirectoryName: "TankWorld India",
   },
   {
@@ -5166,18 +5166,8 @@ export const COMPANY_SEED: CompanySeed[] = [
     logo: "",
     heroImage: "",
     linkedin: "", twitter: "", facebook: "", instagram: "",
-    categoryIds: ["tank-systems-and-equipment", "engineering-and-construction", "heating-systems", "piping-contractors"], isFeatured: false,
+    categoryIds: ["heating-systems", "piping-contractors", "mechanical-contractors"], isFeatured: false,
     externalDirectoryUrl: "https://tankworldindia.com/#/company/thermosystems-private-limited", externalDirectoryName: "TankWorld India",
-  },
-  {
-    id: "toyo-engineering-india-limited", slug: "toyo-engineering-india-limited", name: "Toyo Engineering India Limited",
-    description: "Indian arm of Japan's Toyo Engineering Corporation, delivering EPC projects across refining and petrochemicals.", aboutUs: "",
-    address: "", website: "https://www.toyo-eng.com",
-    logo: "",
-    heroImage: "",
-    linkedin: "", twitter: "", facebook: "", instagram: "",
-    categoryIds: ["engineering-and-construction", "epc-contractors", "piping-contractors"], isFeatured: false,
-    externalDirectoryUrl: "https://tankworldindia.com/#/company/toyo-engineering-india-limited", externalDirectoryName: "TankWorld India",
   },
   {
     id: "tuv-sud-ag", slug: "tuv-sud-ag", name: "TÜV SÜD AG",
@@ -5186,7 +5176,7 @@ export const COMPANY_SEED: CompanySeed[] = [
     logo: "",
     heroImage: "",
     linkedin: "", twitter: "", facebook: "", instagram: "",
-    categoryIds: ["fire-safety-and-environment", "asset-integrity-and-inspection", "inspection-and-certification", "risk-based-inspection-rbi", "integrity-management"], isFeatured: false,
+    categoryIds: ["inspection-and-certification", "risk-based-inspection", "integrity-management"], isFeatured: false,
     externalDirectoryUrl: "https://tankworldindia.com/#/company/tuv-sud-ag", externalDirectoryName: "TankWorld India",
   },
   {
@@ -5196,7 +5186,7 @@ export const COMPANY_SEED: CompanySeed[] = [
     logo: "",
     heroImage: "",
     linkedin: "", twitter: "", facebook: "", instagram: "",
-    categoryIds: ["asset-integrity-and-inspection", "refractory-services"], isFeatured: false,
+    categoryIds: ["refractory-services", "refractory-materials"], isFeatured: false,
     externalDirectoryUrl: "https://tankworldindia.com/#/company/vesuvius-india-limited", externalDirectoryName: "TankWorld India",
   },
   {
@@ -5206,7 +5196,7 @@ export const COMPANY_SEED: CompanySeed[] = [
     logo: "",
     heroImage: "",
     linkedin: "", twitter: "", facebook: "", instagram: "",
-    categoryIds: ["engineering-and-construction", "tank-construction", "heavy-engineering-and-fabrication"], isFeatured: false,
+    categoryIds: ["tank-construction", "engineering-consultants"], isFeatured: false,
     externalDirectoryUrl: "https://tankworldindia.com/#/company/vijay-tanks-and-vessels-private-limited", externalDirectoryName: "TankWorld India",
   },
 // ── Imported from TWI (TankWorldIndia) — 286 companies not already
@@ -5273,7 +5263,7 @@ export const COMPANY_SEED: CompanySeed[] = [
     address: "Farmsumerweg 43, 9902 BL Appingedam, Netherlands", website: "",
     logo: "", heroImage: "",
     linkedin: "", twitter: "", facebook: "", instagram: "",
-    categoryIds: ["valves"], isFeatured: false,
+    categoryIds: ["valves", "gaskets"], isFeatured: false,
     externalDirectoryUrl: "https://tankworldindia.com/#/company/control-seal-bv", externalDirectoryName: "TankWorld India",
   },
   {
@@ -5408,7 +5398,7 @@ export const COMPANY_SEED: CompanySeed[] = [
     address: "Droogdokweg 71, 3089 JN Rotterdam, Netherlands", website: "",
     logo: "", heroImage: "",
     linkedin: "", twitter: "", facebook: "", instagram: "",
-    categoryIds: ["epc-contractors", "tank-construction", "mechanical-contractors"], isFeatured: false,
+    categoryIds: ["epc-contractors", "tank-construction", "mechanical-contractors", "shutdown-and-turnaround"], isFeatured: false,
     externalDirectoryUrl: "https://tankworldindia.com/#/company/verwater-group-bv", externalDirectoryName: "TankWorld India",
   },
   {
@@ -5426,7 +5416,7 @@ export const COMPANY_SEED: CompanySeed[] = [
     address: "Egerstraße 25, 58256 Ennepetal-Oelkinghausen, Germany", website: "",
     logo: "", heroImage: "",
     linkedin: "", twitter: "", facebook: "", instagram: "",
-    categoryIds: ["valves"], isFeatured: false,
+    categoryIds: ["valves", "butterfly-valves", "control-valves", "stainless-steel"], isFeatured: false,
     externalDirectoryUrl: "https://tankworldindia.com/#/company/zwick-armaturen-gmbh", externalDirectoryName: "TankWorld India",
   },
   {
@@ -5444,7 +5434,7 @@ export const COMPANY_SEED: CompanySeed[] = [
     address: "433, A-1, Makarpura GIDC, Makarpura, Vadodara, Gujarat 390010, India", website: "https://www.petrotechengineers.in",
     logo: "", heroImage: "",
     linkedin: "", twitter: "", facebook: "", instagram: "",
-    categoryIds: ["tank-gauging", "flow-meters", "electrical-and-instrumentation"], isFeatured: false,
+    categoryIds: ["tank-gauging", "flow-meters", "electrical-and-instrumentation", "level-measurement"], isFeatured: false,
     externalDirectoryUrl: "https://tankworldindia.com/#/company/petrotech-engineers", externalDirectoryName: "TankWorld India",
   },
   {
@@ -5489,17 +5479,8 @@ export const COMPANY_SEED: CompanySeed[] = [
     address: "864/A, GIDC Industrial Estate, Makarpura GIDC, Makarpura, Vadodara, Gujarat 390010, India", website: "https://newtonengg.com",
     logo: "", heroImage: "",
     linkedin: "", twitter: "", facebook: "", instagram: "",
-    categoryIds: ["tank-construction", "mechanical-contractors"], isFeatured: false,
+    categoryIds: ["tank-construction", "mechanical-contractors", "heat-exchangers", "pressure-vessels-and-reactors", "flare-tips-and-stacks", "flare-systems"], isFeatured: false,
     externalDirectoryUrl: "https://tankworldindia.com/#/company/newton-engineering-and-chemicals-limited", externalDirectoryName: "TankWorld India",
-  },
-  {
-    id: "velankanni-engineers", slug: "velankanni-engineers", name: "Velankanni Engineers",
-    description: "Indian storage tank construction and maintenance contractor.", aboutUs: "",
-    address: "304, Cosmos Avenue, Gopal Krishna Gokhale Marg, Naupada, Thane West, Thane, Maharashtra 400602, India", website: "https://www.velankanniengineers.com",
-    logo: "", heroImage: "",
-    linkedin: "", twitter: "", facebook: "", instagram: "",
-    categoryIds: ["tank-construction", "mechanical-contractors"], isFeatured: false,
-    externalDirectoryUrl: "https://tankworldindia.com/#/company/velankanni-engineers", externalDirectoryName: "TankWorld India",
   },
   {
     id: "aarkay-erectors-private-limited", slug: "aarkay-erectors-private-limited", name: "Aarkay Erectors Private Limited",
@@ -5516,7 +5497,7 @@ export const COMPANY_SEED: CompanySeed[] = [
     address: "D2/E/297, Industrial Estate 2, Galenda, Dahej, Gujarat 392130, India", website: "https://www.kesariengineering.com",
     logo: "", heroImage: "",
     linkedin: "", twitter: "", facebook: "", instagram: "",
-    categoryIds: ["tank-construction", "heavy-engineering-and-fabrication"], isFeatured: false,
+    categoryIds: ["tank-construction"], isFeatured: false,
     externalDirectoryUrl: "https://tankworldindia.com/#/company/kesari-engineering-and-construction", externalDirectoryName: "TankWorld India",
   },
   {
@@ -5525,7 +5506,7 @@ export const COMPANY_SEED: CompanySeed[] = [
     address: "A 38H, Block A, Sector 64, Noida, Uttar Pradesh 201309, India", website: "http://www.nuberghfd.com",
     logo: "", heroImage: "",
     linkedin: "", twitter: "", facebook: "", instagram: "",
-    categoryIds: ["epc-contractors", "tank-engineering"], isFeatured: false,
+    categoryIds: ["epc-contractors", "tank-engineering", "pressure-vessels-and-reactors", "flare-tips-and-stacks", "flare-systems"], isFeatured: false,
     externalDirectoryUrl: "https://tankworldindia.com/#/company/nuberg-engineering-limited", externalDirectoryName: "TankWorld India",
   },
   {
@@ -5534,7 +5515,7 @@ export const COMPANY_SEED: CompanySeed[] = [
     address: "Nehru Rd, Dombivli East, Kalyan, Maharashtra 421201, India", website: "https://www.unitedfabritech.com",
     logo: "", heroImage: "",
     linkedin: "", twitter: "", facebook: "", instagram: "",
-    categoryIds: ["tank-construction", "heavy-engineering-and-fabrication"], isFeatured: false,
+    categoryIds: ["tank-construction"], isFeatured: false,
     externalDirectoryUrl: "https://tankworldindia.com/#/company/united-fabritech-and-erectors-private-limited", externalDirectoryName: "TankWorld India",
   },
   {
@@ -5561,7 +5542,7 @@ export const COMPANY_SEED: CompanySeed[] = [
     address: "3609 N 16th St, Parsons, KS 67357, USA", website: "https://www.tankconnection.com",
     logo: "", heroImage: "",
     linkedin: "", twitter: "", facebook: "", instagram: "",
-    categoryIds: ["bolted-steel-tanks", "tank-construction"], isFeatured: false,
+    categoryIds: ["bolted-steel-tanks", "tank-construction", "aluminium-dome-roofs"], isFeatured: false,
     externalDirectoryUrl: "https://tankworldindia.com/#/company/tank-connection-llc", externalDirectoryName: "TankWorld India",
   },
   {
@@ -5579,7 +5560,7 @@ export const COMPANY_SEED: CompanySeed[] = [
     address: "S18, J-52/7, S Block, MIDC, Bhosari, Pune, Pimpri-Chinchwad, Maharashtra 411026, India", website: "https://www.punetechtrol.com",
     logo: "", heroImage: "",
     linkedin: "", twitter: "", facebook: "", instagram: "",
-    categoryIds: ["overfill-protection", "tank-gauging", "electrical-and-instrumentation"], isFeatured: false,
+    categoryIds: ["overfill-protection", "tank-gauging", "electrical-and-instrumentation", "level-measurement"], isFeatured: false,
     externalDirectoryUrl: "https://tankworldindia.com/#/company/pune-techtrol-private-limited", externalDirectoryName: "TankWorld India",
   },
   {
@@ -5660,7 +5641,7 @@ export const COMPANY_SEED: CompanySeed[] = [
     address: "7th Floor, Hiranandani Business Park, Ventura Central Avenue, Hiranandani Gardens, Powai, Mumbai, Maharashtra 400076, India", website: "",
     logo: "", heroImage: "",
     linkedin: "", twitter: "", facebook: "", instagram: "",
-    categoryIds: ["epc-contractors", "piping-contractors"], isFeatured: false,
+    categoryIds: ["epc-contractors", "piping-contractors", "mechanical-contractors"], isFeatured: false,
     externalDirectoryUrl: "https://tankworldindia.com/#/company/petrofac-engineering-india-private-limited", externalDirectoryName: "TankWorld India",
   },
   {
@@ -5678,7 +5659,7 @@ export const COMPANY_SEED: CompanySeed[] = [
     address: "5th & 6th Floor, Tower B, Building No. 9, DLF Cyber City, Phase 3, Sector 24, Gurugram, Haryana 122002, India", website: "https://www.uop.com",
     logo: "", heroImage: "",
     linkedin: "", twitter: "", facebook: "", instagram: "",
-    categoryIds: ["process-technology-licensors", "refining-process-technologies", "petrochemical-process-technologies"], isFeatured: false,
+    categoryIds: ["process-technology-licensors", "refining-process-technologies", "petrochemical-process-technologies", "catalysts-and-adsorbents"], isFeatured: false,
     externalDirectoryUrl: "https://tankworldindia.com/#/company/uop-india-private-limited", externalDirectoryName: "TankWorld India",
   },
   {
@@ -5687,7 +5668,7 @@ export const COMPANY_SEED: CompanySeed[] = [
     address: "Intermediate Floor, F Block, American Plaza, International Trade Tower, Nehru Place, New Delhi, Delhi 110019, India", website: "https://www.axens.net",
     logo: "", heroImage: "",
     linkedin: "", twitter: "", facebook: "", instagram: "",
-    categoryIds: ["process-technology-licensors", "refining-process-technologies", "petrochemical-process-technologies"], isFeatured: false,
+    categoryIds: ["process-technology-licensors", "refining-process-technologies", "petrochemical-process-technologies", "catalysts-and-adsorbents"], isFeatured: false,
     externalDirectoryUrl: "https://tankworldindia.com/#/company/axens-india-private-limited", externalDirectoryName: "TankWorld India",
   },
   {
@@ -5696,7 +5677,7 @@ export const COMPANY_SEED: CompanySeed[] = [
     address: "Elegance Tower, 2nd Floor, Jasola District Centre, New Delhi, Delhi 110025, India", website: "https://www.topsoe.com",
     logo: "", heroImage: "",
     linkedin: "", twitter: "", facebook: "", instagram: "",
-    categoryIds: ["process-technology-licensors", "gas-processing-and-lng-technologies", "refining-process-technologies"], isFeatured: false,
+    categoryIds: ["process-technology-licensors", "gas-processing-and-lng-technologies", "refining-process-technologies", "catalysts-and-adsorbents"], isFeatured: false,
     externalDirectoryUrl: "https://tankworldindia.com/#/company/haldor-topsoe-india-private-limited", externalDirectoryName: "TankWorld India",
   },
   {
@@ -5723,7 +5704,7 @@ export const COMPANY_SEED: CompanySeed[] = [
     address: "B-22, Okhla Industrial Area, Phase I, New Delhi, Delhi 110020, India", website: "https://www.ten.com",
     logo: "", heroImage: "",
     linkedin: "", twitter: "", facebook: "", instagram: "",
-    categoryIds: ["process-technology-licensors", "lng-terminal-engineering", "gas-processing-and-lng-technologies"], isFeatured: false,
+    categoryIds: ["process-technology-licensors", "lng-terminal-engineering", "gas-processing-and-lng-technologies", "heat-exchangers"], isFeatured: false,
     externalDirectoryUrl: "https://tankworldindia.com/#/company/technip-energies-india-limited", externalDirectoryName: "TankWorld India",
   },
   {
@@ -5732,7 +5713,7 @@ export const COMPANY_SEED: CompanySeed[] = [
     address: "209, Makwana Rd, Marol, Andheri East, Mumbai, Maharashtra 400059, India", website: "https://www.indianagratings.com",
     logo: "", heroImage: "",
     linkedin: "", twitter: "", facebook: "", instagram: "",
-    categoryIds: ["industrial-gratings", "industrial-platforms", "heavy-engineering-and-fabrication"], isFeatured: false,
+    categoryIds: ["industrial-gratings", "industrial-platforms"], isFeatured: false,
     externalDirectoryUrl: "https://tankworldindia.com/#/company/indiana-gratings-private-limited", externalDirectoryName: "TankWorld India",
   },
   {
@@ -5750,7 +5731,7 @@ export const COMPANY_SEED: CompanySeed[] = [
     address: "510, Swami Vivekanand Rd, Kandivali East, Mumbai, Maharashtra 400067, India", website: "https://www.vinfabengineers.com",
     logo: "", heroImage: "",
     linkedin: "", twitter: "", facebook: "", instagram: "",
-    categoryIds: ["industrial-gratings", "heavy-engineering-and-fabrication"], isFeatured: false,
+    categoryIds: ["industrial-gratings"], isFeatured: false,
     externalDirectoryUrl: "https://tankworldindia.com/#/company/vinfab-engineers-india-private-limited", externalDirectoryName: "TankWorld India",
   },
   {
@@ -5768,7 +5749,7 @@ export const COMPANY_SEED: CompanySeed[] = [
     address: "Gat no 213,214/1, Markal Udyog Nagar, Tal:Khed, Markal, Maharashtra 412105, India", website: "https://www.greatweld.com",
     logo: "", heroImage: "",
     linkedin: "", twitter: "", facebook: "", instagram: "",
-    categoryIds: ["industrial-gratings", "heavy-engineering-and-fabrication"], isFeatured: false,
+    categoryIds: ["industrial-gratings"], isFeatured: false,
     externalDirectoryUrl: "https://tankworldindia.com/#/company/greatweld-engineering-private-limited", externalDirectoryName: "TankWorld India",
   },
   {
@@ -5813,7 +5794,7 @@ export const COMPANY_SEED: CompanySeed[] = [
     address: "1, Taratala Rd, Garden Reach, Kolkata, West Bengal 700024, India", website: "https://www.til.co.in",
     logo: "", heroImage: "",
     linkedin: "", twitter: "", facebook: "", instagram: "",
-    categoryIds: ["cranes-and-lifting-equipment", "heavy-engineering-and-fabrication"], isFeatured: false,
+    categoryIds: ["cranes-and-lifting-equipment"], isFeatured: false,
     externalDirectoryUrl: "https://tankworldindia.com/#/company/til-limited", externalDirectoryName: "TankWorld India",
   },
   {
@@ -5849,7 +5830,7 @@ export const COMPANY_SEED: CompanySeed[] = [
     address: "502, Rajhans Helix 3, Ghatkopar West, Mumbai, Maharashtra 400086, India", website: "https://www.blastclean.in",
     logo: "", heroImage: "",
     linkedin: "", twitter: "", facebook: "", instagram: "",
-    categoryIds: ["blasting-and-painting-equipment", "surface-preparation-and-blasting"], isFeatured: false,
+    categoryIds: ["blasting-and-painting-equipment", "painting-and-coating-contractors"], isFeatured: false,
     externalDirectoryUrl: "https://tankworldindia.com/#/company/blastclean-systems-private-limited", externalDirectoryName: "TankWorld India",
   },
   {
@@ -5867,17 +5848,8 @@ export const COMPANY_SEED: CompanySeed[] = [
     address: "Plot No. 30, Sarita Vihar Nagar, Salawas Rd, Jodhpur, Rajasthan 342005, India", website: "https://www.krishnashotblast.com",
     logo: "", heroImage: "",
     linkedin: "", twitter: "", facebook: "", instagram: "",
-    categoryIds: ["blasting-and-painting-equipment"], isFeatured: false,
+    categoryIds: ["blasting-and-painting-equipment", "painting-and-coating-contractors"], isFeatured: false,
     externalDirectoryUrl: "https://tankworldindia.com/#/company/krishna-shot-blasting-india-private-limited", externalDirectoryName: "TankWorld India",
-  },
-  {
-    id: "ambica-enterprises", slug: "ambica-enterprises", name: "Ambica Enterprises",
-    description: "Supplier of abrasive media (silicon carbide grit) and portable shot blast equipment.", aboutUs: "",
-    address: "324-25, Khasra No. 9/4, Banar Rd, Jodhpur, Rajasthan 342027, India", website: "",
-    logo: "", heroImage: "",
-    linkedin: "", twitter: "", facebook: "", instagram: "",
-    categoryIds: ["blasting-and-painting-equipment"], isFeatured: false,
-    externalDirectoryUrl: "https://tankworldindia.com/#/company/ambica-enterprises", externalDirectoryName: "TankWorld India",
   },
   {
     id: "acton-finishing-private-limited", slug: "acton-finishing-private-limited", name: "ActOn Finishing Private Limited",
@@ -5885,7 +5857,7 @@ export const COMPANY_SEED: CompanySeed[] = [
     address: "9, 1st Main Rd, MLA Layout, RT Nagar, Bengaluru, Karnataka 560032, India", website: "https://www.actonfinishing.com",
     logo: "", heroImage: "",
     linkedin: "", twitter: "", facebook: "", instagram: "",
-    categoryIds: ["blasting-and-painting-equipment"], isFeatured: false,
+    categoryIds: ["blasting-and-painting-equipment", "wastewater-treatment"], isFeatured: false,
     externalDirectoryUrl: "https://tankworldindia.com/#/company/acton-finishing-private-limited", externalDirectoryName: "TankWorld India",
   },
   {
@@ -5894,7 +5866,7 @@ export const COMPANY_SEED: CompanySeed[] = [
     address: "Dhara Centre, 22, Navrangpura, Ahmedabad, Gujarat 380009, India", website: "https://www.corrtech.co.in",
     logo: "", heroImage: "",
     linkedin: "", twitter: "", facebook: "", instagram: "",
-    categoryIds: ["cathodic-protection", "corrosion-protection", "corrosion-monitoring"], isFeatured: false,
+    categoryIds: ["cathodic-protection", "corrosion-monitoring", "corrosion-protection", "corrosion-engineering-and-consultancy"], isFeatured: false,
     externalDirectoryUrl: "https://tankworldindia.com/#/company/corrtech-international-private-limited", externalDirectoryName: "TankWorld India",
   },
   {
@@ -5903,7 +5875,7 @@ export const COMPANY_SEED: CompanySeed[] = [
     address: "Jindal Tower, 21/1A/3, Darga Rd, Beniapukur, Kolkata, West Bengal 700017, India", website: "",
     logo: "", heroImage: "",
     linkedin: "", twitter: "", facebook: "", instagram: "",
-    categoryIds: ["cathodic-protection", "corrosion-protection", "corrosion-monitoring"], isFeatured: false,
+    categoryIds: ["cathodic-protection", "corrosion-monitoring"], isFeatured: false,
     externalDirectoryUrl: "https://tankworldindia.com/#/company/himoya-corrosion-technology-private-limited", externalDirectoryName: "TankWorld India",
   },
   {
@@ -5912,7 +5884,7 @@ export const COMPANY_SEED: CompanySeed[] = [
     address: "Plot Nos. 184, 185 & 189, Kundaim Industrial Estate, Kundaim, Goa 403115, India", website: "https://www.denora.com",
     logo: "", heroImage: "",
     linkedin: "", twitter: "", facebook: "", instagram: "",
-    categoryIds: ["cathodic-protection", "corrosion-protection"], isFeatured: false,
+    categoryIds: ["cathodic-protection"], isFeatured: false,
     externalDirectoryUrl: "https://tankworldindia.com/#/company/de-nora-india-limited", externalDirectoryName: "TankWorld India",
   },
   {
@@ -5921,7 +5893,7 @@ export const COMPANY_SEED: CompanySeed[] = [
     address: "Tiaano Bhavan, Noothencheri, Madambakkam, Chennai, Tamil Nadu 600126, India", website: "https://www.tianode.com",
     logo: "", heroImage: "",
     linkedin: "", twitter: "", facebook: "", instagram: "",
-    categoryIds: ["cathodic-protection", "corrosion-protection"], isFeatured: false,
+    categoryIds: ["cathodic-protection"], isFeatured: false,
     externalDirectoryUrl: "https://tankworldindia.com/#/company/ti-anode-fabricators-private-limited", externalDirectoryName: "TankWorld India",
   },
   {
@@ -5930,7 +5902,7 @@ export const COMPANY_SEED: CompanySeed[] = [
     address: "60-63, Por Industrial Park, Por, Vadodara, Gujarat 391243, India", website: "https://www.cryogenicogs.com",
     logo: "", heroImage: "",
     linkedin: "", twitter: "", facebook: "", instagram: "",
-    categoryIds: ["truck-loading-systems", "rail-loading-systems", "custody-transfer-metering", "flow-meters"], isFeatured: false,
+    categoryIds: ["truck-loading-systems", "rail-loading-systems", "custody-transfer-metering", "flow-meters", "strainers-and-line-protection", "package-units-and-process-skids", "tank-gauging"], isFeatured: false,
     externalDirectoryUrl: "https://tankworldindia.com/#/company/cryogenic-ogs-limited", externalDirectoryName: "TankWorld India",
   },
   {
@@ -5939,7 +5911,7 @@ export const COMPANY_SEED: CompanySeed[] = [
     address: "D-6/2, Rd Number 34, Wagle Industrial Estate, Thane West, Maharashtra 400604, India", website: "https://www.hdfire.com",
     logo: "", heroImage: "",
     linkedin: "", twitter: "", facebook: "", instagram: "",
-    categoryIds: ["foam-chambers", "foam-dams"], isFeatured: false,
+    categoryIds: ["foam-chambers", "foam-dams", "valves", "fire-protection"], isFeatured: false,
     externalDirectoryUrl: "https://tankworldindia.com/#/company/hd-fire-protect-private-limited", externalDirectoryName: "TankWorld India",
   },
   {
@@ -5957,7 +5929,7 @@ export const COMPANY_SEED: CompanySeed[] = [
     address: "58, Devji Ratansy Marg, Masjid Bandar East, Mumbai, Maharashtra 400009, India", website: "",
     logo: "", heroImage: "",
     linkedin: "", twitter: "", facebook: "", instagram: "",
-    categoryIds: ["foam-chambers"], isFeatured: false,
+    categoryIds: ["foam-chambers", "fire-protection", "foam-systems-and-equipment"], isFeatured: false,
     externalDirectoryUrl: "https://tankworldindia.com/#/company/rajyog-fire-services-private-limited", externalDirectoryName: "TankWorld India",
   },
   {
@@ -5966,7 +5938,7 @@ export const COMPANY_SEED: CompanySeed[] = [
     address: "72 Siddhi Vinayak Estate, Santej-Vadsar Rd, Gujarat 382722, India", website: "",
     logo: "", heroImage: "",
     linkedin: "", twitter: "", facebook: "", instagram: "",
-    categoryIds: ["foam-chambers"], isFeatured: false,
+    categoryIds: ["foam-chambers", "valves", "fire-protection"], isFeatured: false,
     externalDirectoryUrl: "https://tankworldindia.com/#/company/shah-bhogilal-jethalal-and-bros", externalDirectoryName: "TankWorld India",
   },
   {
@@ -6056,7 +6028,7 @@ export const COMPANY_SEED: CompanySeed[] = [
     address: "Mumbai, Maharashtra, India", website: "https://www.siemens.com/in",
     logo: "", heroImage: "",
     linkedin: "", twitter: "", facebook: "", instagram: "",
-    categoryIds: ["radar-level-gauges", "tank-gauging", "plc-and-dcs", "scada-systems", "terminal-automation"], isFeatured: false,
+    categoryIds: ["radar-level-gauges", "tank-gauging", "plc-and-dcs", "scada-systems", "terminal-automation", "gas-detection", "level-measurement"], isFeatured: false,
     externalDirectoryUrl: "https://tankworldindia.com/#/company/siemens-limited", externalDirectoryName: "TankWorld India",
   },
   {
@@ -6065,7 +6037,7 @@ export const COMPANY_SEED: CompanySeed[] = [
     address: "53-57, Hadapsar Industrial Estate, Pune, Maharashtra 411013, India", website: "https://www.honeywell.com",
     logo: "", heroImage: "",
     linkedin: "", twitter: "", facebook: "", instagram: "",
-    categoryIds: ["radar-level-gauges", "tank-gauging", "tank-inventory-systems", "terminal-automation", "manual-gauging-equipment", "tank-sampling-systems"], isFeatured: false,
+    categoryIds: ["radar-level-gauges", "tank-gauging", "tank-inventory-systems", "terminal-automation", "manual-gauging-equipment", "tank-sampling-systems", "fire-protection", "gas-detection", "pressure-transmitters"], isFeatured: false,
     externalDirectoryUrl: "https://tankworldindia.com/#/company/honeywell-automation-india-limited", externalDirectoryName: "TankWorld India",
   },
   {
@@ -6074,7 +6046,7 @@ export const COMPANY_SEED: CompanySeed[] = [
     address: "Plot No. 18, Karvenagar, Pune, Maharashtra 411052, India", website: "",
     logo: "", heroImage: "",
     linkedin: "", twitter: "", facebook: "", instagram: "",
-    categoryIds: ["radar-level-gauges", "tank-gauging"], isFeatured: false,
+    categoryIds: ["radar-level-gauges", "tank-gauging", "level-measurement"], isFeatured: false,
     externalDirectoryUrl: "https://tankworldindia.com/#/company/nivelco-instruments-india-private-limited", externalDirectoryName: "TankWorld India",
   },
   {
@@ -6083,7 +6055,7 @@ export const COMPANY_SEED: CompanySeed[] = [
     address: "131, Palsikar Colony, Indore, Madhya Pradesh 452007, India", website: "https://www.sapconinstruments.com",
     logo: "", heroImage: "",
     linkedin: "", twitter: "", facebook: "", instagram: "",
-    categoryIds: ["radar-level-gauges", "tank-gauging"], isFeatured: false,
+    categoryIds: ["radar-level-gauges", "tank-gauging", "level-measurement"], isFeatured: false,
     externalDirectoryUrl: "https://tankworldindia.com/#/company/sapcon-instruments-private-limited", externalDirectoryName: "TankWorld India",
   },
   {
@@ -6092,7 +6064,7 @@ export const COMPANY_SEED: CompanySeed[] = [
     address: "Plot No. 84-86, Kondhwa Budruk, Pune, Maharashtra 411048, India", website: "",
     logo: "", heroImage: "",
     linkedin: "", twitter: "", facebook: "", instagram: "",
-    categoryIds: ["radar-level-gauges", "tank-gauging"], isFeatured: false,
+    categoryIds: ["radar-level-gauges", "tank-gauging", "level-measurement"], isFeatured: false,
     externalDirectoryUrl: "https://tankworldindia.com/#/company/electronet-equipments-private-limited", externalDirectoryName: "TankWorld India",
   },
   {
@@ -6146,7 +6118,7 @@ export const COMPANY_SEED: CompanySeed[] = [
     address: "No.9, D-1 10, Shreepati Castle, Khetwadi, Girgaon, Mumbai, Maharashtra 400004, India", website: "https://diptimetal.com",
     logo: "", heroImage: "",
     linkedin: "", twitter: "", facebook: "", instagram: "",
-    categoryIds: ["gaskets"], isFeatured: false,
+    categoryIds: ["gaskets", "nozzles-and-manways"], isFeatured: false,
     externalDirectoryUrl: "https://tankworldindia.com/#/company/dipti-metal-industries", externalDirectoryName: "TankWorld India",
   },
   {
@@ -6182,7 +6154,7 @@ export const COMPANY_SEED: CompanySeed[] = [
     address: "50 B, KIADB, Karnad Industrial Area, Mangalore, Karnataka 574154, India", website: "https://www.artisindustrial.com",
     logo: "", heroImage: "",
     linkedin: "", twitter: "", facebook: "", instagram: "",
-    categoryIds: ["catalyst-handling"], isFeatured: false,
+    categoryIds: ["catalyst-handling", "turnaround-and-shutdown-services"], isFeatured: false,
     externalDirectoryUrl: "https://tankworldindia.com/#/company/artis-industrial-pvt-ltd", externalDirectoryName: "TankWorld India",
   },
   {
@@ -6236,7 +6208,7 @@ export const COMPANY_SEED: CompanySeed[] = [
     address: "Plot No R-615, MIDC, T.T.C Industrial Area, Rabale, Navi Mumbai - 400701", website: "https://firetechindia.com",
     logo: "", heroImage: "",
     linkedin: "", twitter: "", facebook: "", instagram: "",
-    categoryIds: ["rim-seal-fire-protection", "rim-seal-foam-pourers"], isFeatured: false,
+    categoryIds: ["rim-seal-fire-protection", "rim-seal-foam-pourers", "fire-protection", "foam-systems-and-equipment"], isFeatured: false,
     externalDirectoryUrl: "https://tankworldindia.com/#/company/firetech-equipment-and-systems-pvt-ltd", externalDirectoryName: "TankWorld India",
   },
   {
@@ -6245,7 +6217,7 @@ export const COMPANY_SEED: CompanySeed[] = [
     address: "19/20, Vardhman Complex, Behind Punjab & Sind Bank, Opp Home Town, LBS Marg, Vikhroli West, Mumbai – 400083, Maharashtra", website: "https://vimalfire.com",
     logo: "", heroImage: "",
     linkedin: "", twitter: "", facebook: "", instagram: "",
-    categoryIds: ["rim-seal-fire-protection", "rim-seal-foam-pourers", "foam-systems-and-equipment", "fire-detection"], isFeatured: false,
+    categoryIds: ["rim-seal-fire-protection", "rim-seal-foam-pourers", "foam-systems-and-equipment", "fire-detection", "fire-protection"], isFeatured: false,
     externalDirectoryUrl: "https://tankworldindia.com/#/company/vimal-fire-controls-pvt-ltd", externalDirectoryName: "TankWorld India",
   },
   {
@@ -6263,7 +6235,7 @@ export const COMPANY_SEED: CompanySeed[] = [
     address: "Nagar Road, Viman Nagar, Pune - 411014, Maharashtra", website: "https://ctr.in",
     logo: "", heroImage: "",
     linkedin: "", twitter: "", facebook: "", instagram: "",
-    categoryIds: ["rim-seal-fire-protection"], isFeatured: false,
+    categoryIds: ["rim-seal-fire-protection", "floating-roof-systems", "fire-protection"], isFeatured: false,
     externalDirectoryUrl: "https://tankworldindia.com/#/company/ctr-manufacturing-industries-private-limited", externalDirectoryName: "TankWorld India",
   },
   {
@@ -6299,7 +6271,7 @@ export const COMPANY_SEED: CompanySeed[] = [
     address: "", website: "",
     logo: "", heroImage: "",
     linkedin: "", twitter: "", facebook: "", instagram: "",
-    categoryIds: ["robotic-no-man-entry-cleaning"], isFeatured: false,
+    categoryIds: ["robotic-no-man-entry-cleaning", "tank-cleaning"], isFeatured: false,
     externalDirectoryUrl: "https://tankworldindia.com/#/company/koks-robotics", externalDirectoryName: "TankWorld India",
   },
   {
@@ -6317,7 +6289,7 @@ export const COMPANY_SEED: CompanySeed[] = [
     address: "Dapodi, Pune, Maharashtra", website: "https://www.alfalaval.in",
     logo: "", heroImage: "",
     linkedin: "", twitter: "", facebook: "", instagram: "",
-    categoryIds: ["robotic-no-man-entry-cleaning", "hydrocarbon-recovery"], isFeatured: false,
+    categoryIds: ["robotic-no-man-entry-cleaning", "hydrocarbon-recovery", "pumps", "centrifugal-pumps"], isFeatured: false,
     externalDirectoryUrl: "https://tankworldindia.com/#/company/alfa-laval-india-private-limited", externalDirectoryName: "TankWorld India",
   },
   {
@@ -6344,7 +6316,7 @@ export const COMPANY_SEED: CompanySeed[] = [
     address: "Via Croce, 26, 35011 Campodarsego, Padova", website: "https://www.gerotto.it",
     logo: "", heroImage: "",
     linkedin: "", twitter: "", facebook: "", instagram: "",
-    categoryIds: ["robotic-no-man-entry-cleaning"], isFeatured: false,
+    categoryIds: ["robotic-no-man-entry-cleaning", "tank-cleaning"], isFeatured: false,
     externalDirectoryUrl: "https://tankworldindia.com/#/company/gerotto-federico-srl", externalDirectoryName: "TankWorld India",
   },
   {
@@ -6362,7 +6334,7 @@ export const COMPANY_SEED: CompanySeed[] = [
     address: "Asangaon, near Mumbai, Maharashtra", website: "https://www.woodfieldsystems.com",
     logo: "", heroImage: "",
     linkedin: "", twitter: "", facebook: "", instagram: "",
-    categoryIds: ["loading-arms", "marine-loading-arms", "floating-suction-systems"], isFeatured: false,
+    categoryIds: ["loading-arms", "marine-loading-arms", "floating-suction-systems", "industrial-platforms"], isFeatured: false,
     externalDirectoryUrl: "https://tankworldindia.com/#/company/woodfield-systems-international-pvt-ltd", externalDirectoryName: "TankWorld India",
   },
   {
@@ -6380,7 +6352,7 @@ export const COMPANY_SEED: CompanySeed[] = [
     address: "Plot No. E-106, MIDC Katphal, Baramati - 413102, Pune, Maharashtra", website: "",
     logo: "", heroImage: "",
     linkedin: "", twitter: "", facebook: "", instagram: "",
-    categoryIds: ["loading-arms"], isFeatured: false,
+    categoryIds: ["loading-arms", "steam-systems"], isFeatured: false,
     externalDirectoryUrl: "https://tankworldindia.com/#/company/moonup-technology-private-limited", externalDirectoryName: "TankWorld India",
   },
   {
@@ -6452,7 +6424,7 @@ export const COMPANY_SEED: CompanySeed[] = [
     address: "Level 3, Sej Plaza, Marve Road, Near Nutan High School, Malad West, Mumbai - 400064, Maharashtra", website: "https://dipeshengg.com",
     logo: "", heroImage: "",
     linkedin: "", twitter: "", facebook: "", instagram: "",
-    categoryIds: ["mixers-and-agitators"], isFeatured: false,
+    categoryIds: ["mixers-and-agitators", "heat-exchangers", "pressure-vessels-and-reactors"], isFeatured: false,
     externalDirectoryUrl: "https://tankworldindia.com/#/company/dipesh-engineering-works", externalDirectoryName: "TankWorld India",
   },
   {
@@ -6461,7 +6433,7 @@ export const COMPANY_SEED: CompanySeed[] = [
     address: "P 45/1, Domestic Tariff Area, Mahindra World City, 8th Avenue, Chengalpattu, Kanchipuram, Tamil Nadu - 603002", website: "https://www.miltonroy.com",
     logo: "", heroImage: "",
     linkedin: "", twitter: "", facebook: "", instagram: "",
-    categoryIds: ["mixers-and-agitators", "metering-pumps"], isFeatured: false,
+    categoryIds: ["mixers-and-agitators", "metering-pumps", "pumps"], isFeatured: false,
     externalDirectoryUrl: "https://tankworldindia.com/#/company/milton-roy-india-private-limited", externalDirectoryName: "TankWorld India",
   },
   {
@@ -6488,7 +6460,7 @@ export const COMPANY_SEED: CompanySeed[] = [
     address: "Head Office Istanbul; factories in Kocaeli and Kutahya, Turkey; additional facility Riyadh, Saudi Arabia", website: "https://atecoindustries.com",
     logo: "", heroImage: "",
     linkedin: "", twitter: "", facebook: "", instagram: "",
-    categoryIds: ["rim-seals"], isFeatured: false,
+    categoryIds: ["rim-seals", "floating-roof-systems", "internal-floating-roofs", "floating-suction-systems"], isFeatured: false,
     externalDirectoryUrl: "https://tankworldindia.com/#/company/ateco-global-industries-co", externalDirectoryName: "TankWorld India",
   },
   {
@@ -6506,7 +6478,7 @@ export const COMPANY_SEED: CompanySeed[] = [
     address: "548 Market Street #34583, San Francisco, CA 94104, USA", website: "https://www.dronedeploy.com",
     logo: "", heroImage: "",
     linkedin: "", twitter: "", facebook: "", instagram: "",
-    categoryIds: ["drone-and-robotic-inspection", "autonomous-inspection-robots"], isFeatured: false,
+    categoryIds: ["drone-and-robotic-inspection", "autonomous-inspection-robots", "data-analytics-and-enterprise-software"], isFeatured: false,
     externalDirectoryUrl: "https://tankworldindia.com/#/company/dronedeploy-inc", externalDirectoryName: "TankWorld India",
   },
   {
@@ -6515,7 +6487,7 @@ export const COMPANY_SEED: CompanySeed[] = [
     address: "V Plaza, No. 1018/A, 24th Main, 1st Sector, HSR Layout, Bangalore, Karnataka 560102, India", website: "https://www.xboom.in",
     logo: "", heroImage: "",
     linkedin: "", twitter: "", facebook: "", instagram: "",
-    categoryIds: ["drone-and-robotic-inspection"], isFeatured: false,
+    categoryIds: ["drone-and-robotic-inspection", "inspection-drones-and-crawlers", "rov-services"], isFeatured: false,
     externalDirectoryUrl: "https://tankworldindia.com/#/company/xboom-utilities-private-limited", externalDirectoryName: "TankWorld India",
   },
   {
@@ -6596,7 +6568,7 @@ export const COMPANY_SEED: CompanySeed[] = [
     address: "O.P. Jindal Marg, Hisar, Haryana 125005, India", website: "https://www.jindalsteel.in",
     logo: "", heroImage: "",
     linkedin: "", twitter: "", facebook: "", instagram: "",
-    categoryIds: ["steel-manufacturers"], isFeatured: false,
+    categoryIds: ["steel-manufacturers", "cranes-and-lifting-equipment"], isFeatured: false,
     externalDirectoryUrl: "https://tankworldindia.com/#/company/jindal-steel-limited", externalDirectoryName: "TankWorld India",
   },
   {
@@ -6605,7 +6577,7 @@ export const COMPANY_SEED: CompanySeed[] = [
     address: "Bombay House, 24 Homi Mody Street, Fort, Mumbai, Maharashtra 400001, India", website: "https://www.tatasteel.com",
     logo: "", heroImage: "",
     linkedin: "", twitter: "", facebook: "", instagram: "",
-    categoryIds: ["steel-manufacturers"], isFeatured: false,
+    categoryIds: ["steel-manufacturers", "cranes-and-lifting-equipment"], isFeatured: false,
     externalDirectoryUrl: "https://tankworldindia.com/#/company/tata-steel-limited", externalDirectoryName: "TankWorld India",
   },
   {
@@ -6614,7 +6586,7 @@ export const COMPANY_SEED: CompanySeed[] = [
     address: "Ispat Bhawan, Lodhi Road, New Delhi 110003, India", website: "https://www.sail.co.in",
     logo: "", heroImage: "",
     linkedin: "", twitter: "", facebook: "", instagram: "",
-    categoryIds: ["steel-manufacturers"], isFeatured: false,
+    categoryIds: ["steel-manufacturers", "heavy-engineering-and-fabrication", "structural-steel", "plates-and-sheets"], isFeatured: false,
     externalDirectoryUrl: "https://tankworldindia.com/#/company/steel-authority-of-india-limited", externalDirectoryName: "TankWorld India",
   },
   {
@@ -6623,7 +6595,7 @@ export const COMPANY_SEED: CompanySeed[] = [
     address: "O.P. Jindal Marg, Hisar, Haryana 125005, India", website: "https://www.jindalstainless.com",
     logo: "", heroImage: "",
     linkedin: "", twitter: "", facebook: "", instagram: "",
-    categoryIds: ["stainless-steel"], isFeatured: false,
+    categoryIds: ["stainless-steel", "plates-and-sheets"], isFeatured: false,
     externalDirectoryUrl: "https://tankworldindia.com/#/company/jindal-stainless-limited", externalDirectoryName: "TankWorld India",
   },
   {
@@ -6659,7 +6631,7 @@ export const COMPANY_SEED: CompanySeed[] = [
     address: "Plot No A 1-2, MIDC Area, Ghugus, Chandrapur, Maharashtra 442505, India", website: "https://lloyds.in",
     logo: "", heroImage: "",
     linkedin: "", twitter: "", facebook: "", instagram: "",
-    categoryIds: ["steel-manufacturers"], isFeatured: false,
+    categoryIds: ["steel-manufacturers", "pipes-and-tubes", "welding-equipment-and-consumables"], isFeatured: false,
     externalDirectoryUrl: "https://tankworldindia.com/#/company/lloyds-metals-and-energy-limited", externalDirectoryName: "TankWorld India",
   },
   {
@@ -6668,7 +6640,7 @@ export const COMPANY_SEED: CompanySeed[] = [
     address: "IMFA Building, Bomikhal, Rasulgarh, Bhubaneswar, Odisha 751010, India", website: "https://www.imfa.in",
     logo: "", heroImage: "",
     linkedin: "", twitter: "", facebook: "", instagram: "",
-    categoryIds: ["alloy-steel"], isFeatured: false,
+    categoryIds: ["alloy-steel", "stainless-steel", "power-generation"], isFeatured: false,
     externalDirectoryUrl: "https://tankworldindia.com/#/company/indian-metals-and-ferro-alloys-limited", externalDirectoryName: "TankWorld India",
   },
   {
@@ -6677,7 +6649,7 @@ export const COMPANY_SEED: CompanySeed[] = [
     address: "17, Rajmugat Society, Naranpura Char Rasta, Ankur Road, Naranpura, Ahmedabad, Gujarat 380013, India", website: "https://www.ratnamani.com",
     logo: "", heroImage: "",
     linkedin: "", twitter: "", facebook: "", instagram: "",
-    categoryIds: ["pipes-and-tubes"], isFeatured: false,
+    categoryIds: ["pipes-and-tubes", "electrical-equipment-and-transformers", "welding-equipment-and-consumables"], isFeatured: false,
     externalDirectoryUrl: "https://tankworldindia.com/#/company/ratnamani-metals-and-tubes-limited", externalDirectoryName: "TankWorld India",
   },
   {
@@ -6686,7 +6658,7 @@ export const COMPANY_SEED: CompanySeed[] = [
     address: "A-1, UPSIDC Industrial Area, Nandgaon Road, Kosi Kalan, District Mathura, Uttar Pradesh 281403, India", website: "https://jindalsaw.com",
     logo: "", heroImage: "",
     linkedin: "", twitter: "", facebook: "", instagram: "",
-    categoryIds: ["pipes-and-tubes"], isFeatured: false,
+    categoryIds: ["pipes-and-tubes", "stainless-steel", "alloy-steel"], isFeatured: false,
     externalDirectoryUrl: "https://tankworldindia.com/#/company/jindal-saw-limited", externalDirectoryName: "TankWorld India",
   },
   {
@@ -6704,7 +6676,7 @@ export const COMPANY_SEED: CompanySeed[] = [
     address: "22nd Mile, Delhi-Hapur Road, PO Jindal Nagar, Ghaziabad, Uttar Pradesh 201302, India", website: "https://www.jindal.com",
     logo: "", heroImage: "",
     linkedin: "", twitter: "", facebook: "", instagram: "",
-    categoryIds: ["pipes-and-tubes"], isFeatured: false,
+    categoryIds: ["pipes-and-tubes", "steel-manufacturers"], isFeatured: false,
     externalDirectoryUrl: "https://tankworldindia.com/#/company/jindal-pipes-limited", externalDirectoryName: "TankWorld India",
   },
   {
@@ -6776,7 +6748,7 @@ export const COMPANY_SEED: CompanySeed[] = [
     address: "69/71, 2nd Khumbharwada Lane, Sant Sena Maharaj Marg, Mumbai, Maharashtra 400004, India", website: "https://www.petrometflange.com",
     logo: "", heroImage: "",
     linkedin: "", twitter: "", facebook: "", instagram: "",
-    categoryIds: ["forgings"], isFeatured: false,
+    categoryIds: ["forgings", "shipbuilding"], isFeatured: false,
     externalDirectoryUrl: "https://tankworldindia.com/#/company/petromet-flange-inc", externalDirectoryName: "TankWorld India",
   },
   {
@@ -6794,7 +6766,7 @@ export const COMPANY_SEED: CompanySeed[] = [
     address: "Ruvapari Road, Bhavnagar, Gujarat 364005, India", website: "https://steelcast.net",
     logo: "", heroImage: "",
     linkedin: "", twitter: "", facebook: "", instagram: "",
-    categoryIds: ["castings"], isFeatured: false,
+    categoryIds: ["castings", "pumps", "valves", "alloy-steel"], isFeatured: false,
     externalDirectoryUrl: "https://tankworldindia.com/#/company/steelcast-limited", externalDirectoryName: "TankWorld India",
   },
   {
@@ -6803,7 +6775,7 @@ export const COMPANY_SEED: CompanySeed[] = [
     address: "202, 2nd Floor, A-Wing, Building No.3, Sir M.V. Road, Rahul Mittal Industrial Estate, Andheri East, Mumbai, Maharashtra 400059, India", website: "https://www.nitincastings.com",
     logo: "", heroImage: "",
     linkedin: "", twitter: "", facebook: "", instagram: "",
-    categoryIds: ["castings"], isFeatured: false,
+    categoryIds: ["castings", "alloy-steel", "smr-and-reformer-equipment"], isFeatured: false,
     externalDirectoryUrl: "https://tankworldindia.com/#/company/nitin-castings-limited", externalDirectoryName: "TankWorld India",
   },
   {
@@ -6857,7 +6829,7 @@ export const COMPANY_SEED: CompanySeed[] = [
     address: "Plot No. 2646, Kranti Gate Main Road, GIDC Lodhika Industrial Estate, Kalawad Road, Metoda, Rajkot, Gujarat 360021, India", website: "https://www.eppcomposites.com",
     logo: "", heroImage: "",
     linkedin: "", twitter: "", facebook: "", instagram: "",
-    categoryIds: ["composite-materials", "frp-products"], isFeatured: false,
+    categoryIds: ["frp-products"], isFeatured: false,
     externalDirectoryUrl: "https://tankworldindia.com/#/company/epp-composites-private-limited", externalDirectoryName: "TankWorld India",
   },
   {
@@ -6866,7 +6838,7 @@ export const COMPANY_SEED: CompanySeed[] = [
     address: "Office No. 1, 2, 3, Satyam Solaris, Off B.K.S.D. Marg, Deonar, Chembur, Mumbai, Maharashtra 400088, India", website: "https://www.cppiping.com",
     logo: "", heroImage: "",
     linkedin: "", twitter: "", facebook: "", instagram: "",
-    categoryIds: ["frp-products"], isFeatured: false,
+    categoryIds: ["frp-products", "desalination"], isFeatured: false,
     externalDirectoryUrl: "https://tankworldindia.com/#/company/chemical-process-piping-private-limited", externalDirectoryName: "TankWorld India",
   },
   {
@@ -6875,7 +6847,7 @@ export const COMPANY_SEED: CompanySeed[] = [
     address: "612, Raheja Chambers, Nariman Point, Mumbai, Maharashtra 400021, India", website: "https://www.supreme.co.in",
     logo: "", heroImage: "",
     linkedin: "", twitter: "", facebook: "", instagram: "",
-    categoryIds: ["hdpe-products"], isFeatured: false,
+    categoryIds: ["hdpe-products", "tank-construction", "valves"], isFeatured: false,
     externalDirectoryUrl: "https://tankworldindia.com/#/company/supreme-industries-limited", externalDirectoryName: "TankWorld India",
   },
   {
@@ -6893,7 +6865,7 @@ export const COMPANY_SEED: CompanySeed[] = [
     address: "Unit 4, Plot No.105, Halol Vadodara Road, Village Nurpura, Taluka Halol, Panchmahal, Gujarat 389350, India", website: "https://polycab.com",
     logo: "", heroImage: "",
     linkedin: "", twitter: "", facebook: "", instagram: "",
-    categoryIds: ["cable-manufacturers"], isFeatured: false,
+    categoryIds: ["cable-manufacturers", "solar-power-systems"], isFeatured: false,
     externalDirectoryUrl: "https://tankworldindia.com/#/company/polycab-india-limited", externalDirectoryName: "TankWorld India",
   },
   {
@@ -6902,7 +6874,7 @@ export const COMPANY_SEED: CompanySeed[] = [
     address: "D-90, Okhla Industrial Area, Phase-1, New Delhi 110020, India", website: "https://www.kei-ind.com",
     logo: "", heroImage: "",
     linkedin: "", twitter: "", facebook: "", instagram: "",
-    categoryIds: ["cable-manufacturers"], isFeatured: false,
+    categoryIds: ["cable-manufacturers", "gas-detection"], isFeatured: false,
     externalDirectoryUrl: "https://tankworldindia.com/#/company/kei-industries-limited", externalDirectoryName: "TankWorld India",
   },
   {
@@ -6911,7 +6883,7 @@ export const COMPANY_SEED: CompanySeed[] = [
     address: "26/27, Mumbai-Pune Road, Pimpri, Pune, Maharashtra 411018, India", website: "https://www.finolex.com",
     logo: "", heroImage: "",
     linkedin: "", twitter: "", facebook: "", instagram: "",
-    categoryIds: ["cable-manufacturers"], isFeatured: false,
+    categoryIds: ["cable-manufacturers", "electrical-equipment-and-transformers"], isFeatured: false,
     externalDirectoryUrl: "https://tankworldindia.com/#/company/finolex-cables-limited", externalDirectoryName: "TankWorld India",
   },
   {
@@ -6929,7 +6901,7 @@ export const COMPANY_SEED: CompanySeed[] = [
     address: "Sector B, Kalunga Industrial Estate, P.O. Kalunga, Rourkela, Odisha 770031, India", website: "",
     logo: "", heroImage: "",
     linkedin: "", twitter: "", facebook: "", instagram: "",
-    categoryIds: ["refractory-materials"], isFeatured: false,
+    categoryIds: ["refractory-materials", "refractory-services"], isFeatured: false,
     externalDirectoryUrl: "https://tankworldindia.com/#/company/ifgl-refractories-limited", externalDirectoryName: "TankWorld India",
   },
   {
@@ -6938,7 +6910,7 @@ export const COMPANY_SEED: CompanySeed[] = [
     address: "Sigapi Achi Building, 7th Floor, 18/3, Rukmini Lakshmipathy Road, Egmore, Chennai, Tamil Nadu 600008, India", website: "https://www.insulation-india.saint-gobain.com",
     logo: "", heroImage: "",
     linkedin: "", twitter: "", facebook: "", instagram: "",
-    categoryIds: ["insulation-materials"], isFeatured: false,
+    categoryIds: ["insulation-materials", "heavy-engineering-and-fabrication"], isFeatured: false,
     externalDirectoryUrl: "https://tankworldindia.com/#/company/saint-gobain-india-private-limited", externalDirectoryName: "TankWorld India",
   },
   {
@@ -6947,7 +6919,7 @@ export const COMPANY_SEED: CompanySeed[] = [
     address: "Belpahar, Jharsuguda, Odisha 768218, India", website: "https://www.trlkrosaki.com",
     logo: "", heroImage: "",
     linkedin: "", twitter: "", facebook: "", instagram: "",
-    categoryIds: ["refractory-materials"], isFeatured: false,
+    categoryIds: ["refractory-materials", "refractory-services", "aluminium-products"], isFeatured: false,
     externalDirectoryUrl: "https://tankworldindia.com/#/company/trl-krosaki-refractories-limited", externalDirectoryName: "TankWorld India",
   },
   {
@@ -6983,7 +6955,7 @@ export const COMPANY_SEED: CompanySeed[] = [
     address: "D-13, MIDC, Industrial Area, R.D. Aga Road, Chinchwad, Pune, Maharashtra 411019, India", website: "https://www.thermaxglobal.com",
     logo: "", heroImage: "",
     linkedin: "", twitter: "", facebook: "", instagram: "",
-    categoryIds: ["steam-systems", "industrial-water-systems", "wastewater-treatment", "hydrogen-infrastructure"], isFeatured: false,
+    categoryIds: ["steam-systems", "industrial-water-systems", "wastewater-treatment", "hydrogen-infrastructure", "heavy-engineering-and-fabrication", "pipes-and-tubes"], isFeatured: false,
     externalDirectoryUrl: "https://tankworldindia.com/#/company/thermax-limited", externalDirectoryName: "TankWorld India",
   },
   {
@@ -6992,7 +6964,7 @@ export const COMPANY_SEED: CompanySeed[] = [
     address: "Hadapsar Industrial Estate, Pune, Maharashtra 411013, India", website: "https://www.kirloskarpneumatic.com",
     logo: "", heroImage: "",
     linkedin: "", twitter: "", facebook: "", instagram: "",
-    categoryIds: ["compressed-air"], isFeatured: false,
+    categoryIds: ["compressed-air", "compressors"], isFeatured: false,
     externalDirectoryUrl: "https://tankworldindia.com/#/company/kirloskar-pneumatic-company-limited", externalDirectoryName: "TankWorld India",
   },
   {
@@ -7001,7 +6973,7 @@ export const COMPANY_SEED: CompanySeed[] = [
     address: "C-56, Mayapuri Industrial Area, Phase-II, New Delhi 110064, India", website: "https://www.se.com/in",
     logo: "", heroImage: "",
     linkedin: "", twitter: "", facebook: "", instagram: "",
-    categoryIds: ["ups-systems", "power-distribution-equipment"], isFeatured: false,
+    categoryIds: ["ups-systems", "power-distribution-equipment", "electrical-equipment-and-transformers"], isFeatured: false,
     externalDirectoryUrl: "https://tankworldindia.com/#/company/schneider-electric-india-private-limited", externalDirectoryName: "TankWorld India",
   },
   {
@@ -7010,7 +6982,7 @@ export const COMPANY_SEED: CompanySeed[] = [
     address: "Disha, 3rd Floor, Plot No. 5 & 6, 2nd Stage, Peenya Industrial Area IV, Peenya, Bengaluru, Karnataka 560058, India", website: "https://www.abb.com/in",
     logo: "", heroImage: "",
     linkedin: "", twitter: "", facebook: "", instagram: "",
-    categoryIds: ["power-distribution-equipment"], isFeatured: false,
+    categoryIds: ["power-distribution-equipment", "marine-and-port-equipment", "power-generation"], isFeatured: false,
     externalDirectoryUrl: "https://tankworldindia.com/#/company/abb-india-limited", externalDirectoryName: "TankWorld India",
   },
   {
@@ -7019,7 +6991,7 @@ export const COMPANY_SEED: CompanySeed[] = [
     address: "C/o The Tata Power Company Ltd, Corporate Center A Block, 34 Sant Tukaram Road, Carnac Bunder, Mumbai, Maharashtra 400009, India", website: "https://www.tatapower.com/renewables",
     logo: "", heroImage: "",
     linkedin: "", twitter: "", facebook: "", instagram: "",
-    categoryIds: ["renewable-energy", "battery-energy-storage"], isFeatured: false,
+    categoryIds: ["solar-power-systems", "bess-systems"], isFeatured: false,
     externalDirectoryUrl: "https://tankworldindia.com/#/company/tata-power-renewable-energy-limited", externalDirectoryName: "TankWorld India",
   },
   {
@@ -7028,7 +7000,7 @@ export const COMPANY_SEED: CompanySeed[] = [
     address: "Renigunta-Cuddapah Road, Karakambadi, Tirupati, Andhra Pradesh 517520, India", website: "https://www.amararajabatteries.com",
     logo: "", heroImage: "",
     linkedin: "", twitter: "", facebook: "", instagram: "",
-    categoryIds: ["battery-energy-storage"], isFeatured: false,
+    categoryIds: ["bess-systems", "electrical-equipment-and-transformers", "solar-power-systems"], isFeatured: false,
     externalDirectoryUrl: "https://tankworldindia.com/#/company/amara-raja-energy-and-mobility-limited", externalDirectoryName: "TankWorld India",
   },
   {
@@ -7046,7 +7018,7 @@ export const COMPANY_SEED: CompanySeed[] = [
     address: "JSW Centre, Bandra Kurla Complex, Bandra East, Mumbai, Maharashtra 400051, India", website: "https://www.jsw.in",
     logo: "", heroImage: "",
     linkedin: "", twitter: "", facebook: "", instagram: "",
-    categoryIds: ["hydrogen-infrastructure"], isFeatured: false,
+    categoryIds: ["hydrogen-infrastructure", "power-generation", "hydrogen-generation"], isFeatured: false,
     externalDirectoryUrl: "https://tankworldindia.com/#/company/jsw-energy-limited", externalDirectoryName: "TankWorld India",
   },
   {
@@ -7064,7 +7036,7 @@ export const COMPANY_SEED: CompanySeed[] = [
     address: "NTPC Bhawan, SCOPE Complex, 7 Institutional Area, Lodhi Road, New Delhi 110003, India", website: "https://www.ntpc.co.in",
     logo: "", heroImage: "",
     linkedin: "", twitter: "", facebook: "", instagram: "",
-    categoryIds: ["hydrogen-infrastructure"], isFeatured: false,
+    categoryIds: ["hydrogen-infrastructure", "power-generation", "hydrogen-generation"], isFeatured: false,
     externalDirectoryUrl: "https://tankworldindia.com/#/company/ntpc-limited", externalDirectoryName: "TankWorld India",
   },
   {
@@ -7073,7 +7045,7 @@ export const COMPANY_SEED: CompanySeed[] = [
     address: "Okhla Industrial Area, New Delhi, Delhi, India", website: "https://www.mvsengg.com",
     logo: "", heroImage: "",
     linkedin: "", twitter: "", facebook: "", instagram: "",
-    categoryIds: ["hydrogen-infrastructure"], isFeatured: false,
+    categoryIds: ["hydrogen-infrastructure", "industrial-water-systems", "hydrogen-generation"], isFeatured: false,
     externalDirectoryUrl: "https://tankworldindia.com/#/company/mvs-engineering-private-limited", externalDirectoryName: "TankWorld India",
   },
   {
@@ -7145,7 +7117,7 @@ export const COMPANY_SEED: CompanySeed[] = [
     address: "Plot No. F-46 & F-47, Bible College Road, 8th Main Road 3rd Cross, SIPCOT Industrial Park, Irungattukottai, Sriperumbudur, Tamil Nadu 602105, India", website: "https://petronashengineering.com",
     logo: "", heroImage: "",
     linkedin: "", twitter: "", facebook: "", instagram: "",
-    categoryIds: ["emergency-shutdown-systems"], isFeatured: false,
+    categoryIds: ["emergency-shutdown-systems", "electrical-and-instrumentation"], isFeatured: false,
     externalDirectoryUrl: "https://tankworldindia.com/#/company/petronash-engineering-services-private-limited", externalDirectoryName: "TankWorld India",
   },
   {
@@ -7163,7 +7135,7 @@ export const COMPANY_SEED: CompanySeed[] = [
     address: "Plot No. 213, Sector 7, IMT Manesar, Gurugram, Haryana 122051, India", website: "https://www.dehn.in",
     logo: "", heroImage: "",
     linkedin: "", twitter: "", facebook: "", instagram: "",
-    categoryIds: ["surge-protection-devices", "earthing-and-bonding"], isFeatured: false,
+    categoryIds: ["surge-protection-devices", "earthing-and-bonding", "cathodic-protection", "electrical-equipment-and-transformers"], isFeatured: false,
     externalDirectoryUrl: "https://tankworldindia.com/#/company/dehn-india-private-limited", externalDirectoryName: "TankWorld India",
   },
   {
@@ -7226,7 +7198,7 @@ export const COMPANY_SEED: CompanySeed[] = [
     address: "No. 222, Building Arcadia, Hiranandani Estate, Ghodbunder Road, Patlipada, Mumbai, Maharashtra 400607, India", website: "https://www.mistrasgroup.com",
     logo: "", heroImage: "",
     linkedin: "", twitter: "", facebook: "", instagram: "",
-    categoryIds: ["acoustic-emission-systems"], isFeatured: false,
+    categoryIds: ["acoustic-emission-systems", "leak-detection", "gas-detection"], isFeatured: false,
     externalDirectoryUrl: "https://tankworldindia.com/#/company/mistras-group-inc", externalDirectoryName: "TankWorld India",
   },
   {
@@ -7235,7 +7207,7 @@ export const COMPANY_SEED: CompanySeed[] = [
     address: "Mumbai, Maharashtra, India", website: "https://www.jotun.com",
     logo: "", heroImage: "",
     linkedin: "", twitter: "", facebook: "", instagram: "",
-    categoryIds: ["protective-coatings", "coatings-and-linings"], isFeatured: false,
+    categoryIds: ["corrosion-protection", "tank-and-vessel-linings"], isFeatured: false,
     externalDirectoryUrl: "https://tankworldindia.com/#/company/jotun-powder-coatings-india-private-limited", externalDirectoryName: "TankWorld India",
   },
   {
@@ -7271,7 +7243,7 @@ export const COMPANY_SEED: CompanySeed[] = [
     address: "C-9, Purneshwar Flat, Opp. Vasundhara Society, Gulbai Tekra, Ahmedabad, Gujarat 380015, India", website: "https://www.irmome.com",
     logo: "", heroImage: "",
     linkedin: "", twitter: "", facebook: "", instagram: "",
-    categoryIds: ["marine-and-port-equipment"], isFeatured: false,
+    categoryIds: ["marine-and-port-equipment", "shipbuilding", "offshore-drilling"], isFeatured: false,
     externalDirectoryUrl: "https://tankworldindia.com/#/company/irm-offshore-and-marine-engineers-private-limited", externalDirectoryName: "TankWorld India",
   },
   {
@@ -7280,7 +7252,7 @@ export const COMPANY_SEED: CompanySeed[] = [
     address: "A4-G, A Wing, Shivsrushti CHS, Building No. 64 and 76, Opposite Old Police Station, Vikhroli East, Kannamwar Nagar, Mumbai, Maharashtra 400083, India", website: "https://www.aegisscaffolding.com",
     logo: "", heroImage: "",
     linkedin: "", twitter: "", facebook: "", instagram: "",
-    categoryIds: ["scaffolding-services", "painting-and-coating-contractors"], isFeatured: false,
+    categoryIds: ["scaffolding-services", "painting-and-coating-contractors", "industrial-flooring"], isFeatured: false,
     externalDirectoryUrl: "https://tankworldindia.com/#/company/aegis-scaffolding-services-private-limited", externalDirectoryName: "TankWorld India",
   },
   {
@@ -7298,7 +7270,7 @@ export const COMPANY_SEED: CompanySeed[] = [
     address: "Ganesh Towers, Door No. B1, 1st Floor, 1st Avenue, Ashok Nagar, Chennai, Tamil Nadu 600083, India", website: "https://www.tremcocpg-india.in",
     logo: "", heroImage: "",
     linkedin: "", twitter: "", facebook: "", instagram: "",
-    categoryIds: ["industrial-flooring", "roofing-systems"], isFeatured: false,
+    categoryIds: ["industrial-flooring", "roofing-systems", "painting-and-coating-contractors"], isFeatured: false,
     externalDirectoryUrl: "https://tankworldindia.com/#/company/tremco-cpg-india-private-limited", externalDirectoryName: "TankWorld India",
   },
   {
@@ -7316,7 +7288,7 @@ export const COMPANY_SEED: CompanySeed[] = [
     address: "207, Mahatma Gandhi Road, Flat No. F-1 & F2, Kolkata, West Bengal 700082, India", website: "https://powertronix.co.in",
     logo: "", heroImage: "",
     linkedin: "", twitter: "", facebook: "", instagram: "",
-    categoryIds: ["instrumentation-contractors"], isFeatured: false,
+    categoryIds: ["electrical-contractors", "electrical-and-instrumentation"], isFeatured: false,
     externalDirectoryUrl: "https://tankworldindia.com/#/company/powertronix-engineering-private-limited", externalDirectoryName: "TankWorld India",
   },
   {
@@ -7325,7 +7297,7 @@ export const COMPANY_SEED: CompanySeed[] = [
     address: "Praj Tower, 274 & 275/2, Bhumkar Chowk, Hinjewadi Road, Hinjewadi, Pune, Maharashtra 411057, India", website: "https://www.praj.net",
     logo: "", heroImage: "",
     linkedin: "", twitter: "", facebook: "", instagram: "",
-    categoryIds: ["biofuel-and-ethanol-storage-systems", "cbg-and-biogas-infrastructure"], isFeatured: false,
+    categoryIds: ["biofuel-and-ethanol-storage-systems", "cbg-and-biogas-infrastructure", "biofuels-and-bioenergy"], isFeatured: false,
     externalDirectoryUrl: "https://tankworldindia.com/#/company/praj-industries-limited", externalDirectoryName: "TankWorld India",
   },
   {
@@ -7334,7 +7306,7 @@ export const COMPANY_SEED: CompanySeed[] = [
     address: "Bengaluru, Karnataka, India", website: "",
     logo: "", heroImage: "",
     linkedin: "", twitter: "", facebook: "", instagram: "",
-    categoryIds: ["biofuel-and-ethanol-storage-systems", "cbg-and-biogas-infrastructure"], isFeatured: false,
+    categoryIds: ["biofuel-and-ethanol-storage-systems", "cbg-and-biogas-infrastructure", "biofuels-and-bioenergy"], isFeatured: false,
     externalDirectoryUrl: "https://tankworldindia.com/#/company/trualt-bioenergy-limited", externalDirectoryName: "TankWorld India",
   },
   {
@@ -7352,7 +7324,7 @@ export const COMPANY_SEED: CompanySeed[] = [
     address: "H No. 8-2-601, Road No. 10, Banjara Hills, Hyderabad, Telangana 500034, India", website: "",
     logo: "", heroImage: "",
     linkedin: "", twitter: "", facebook: "", instagram: "",
-    categoryIds: ["bess-systems"], isFeatured: false,
+    categoryIds: ["bess-systems", "electrical-equipment-and-transformers", "gas-detection"], isFeatured: false,
     externalDirectoryUrl: "https://tankworldindia.com/#/company/hbl-engineering-limited", externalDirectoryName: "TankWorld India",
   },
   {
@@ -7415,7 +7387,7 @@ export const COMPANY_SEED: CompanySeed[] = [
     address: "Plot No. 401, 402 & 413, Sector III, Industrial Area, Pithampur, Madhya Pradesh 454774, India", website: "https://shaktipumpsindia.com",
     logo: "", heroImage: "",
     linkedin: "", twitter: "", facebook: "", instagram: "",
-    categoryIds: ["pumps"], isFeatured: false,
+    categoryIds: ["pumps", "industrial-water-systems", "solar-power-systems", "vertical-turbine-and-sump-pumps", "multistage-pumps", "submersible-pumps"], isFeatured: false,
     externalDirectoryUrl: "https://tankworldindia.com/#/company/shakti-pumps-india-limited", externalDirectoryName: "TankWorld India",
   },
   {
@@ -7424,7 +7396,7 @@ export const COMPANY_SEED: CompanySeed[] = [
     address: "'Saurabh', Harsulia Mod, P.O. Harsulia, Diggi-Malpura Road, Phagi, Jaipur, Rajasthan 303904, India", website: "https://www.gravitaindia.com",
     logo: "", heroImage: "",
     linkedin: "", twitter: "", facebook: "", instagram: "",
-    categoryIds: ["secondary-metals-and-recycling"], isFeatured: false,
+    categoryIds: ["secondary-metals-and-recycling", "aluminium-products"], isFeatured: false,
     externalDirectoryUrl: "https://tankworldindia.com/#/company/gravita-india-limited", externalDirectoryName: "TankWorld India",
   },
   {
@@ -7442,7 +7414,7 @@ export const COMPANY_SEED: CompanySeed[] = [
     address: "The Lattice, Old No. 7/1, New No. 20, 4th Floor, Bishop Ezra Sargunam Road, Kilpauk, Chennai, Tamil Nadu 600010, India", website: "https://www.jainmetalgroup.com",
     logo: "", heroImage: "",
     linkedin: "", twitter: "", facebook: "", instagram: "",
-    categoryIds: ["secondary-metals-and-recycling"], isFeatured: false,
+    categoryIds: ["secondary-metals-and-recycling", "aluminium-products"], isFeatured: false,
     externalDirectoryUrl: "https://tankworldindia.com/#/company/jain-resource-recycling-limited", externalDirectoryName: "TankWorld India",
   },
   {
@@ -7550,7 +7522,7 @@ export const COMPANY_SEED: CompanySeed[] = [
     address: "1104, 11th Floor, Ellora Fiesta, Sector-11, Opp. Juinagar Railway Station, Sanpada, Navi Mumbai, Maharashtra 400706, India", website: "https://www.surabhitransport.com",
     logo: "", heroImage: "",
     linkedin: "", twitter: "", facebook: "", instagram: "",
-    categoryIds: ["trucking-and-road-tankers"], isFeatured: false,
+    categoryIds: ["trucking-and-road-tankers", "stainless-steel"], isFeatured: false,
     externalDirectoryUrl: "https://tankworldindia.com/#/company/surabhi-transport-private-limited", externalDirectoryName: "TankWorld India",
   },
   {
@@ -7559,7 +7531,7 @@ export const COMPANY_SEED: CompanySeed[] = [
     address: "Kolkata, West Bengal, India", website: "https://isocl.in",
     logo: "", heroImage: "",
     linkedin: "", twitter: "", facebook: "", instagram: "",
-    categoryIds: ["trucking-and-road-tankers"], isFeatured: false,
+    categoryIds: ["trucking-and-road-tankers", "stainless-steel"], isFeatured: false,
     externalDirectoryUrl: "https://tankworldindia.com/#/company/interstate-oil-carrier-limited", externalDirectoryName: "TankWorld India",
   },
   {
@@ -7586,7 +7558,7 @@ export const COMPANY_SEED: CompanySeed[] = [
     address: "1st Floor, Plot No.128, Srinagar Colony, Hyderabad, Telangana 500073, India", website: "https://www.oceansparkle.in",
     logo: "", heroImage: "",
     linkedin: "", twitter: "", facebook: "", instagram: "",
-    categoryIds: ["marine-logistics"], isFeatured: false,
+    categoryIds: ["marine-logistics", "marine-and-port-equipment"], isFeatured: false,
     externalDirectoryUrl: "https://tankworldindia.com/#/company/ocean-sparkle-limited", externalDirectoryName: "TankWorld India",
   },
   {
@@ -7595,7 +7567,7 @@ export const COMPANY_SEED: CompanySeed[] = [
     address: "Shipping House, 245, Madame Cama Road, Mumbai, Maharashtra 400021, India", website: "https://www.shipindia.com",
     logo: "", heroImage: "",
     linkedin: "", twitter: "", facebook: "", instagram: "",
-    categoryIds: ["shipping-companies"], isFeatured: false,
+    categoryIds: ["shipping-companies", "consultancy-services", "offshore-support-vessels", "shipbuilding"], isFeatured: false,
     externalDirectoryUrl: "https://tankworldindia.com/#/company/shipping-corporation-of-india-limited", externalDirectoryName: "TankWorld India",
   },
   {
@@ -7622,7 +7594,7 @@ export const COMPANY_SEED: CompanySeed[] = [
     address: "Godrej Coliseum, Office No.801, C-Wing, Behind Everard Nagar, Off Somaiya Hospital Road, Sion East, Mumbai, Maharashtra 400022, India", website: "https://www.jmbaxi.com",
     logo: "", heroImage: "",
     linkedin: "", twitter: "", facebook: "", instagram: "",
-    categoryIds: ["customs-and-port-services"], isFeatured: false,
+    categoryIds: ["customs-and-port-services", "marine-and-port-equipment"], isFeatured: false,
     externalDirectoryUrl: "https://tankworldindia.com/#/company/jm-baxi-ports-and-logistics-private-limited", externalDirectoryName: "TankWorld India",
   },
   {
@@ -7676,7 +7648,7 @@ export const COMPANY_SEED: CompanySeed[] = [
     address: "TÜV SÜD House, Off Saki Vihar Road, Saki Naka, Andheri East, Mumbai, Maharashtra 400072, India", website: "https://www.tuvsud.com/en-in",
     logo: "", heroImage: "",
     linkedin: "", twitter: "", facebook: "", instagram: "",
-    categoryIds: ["owner-s-engineers"], isFeatured: false,
+    categoryIds: ["owner-s-engineers", "inspection-and-certification"], isFeatured: false,
     externalDirectoryUrl: "https://tankworldindia.com/#/company/tuv-sud-south-asia-private-limited", externalDirectoryName: "TankWorld India",
   },
   {
@@ -7685,7 +7657,7 @@ export const COMPANY_SEED: CompanySeed[] = [
     address: "SGS House, 4-B, Adi Shankaracharya Marg, Powai Road, Vikhroli West, Mumbai, Maharashtra 400083, India", website: "https://www.sgs.com/en-in",
     logo: "", heroImage: "",
     linkedin: "", twitter: "", facebook: "", instagram: "",
-    categoryIds: ["owner-s-engineers"], isFeatured: false,
+    categoryIds: ["owner-s-engineers", "inspection-and-certification"], isFeatured: false,
     externalDirectoryUrl: "https://tankworldindia.com/#/company/sgs-india-private-limited", externalDirectoryName: "TankWorld India",
   },
   {
@@ -7694,7 +7666,7 @@ export const COMPANY_SEED: CompanySeed[] = [
     address: "Sr. No. 25, Office No. 5 & 6, Clover Highland, Kondhwa, Pune, Maharashtra 411048, India", website: "https://sgurrenergy.com",
     logo: "", heroImage: "",
     linkedin: "", twitter: "", facebook: "", instagram: "",
-    categoryIds: ["owner-s-engineers"], isFeatured: false,
+    categoryIds: ["owner-s-engineers", "bess-systems"], isFeatured: false,
     externalDirectoryUrl: "https://tankworldindia.com/#/company/sgurrenergy-india-private-limited", externalDirectoryName: "TankWorld India",
   },
   {
@@ -7703,7 +7675,7 @@ export const COMPANY_SEED: CompanySeed[] = [
     address: "Unit No. 2702, 27th Floor, Rupa Renaissance, Plot D-33/D-207, Juinagar, MIDC TTC Industrial Area, Turbhe, Navi Mumbai, Maharashtra 400705, India", website: "https://assystem-india.com",
     logo: "", heroImage: "",
     linkedin: "", twitter: "", facebook: "", instagram: "",
-    categoryIds: ["owner-s-engineers"], isFeatured: false,
+    categoryIds: ["owner-s-engineers", "consultancy-services"], isFeatured: false,
     externalDirectoryUrl: "https://tankworldindia.com/#/company/stup-consultants-private-limited", externalDirectoryName: "TankWorld India",
   },
   {
@@ -7712,7 +7684,7 @@ export const COMPANY_SEED: CompanySeed[] = [
     address: "3rd Floor, 304 - Radha Soami Sukun, Near APC Circle, Anand, Gujarat 388001, India", website: "https://qqec.in",
     logo: "", heroImage: "",
     linkedin: "", twitter: "", facebook: "", instagram: "",
-    categoryIds: ["owner-s-engineers"], isFeatured: false,
+    categoryIds: ["owner-s-engineers", "consultancy-services", "solar-power-systems"], isFeatured: false,
     externalDirectoryUrl: "https://tankworldindia.com/#/company/qq-engineering-and-consulting", externalDirectoryName: "TankWorld India",
   },
   {
@@ -7730,7 +7702,7 @@ export const COMPANY_SEED: CompanySeed[] = [
     address: "Hytera Tower, Shenzhen Hi-Tech Industrial Park North, Beihuan Road 9108, Nanshan District, Shenzhen, Guangdong 518057, China", website: "https://www.hytera.com",
     logo: "", heroImage: "",
     linkedin: "", twitter: "", facebook: "", instagram: "",
-    categoryIds: ["site-communication-systems"], isFeatured: false,
+    categoryIds: ["site-communication-systems", "hazardous-area-equipment"], isFeatured: false,
     externalDirectoryUrl: "https://tankworldindia.com/#/company/hytera-communications-corporation-limited", externalDirectoryName: "TankWorld India",
   },
   {
@@ -7739,7 +7711,7 @@ export const COMPANY_SEED: CompanySeed[] = [
     address: "NFL Building, 5th & 6th Floor, Core-III, SCOPE Complex, Lodhi Road, New Delhi 110003, India", website: "https://eeslindia.org",
     logo: "", heroImage: "",
     linkedin: "", twitter: "", facebook: "", instagram: "",
-    categoryIds: ["energy-efficiency-systems"], isFeatured: false,
+    categoryIds: ["energy-efficiency-systems", "consultancy-services"], isFeatured: false,
     externalDirectoryUrl: "https://tankworldindia.com/#/company/energy-efficiency-services-limited", externalDirectoryName: "TankWorld India",
   },
   {
@@ -7757,7 +7729,7 @@ export const COMPANY_SEED: CompanySeed[] = [
     address: "116, Bajaj Bhavan, 11th Floor, Nariman Point, Mumbai, Maharashtra 400021, India", website: "https://www.sanjanacryogenic.com",
     logo: "", heroImage: "",
     linkedin: "", twitter: "", facebook: "", instagram: "",
-    categoryIds: ["ammonia-storage-and-handling"], isFeatured: false,
+    categoryIds: ["ammonia-storage-and-handling", "cryogenic-loading-systems-lng"], isFeatured: false,
     externalDirectoryUrl: "https://tankworldindia.com/#/company/sanjana-cryogenic-storages-limited", externalDirectoryName: "TankWorld India",
   },
   {
@@ -7766,7 +7738,7 @@ export const COMPANY_SEED: CompanySeed[] = [
     address: "Uhde House, L.B.S. Marg, Vikhroli West, Mumbai, Maharashtra 400083, India", website: "https://www.thyssenkrupp-uhde.com/india",
     logo: "", heroImage: "",
     linkedin: "", twitter: "", facebook: "", instagram: "",
-    categoryIds: ["ammonia-storage-and-handling"], isFeatured: false,
+    categoryIds: ["ammonia-storage-and-handling", "amine-and-gas-treating-systems", "hydrogen-generation", "psa-and-gas-purification", "sulphur-recovery-units"], isFeatured: false,
     externalDirectoryUrl: "https://tankworldindia.com/#/company/thyssenkrupp-industrial-solutions-india-private-limited", externalDirectoryName: "TankWorld India",
   },
   {
@@ -7775,7 +7747,7 @@ export const COMPANY_SEED: CompanySeed[] = [
     address: "B No. 20, Srinathji Industrial Estate, Nr Nikol Ring Road, Nr Kathwara GIDC, Odhav, Ahmedabad, Gujarat 382350, India", website: "https://www.sunengineeringservices.com",
     logo: "", heroImage: "",
     linkedin: "", twitter: "", facebook: "", instagram: "",
-    categoryIds: ["water-draw-off-systems"], isFeatured: false,
+    categoryIds: ["water-draw-off-systems", "valves", "control-valves", "stainless-steel"], isFeatured: false,
     externalDirectoryUrl: "https://tankworldindia.com/#/company/sun-engineering-services", externalDirectoryName: "TankWorld India",
   },
   {
@@ -7784,7 +7756,7 @@ export const COMPANY_SEED: CompanySeed[] = [
     address: "Route 27 South, PO Box 75, Edgecomb, Maine 04556-0075, United States", website: "https://www.manways.com",
     logo: "", heroImage: "",
     linkedin: "", twitter: "", facebook: "", instagram: "",
-    categoryIds: ["nozzles-and-manways"], isFeatured: false,
+    categoryIds: ["nozzles-and-manways", "wastewater-treatment"], isFeatured: false,
     externalDirectoryUrl: "https://tankworldindia.com/#/company/chase-associates", externalDirectoryName: "TankWorld India",
   },
   {
@@ -7793,7 +7765,7 @@ export const COMPANY_SEED: CompanySeed[] = [
     address: "Plot No. 14, Ecotech-1 Extension, Near Kasna, Greater Noida, Uttar Pradesh 201310, India", website: "https://www.ymfg.co.in",
     logo: "", heroImage: "",
     linkedin: "", twitter: "", facebook: "", instagram: "",
-    categoryIds: ["industrial-ladders"], isFeatured: false,
+    categoryIds: ["industrial-ladders", "scaffolding-services", "aluminium-products"], isFeatured: false,
     externalDirectoryUrl: "https://tankworldindia.com/#/company/y-access-manufacturing-private-limited", externalDirectoryName: "TankWorld India",
   },
 ];

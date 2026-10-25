@@ -2245,9 +2245,6 @@ export const LOCATION_SEED: Record<string, SeedLocation[]> = {
   "thermosystems-private-limited": [
     { name: "Registered Office", type: "office", city: "Hyderabad, Telangana", country: "India", externalUrl: "", facilityClass: [], processType: [], primaryClass: "", googlePlaceId: "" },
   ],
-  "toyo-engineering-india-limited": [
-    { name: "Registered Office", type: "office", city: "Mumbai, Maharashtra", country: "India", externalUrl: "", facilityClass: [], processType: [], primaryClass: "", googlePlaceId: "" },
-  ],
   "tuv-sud-ag": [
     { name: "India Office", type: "office", city: "Mumbai, Maharashtra", country: "India", externalUrl: "", facilityClass: [], processType: [], primaryClass: "", googlePlaceId: "" },
   ],
@@ -2346,9 +2343,6 @@ export const LOCATION_SEED: Record<string, SeedLocation[]> = {
   ],
   "newton-engineering-and-chemicals-limited": [
     { name: "Registered Office", type: "registered office", city: "", country: "India", externalUrl: "", facilityClass: [], processType: [], primaryClass: "", googlePlaceId: "ChIJAQAAACvEXzkRPV2kHWTEOdM" }
-  ],
-  "velankanni-engineers": [
-    { name: "Registered Office", type: "registered office", city: "", country: "India", externalUrl: "", facilityClass: [], processType: [], primaryClass: "", googlePlaceId: "ChIJjySSFiC55zsRrNUJb4Ogr2s" }
   ],
   "aarkay-erectors-private-limited": [
     { name: "Registered Office", type: "registered office", city: "", country: "India", externalUrl: "", facilityClass: [], processType: [], primaryClass: "", googlePlaceId: "ChIJA6JIkWtzCDsRDD5cLc4ltbA" }
@@ -2472,9 +2466,6 @@ export const LOCATION_SEED: Record<string, SeedLocation[]> = {
   ],
   "krishna-shot-blasting-india-private-limited": [
     { name: "Registered Office", type: "registered office", city: "", country: "India", externalUrl: "", facilityClass: [], processType: [], primaryClass: "", googlePlaceId: "ChIJsS_q0d6JQTkRPLlwZveGV4w" }
-  ],
-  "ambica-enterprises": [
-    { name: "Registered Office", type: "registered office", city: "", country: "India", externalUrl: "", facilityClass: [], processType: [], primaryClass: "", googlePlaceId: "ChIJ74p8RaLzQTkRHm6MUtaGgCw" }
   ],
   "acton-finishing-private-limited": [
     { name: "Registered Office", type: "registered office", city: "", country: "India", externalUrl: "", facilityClass: [], processType: [], primaryClass: "", googlePlaceId: "ChIJJ-_smCIXrjsRuv8W4qc2x5s" }
