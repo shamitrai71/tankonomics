@@ -1,5 +1,6 @@
 {
-     "projects": {
-       "default": "tankonomics"
-     }
-   }
+  "projects": {
+    "default": "tankonomics",
+    "staging": "tankonomics-staging"
+  }
+}

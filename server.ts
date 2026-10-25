@@ -256,6 +256,7 @@ Please reach out to them directly via their email: ${applicantEmail}`,
 
   app.listen(PORT, "0.0.0.0", () => {
     console.log(`Server running on http://0.0.0.0:${PORT}`);
+    console.log(`Firebase project: ${process.env.VITE_FIREBASE_TARGET === "staging" ? "STAGING (tankonomics-staging)" : "production (tankonomics)"}`);
   });
 }
 
