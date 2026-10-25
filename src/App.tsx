@@ -12,6 +12,7 @@ import {
   onAuthStateChanged, 
   User, 
   signInWithRedirect,
+  signInWithPopup,
   getRedirectResult,
   GoogleAuthProvider, 
   FacebookAuthProvider,
@@ -20,7 +21,7 @@ import {
   createUserWithEmailAndPassword,
   signOut 
 } from "firebase/auth";
-import { auth, db } from "./firebase";
+import { auth, db, FIREBASE_TARGET } from "./firebase";
 import { 
   doc, 
   getDoc, 
@@ -1815,6 +1816,16 @@ export default function App() {
       } else if (providerName === 'linkedin') {
         provider = new OAuthProvider('linkedin.com');
       } else {
+        return;
+      }
+      // On localhost and on the staging project the sign-in page lives on another
+      // domain (<project>.firebaseapp.com), and browsers block the redirect result
+      // coming back across domains, which drops the user on the login page again.
+      // A popup does not have that problem. The deployed production app keeps the
+      // redirect flow (same domain as its sign-in page).
+      const isLocal = ["localhost", "127.0.0.1"].includes(window.location.hostname);
+      if (isLocal || FIREBASE_TARGET === "staging") {
+        await signInWithPopup(auth, provider);
         return;
       }
       await signInWithRedirect(auth, provider);
