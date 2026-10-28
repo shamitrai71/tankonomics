@@ -13,6 +13,7 @@
 // without a surviving record.
 
 export const TB_ID_REDIRECTS: Record<number, number> = {
+  38: 3387, 6425: 3387,       // VIPL Vizag and EIPL LPG Import Terminal merged into EIPL Visakhapatnam
   349: 2223, 3330: 2223,      // Vopak Darwin duplicates
   3233: 59, 3237: 59,         // Vopak Botany
   1728: 535, 2617: 536,       // Vopak Alemoa, Aratu
@@ -30,6 +31,24 @@ export const TB_ID_REDIRECTS: Record<number, number> = {
   96: 685,                    // Qingdao Shihua
   3868: 53,                   // Primorsk
   3802: 54,                   // CPC
+  6611: 656,                  // Rubis Terminal Rotterdam -> Tepsa Rotterdam Botlek (V432)
+  6863: 681,                  // Cul de Sac (ex-Hess St Lucia) -> Buckeye St Lucia (V434)
+  6466: 6867,                 // SARA Refinery -> SARA Le Lamentin (V434)
+  4485: 819,               // V440 duplicate merge
+  5922: 5865,              // V440 duplicate merge
+  5783: 2290,              // V440 duplicate merge
+  4229: 825,               // V440 duplicate merge
+  4225: 1553,              // V440 duplicate merge
+  4510: 818,               // V440 duplicate merge
+  185: 5575,               // V440 duplicate merge
+  5460: 1289,              // V440 duplicate merge
+  5461: 1290,              // V440 duplicate merge
+  5462: 1294,              // V440 duplicate merge
+  5459: 1295,              // V440 duplicate merge
+  7744: 7743,              // V440 duplicate merge
+  7909: 7908,              // V440 duplicate merge
+  7889: 2739,              // V440 duplicate merge
+  7760: 7761,              // V440 duplicate merge
 };
 
 export function tbIdFromUrl(url?: string | null): number | null {
