@@ -29,7 +29,7 @@ export const COMPANY_SEED: CompanySeed[] = [
     logo: "https://res.cloudinary.com/petrodek/image/upload/v1785497022/ChatGPT_Image_Jul_31_2026_04_47_40_PM_suhto3.png",
     heroImage: "https://res.cloudinary.com/petrodek/image/upload/v1785511648/BPCL_Cover_hjpwpc.png",
     linkedin: "https://www.linkedin.com/company/bpcl/posts/?feedView=all",
-    categoryIds: ["process-industries", "refineries", "captive-terminals"], isFeatured: false,
+    categoryIds: ["process-industries", "refineries", "storage-terminals"], isFeatured: false,
   },
   {
     id: "haldia-petrochemicals-limited", slug: "haldia-petrochemicals-limited", name: "Haldia Petrochemicals Limited",
@@ -47,7 +47,7 @@ export const COMPANY_SEED: CompanySeed[] = [
     logo: "https://res.cloudinary.com/petrodek/image/upload/v1785511648/HPCL_Logo_gaoo4o.png",
     heroImage: "https://res.cloudinary.com/petrodek/image/upload/v1785510278/HPCL_COVER_PHOTO_st0wlu.png",
     linkedin: "https://www.linkedin.com/company/hpcl/posts/?feedView=all",
-    categoryIds: ["process-industries", "refineries", "captive-terminals"], isFeatured: false,
+    categoryIds: ["process-industries", "refineries", "storage-terminals"], isFeatured: false,
   },
   {
     id: "indian-oil-corporation-limited", slug: "indian-oil-corporation-limited", name: "Indian Oil Corporation Limited",
@@ -56,7 +56,7 @@ export const COMPANY_SEED: CompanySeed[] = [
     logo: "https://res.cloudinary.com/petrodek/image/upload/v1785511648/IOC_LOGO_pwclxf.png",
     heroImage: "https://res.cloudinary.com/petrodek/image/upload/v1785497094/IOCIANS_qpgudb.png",
     linkedin: "https://www.linkedin.com/company/indian-oil-corp-limited/posts/?feedView=all",
-    categoryIds: ["lpg-amine-treating-merox-caustic-wash-and-lpg-sweetening-systems", "lpg-treating-and-processing-systems", "process-industries", "refineries", "petrochemicals", "captive-terminals"], isFeatured: false,
+    categoryIds: ["amine-and-gas-treating-systems", "lpg-treating-and-processing-systems", "process-industries", "refineries", "petrochemicals", "storage-terminals"], isFeatured: false,
   },
   {
     id: "mangalore-refinery-and-petrochemicals-limited", slug: "mangalore-refinery-and-petrochemicals-limited", name: "Mangalore Refinery and Petrochemicals Limited",
@@ -65,7 +65,7 @@ export const COMPANY_SEED: CompanySeed[] = [
     logo: "https://res.cloudinary.com/petrodek/image/upload/v1785511649/MRPL_LOGO_qrimij.png",
     heroImage: "https://res.cloudinary.com/petrodek/image/upload/v1785497100/MRPL_Refinery_pplojb.jpg",
     linkedin: "",
-    categoryIds: ["process-industries", "refineries", "petrochemicals", "captive-terminals"], isFeatured: false,
+    categoryIds: ["process-industries", "refineries", "petrochemicals", "storage-terminals"], isFeatured: false,
   },
   {
     id: "nayara-energy-limited", slug: "nayara-energy-limited", name: "Nayara Energy Limited",
@@ -92,7 +92,7 @@ export const COMPANY_SEED: CompanySeed[] = [
     logo: "https://res.cloudinary.com/petrodek/image/upload/v1785511647/ONGC_LOGO_h2o4gc.png",
     heroImage: "https://res.cloudinary.com/petrodek/image/upload/v1785510448/ONGC_COVER_sjytrx.png",
     linkedin: "",
-    categoryIds: ["natural-resources-and-upstream", "oil-and-gas-exploration"], isFeatured: false,
+    categoryIds: ["process-industries", "offshore-production"], isFeatured: false,
   },
   {
     id: "reliance-industries-limited", slug: "reliance-industries-limited", name: "Reliance Industries Limited",
@@ -101,7 +101,7 @@ export const COMPANY_SEED: CompanySeed[] = [
     logo: "https://res.cloudinary.com/petrodek/image/upload/v1785511649/RIL_axh1dy.png",
     heroImage: "https://res.cloudinary.com/petrodek/image/upload/v1785510039/RIL_Cover_Image_gkko1p.png",
     linkedin: "https://www.linkedin.com/company/reliance/posts/?feedView=all",
-    categoryIds: ["pipeline-operators", "process-industries", "refineries", "petrochemicals", "captive-terminals"], isFeatured: false,
+    categoryIds: ["pipeline-operators", "process-industries", "refineries", "petrochemicals", "storage-terminals"], isFeatured: false,
   },
   {
     id: "tamil-nadu-petroproducts-limited", slug: "tamil-nadu-petroproducts-limited", name: "Tamil Nadu Petroproducts Limited",
@@ -119,7 +119,7 @@ export const COMPANY_SEED: CompanySeed[] = [
     logo: "https://res.cloudinary.com/petrodek/image/upload/v1786019731/VOPAK_mv0wm7.jpg",
     heroImage: "",
     linkedin: "",
-    categoryIds: ["storage-terminals", "independent-terminals"], isFeatured: false,
+    categoryIds: ["storage-terminals"], isFeatured: false,
   },
   {
     id: "kinder-morgan-inc", slug: "kinder-morgan-inc", name: "Kinder Morgan Inc",
@@ -128,7 +128,7 @@ export const COMPANY_SEED: CompanySeed[] = [
     logo: "https://res.cloudinary.com/petrodek/image/upload/v1786019732/kinder-morgan-logo-png-transparent_fdji2b.png",
     heroImage: "https://res.cloudinary.com/petrodek/image/upload/v1786019738/KMI_Cover_nonww0.png",
     linkedin: "",
-    categoryIds: ["pipeline-operators", "storage-terminals", "independent-terminals"], isFeatured: false,
+    categoryIds: ["pipeline-operators", "storage-terminals"], isFeatured: false,
   },
   {
     id: "china-petroleum-and-chemical-corporation-sinopec-corp", slug: "china-petroleum-and-chemical-corporation-sinopec-corp", name: "China Petroleum & Chemical Corporation (Sinopec Corp.)",
@@ -146,7 +146,7 @@ export const COMPANY_SEED: CompanySeed[] = [
     logo: "",
     heroImage: "",
     linkedin: "",
-    categoryIds: ["storage-terminals", "independent-terminals"], isFeatured: false,
+    categoryIds: ["storage-terminals"], isFeatured: false,
   },
   {
     id: "petrochina-company-limited", slug: "petrochina-company-limited", name: "PetroChina Company Limited",
@@ -155,7 +155,7 @@ export const COMPANY_SEED: CompanySeed[] = [
     logo: "",
     heroImage: "",
     linkedin: "",
-    categoryIds: ["process-industries", "refineries", "petrochemicals", "captive-terminals"], isFeatured: false,
+    categoryIds: ["process-industries", "refineries", "petrochemicals", "storage-terminals"], isFeatured: false,
   },
   {
     id: "vtti-bv", slug: "vtti-bv", name: "VTTI B.V.",
@@ -164,7 +164,7 @@ export const COMPANY_SEED: CompanySeed[] = [
     logo: "https://res.cloudinary.com/petrodek/image/upload/v1786019731/VTTI_dqbflt.png",
     heroImage: "https://res.cloudinary.com/petrodek/image/upload/v1786019614/VTTI_Cover_zawqlz.png",
     linkedin: "",
-    categoryIds: ["storage-terminals", "independent-terminals"], isFeatured: false,
+    categoryIds: ["storage-terminals"], isFeatured: false,
   },
   {
     id: "advario-bv", slug: "advario-bv", name: "Advario B.V",
@@ -173,7 +173,7 @@ export const COMPANY_SEED: CompanySeed[] = [
     logo: "",
     heroImage: "https://res.cloudinary.com/petrodek/image/upload/v1786019738/ADVARIO_COVER_w1elm7.png",
     linkedin: "",
-    categoryIds: ["storage-terminals", "independent-terminals"], isFeatured: false,
+    categoryIds: ["storage-terminals"], isFeatured: false,
   },
   {
     id: "tepsa-infra-sas", slug: "tepsa-infra-sas", name: "Tepsa Infra SAS",
@@ -182,7 +182,7 @@ export const COMPANY_SEED: CompanySeed[] = [
     logo: "https://res.cloudinary.com/petrodek/image/upload/v1786019730/TEPSA_LOGO_vvmetl.jpg",
     heroImage: "",
     linkedin: "",
-    categoryIds: ["storage-terminals", "independent-terminals"], isFeatured: false,
+    categoryIds: ["storage-terminals"], isFeatured: false,
   },
   {
     id: "aegis-vopak-terminals-limited", slug: "aegis-vopak-terminals-limited", name: "Aegis Vopak Terminals Limited",
@@ -191,7 +191,7 @@ export const COMPANY_SEED: CompanySeed[] = [
     logo: "https://res.cloudinary.com/petrodek/image/upload/v1786019732/kinder-morgan-logo-png-transparent_fdji2b.png",
     heroImage: "",
     linkedin: "",
-    categoryIds: ["storage-terminals", "independent-terminals"], isFeatured: false,
+    categoryIds: ["storage-terminals"], isFeatured: false,
   },
   {
     id: "exolum-terminals-ltd", slug: "exolum-terminals-ltd", name: "Exolum Terminals Ltd",
@@ -200,7 +200,7 @@ export const COMPANY_SEED: CompanySeed[] = [
     logo: "",
     heroImage: "https://res.cloudinary.com/petrodek/image/upload/v1786019616/Exolum_Cover_real_syrrr7.png",
     linkedin: "",
-    categoryIds: ["storage-terminals", "independent-terminals"], isFeatured: false,
+    categoryIds: ["storage-terminals"], isFeatured: false,
   },
   {
     id: "exxon-mobil-corporation", slug: "exxon-mobil-corporation", name: "Exxon Mobil Corporation",
@@ -209,7 +209,7 @@ export const COMPANY_SEED: CompanySeed[] = [
     logo: "",
     heroImage: "",
     linkedin: "",
-    categoryIds: ["process-industries", "refineries", "petrochemicals", "captive-terminals"], isFeatured: false,
+    categoryIds: ["process-industries", "refineries", "petrochemicals", "storage-terminals"], isFeatured: false,
   },
   {
     id: "national-petroleum-and-natural-gas-pipeline-group-co-ltd", slug: "national-petroleum-and-natural-gas-pipeline-group-co-ltd", name: "National Petroleum and Natural Gas Pipeline Group Co., Ltd.",
@@ -218,7 +218,7 @@ export const COMPANY_SEED: CompanySeed[] = [
     logo: "https://res.cloudinary.com/petrodek/image/upload/v1786019606/PIPECHINA_luremd.webp",
     heroImage: "https://res.cloudinary.com/petrodek/image/upload/v1786019610/PIPECHINA_COVER_REAL_rwqjm9.png",
     linkedin: "",
-    categoryIds: ["storage-terminals", "independent-terminals"], isFeatured: false,
+    categoryIds: ["storage-terminals"], isFeatured: false,
   },
   {
     id: "pt-pertamina", slug: "pt-pertamina", name: "PT Pertamina",
@@ -227,7 +227,7 @@ export const COMPANY_SEED: CompanySeed[] = [
     logo: "https://res.cloudinary.com/petrodek/image/upload/v1786019607/Pertamina_f3xd3s.jpg",
     heroImage: "https://res.cloudinary.com/petrodek/image/upload/v1786019610/PT_Petramina_Cover_real_fjlvzn.png",
     linkedin: "",
-    categoryIds: ["process-industries", "refineries", "captive-terminals"], isFeatured: false,
+    categoryIds: ["process-industries", "refineries", "storage-terminals"], isFeatured: false,
   },
   {
     id: "petroleo-brasileiro-sa-petrobras", slug: "petroleo-brasileiro-sa-petrobras", name: "Petróleo Brasileiro S.A. – Petrobras",
@@ -236,7 +236,7 @@ export const COMPANY_SEED: CompanySeed[] = [
     logo: "https://res.cloudinary.com/petrodek/image/upload/v1786019605/Petrobras_dykduo.png",
     heroImage: "https://res.cloudinary.com/petrodek/image/upload/v1786019611/Petrobras_cover_qwpmk5.png",
     linkedin: "",
-    categoryIds: ["process-industries", "refineries", "fertilisers", "captive-terminals"], isFeatured: false,
+    categoryIds: ["process-industries", "refineries", "fertilisers", "storage-terminals"], isFeatured: false,
   },
   {
     id: "imc-limited", slug: "imc-limited", name: "IMC Limited",
@@ -245,7 +245,7 @@ export const COMPANY_SEED: CompanySeed[] = [
     logo: "https://res.cloudinary.com/petrodek/image/upload/v1786019605/imc_limited_logo_kx69dy.jpg",
     heroImage: "https://res.cloudinary.com/petrodek/image/upload/v1786019611/IMC_Cover_real_wcesl6.png",
     linkedin: "",
-    categoryIds: ["storage-terminals", "independent-terminals"], isFeatured: false,
+    categoryIds: ["storage-terminals"], isFeatured: false,
   },
   {
     id: "chennai-petroleum-corporation-limited", slug: "chennai-petroleum-corporation-limited", name: "Chennai Petroleum Corporation Limited",
@@ -254,7 +254,7 @@ export const COMPANY_SEED: CompanySeed[] = [
     logo: "https://res.cloudinary.com/petrodek/image/upload/v1786024796/cpcl_logo_pumipf.png",
     heroImage: "https://res.cloudinary.com/petrodek/image/upload/v1786024797/cpcl_cover_w6bmwu.jpg",
     linkedin: "https://www.linkedin.com/company/chennai-petroleum-corp.-ltd-indian-oil-/home/",
-    categoryIds: ["process-industries", "refineries", "captive-terminals"], isFeatured: false,
+    categoryIds: ["process-industries", "refineries", "storage-terminals"], isFeatured: false,
   },
   {
     id: "puma-energy-holdings-pte-ltd", slug: "puma-energy-holdings-pte-ltd", name: "Puma Energy Holdings Pte. Ltd.",
@@ -263,7 +263,7 @@ export const COMPANY_SEED: CompanySeed[] = [
     logo: "https://res.cloudinary.com/petrodek/image/upload/v1786024796/puma_energy_logo_its4kf.png",
     heroImage: "https://res.cloudinary.com/petrodek/image/upload/v1786024796/puma_energy_cover_aolo2d.webp",
     linkedin: "https://www.linkedin.com/company/puma-energy/home/",
-    categoryIds: ["storage-terminals", "independent-terminals"], isFeatured: false,
+    categoryIds: ["storage-terminals"], isFeatured: false,
   },
   {
     id: "eneos-corporation", slug: "eneos-corporation", name: "ENEOS Corporation",
@@ -272,7 +272,7 @@ export const COMPANY_SEED: CompanySeed[] = [
     logo: "https://res.cloudinary.com/petrodek/image/upload/v1786024796/eneos-logo-png_seeklogo-47800_wzopst.png",
     heroImage: "https://res.cloudinary.com/petrodek/image/upload/v1786024796/eneos_cover_llrmkz.jpg",
     linkedin: "https://www.linkedin.com/company/eneosgroup/home/",
-    categoryIds: ["process-industries", "refineries", "captive-terminals"], isFeatured: false,
+    categoryIds: ["process-industries", "refineries", "storage-terminals"], isFeatured: false,
   },
   {
     id: "ecopetrol-sa", slug: "ecopetrol-sa", name: "Ecopetrol S.A.",
@@ -281,7 +281,7 @@ export const COMPANY_SEED: CompanySeed[] = [
     logo: "https://res.cloudinary.com/petrodek/image/upload/v1786024795/Ecopetrol_logo_v4apaf.png",
     heroImage: "https://res.cloudinary.com/petrodek/image/upload/v1786024796/ecopetrol_cover_qnswli.webp",
     linkedin: "https://www.linkedin.com/company/ecopetroloficial/home/",
-    categoryIds: ["process-industries", "refineries", "captive-terminals"], isFeatured: false,
+    categoryIds: ["process-industries", "refineries", "storage-terminals"], isFeatured: false,
   },
   {
     id: "equinor-asa", slug: "equinor-asa", name: "Equinor ASA",
@@ -290,7 +290,7 @@ export const COMPANY_SEED: CompanySeed[] = [
     logo: "https://res.cloudinary.com/petrodek/image/upload/v1786024795/Equinor-Logo.wine_rj9wzo.png",
     heroImage: "https://res.cloudinary.com/petrodek/image/upload/v1786024796/Equinor_cover_urlidl.jpg",
     linkedin: "https://www.linkedin.com/company/equinor/home/",
-    categoryIds: ["process-industries", "refineries", "captive-terminals"], isFeatured: false,
+    categoryIds: ["process-industries", "refineries", "storage-terminals"], isFeatured: false,
   },
   {
     id: "exolum-corporation-sa", slug: "exolum-corporation-sa", name: "Exolum Corporation, S.A.",
@@ -299,7 +299,7 @@ export const COMPANY_SEED: CompanySeed[] = [
     logo: "https://res.cloudinary.com/petrodek/image/upload/v1786024795/exolum_logo_uynhyk.jpg",
     heroImage: "https://res.cloudinary.com/petrodek/image/upload/v1786024796/exolum_cover_uwb48l.jpg",
     linkedin: "https://www.linkedin.com/company/exolum/home/",
-    categoryIds: ["storage-terminals", "independent-terminals"], isFeatured: false,
+    categoryIds: ["storage-terminals"], isFeatured: false,
   },
   {
     id: "grupa-azoty-sa", slug: "grupa-azoty-sa", name: "Grupa Azoty S.A.",
@@ -317,7 +317,7 @@ export const COMPANY_SEED: CompanySeed[] = [
     logo: "https://res.cloudinary.com/petrodek/image/upload/v1786024794/pdvsa_logo_fwzxae.jpg",
     heroImage: "https://res.cloudinary.com/petrodek/image/upload/v1786024794/pdvsa_cover_k4xh5q.jpg",
     linkedin: "https://www.linkedin.com/company/pdvsa-ve/home/",
-    categoryIds: ["process-industries", "refineries", "captive-terminals"], isFeatured: false,
+    categoryIds: ["process-industries", "refineries", "storage-terminals"], isFeatured: false,
   },
   {
     id: "turkiye-petrol-rafinerileri-as-tupras", slug: "turkiye-petrol-rafinerileri-as-tupras", name: "Türkiye Petrol Rafinerileri A.Ş. (Tüpraş)",
@@ -326,7 +326,7 @@ export const COMPANY_SEED: CompanySeed[] = [
     logo: "https://res.cloudinary.com/petrodek/image/upload/v1786024794/tupras-logo-png_seeklogo-143105_mqe60b.png",
     heroImage: "https://res.cloudinary.com/petrodek/image/upload/v1786024794/tupras_cover_lnf30m.webp",
     linkedin: "https://www.linkedin.com/company/tupras/posts/",
-    categoryIds: ["process-industries", "refineries", "captive-terminals"], isFeatured: false,
+    categoryIds: ["process-industries", "refineries", "storage-terminals"], isFeatured: false,
   },
   {
     id: "ampol-limited", slug: "ampol-limited", name: "Ampol Limited",
@@ -335,7 +335,7 @@ export const COMPANY_SEED: CompanySeed[] = [
     logo: "",
     heroImage: "",
     linkedin: "",
-    categoryIds: ["process-industries", "refineries", "captive-terminals"], isFeatured: false,
+    categoryIds: ["process-industries", "refineries", "storage-terminals"], isFeatured: false,
   },
   {
     id: "bp-products-north-america-inc", slug: "bp-products-north-america-inc", name: "BP Products North America Inc.",
@@ -344,7 +344,7 @@ export const COMPANY_SEED: CompanySeed[] = [
     logo: "",
     heroImage: "",
     linkedin: "",
-    categoryIds: ["process-industries", "refineries", "captive-terminals"], isFeatured: false,
+    categoryIds: ["process-industries", "refineries", "storage-terminals"], isFeatured: false,
   },
   {
     id: "borealis-ag", slug: "borealis-ag", name: "Borealis AG",
@@ -380,7 +380,7 @@ export const COMPANY_SEED: CompanySeed[] = [
     logo: "",
     heroImage: "",
     linkedin: "",
-    categoryIds: ["storage-terminals", "captive-terminals"], isFeatured: false,
+    categoryIds: ["storage-terminals"], isFeatured: false,
   },
   {
     id: "chevron-usa-inc", slug: "chevron-usa-inc", name: "Chevron U.S.A. Inc.",
@@ -407,7 +407,7 @@ export const COMPANY_SEED: CompanySeed[] = [
     logo: "",
     heroImage: "",
     linkedin: "",
-    categoryIds: ["storage-terminals", "captive-terminals"], isFeatured: false,
+    categoryIds: ["storage-terminals"], isFeatured: false,
   },
   {
     id: "cobil", slug: "cobil", name: "Cobil",
@@ -416,7 +416,7 @@ export const COMPANY_SEED: CompanySeed[] = [
     logo: "",
     heroImage: "",
     linkedin: "",
-    categoryIds: ["storage-terminals", "captive-terminals"], isFeatured: false,
+    categoryIds: ["storage-terminals"], isFeatured: false,
   },
   {
     id: "coromandel-international-limited", slug: "coromandel-international-limited", name: "Coromandel International Limited",
@@ -443,7 +443,7 @@ export const COMPANY_SEED: CompanySeed[] = [
     logo: "",
     heroImage: "",
     linkedin: "",
-    categoryIds: ["process-industries", "refineries", "captive-terminals"], isFeatured: false,
+    categoryIds: ["process-industries", "refineries", "storage-terminals"], isFeatured: false,
   },
   {
     id: "empresa-nacional-del-petroleo-enap", slug: "empresa-nacional-del-petroleo-enap", name: "Empresa Nacional del Petróleo (ENAP)",
@@ -452,7 +452,7 @@ export const COMPANY_SEED: CompanySeed[] = [
     logo: "",
     heroImage: "",
     linkedin: "",
-    categoryIds: ["process-industries", "refineries", "captive-terminals"], isFeatured: false,
+    categoryIds: ["process-industries", "refineries", "storage-terminals"], isFeatured: false,
   },
   {
     id: "eurochem-group-ag", slug: "eurochem-group-ag", name: "EuroChem Group AG",
@@ -479,7 +479,7 @@ export const COMPANY_SEED: CompanySeed[] = [
     logo: "",
     heroImage: "",
     linkedin: "",
-    categoryIds: ["pipeline-operators", "process-industries", "petrochemicals", "captive-terminals"], isFeatured: false,
+    categoryIds: ["pipeline-operators", "process-industries", "petrochemicals", "storage-terminals"], isFeatured: false,
   },
   {
     id: "galp-energia-sgps-sa", slug: "galp-energia-sgps-sa", name: "Galp Energia SGPS, S.A.",
@@ -488,7 +488,7 @@ export const COMPANY_SEED: CompanySeed[] = [
     logo: "",
     heroImage: "",
     linkedin: "",
-    categoryIds: ["storage-terminals", "captive-terminals"], isFeatured: false,
+    categoryIds: ["storage-terminals"], isFeatured: false,
   },
   {
     id: "icl-group-ltd", slug: "icl-group-ltd", name: "ICL Group Ltd.",
@@ -506,7 +506,7 @@ export const COMPANY_SEED: CompanySeed[] = [
     logo: "",
     heroImage: "",
     linkedin: "",
-    categoryIds: ["biofuel-and-ethanol-storage-systems", "process-industries", "refineries", "petrochemicals", "captive-terminals"], isFeatured: false,
+    categoryIds: ["biofuel-and-ethanol-storage-systems", "process-industries", "refineries", "petrochemicals", "storage-terminals"], isFeatured: false,
   },
   {
     id: "imperial-oil-limited", slug: "imperial-oil-limited", name: "Imperial Oil Limited",
@@ -515,7 +515,7 @@ export const COMPANY_SEED: CompanySeed[] = [
     logo: "",
     heroImage: "",
     linkedin: "",
-    categoryIds: ["process-industries", "refineries", "captive-terminals"], isFeatured: false,
+    categoryIds: ["process-industries", "refineries", "storage-terminals"], isFeatured: false,
   },
   {
     id: "intercontinental-terminals-company-llc", slug: "intercontinental-terminals-company-llc", name: "Intercontinental Terminals Company LLC",
@@ -524,7 +524,7 @@ export const COMPANY_SEED: CompanySeed[] = [
     logo: "",
     heroImage: "",
     linkedin: "",
-    categoryIds: ["storage-terminals", "independent-terminals"], isFeatured: false,
+    categoryIds: ["storage-terminals"], isFeatured: false,
   },
   {
     id: "irving-oil-limited", slug: "irving-oil-limited", name: "Irving Oil Limited",
@@ -533,7 +533,7 @@ export const COMPANY_SEED: CompanySeed[] = [
     logo: "",
     heroImage: "",
     linkedin: "",
-    categoryIds: ["process-industries", "refineries", "captive-terminals"], isFeatured: false,
+    categoryIds: ["process-industries", "refineries", "storage-terminals"], isFeatured: false,
   },
   {
     id: "jsc-uzbekneftegaz", slug: "jsc-uzbekneftegaz", name: "JSC Uzbekneftegaz",
@@ -551,7 +551,7 @@ export const COMPANY_SEED: CompanySeed[] = [
     logo: "",
     heroImage: "",
     linkedin: "",
-    categoryIds: ["process-industries", "refineries", "captive-terminals"], isFeatured: false,
+    categoryIds: ["process-industries", "refineries", "storage-terminals"], isFeatured: false,
   },
   {
     id: "k-s-aktiengesellschaft", slug: "k-s-aktiengesellschaft", name: "K+S Aktiengesellschaft",
@@ -569,7 +569,7 @@ export const COMPANY_SEED: CompanySeed[] = [
     logo: "",
     heroImage: "",
     linkedin: "",
-    categoryIds: ["process-industries", "refineries", "captive-terminals"], isFeatured: false,
+    categoryIds: ["process-industries", "refineries", "storage-terminals"], isFeatured: false,
   },
   {
     id: "kuwait-petroleum-corporation", slug: "kuwait-petroleum-corporation", name: "Kuwait Petroleum Corporation",
@@ -578,7 +578,7 @@ export const COMPANY_SEED: CompanySeed[] = [
     logo: "",
     heroImage: "",
     linkedin: "",
-    categoryIds: ["process-industries", "refineries", "captive-terminals"], isFeatured: false,
+    categoryIds: ["process-industries", "refineries", "storage-terminals"], isFeatured: false,
   },
   {
     id: "lg-chem-ltd", slug: "lg-chem-ltd", name: "LG Chem, Ltd.",
@@ -605,7 +605,7 @@ export const COMPANY_SEED: CompanySeed[] = [
     logo: "",
     heroImage: "",
     linkedin: "",
-    categoryIds: ["storage-terminals", "captive-terminals"], isFeatured: false,
+    categoryIds: ["storage-terminals"], isFeatured: false,
   },
   {
     id: "neste-oyj", slug: "neste-oyj", name: "Neste Oyj",
@@ -614,7 +614,7 @@ export const COMPANY_SEED: CompanySeed[] = [
     logo: "",
     heroImage: "",
     linkedin: "",
-    categoryIds: ["process-industries", "refineries", "captive-terminals"], isFeatured: false,
+    categoryIds: ["process-industries", "refineries", "storage-terminals"], isFeatured: false,
   },
   {
     id: "nigerian-national-petroleum-company-limited", slug: "nigerian-national-petroleum-company-limited", name: "Nigerian National Petroleum Company Limited",
@@ -632,7 +632,7 @@ export const COMPANY_SEED: CompanySeed[] = [
     logo: "",
     heroImage: "",
     linkedin: "",
-    categoryIds: ["process-industries", "refineries", "captive-terminals"], isFeatured: false,
+    categoryIds: ["process-industries", "refineries", "storage-terminals"], isFeatured: false,
   },
   {
     id: "nutrien-ltd", slug: "nutrien-ltd", name: "Nutrien Ltd.",
@@ -659,7 +659,7 @@ export const COMPANY_SEED: CompanySeed[] = [
     logo: "",
     heroImage: "",
     linkedin: "",
-    categoryIds: ["process-industries", "refineries", "captive-terminals"], isFeatured: false,
+    categoryIds: ["process-industries", "refineries", "storage-terminals"], isFeatured: false,
   },
   {
     id: "omv-petrom-sa", slug: "omv-petrom-sa", name: "OMV Petrom S.A.",
@@ -668,7 +668,7 @@ export const COMPANY_SEED: CompanySeed[] = [
     logo: "",
     heroImage: "",
     linkedin: "",
-    categoryIds: ["process-industries", "refineries", "captive-terminals"], isFeatured: false,
+    categoryIds: ["process-industries", "refineries", "storage-terminals"], isFeatured: false,
   },
   {
     id: "oq-saoc", slug: "oq-saoc", name: "OQ S.A.O.C.",
@@ -677,7 +677,7 @@ export const COMPANY_SEED: CompanySeed[] = [
     logo: "",
     heroImage: "",
     linkedin: "",
-    categoryIds: ["storage-terminals", "captive-terminals"], isFeatured: false,
+    categoryIds: ["storage-terminals"], isFeatured: false,
   },
   {
     id: "pjsc-phosagro", slug: "pjsc-phosagro", name: "PJSC PhosAgro",
@@ -704,7 +704,7 @@ export const COMPANY_SEED: CompanySeed[] = [
     logo: "",
     heroImage: "",
     linkedin: "",
-    categoryIds: ["storage-terminals", "captive-terminals"], isFeatured: false,
+    categoryIds: ["storage-terminals"], isFeatured: false,
   },
   {
     id: "petroliam-nasional-berhad-petronas", slug: "petroliam-nasional-berhad-petronas", name: "Petroliam Nasional Berhad (PETRONAS)",
@@ -713,7 +713,7 @@ export const COMPANY_SEED: CompanySeed[] = [
     logo: "",
     heroImage: "",
     linkedin: "",
-    categoryIds: ["process-industries", "refineries", "captive-terminals"], isFeatured: false,
+    categoryIds: ["process-industries", "refineries", "storage-terminals"], isFeatured: false,
   },
   {
     id: "petron-corporation", slug: "petron-corporation", name: "Petron Corporation",
@@ -722,7 +722,7 @@ export const COMPANY_SEED: CompanySeed[] = [
     logo: "",
     heroImage: "",
     linkedin: "",
-    categoryIds: ["process-industries", "refineries", "captive-terminals"], isFeatured: false,
+    categoryIds: ["process-industries", "refineries", "storage-terminals"], isFeatured: false,
   },
   {
     id: "petroleos-del-peru-petroperu-sa", slug: "petroleos-del-peru-petroperu-sa", name: "Petróleos del Perú – Petroperú S.A.",
@@ -731,7 +731,7 @@ export const COMPANY_SEED: CompanySeed[] = [
     logo: "",
     heroImage: "",
     linkedin: "",
-    categoryIds: ["process-industries", "refineries", "captive-terminals"], isFeatured: false,
+    categoryIds: ["process-industries", "refineries", "storage-terminals"], isFeatured: false,
   },
   {
     id: "phillips-66-company", slug: "phillips-66-company", name: "Phillips 66 Company",
@@ -749,7 +749,7 @@ export const COMPANY_SEED: CompanySeed[] = [
     logo: "",
     heroImage: "",
     linkedin: "",
-    categoryIds: ["process-industries", "refineries", "captive-terminals"], isFeatured: false,
+    categoryIds: ["process-industries", "refineries", "storage-terminals"], isFeatured: false,
   },
   {
     id: "qatarenergy", slug: "qatarenergy", name: "QatarEnergy",
@@ -758,7 +758,7 @@ export const COMPANY_SEED: CompanySeed[] = [
     logo: "",
     heroImage: "",
     linkedin: "",
-    categoryIds: ["storage-terminals", "captive-terminals"], isFeatured: false,
+    categoryIds: ["storage-terminals"], isFeatured: false,
   },
   {
     id: "rashtriya-chemicals-and-fertilizers-limited", slug: "rashtriya-chemicals-and-fertilizers-limited", name: "Rashtriya Chemicals and Fertilizers Limited",
@@ -776,7 +776,7 @@ export const COMPANY_SEED: CompanySeed[] = [
     logo: "",
     heroImage: "",
     linkedin: "",
-    categoryIds: ["storage-terminals", "captive-terminals"], isFeatured: false,
+    categoryIds: ["storage-terminals"], isFeatured: false,
   },
   {
     id: "rosneft-oil-company-pjsc", slug: "rosneft-oil-company-pjsc", name: "Rosneft Oil Company PJSC",
@@ -785,7 +785,7 @@ export const COMPANY_SEED: CompanySeed[] = [
     logo: "",
     heroImage: "",
     linkedin: "",
-    categoryIds: ["storage-terminals", "captive-terminals"], isFeatured: false,
+    categoryIds: ["storage-terminals"], isFeatured: false,
   },
   {
     id: "saudi-arabian-oil-company-saudi-aramco", slug: "saudi-arabian-oil-company-saudi-aramco", name: "Saudi Arabian Oil Company (Saudi Aramco)",
@@ -794,7 +794,7 @@ export const COMPANY_SEED: CompanySeed[] = [
     logo: "",
     heroImage: "",
     linkedin: "",
-    categoryIds: ["storage-terminals", "captive-terminals"], isFeatured: false,
+    categoryIds: ["storage-terminals"], isFeatured: false,
   },
   {
     id: "saudi-basic-industries-corporation-sabic", slug: "saudi-basic-industries-corporation-sabic", name: "Saudi Basic Industries Corporation (SABIC)",
@@ -812,7 +812,7 @@ export const COMPANY_SEED: CompanySeed[] = [
     logo: "",
     heroImage: "",
     linkedin: "",
-    categoryIds: ["process-industries", "refineries", "petrochemicals", "captive-terminals"], isFeatured: false,
+    categoryIds: ["process-industries", "refineries", "petrochemicals", "storage-terminals"], isFeatured: false,
   },
   {
     id: "skytanking", slug: "skytanking", name: "Skytanking",
@@ -821,7 +821,7 @@ export const COMPANY_SEED: CompanySeed[] = [
     logo: "",
     heroImage: "",
     linkedin: "",
-    categoryIds: ["storage-terminals", "independent-terminals"], isFeatured: false,
+    categoryIds: ["storage-terminals"], isFeatured: false,
   },
   {
     id: "societe-algerienne-de-raffinage-naftec", slug: "societe-algerienne-de-raffinage-naftec", name: "Société Algérienne de Raffinage (NAFTEC)",
@@ -839,7 +839,7 @@ export const COMPANY_SEED: CompanySeed[] = [
     logo: "",
     heroImage: "",
     linkedin: "",
-    categoryIds: ["process-industries", "refineries", "captive-terminals"], isFeatured: false,
+    categoryIds: ["process-industries", "refineries", "storage-terminals"], isFeatured: false,
   },
   {
     id: "state-oil-company-of-the-azerbaijan-republic", slug: "state-oil-company-of-the-azerbaijan-republic", name: "State Oil Company of the Azerbaijan Republic",
@@ -848,7 +848,7 @@ export const COMPANY_SEED: CompanySeed[] = [
     logo: "",
     heroImage: "",
     linkedin: "",
-    categoryIds: ["process-industries", "refineries", "captive-terminals"], isFeatured: false,
+    categoryIds: ["process-industries", "refineries", "storage-terminals"], isFeatured: false,
   },
   {
     id: "state-organization-for-marketing-of-oil", slug: "state-organization-for-marketing-of-oil", name: "State Organization for Marketing of Oil",
@@ -857,7 +857,7 @@ export const COMPANY_SEED: CompanySeed[] = [
     logo: "",
     heroImage: "",
     linkedin: "",
-    categoryIds: ["storage-terminals", "captive-terminals"], isFeatured: false,
+    categoryIds: ["storage-terminals"], isFeatured: false,
   },
   {
     id: "suncor-energy-inc", slug: "suncor-energy-inc", name: "Suncor Energy Inc.",
@@ -866,7 +866,7 @@ export const COMPANY_SEED: CompanySeed[] = [
     logo: "",
     heroImage: "",
     linkedin: "",
-    categoryIds: ["process-industries", "refineries", "captive-terminals"], isFeatured: false,
+    categoryIds: ["process-industries", "refineries", "storage-terminals"], isFeatured: false,
   },
   {
     id: "tanzania-international-petroleum-reserves-limited", slug: "tanzania-international-petroleum-reserves-limited", name: "Tanzania International Petroleum Reserves Limited",
@@ -875,7 +875,7 @@ export const COMPANY_SEED: CompanySeed[] = [
     logo: "",
     heroImage: "",
     linkedin: "",
-    categoryIds: ["storage-terminals", "captive-terminals"], isFeatured: false,
+    categoryIds: ["storage-terminals"], isFeatured: false,
   },
   {
     id: "the-dow-chemical-company", slug: "the-dow-chemical-company", name: "The Dow Chemical Company",
@@ -902,7 +902,7 @@ export const COMPANY_SEED: CompanySeed[] = [
     logo: "",
     heroImage: "",
     linkedin: "",
-    categoryIds: ["process-industries", "refineries", "captive-terminals"], isFeatured: false,
+    categoryIds: ["process-industries", "refineries", "storage-terminals"], isFeatured: false,
   },
   {
     id: "transneft-pjsc", slug: "transneft-pjsc", name: "Transneft PJSC",
@@ -911,7 +911,7 @@ export const COMPANY_SEED: CompanySeed[] = [
     logo: "",
     heroImage: "",
     linkedin: "",
-    categoryIds: ["storage-terminals", "independent-terminals"], isFeatured: false,
+    categoryIds: ["storage-terminals"], isFeatured: false,
   },
   {
     id: "vida-bioenergy-vtti-bv", slug: "vida-bioenergy-vtti-bv", name: "VIDA Bioenergy (VTTI B.V.)",
@@ -920,7 +920,7 @@ export const COMPANY_SEED: CompanySeed[] = [
     logo: "",
     heroImage: "",
     linkedin: "",
-    categoryIds: ["storage-terminals", "independent-terminals"], isFeatured: false,
+    categoryIds: ["storage-terminals"], isFeatured: false,
   },
   {
     id: "vesta-terminals-bv", slug: "vesta-terminals-bv", name: "Vesta Terminals B.V.",
@@ -929,7 +929,7 @@ export const COMPANY_SEED: CompanySeed[] = [
     logo: "",
     heroImage: "",
     linkedin: "",
-    categoryIds: ["storage-terminals", "independent-terminals"], isFeatured: false,
+    categoryIds: ["storage-terminals"], isFeatured: false,
   },
   {
     id: "vivo-energy-holding-bv", slug: "vivo-energy-holding-bv", name: "Vivo Energy Holding B.V.",
@@ -938,7 +938,7 @@ export const COMPANY_SEED: CompanySeed[] = [
     logo: "",
     heroImage: "",
     linkedin: "",
-    categoryIds: ["storage-terminals", "captive-terminals"], isFeatured: false,
+    categoryIds: ["storage-terminals"], isFeatured: false,
   },
   {
     id: "vopak-international-venezuela-aruba-nv-viia", slug: "vopak-international-venezuela-aruba-nv-viia", name: "Vopak International Venezuela Aruba N.V. (VIIA)",
@@ -947,7 +947,7 @@ export const COMPANY_SEED: CompanySeed[] = [
     logo: "",
     heroImage: "",
     linkedin: "",
-    categoryIds: ["storage-terminals", "independent-terminals"], isFeatured: false,
+    categoryIds: ["storage-terminals"], isFeatured: false,
   },
   {
     id: "ypf-sa", slug: "ypf-sa", name: "YPF S.A.",
@@ -956,7 +956,7 @@ export const COMPANY_SEED: CompanySeed[] = [
     logo: "",
     heroImage: "",
     linkedin: "",
-    categoryIds: ["process-industries", "refineries", "captive-terminals"], isFeatured: false,
+    categoryIds: ["process-industries", "refineries", "storage-terminals"], isFeatured: false,
   },
   {
     id: "yacimientos-petroliferos-fiscales-bolivianos", slug: "yacimientos-petroliferos-fiscales-bolivianos", name: "Yacimientos Petrolíferos Fiscales Bolivianos",
@@ -965,7 +965,7 @@ export const COMPANY_SEED: CompanySeed[] = [
     logo: "",
     heroImage: "",
     linkedin: "",
-    categoryIds: ["process-industries", "refineries", "captive-terminals"], isFeatured: false,
+    categoryIds: ["process-industries", "refineries", "storage-terminals"], isFeatured: false,
   },
   {
     id: "yara-suomi-oy", slug: "yara-suomi-oy", name: "Yara Suomi Oy",
@@ -983,7 +983,7 @@ export const COMPANY_SEED: CompanySeed[] = [
     logo: "",
     heroImage: "",
     linkedin: "",
-    categoryIds: ["storage-terminals", "captive-terminals"], isFeatured: false,
+    categoryIds: ["storage-terminals"], isFeatured: false,
   },
   {
     id: "national-iranian-oil-company", slug: "national-iranian-oil-company", name: "National Iranian Oil Company",
@@ -992,7 +992,7 @@ export const COMPANY_SEED: CompanySeed[] = [
     logo: "",
     heroImage: "",
     linkedin: "",
-    categoryIds: ["process-industries", "refineries", "captive-terminals"], isFeatured: false,
+    categoryIds: ["process-industries", "refineries", "storage-terminals"], isFeatured: false,
   },
   {
     id: "petroleos-mexicanos-pemex", slug: "petroleos-mexicanos-pemex", name: "Petróleos Mexicanos (PEMEX)",
@@ -1001,7 +1001,7 @@ export const COMPANY_SEED: CompanySeed[] = [
     logo: "",
     heroImage: "",
     linkedin: "",
-    categoryIds: ["process-industries", "refineries", "petrochemicals", "captive-terminals"], isFeatured: false,
+    categoryIds: ["process-industries", "refineries", "petrochemicals", "storage-terminals"], isFeatured: false,
   },
   {
     id: "sinopec-kantons-holdings-limited", slug: "sinopec-kantons-holdings-limited", name: "Sinopec Kantons Holdings Limited",
@@ -1010,7 +1010,7 @@ export const COMPANY_SEED: CompanySeed[] = [
     logo: "",
     heroImage: "",
     linkedin: "",
-    categoryIds: ["storage-terminals", "independent-terminals"], isFeatured: false,
+    categoryIds: ["storage-terminals"], isFeatured: false,
   },
   {
     id: "petrol-ad", slug: "petrol-ad", name: "'Petrol' AD",
@@ -1019,7 +1019,7 @@ export const COMPANY_SEED: CompanySeed[] = [
     logo: "",
     heroImage: "",
     linkedin: "",
-    categoryIds: ["storage-terminals", "captive-terminals"], isFeatured: false,
+    categoryIds: ["storage-terminals"], isFeatured: false,
   },
   {
     id: "apc", slug: "apc", name: "APC",
@@ -1028,7 +1028,7 @@ export const COMPANY_SEED: CompanySeed[] = [
     logo: "",
     heroImage: "",
     linkedin: "",
-    categoryIds: ["storage-terminals", "captive-terminals"], isFeatured: false,
+    categoryIds: ["storage-terminals"], isFeatured: false,
   },
   {
     id: "aarti-industries-limited", slug: "aarti-industries-limited", name: "Aarti Industries Limited",
@@ -1055,7 +1055,7 @@ export const COMPANY_SEED: CompanySeed[] = [
     logo: "",
     heroImage: "",
     linkedin: "",
-    categoryIds: ["storage-terminals", "captive-terminals"], isFeatured: false,
+    categoryIds: ["storage-terminals"], isFeatured: false,
   },
   {
     id: "adani-dhamra-port-limited", slug: "adani-dhamra-port-limited", name: "Adani Dhamra Port Limited",
@@ -1064,7 +1064,7 @@ export const COMPANY_SEED: CompanySeed[] = [
     logo: "",
     heroImage: "",
     linkedin: "",
-    categoryIds: ["storage-terminals", "independent-terminals"], isFeatured: false,
+    categoryIds: ["storage-terminals"], isFeatured: false,
   },
   {
     id: "adani-kattupalli-port-private-limited", slug: "adani-kattupalli-port-private-limited", name: "Adani Kattupalli Port Private Limited",
@@ -1073,7 +1073,7 @@ export const COMPANY_SEED: CompanySeed[] = [
     logo: "",
     heroImage: "",
     linkedin: "",
-    categoryIds: ["storage-terminals", "independent-terminals"], isFeatured: false,
+    categoryIds: ["storage-terminals"], isFeatured: false,
   },
   {
     id: "adani-krishnapatnam-port-limited", slug: "adani-krishnapatnam-port-limited", name: "Adani Krishnapatnam Port Limited",
@@ -1082,7 +1082,7 @@ export const COMPANY_SEED: CompanySeed[] = [
     logo: "",
     heroImage: "",
     linkedin: "",
-    categoryIds: ["storage-terminals", "independent-terminals"], isFeatured: false,
+    categoryIds: ["storage-terminals"], isFeatured: false,
   },
   {
     id: "adani-ports-and-sez-limited", slug: "adani-ports-and-sez-limited", name: "Adani Ports & SEZ Limited",
@@ -1091,7 +1091,7 @@ export const COMPANY_SEED: CompanySeed[] = [
     logo: "",
     heroImage: "",
     linkedin: "",
-    categoryIds: ["storage-terminals", "independent-terminals"], isFeatured: false,
+    categoryIds: ["storage-terminals"], isFeatured: false,
   },
   {
     id: "aden-refinery-company-arc", slug: "aden-refinery-company-arc", name: "Aden Refinery Company (ARC)",
@@ -1100,7 +1100,7 @@ export const COMPANY_SEED: CompanySeed[] = [
     logo: "",
     heroImage: "",
     linkedin: "",
-    categoryIds: ["storage-terminals", "captive-terminals"], isFeatured: false,
+    categoryIds: ["storage-terminals"], isFeatured: false,
   },
   {
     id: "administracion-nacional-de-combustibles-alcohol-y-portland-ancap", slug: "administracion-nacional-de-combustibles-alcohol-y-portland-ancap", name: "Administración Nacional de Combustibles, Alcohol y Portland (ANCAP)",
@@ -1109,7 +1109,7 @@ export const COMPANY_SEED: CompanySeed[] = [
     logo: "",
     heroImage: "",
     linkedin: "",
-    categoryIds: ["storage-terminals", "captive-terminals"], isFeatured: false,
+    categoryIds: ["storage-terminals"], isFeatured: false,
   },
   {
     id: "aircraft-fuel-supply-company-limited", slug: "aircraft-fuel-supply-company-limited", name: "Aircraft Fuel Supply Company Limited",
@@ -1118,7 +1118,7 @@ export const COMPANY_SEED: CompanySeed[] = [
     logo: "",
     heroImage: "",
     linkedin: "",
-    categoryIds: ["storage-terminals", "captive-terminals"], isFeatured: false,
+    categoryIds: ["storage-terminals"], isFeatured: false,
   },
   {
     id: "al-jubail-petrochemical-company-kemya", slug: "al-jubail-petrochemical-company-kemya", name: "Al-Jubail Petrochemical Company (Kemya)",
@@ -1136,7 +1136,7 @@ export const COMPANY_SEED: CompanySeed[] = [
     logo: "",
     heroImage: "",
     linkedin: "",
-    categoryIds: ["storage-terminals", "captive-terminals"], isFeatured: false,
+    categoryIds: ["storage-terminals"], isFeatured: false,
   },
   {
     id: "alexandria-national-refining-and-petrochemicals-company-anrpc", slug: "alexandria-national-refining-and-petrochemicals-company-anrpc", name: "Alexandria National Refining and Petrochemicals Company (ANRPC)",
@@ -1154,7 +1154,7 @@ export const COMPANY_SEED: CompanySeed[] = [
     logo: "",
     heroImage: "",
     linkedin: "",
-    categoryIds: ["storage-terminals", "independent-terminals"], isFeatured: false,
+    categoryIds: ["storage-terminals"], isFeatured: false,
   },
   {
     id: "alkyl-amines-chemicals-limited", slug: "alkyl-amines-chemicals-limited", name: "Alkyl Amines Chemicals Limited",
@@ -1172,7 +1172,7 @@ export const COMPANY_SEED: CompanySeed[] = [
     logo: "",
     heroImage: "",
     linkedin: "",
-    categoryIds: ["storage-terminals", "independent-terminals"], isFeatured: false,
+    categoryIds: ["storage-terminals"], isFeatured: false,
   },
   {
     id: "anwil-sa", slug: "anwil-sa", name: "Anwil S.A.",
@@ -1208,7 +1208,7 @@ export const COMPANY_SEED: CompanySeed[] = [
     logo: "",
     heroImage: "",
     linkedin: "",
-    categoryIds: ["storage-terminals", "captive-terminals"], isFeatured: false,
+    categoryIds: ["storage-terminals"], isFeatured: false,
   },
   {
     id: "atyrau-refinery-llp", slug: "atyrau-refinery-llp", name: "Atyrau Refinery LLP",
@@ -1226,7 +1226,7 @@ export const COMPANY_SEED: CompanySeed[] = [
     logo: "",
     heroImage: "",
     linkedin: "",
-    categoryIds: ["storage-terminals", "independent-terminals"], isFeatured: false,
+    categoryIds: ["storage-terminals"], isFeatured: false,
   },
   {
     id: "axion-energy-argentina-sa", slug: "axion-energy-argentina-sa", name: "Axion Energy Argentina S.A.",
@@ -1244,7 +1244,7 @@ export const COMPANY_SEED: CompanySeed[] = [
     logo: "",
     heroImage: "",
     linkedin: "",
-    categoryIds: ["storage-terminals", "independent-terminals"], isFeatured: false,
+    categoryIds: ["storage-terminals"], isFeatured: false,
   },
   {
     id: "basf-petronas-chemicals-sdn-bhd", slug: "basf-petronas-chemicals-sdn-bhd", name: "BASF PETRONAS Chemicals Sdn. Bhd.",
@@ -1271,7 +1271,7 @@ export const COMPANY_SEED: CompanySeed[] = [
     logo: "",
     heroImage: "",
     linkedin: "",
-    categoryIds: ["storage-terminals", "independent-terminals"], isFeatured: false,
+    categoryIds: ["storage-terminals"], isFeatured: false,
   },
   {
     id: "bp-australia-pty-ltd", slug: "bp-australia-pty-ltd", name: "BP Australia Pty Ltd",
@@ -1280,7 +1280,7 @@ export const COMPANY_SEED: CompanySeed[] = [
     logo: "",
     heroImage: "",
     linkedin: "",
-    categoryIds: ["storage-terminals", "captive-terminals"], isFeatured: false,
+    categoryIds: ["storage-terminals"], isFeatured: false,
   },
   {
     id: "bp-azerbaijan", slug: "bp-azerbaijan", name: "BP Azerbaijan",
@@ -1289,7 +1289,7 @@ export const COMPANY_SEED: CompanySeed[] = [
     logo: "",
     heroImage: "",
     linkedin: "",
-    categoryIds: ["storage-terminals", "independent-terminals"], isFeatured: false,
+    categoryIds: ["storage-terminals"], isFeatured: false,
   },
   {
     id: "bp-europa-se", slug: "bp-europa-se", name: "BP Europa SE",
@@ -1307,7 +1307,7 @@ export const COMPANY_SEED: CompanySeed[] = [
     logo: "",
     heroImage: "",
     linkedin: "",
-    categoryIds: ["storage-terminals", "captive-terminals"], isFeatured: false,
+    categoryIds: ["storage-terminals"], isFeatured: false,
   },
   {
     id: "balaji-amines-limited", slug: "balaji-amines-limited", name: "Balaji Amines Limited",
@@ -1325,7 +1325,7 @@ export const COMPANY_SEED: CompanySeed[] = [
     logo: "",
     heroImage: "",
     linkedin: "",
-    categoryIds: ["storage-terminals", "independent-terminals"], isFeatured: false,
+    categoryIds: ["storage-terminals"], isFeatured: false,
   },
   {
     id: "bangchak-corporation-public-company-limited", slug: "bangchak-corporation-public-company-limited", name: "Bangchak Corporation Public Company Limited",
@@ -1343,7 +1343,7 @@ export const COMPANY_SEED: CompanySeed[] = [
     logo: "",
     heroImage: "",
     linkedin: "",
-    categoryIds: ["process-industries", "refineries", "captive-terminals"], isFeatured: false,
+    categoryIds: ["process-industries", "refineries", "storage-terminals"], isFeatured: false,
   },
   {
     id: "basel-fuel-terminal-ag", slug: "basel-fuel-terminal-ag", name: "Basel Fuel Terminal AG",
@@ -1352,7 +1352,7 @@ export const COMPANY_SEED: CompanySeed[] = [
     logo: "",
     heroImage: "",
     linkedin: "",
-    categoryIds: ["storage-terminals", "independent-terminals"], isFeatured: false,
+    categoryIds: ["storage-terminals"], isFeatured: false,
   },
   {
     id: "basra-oil-company", slug: "basra-oil-company", name: "Basra Oil Company",
@@ -1361,7 +1361,7 @@ export const COMPANY_SEED: CompanySeed[] = [
     logo: "",
     heroImage: "",
     linkedin: "",
-    categoryIds: ["storage-terminals", "captive-terminals"], isFeatured: false,
+    categoryIds: ["storage-terminals"], isFeatured: false,
   },
   {
     id: "bayernoil-raffineriegesellschaft-mbh", slug: "bayernoil-raffineriegesellschaft-mbh", name: "Bayernoil Raffineriegesellschaft mbH",
@@ -1388,7 +1388,7 @@ export const COMPANY_SEED: CompanySeed[] = [
     logo: "",
     heroImage: "",
     linkedin: "",
-    categoryIds: ["process-industries", "refineries", "captive-terminals"], isFeatured: false,
+    categoryIds: ["process-industries", "refineries", "storage-terminals"], isFeatured: false,
   },
   {
     id: "birch-terminals-llc", slug: "birch-terminals-llc", name: "Birch Terminals LLC",
@@ -1397,7 +1397,7 @@ export const COMPANY_SEED: CompanySeed[] = [
     logo: "",
     heroImage: "",
     linkedin: "",
-    categoryIds: ["storage-terminals", "independent-terminals"], isFeatured: false,
+    categoryIds: ["storage-terminals"], isFeatured: false,
   },
   {
     id: "boru-hatlar-ile-petrol-tasma-as", slug: "boru-hatlar-ile-petrol-tasma-as", name: "Boru Hatları ile Petrol Taşıma A.Ş.",
@@ -1406,7 +1406,7 @@ export const COMPANY_SEED: CompanySeed[] = [
     logo: "",
     heroImage: "",
     linkedin: "",
-    categoryIds: ["storage-terminals", "captive-terminals"], isFeatured: false,
+    categoryIds: ["storage-terminals"], isFeatured: false,
   },
   {
     id: "botswana-oil-limited", slug: "botswana-oil-limited", name: "Botswana Oil Limited",
@@ -1415,7 +1415,7 @@ export const COMPANY_SEED: CompanySeed[] = [
     logo: "",
     heroImage: "",
     linkedin: "",
-    categoryIds: ["storage-terminals", "captive-terminals"], isFeatured: false,
+    categoryIds: ["storage-terminals"], isFeatured: false,
   },
   {
     id: "braskem-idesa-sapi-de-cv", slug: "braskem-idesa-sapi-de-cv", name: "Braskem Idesa, S.A.P.I. de C.V.",
@@ -1433,7 +1433,7 @@ export const COMPANY_SEED: CompanySeed[] = [
     logo: "",
     heroImage: "",
     linkedin: "",
-    categoryIds: ["storage-terminals", "captive-terminals"], isFeatured: false,
+    categoryIds: ["storage-terminals"], isFeatured: false,
   },
   {
     id: "brunsbuttel", slug: "brunsbuttel", name: "Brunsbüttel",
@@ -1442,7 +1442,7 @@ export const COMPANY_SEED: CompanySeed[] = [
     logo: "",
     heroImage: "",
     linkedin: "",
-    categoryIds: ["storage-terminals", "captive-terminals"], isFeatured: false,
+    categoryIds: ["storage-terminals"], isFeatured: false,
   },
   {
     id: "buckeye-bahamas-hub-limited-formerly-borco-bahamas-oil-refining-company-international-limited", slug: "buckeye-bahamas-hub-limited-formerly-borco-bahamas-oil-refining-company-international-limited", name: "Buckeye Bahamas Hub Limited (formerly BORCO – Bahamas Oil Refining Company International Limited)",
@@ -1451,7 +1451,7 @@ export const COMPANY_SEED: CompanySeed[] = [
     logo: "",
     heroImage: "",
     linkedin: "",
-    categoryIds: ["storage-terminals", "independent-terminals"], isFeatured: false,
+    categoryIds: ["storage-terminals"], isFeatured: false,
   },
   {
     id: "buckeye-partners-lp", slug: "buckeye-partners-lp", name: "Buckeye Partners, L.P.",
@@ -1460,7 +1460,7 @@ export const COMPANY_SEED: CompanySeed[] = [
     logo: "",
     heroImage: "",
     linkedin: "",
-    categoryIds: ["port-operators", "pipeline-operators", "marine-logistics", "storage-terminals", "independent-terminals"], isFeatured: false,
+    categoryIds: ["port-operators", "pipeline-operators", "marine-logistics", "storage-terminals"], isFeatured: false,
   },
   {
     id: "buckeye-st-lucia-terminal-limited", slug: "buckeye-st-lucia-terminal-limited", name: "Buckeye St. Lucia Terminal Limited",
@@ -1469,7 +1469,7 @@ export const COMPANY_SEED: CompanySeed[] = [
     logo: "",
     heroImage: "",
     linkedin: "",
-    categoryIds: ["storage-terminals", "independent-terminals"], isFeatured: false,
+    categoryIds: ["storage-terminals"], isFeatured: false,
   },
   {
     id: "buckeye-terminals-llc", slug: "buckeye-terminals-llc", name: "Buckeye Terminals, LLC",
@@ -1478,7 +1478,7 @@ export const COMPANY_SEED: CompanySeed[] = [
     logo: "",
     heroImage: "",
     linkedin: "",
-    categoryIds: ["storage-terminals", "independent-terminals"], isFeatured: false,
+    categoryIds: ["storage-terminals"], isFeatured: false,
   },
   {
     id: "buckeye-texas-processing-llc", slug: "buckeye-texas-processing-llc", name: "Buckeye Texas Processing, LLC",
@@ -1487,7 +1487,7 @@ export const COMPANY_SEED: CompanySeed[] = [
     logo: "",
     heroImage: "",
     linkedin: "",
-    categoryIds: ["storage-terminals", "independent-terminals"], isFeatured: false,
+    categoryIds: ["storage-terminals"], isFeatured: false,
   },
   {
     id: "cafhi", slug: "cafhi", name: "CAFHI",
@@ -1496,7 +1496,7 @@ export const COMPANY_SEED: CompanySeed[] = [
     logo: "",
     heroImage: "",
     linkedin: "",
-    categoryIds: ["storage-terminals", "independent-terminals"], isFeatured: false,
+    categoryIds: ["storage-terminals"], isFeatured: false,
   },
   {
     id: "cdn", slug: "cdn", name: "CDN",
@@ -1505,7 +1505,7 @@ export const COMPANY_SEED: CompanySeed[] = [
     logo: "",
     heroImage: "",
     linkedin: "",
-    categoryIds: ["storage-terminals", "captive-terminals"], isFeatured: false,
+    categoryIds: ["storage-terminals"], isFeatured: false,
   },
   {
     id: "citgo-petroleum-corporation", slug: "citgo-petroleum-corporation", name: "CITGO Petroleum Corporation",
@@ -1550,7 +1550,7 @@ export const COMPANY_SEED: CompanySeed[] = [
     logo: "",
     heroImage: "",
     linkedin: "",
-    categoryIds: ["storage-terminals", "captive-terminals"], isFeatured: false,
+    categoryIds: ["storage-terminals"], isFeatured: false,
   },
   {
     id: "ceylon-petroleum-storage-terminals-limited-cpstl", slug: "ceylon-petroleum-storage-terminals-limited-cpstl", name: "Ceylon Petroleum Storage Terminals Limited (CPSTL)",
@@ -1559,7 +1559,7 @@ export const COMPANY_SEED: CompanySeed[] = [
     logo: "",
     heroImage: "",
     linkedin: "",
-    categoryIds: ["storage-terminals", "independent-terminals"], isFeatured: false,
+    categoryIds: ["storage-terminals"], isFeatured: false,
   },
   {
     id: "chambal-fertilisers-and-chemicals-limited", slug: "chambal-fertilisers-and-chemicals-limited", name: "Chambal Fertilisers and Chemicals Limited",
@@ -1586,7 +1586,7 @@ export const COMPANY_SEED: CompanySeed[] = [
     logo: "",
     heroImage: "",
     linkedin: "",
-    categoryIds: ["storage-terminals", "independent-terminals"], isFeatured: false,
+    categoryIds: ["storage-terminals"], isFeatured: false,
   },
   {
     id: "clariant-chemicals-india-limited", slug: "clariant-chemicals-india-limited", name: "Clariant Chemicals (India) Limited",
@@ -1604,7 +1604,7 @@ export const COMPANY_SEED: CompanySeed[] = [
     logo: "",
     heroImage: "",
     linkedin: "",
-    categoryIds: ["storage-terminals", "captive-terminals"], isFeatured: false,
+    categoryIds: ["storage-terminals"], isFeatured: false,
   },
   {
     id: "congo-terminal", slug: "congo-terminal", name: "Congo Terminal",
@@ -1613,7 +1613,7 @@ export const COMPANY_SEED: CompanySeed[] = [
     logo: "",
     heroImage: "",
     linkedin: "",
-    categoryIds: ["storage-terminals", "captive-terminals"], isFeatured: false,
+    categoryIds: ["storage-terminals"], isFeatured: false,
   },
   {
     id: "conocophillips-alaska-inc", slug: "conocophillips-alaska-inc", name: "ConocoPhillips Alaska, Inc.",
@@ -1622,7 +1622,7 @@ export const COMPANY_SEED: CompanySeed[] = [
     logo: "",
     heroImage: "",
     linkedin: "",
-    categoryIds: ["storage-terminals", "captive-terminals"], isFeatured: false,
+    categoryIds: ["storage-terminals"], isFeatured: false,
   },
   {
     id: "copenhagen-malmo-port-ab-cmp", slug: "copenhagen-malmo-port-ab-cmp", name: "Copenhagen Malmö Port AB (CMP)",
@@ -1631,7 +1631,7 @@ export const COMPANY_SEED: CompanySeed[] = [
     logo: "",
     heroImage: "",
     linkedin: "",
-    categoryIds: ["storage-terminals", "captive-terminals"], isFeatured: false,
+    categoryIds: ["storage-terminals"], isFeatured: false,
   },
   {
     id: "covestro-ag", slug: "covestro-ag", name: "Covestro AG",
@@ -1658,7 +1658,7 @@ export const COMPANY_SEED: CompanySeed[] = [
     logo: "",
     heroImage: "",
     linkedin: "",
-    categoryIds: ["storage-terminals", "captive-terminals"], isFeatured: false,
+    categoryIds: ["storage-terminals"], isFeatured: false,
   },
   {
     id: "dangote-industries-limited", slug: "dangote-industries-limited", name: "Dangote Industries Limited",
@@ -1685,7 +1685,7 @@ export const COMPANY_SEED: CompanySeed[] = [
     logo: "",
     heroImage: "",
     linkedin: "",
-    categoryIds: ["storage-terminals", "captive-terminals"], isFeatured: false,
+    categoryIds: ["storage-terminals"], isFeatured: false,
   },
   {
     id: "duslo-as", slug: "duslo-as", name: "Duslo, a.s.",
@@ -1703,7 +1703,7 @@ export const COMPANY_SEED: CompanySeed[] = [
     logo: "",
     heroImage: "",
     linkedin: "",
-    categoryIds: ["storage-terminals", "independent-terminals"], isFeatured: false,
+    categoryIds: ["storage-terminals"], isFeatured: false,
   },
   {
     id: "eastern-refinery-limited", slug: "eastern-refinery-limited", name: "Eastern Refinery Limited",
@@ -1730,7 +1730,7 @@ export const COMPANY_SEED: CompanySeed[] = [
     logo: "",
     heroImage: "",
     linkedin: "",
-    categoryIds: ["storage-terminals", "captive-terminals"], isFeatured: false,
+    categoryIds: ["storage-terminals"], isFeatured: false,
   },
   {
     id: "enbridge-pipelines-cushing-llc", slug: "enbridge-pipelines-cushing-llc", name: "Enbridge Pipelines (Cushing) L.L.C.",
@@ -1739,7 +1739,7 @@ export const COMPANY_SEED: CompanySeed[] = [
     logo: "",
     heroImage: "",
     linkedin: "",
-    categoryIds: ["storage-terminals", "independent-terminals"], isFeatured: false,
+    categoryIds: ["storage-terminals"], isFeatured: false,
   },
   {
     id: "enemed", slug: "enemed", name: "Enemed",
@@ -1748,7 +1748,7 @@ export const COMPANY_SEED: CompanySeed[] = [
     logo: "",
     heroImage: "",
     linkedin: "",
-    categoryIds: ["storage-terminals", "captive-terminals"], isFeatured: false,
+    categoryIds: ["storage-terminals"], isFeatured: false,
   },
   {
     id: "engen-petroleum-limited", slug: "engen-petroleum-limited", name: "Engen Petroleum Limited",
@@ -1766,7 +1766,7 @@ export const COMPANY_SEED: CompanySeed[] = [
     logo: "",
     heroImage: "",
     linkedin: "",
-    categoryIds: ["storage-terminals", "captive-terminals"], isFeatured: false,
+    categoryIds: ["storage-terminals"], isFeatured: false,
   },
   {
     id: "engro-fertilizers-limited", slug: "engro-fertilizers-limited", name: "Engro Fertilizers Limited",
@@ -1784,7 +1784,7 @@ export const COMPANY_SEED: CompanySeed[] = [
     logo: "",
     heroImage: "",
     linkedin: "",
-    categoryIds: ["storage-terminals", "independent-terminals"], isFeatured: false,
+    categoryIds: ["storage-terminals"], isFeatured: false,
   },
   {
     id: "eni-spa", slug: "eni-spa", name: "Eni S.p.A.",
@@ -1793,7 +1793,7 @@ export const COMPANY_SEED: CompanySeed[] = [
     logo: "",
     heroImage: "",
     linkedin: "",
-    categoryIds: ["storage-terminals", "captive-terminals"], isFeatured: false,
+    categoryIds: ["storage-terminals"], isFeatured: false,
   },
   {
     id: "epigral-limited", slug: "epigral-limited", name: "Epigral Limited",
@@ -1838,7 +1838,7 @@ export const COMPANY_SEED: CompanySeed[] = [
     logo: "",
     heroImage: "",
     linkedin: "",
-    categoryIds: ["storage-terminals", "captive-terminals"], isFeatured: false,
+    categoryIds: ["storage-terminals"], isFeatured: false,
   },
   {
     id: "eswatini-national-petroleum-company", slug: "eswatini-national-petroleum-company", name: "Eswatini National Petroleum Company",
@@ -1847,7 +1847,7 @@ export const COMPANY_SEED: CompanySeed[] = [
     logo: "",
     heroImage: "",
     linkedin: "",
-    categoryIds: ["storage-terminals", "captive-terminals"], isFeatured: false,
+    categoryIds: ["storage-terminals"], isFeatured: false,
   },
   {
     id: "ethiopian-petroleum-supply-enterprise", slug: "ethiopian-petroleum-supply-enterprise", name: "Ethiopian Petroleum Supply Enterprise",
@@ -1856,7 +1856,7 @@ export const COMPANY_SEED: CompanySeed[] = [
     logo: "",
     heroImage: "",
     linkedin: "",
-    categoryIds: ["storage-terminals", "captive-terminals"], isFeatured: false,
+    categoryIds: ["storage-terminals"], isFeatured: false,
   },
   {
     id: "europe-asia-pipeline-company-ltd-eapc", slug: "europe-asia-pipeline-company-ltd-eapc", name: "Europe Asia Pipeline Company Ltd (EAPC)",
@@ -1865,7 +1865,7 @@ export const COMPANY_SEED: CompanySeed[] = [
     logo: "",
     heroImage: "",
     linkedin: "",
-    categoryIds: ["storage-terminals", "captive-terminals"], isFeatured: false,
+    categoryIds: ["storage-terminals"], isFeatured: false,
   },
   {
     id: "europoort-terminals-bv", slug: "europoort-terminals-bv", name: "Europoort Terminals B.V.",
@@ -1874,7 +1874,7 @@ export const COMPANY_SEED: CompanySeed[] = [
     logo: "",
     heroImage: "",
     linkedin: "",
-    categoryIds: ["storage-terminals", "independent-terminals"], isFeatured: false,
+    categoryIds: ["storage-terminals"], isFeatured: false,
   },
   {
     id: "exxon-neftegas-limited", slug: "exxon-neftegas-limited", name: "Exxon Neftegas Limited",
@@ -1883,7 +1883,7 @@ export const COMPANY_SEED: CompanySeed[] = [
     logo: "",
     heroImage: "",
     linkedin: "",
-    categoryIds: ["storage-terminals", "captive-terminals"], isFeatured: false,
+    categoryIds: ["storage-terminals"], isFeatured: false,
   },
   {
     id: "exxonmobil", slug: "exxonmobil", name: "ExxonMobil",
@@ -1910,7 +1910,7 @@ export const COMPANY_SEED: CompanySeed[] = [
     logo: "",
     heroImage: "",
     linkedin: "",
-    categoryIds: ["storage-terminals", "captive-terminals"], isFeatured: false,
+    categoryIds: ["storage-terminals"], isFeatured: false,
   },
   {
     id: "fertial-spa", slug: "fertial-spa", name: "Fertial SPA",
@@ -1955,7 +1955,7 @@ export const COMPANY_SEED: CompanySeed[] = [
     logo: "",
     heroImage: "",
     linkedin: "",
-    categoryIds: ["storage-terminals", "captive-terminals"], isFeatured: false,
+    categoryIds: ["storage-terminals"], isFeatured: false,
   },
   {
     id: "flash-llc", slug: "flash-llc", name: "Flash LLC",
@@ -1964,7 +1964,7 @@ export const COMPANY_SEED: CompanySeed[] = [
     logo: "",
     heroImage: "",
     linkedin: "",
-    categoryIds: ["storage-terminals", "captive-terminals"], isFeatured: false,
+    categoryIds: ["storage-terminals"], isFeatured: false,
   },
   {
     id: "fos-sur-mer", slug: "fos-sur-mer", name: "Fos-sur-Mer",
@@ -1973,7 +1973,7 @@ export const COMPANY_SEED: CompanySeed[] = [
     logo: "",
     heroImage: "",
     linkedin: "",
-    categoryIds: ["storage-terminals", "captive-terminals"], isFeatured: false,
+    categoryIds: ["storage-terminals"], isFeatured: false,
   },
   {
     id: "foskor-pty-ltd", slug: "foskor-pty-ltd", name: "Foskor (Pty) Ltd",
@@ -1991,7 +1991,7 @@ export const COMPANY_SEED: CompanySeed[] = [
     logo: "",
     heroImage: "",
     linkedin: "",
-    categoryIds: ["storage-terminals", "captive-terminals"], isFeatured: false,
+    categoryIds: ["storage-terminals"], isFeatured: false,
   },
   {
     id: "fujairah-oil-terminal-fzc", slug: "fujairah-oil-terminal-fzc", name: "Fujairah Oil Terminal FZC",
@@ -2000,7 +2000,7 @@ export const COMPANY_SEED: CompanySeed[] = [
     logo: "",
     heroImage: "",
     linkedin: "",
-    categoryIds: ["storage-terminals", "independent-terminals"], isFeatured: false,
+    categoryIds: ["storage-terminals"], isFeatured: false,
   },
   {
     id: "fujairah-refining-company-fzc", slug: "fujairah-refining-company-fzc", name: "Fujairah Refining Company FZC",
@@ -2018,7 +2018,7 @@ export const COMPANY_SEED: CompanySeed[] = [
     logo: "",
     heroImage: "",
     linkedin: "",
-    categoryIds: ["storage-terminals", "captive-terminals"], isFeatured: false,
+    categoryIds: ["storage-terminals"], isFeatured: false,
   },
   {
     id: "gs-caltex", slug: "gs-caltex", name: "GS Caltex",
@@ -2036,7 +2036,7 @@ export const COMPANY_SEED: CompanySeed[] = [
     logo: "",
     heroImage: "",
     linkedin: "",
-    categoryIds: ["storage-terminals", "captive-terminals"], isFeatured: false,
+    categoryIds: ["storage-terminals"], isFeatured: false,
   },
   {
     id: "gambia-national-petroleum-corporation", slug: "gambia-national-petroleum-corporation", name: "Gambia National Petroleum Corporation",
@@ -2045,7 +2045,7 @@ export const COMPANY_SEED: CompanySeed[] = [
     logo: "",
     heroImage: "",
     linkedin: "",
-    categoryIds: ["storage-terminals", "captive-terminals"], isFeatured: false,
+    categoryIds: ["storage-terminals"], isFeatured: false,
   },
   {
     id: "gangavaram-port-limited", slug: "gangavaram-port-limited", name: "Gangavaram Port Limited",
@@ -2054,7 +2054,7 @@ export const COMPANY_SEED: CompanySeed[] = [
     logo: "",
     heroImage: "",
     linkedin: "",
-    categoryIds: ["storage-terminals", "independent-terminals"], isFeatured: false,
+    categoryIds: ["storage-terminals"], isFeatured: false,
   },
   {
     id: "gazprom-neft-pjsc", slug: "gazprom-neft-pjsc", name: "Gazprom Neft PJSC",
@@ -2072,7 +2072,7 @@ export const COMPANY_SEED: CompanySeed[] = [
     logo: "",
     heroImage: "",
     linkedin: "",
-    categoryIds: ["storage-terminals", "captive-terminals"], isFeatured: false,
+    categoryIds: ["storage-terminals"], isFeatured: false,
   },
   {
     id: "ghana-national-petroleum-corporation-gnpc", slug: "ghana-national-petroleum-corporation-gnpc", name: "Ghana National Petroleum Corporation (GNPC)",
@@ -2081,7 +2081,7 @@ export const COMPANY_SEED: CompanySeed[] = [
     logo: "",
     heroImage: "",
     linkedin: "",
-    categoryIds: ["storage-terminals", "captive-terminals"], isFeatured: false,
+    categoryIds: ["storage-terminals"], isFeatured: false,
   },
   {
     id: "ghana-ports-and-harbours-authority", slug: "ghana-ports-and-harbours-authority", name: "Ghana Ports and Harbours Authority",
@@ -2090,7 +2090,7 @@ export const COMPANY_SEED: CompanySeed[] = [
     logo: "",
     heroImage: "",
     linkedin: "",
-    categoryIds: ["storage-terminals", "captive-terminals"], isFeatured: false,
+    categoryIds: ["storage-terminals"], isFeatured: false,
   },
   {
     id: "giurgiulesti-international-free-port", slug: "giurgiulesti-international-free-port", name: "Giurgiulesti International Free Port",
@@ -2099,7 +2099,7 @@ export const COMPANY_SEED: CompanySeed[] = [
     logo: "",
     heroImage: "",
     linkedin: "",
-    categoryIds: ["storage-terminals", "independent-terminals"], isFeatured: false,
+    categoryIds: ["storage-terminals"], isFeatured: false,
   },
   {
     id: "grupo-fertinal-sa-de-cv", slug: "grupo-fertinal-sa-de-cv", name: "Grupo Fertinal, S.A. de C.V.",
@@ -2117,7 +2117,7 @@ export const COMPANY_SEED: CompanySeed[] = [
     logo: "",
     heroImage: "",
     linkedin: "",
-    categoryIds: ["storage-terminals", "captive-terminals"], isFeatured: false,
+    categoryIds: ["storage-terminals"], isFeatured: false,
   },
   {
     id: "gujarat-fluorochemicals-limited", slug: "gujarat-fluorochemicals-limited", name: "Gujarat Fluorochemicals Limited",
@@ -2162,7 +2162,7 @@ export const COMPANY_SEED: CompanySeed[] = [
     logo: "",
     heroImage: "",
     linkedin: "",
-    categoryIds: ["storage-terminals", "captive-terminals"], isFeatured: false,
+    categoryIds: ["storage-terminals"], isFeatured: false,
   },
   {
     id: "hd-hyundai-oilbank-co-ltd", slug: "hd-hyundai-oilbank-co-ltd", name: "HD Hyundai Oilbank Co., Ltd.",
@@ -2189,7 +2189,7 @@ export const COMPANY_SEED: CompanySeed[] = [
     logo: "",
     heroImage: "",
     linkedin: "",
-    categoryIds: ["storage-terminals", "captive-terminals"], isFeatured: false,
+    categoryIds: ["storage-terminals"], isFeatured: false,
   },
   {
     id: "hpcl-mittal-energy-limited", slug: "hpcl-mittal-energy-limited", name: "HPCL Mittal Energy Limited",
@@ -2234,7 +2234,7 @@ export const COMPANY_SEED: CompanySeed[] = [
     logo: "",
     heroImage: "",
     linkedin: "",
-    categoryIds: ["process-industries", "refineries", "captive-terminals"], isFeatured: false,
+    categoryIds: ["process-industries", "refineries", "storage-terminals"], isFeatured: false,
   },
   {
     id: "hengli-petrochemical-dalian-co-ltd", slug: "hengli-petrochemical-dalian-co-ltd", name: "Hengli Petrochemical (Dalian) Co., Ltd.",
@@ -2261,7 +2261,7 @@ export const COMPANY_SEED: CompanySeed[] = [
     logo: "",
     heroImage: "",
     linkedin: "",
-    categoryIds: ["storage-terminals", "independent-terminals"], isFeatured: false,
+    categoryIds: ["storage-terminals"], isFeatured: false,
   },
   {
     id: "horizon-terminals-limited", slug: "horizon-terminals-limited", name: "Horizon Terminals Limited",
@@ -2270,7 +2270,7 @@ export const COMPANY_SEED: CompanySeed[] = [
     logo: "",
     heroImage: "",
     linkedin: "",
-    categoryIds: ["storage-terminals", "independent-terminals"], isFeatured: false,
+    categoryIds: ["storage-terminals"], isFeatured: false,
   },
   {
     id: "ig-petrochemicals-limited", slug: "ig-petrochemicals-limited", name: "IG Petrochemicals Limited",
@@ -2288,7 +2288,7 @@ export const COMPANY_SEED: CompanySeed[] = [
     logo: "",
     heroImage: "",
     linkedin: "",
-    categoryIds: ["storage-terminals", "captive-terminals"], isFeatured: false,
+    categoryIds: ["storage-terminals"], isFeatured: false,
   },
   {
     id: "ineos-group-holdings-sa", slug: "ineos-group-holdings-sa", name: "INEOS Group Holdings S.A.",
@@ -2315,7 +2315,7 @@ export const COMPANY_SEED: CompanySeed[] = [
     logo: "",
     heroImage: "",
     linkedin: "",
-    categoryIds: ["process-industries", "refineries", "captive-terminals"], isFeatured: false,
+    categoryIds: ["process-industries", "refineries", "storage-terminals"], isFeatured: false,
   },
   {
     id: "iplom-spa", slug: "iplom-spa", name: "IPLOM S.p.A.",
@@ -2324,7 +2324,7 @@ export const COMPANY_SEED: CompanySeed[] = [
     logo: "",
     heroImage: "",
     linkedin: "",
-    categoryIds: ["process-industries", "refineries", "captive-terminals"], isFeatured: false,
+    categoryIds: ["process-industries", "refineries", "storage-terminals"], isFeatured: false,
   },
   {
     id: "irpc-public-company-limited", slug: "irpc-public-company-limited", name: "IRPC Public Company Limited",
@@ -2342,7 +2342,7 @@ export const COMPANY_SEED: CompanySeed[] = [
     logo: "",
     heroImage: "",
     linkedin: "",
-    categoryIds: ["storage-terminals", "independent-terminals"], isFeatured: false,
+    categoryIds: ["storage-terminals"], isFeatured: false,
   },
   {
     id: "indeni-energy-company-limited", slug: "indeni-energy-company-limited", name: "Indeni Energy Company Limited",
@@ -2351,7 +2351,7 @@ export const COMPANY_SEED: CompanySeed[] = [
     logo: "",
     heroImage: "",
     linkedin: "",
-    categoryIds: ["storage-terminals", "captive-terminals"], isFeatured: false,
+    categoryIds: ["storage-terminals"], isFeatured: false,
   },
   {
     id: "indian-farmers-fertiliser-cooperative-limited-iffco", slug: "indian-farmers-fertiliser-cooperative-limited-iffco", name: "Indian Farmers Fertiliser Cooperative Limited (IFFCO)",
@@ -2387,7 +2387,7 @@ export const COMPANY_SEED: CompanySeed[] = [
     logo: "",
     heroImage: "",
     linkedin: "",
-    categoryIds: ["storage-terminals", "captive-terminals"], isFeatured: false,
+    categoryIds: ["storage-terminals"], isFeatured: false,
   },
   {
     id: "interpetrol", slug: "interpetrol", name: "Interpetrol",
@@ -2396,7 +2396,7 @@ export const COMPANY_SEED: CompanySeed[] = [
     logo: "",
     heroImage: "",
     linkedin: "",
-    categoryIds: ["storage-terminals", "captive-terminals"], isFeatured: false,
+    categoryIds: ["storage-terminals"], isFeatured: false,
   },
   {
     id: "jr-simplot-company", slug: "jr-simplot-company", name: "J.R. Simplot Company",
@@ -2414,7 +2414,7 @@ export const COMPANY_SEED: CompanySeed[] = [
     logo: "",
     heroImage: "",
     linkedin: "",
-    categoryIds: ["storage-terminals", "independent-terminals"], isFeatured: false,
+    categoryIds: ["storage-terminals"], isFeatured: false,
   },
   {
     id: "jsc-belaruskali", slug: "jsc-belaruskali", name: "JSC Belaruskali",
@@ -2441,7 +2441,7 @@ export const COMPANY_SEED: CompanySeed[] = [
     logo: "",
     heroImage: "",
     linkedin: "",
-    categoryIds: ["storage-terminals", "independent-terminals"], isFeatured: false,
+    categoryIds: ["storage-terminals"], isFeatured: false,
   },
   {
     id: "jadranski-naftovod-dd-janaf", slug: "jadranski-naftovod-dd-janaf", name: "Jadranski naftovod, d.d. (JANAF)",
@@ -2450,7 +2450,7 @@ export const COMPANY_SEED: CompanySeed[] = [
     logo: "",
     heroImage: "",
     linkedin: "",
-    categoryIds: ["storage-terminals", "independent-terminals"], isFeatured: false,
+    categoryIds: ["storage-terminals"], isFeatured: false,
   },
   {
     id: "jam-petrochemical-company", slug: "jam-petrochemical-company", name: "Jam Petrochemical Company",
@@ -2468,7 +2468,7 @@ export const COMPANY_SEED: CompanySeed[] = [
     logo: "",
     heroImage: "",
     linkedin: "",
-    categoryIds: ["storage-terminals", "independent-terminals"], isFeatured: false,
+    categoryIds: ["storage-terminals"], isFeatured: false,
   },
   {
     id: "jugopetrol-ad-kotor", slug: "jugopetrol-ad-kotor", name: "Jugopetrol AD Kotor",
@@ -2477,7 +2477,7 @@ export const COMPANY_SEED: CompanySeed[] = [
     logo: "",
     heroImage: "",
     linkedin: "",
-    categoryIds: ["storage-terminals", "captive-terminals"], isFeatured: false,
+    categoryIds: ["storage-terminals"], isFeatured: false,
   },
   {
     id: "kam-international-oil", slug: "kam-international-oil", name: "Kam International Oil",
@@ -2486,7 +2486,7 @@ export const COMPANY_SEED: CompanySeed[] = [
     logo: "",
     heroImage: "",
     linkedin: "",
-    categoryIds: ["storage-terminals", "independent-terminals"], isFeatured: false,
+    categoryIds: ["storage-terminals"], isFeatured: false,
   },
   {
     id: "kazmortransflot", slug: "kazmortransflot", name: "KazMorTransFlot",
@@ -2495,7 +2495,7 @@ export const COMPANY_SEED: CompanySeed[] = [
     logo: "",
     heroImage: "",
     linkedin: "",
-    categoryIds: ["storage-terminals", "captive-terminals"], isFeatured: false,
+    categoryIds: ["storage-terminals"], isFeatured: false,
   },
   {
     id: "kaztransoil-jsc", slug: "kaztransoil-jsc", name: "KazTransOil JSC",
@@ -2504,7 +2504,7 @@ export const COMPANY_SEED: CompanySeed[] = [
     logo: "",
     heroImage: "",
     linkedin: "",
-    categoryIds: ["storage-terminals", "independent-terminals"], isFeatured: false,
+    categoryIds: ["storage-terminals"], isFeatured: false,
   },
   {
     id: "kern-oil-and-refining-co", slug: "kern-oil-and-refining-co", name: "Kern Oil & Refining Co.",
@@ -2531,7 +2531,7 @@ export const COMPANY_SEED: CompanySeed[] = [
     logo: "",
     heroImage: "",
     linkedin: "",
-    categoryIds: ["storage-terminals", "captive-terminals"], isFeatured: false,
+    categoryIds: ["storage-terminals"], isFeatured: false,
   },
   {
     id: "krishak-bharati-cooperative-limited-kribhco", slug: "krishak-bharati-cooperative-limited-kribhco", name: "Krishak Bharati Cooperative Limited (KRIBHCO)",
@@ -2549,7 +2549,7 @@ export const COMPANY_SEED: CompanySeed[] = [
     logo: "",
     heroImage: "",
     linkedin: "",
-    categoryIds: ["storage-terminals", "independent-terminals"], isFeatured: false,
+    categoryIds: ["storage-terminals"], isFeatured: false,
   },
   {
     id: "kuwait-integrated-petroleum-industries-company-kipic", slug: "kuwait-integrated-petroleum-industries-company-kipic", name: "Kuwait Integrated Petroleum Industries Company (KIPIC)",
@@ -2567,7 +2567,7 @@ export const COMPANY_SEED: CompanySeed[] = [
     logo: "",
     heroImage: "",
     linkedin: "",
-    categoryIds: ["storage-terminals", "captive-terminals"], isFeatured: false,
+    categoryIds: ["storage-terminals"], isFeatured: false,
   },
   {
     id: "kyrgyzneftegaz", slug: "kyrgyzneftegaz", name: "KyrgyzNefteGaz",
@@ -2576,7 +2576,7 @@ export const COMPANY_SEED: CompanySeed[] = [
     logo: "",
     heroImage: "",
     linkedin: "",
-    categoryIds: ["storage-terminals", "captive-terminals"], isFeatured: false,
+    categoryIds: ["storage-terminals"], isFeatured: false,
   },
   {
     id: "laxfuel-corporation", slug: "laxfuel-corporation", name: "LAXFUEL Corporation",
@@ -2585,7 +2585,7 @@ export const COMPANY_SEED: CompanySeed[] = [
     logo: "",
     heroImage: "",
     linkedin: "",
-    categoryIds: ["storage-terminals", "independent-terminals"], isFeatured: false,
+    categoryIds: ["storage-terminals"], isFeatured: false,
   },
   {
     id: "llc-nord-trans-bunker", slug: "llc-nord-trans-bunker", name: "LLC Nord Trans Bunker",
@@ -2594,7 +2594,7 @@ export const COMPANY_SEED: CompanySeed[] = [
     logo: "",
     heroImage: "",
     linkedin: "",
-    categoryIds: ["storage-terminals", "captive-terminals"], isFeatured: false,
+    categoryIds: ["storage-terminals"], isFeatured: false,
   },
   {
     id: "lsb-industries-inc", slug: "lsb-industries-inc", name: "LSB Industries, Inc.",
@@ -2639,7 +2639,7 @@ export const COMPANY_SEED: CompanySeed[] = [
     logo: "",
     heroImage: "",
     linkedin: "",
-    categoryIds: ["storage-terminals", "captive-terminals"], isFeatured: false,
+    categoryIds: ["storage-terminals"], isFeatured: false,
   },
   {
     id: "lebanon-petroleum", slug: "lebanon-petroleum", name: "Lebanon Petroleum",
@@ -2648,7 +2648,7 @@ export const COMPANY_SEED: CompanySeed[] = [
     logo: "",
     heroImage: "",
     linkedin: "",
-    categoryIds: ["storage-terminals", "captive-terminals"], isFeatured: false,
+    categoryIds: ["storage-terminals"], isFeatured: false,
   },
   {
     id: "liberia-petroleum-refining-company", slug: "liberia-petroleum-refining-company", name: "Liberia Petroleum Refining Company",
@@ -2657,7 +2657,7 @@ export const COMPANY_SEED: CompanySeed[] = [
     logo: "",
     heroImage: "",
     linkedin: "",
-    categoryIds: ["storage-terminals", "captive-terminals"], isFeatured: false,
+    categoryIds: ["storage-terminals"], isFeatured: false,
   },
   {
     id: "lotte-chemical-corporation", slug: "lotte-chemical-corporation", name: "Lotte Chemical Corporation",
@@ -2684,7 +2684,7 @@ export const COMPANY_SEED: CompanySeed[] = [
     logo: "",
     heroImage: "",
     linkedin: "",
-    categoryIds: ["storage-terminals", "independent-terminals"], isFeatured: false,
+    categoryIds: ["storage-terminals"], isFeatured: false,
   },
   {
     id: "luka-koper-dd", slug: "luka-koper-dd", name: "Luka Koper, d.d.",
@@ -2693,7 +2693,7 @@ export const COMPANY_SEED: CompanySeed[] = [
     logo: "",
     heroImage: "",
     linkedin: "",
-    categoryIds: ["storage-terminals", "captive-terminals"], isFeatured: false,
+    categoryIds: ["storage-terminals"], isFeatured: false,
   },
   {
     id: "lukoil-neftochim", slug: "lukoil-neftochim", name: "Lukoil Neftochim",
@@ -2720,7 +2720,7 @@ export const COMPANY_SEED: CompanySeed[] = [
     logo: "",
     heroImage: "",
     linkedin: "",
-    categoryIds: ["storage-terminals", "captive-terminals"], isFeatured: false,
+    categoryIds: ["storage-terminals"], isFeatured: false,
   },
   {
     id: "madras-fertilizers-limited-mfl", slug: "madras-fertilizers-limited-mfl", name: "Madras Fertilizers Limited (MFL)",
@@ -2738,7 +2738,7 @@ export const COMPANY_SEED: CompanySeed[] = [
     logo: "",
     heroImage: "",
     linkedin: "",
-    categoryIds: ["storage-terminals", "independent-terminals"], isFeatured: false,
+    categoryIds: ["storage-terminals"], isFeatured: false,
   },
   {
     id: "manali-petrochemicals-limited", slug: "manali-petrochemicals-limited", name: "Manali Petrochemicals Limited",
@@ -2756,7 +2756,7 @@ export const COMPANY_SEED: CompanySeed[] = [
     logo: "",
     heroImage: "",
     linkedin: "",
-    categoryIds: ["storage-terminals", "captive-terminals"], isFeatured: false,
+    categoryIds: ["storage-terminals"], isFeatured: false,
   },
   {
     id: "menzies-aviation-agi-group-holdings", slug: "menzies-aviation-agi-group-holdings", name: "Menzies Aviation (AGI Group Holdings)",
@@ -2765,7 +2765,7 @@ export const COMPANY_SEED: CompanySeed[] = [
     logo: "",
     heroImage: "",
     linkedin: "",
-    categoryIds: ["storage-terminals", "independent-terminals"], isFeatured: false,
+    categoryIds: ["storage-terminals"], isFeatured: false,
   },
   {
     id: "menzies-aviation-asig-limited", slug: "menzies-aviation-asig-limited", name: "Menzies Aviation (ASIG) Limited",
@@ -2774,7 +2774,7 @@ export const COMPANY_SEED: CompanySeed[] = [
     logo: "",
     heroImage: "",
     linkedin: "",
-    categoryIds: ["storage-terminals", "independent-terminals"], isFeatured: false,
+    categoryIds: ["storage-terminals"], isFeatured: false,
   },
   {
     id: "miro", slug: "miro", name: "MiRO",
@@ -2783,7 +2783,7 @@ export const COMPANY_SEED: CompanySeed[] = [
     logo: "",
     heroImage: "",
     linkedin: "",
-    categoryIds: ["process-industries", "refineries", "captive-terminals"], isFeatured: false,
+    categoryIds: ["process-industries", "refineries", "storage-terminals"], isFeatured: false,
   },
   {
     id: "midland-refineries-company", slug: "midland-refineries-company", name: "Midland Refineries Company",
@@ -2819,7 +2819,7 @@ export const COMPANY_SEED: CompanySeed[] = [
     logo: "",
     heroImage: "",
     linkedin: "",
-    categoryIds: ["storage-terminals", "captive-terminals"], isFeatured: false,
+    categoryIds: ["storage-terminals"], isFeatured: false,
   },
   {
     id: "mitsui-chemicals-inc", slug: "mitsui-chemicals-inc", name: "Mitsui Chemicals, Inc.",
@@ -2837,7 +2837,7 @@ export const COMPANY_SEED: CompanySeed[] = [
     logo: "",
     heroImage: "",
     linkedin: "",
-    categoryIds: ["storage-terminals", "captive-terminals"], isFeatured: false,
+    categoryIds: ["storage-terminals"], isFeatured: false,
   },
   {
     id: "motiva-enterprises-llc", slug: "motiva-enterprises-llc", name: "Motiva Enterprises LLC",
@@ -2846,7 +2846,7 @@ export const COMPANY_SEED: CompanySeed[] = [
     logo: "",
     heroImage: "",
     linkedin: "",
-    categoryIds: ["process-industries", "refineries", "captive-terminals"], isFeatured: false,
+    categoryIds: ["process-industries", "refineries", "storage-terminals"], isFeatured: false,
   },
   {
     id: "muara", slug: "muara", name: "Muara",
@@ -2855,7 +2855,7 @@ export const COMPANY_SEED: CompanySeed[] = [
     logo: "",
     heroImage: "",
     linkedin: "",
-    categoryIds: ["storage-terminals", "captive-terminals"], isFeatured: false,
+    categoryIds: ["storage-terminals"], isFeatured: false,
   },
   {
     id: "muuga", slug: "muuga", name: "Muuga",
@@ -2864,7 +2864,7 @@ export const COMPANY_SEED: CompanySeed[] = [
     logo: "",
     heroImage: "",
     linkedin: "",
-    categoryIds: ["storage-terminals", "independent-terminals"], isFeatured: false,
+    categoryIds: ["storage-terminals"], isFeatured: false,
   },
   {
     id: "myanma-petrochemical-enterprise-mpe", slug: "myanma-petrochemical-enterprise-mpe", name: "Myanma Petrochemical Enterprise (MPE)",
@@ -2882,7 +2882,7 @@ export const COMPANY_SEED: CompanySeed[] = [
     logo: "",
     heroImage: "",
     linkedin: "",
-    categoryIds: ["storage-terminals", "captive-terminals"], isFeatured: false,
+    categoryIds: ["storage-terminals"], isFeatured: false,
   },
   {
     id: "myanma-petroleum-products-enterprise", slug: "myanma-petroleum-products-enterprise", name: "Myanma Petroleum Products Enterprise",
@@ -2891,7 +2891,7 @@ export const COMPANY_SEED: CompanySeed[] = [
     logo: "",
     heroImage: "",
     linkedin: "",
-    categoryIds: ["storage-terminals", "captive-terminals"], isFeatured: false,
+    categoryIds: ["storage-terminals"], isFeatured: false,
   },
   {
     id: "n1-hf", slug: "n1-hf", name: "N1 hf.",
@@ -2900,7 +2900,7 @@ export const COMPANY_SEED: CompanySeed[] = [
     logo: "",
     heroImage: "",
     linkedin: "",
-    categoryIds: ["storage-terminals", "captive-terminals"], isFeatured: false,
+    categoryIds: ["storage-terminals"], isFeatured: false,
   },
   {
     id: "naaf", slug: "naaf", name: "NAAF",
@@ -2909,7 +2909,7 @@ export const COMPANY_SEED: CompanySeed[] = [
     logo: "",
     heroImage: "",
     linkedin: "",
-    categoryIds: ["storage-terminals", "independent-terminals"], isFeatured: false,
+    categoryIds: ["storage-terminals"], isFeatured: false,
   },
   {
     id: "nis-bosanski-brod-rafinerija", slug: "nis-bosanski-brod-rafinerija", name: "NIS / Bosanski Brod Rafinerija",
@@ -2927,7 +2927,7 @@ export const COMPANY_SEED: CompanySeed[] = [
     logo: "",
     heroImage: "",
     linkedin: "",
-    categoryIds: ["storage-terminals", "captive-terminals"], isFeatured: false,
+    categoryIds: ["storage-terminals"], isFeatured: false,
   },
   {
     id: "naftna-industrija-srbije-ad-nis", slug: "naftna-industrija-srbije-ad-nis", name: "Naftna Industrija Srbije a.d. (NIS)",
@@ -2936,7 +2936,7 @@ export const COMPANY_SEED: CompanySeed[] = [
     logo: "",
     heroImage: "",
     linkedin: "",
-    categoryIds: ["storage-terminals", "captive-terminals"], isFeatured: false,
+    categoryIds: ["storage-terminals"], isFeatured: false,
   },
   {
     id: "nagarjuna-fertilizers-and-chemicals-limited", slug: "nagarjuna-fertilizers-and-chemicals-limited", name: "Nagarjuna Fertilizers and Chemicals Limited",
@@ -2981,7 +2981,7 @@ export const COMPANY_SEED: CompanySeed[] = [
     logo: "",
     heroImage: "",
     linkedin: "",
-    categoryIds: ["storage-terminals", "captive-terminals"], isFeatured: false,
+    categoryIds: ["storage-terminals"], isFeatured: false,
   },
   {
     id: "national-petroleum-corporation-of-namibia-pty-ltd", slug: "national-petroleum-corporation-of-namibia-pty-ltd", name: "National Petroleum Corporation of Namibia (Pty) Ltd",
@@ -2990,7 +2990,7 @@ export const COMPANY_SEED: CompanySeed[] = [
     logo: "",
     heroImage: "",
     linkedin: "",
-    categoryIds: ["storage-terminals", "captive-terminals"], isFeatured: false,
+    categoryIds: ["storage-terminals"], isFeatured: false,
   },
   {
     id: "national-petroleum-refiners-of-south-africa-natref", slug: "national-petroleum-refiners-of-south-africa-natref", name: "National Petroleum Refiners of South Africa (Natref)",
@@ -3017,7 +3017,7 @@ export const COMPANY_SEED: CompanySeed[] = [
     logo: "",
     heroImage: "",
     linkedin: "",
-    categoryIds: ["storage-terminals", "captive-terminals"], isFeatured: false,
+    categoryIds: ["storage-terminals"], isFeatured: false,
   },
   {
     id: "nile-petroleum-corporation-nilepet", slug: "nile-petroleum-corporation-nilepet", name: "Nile Petroleum Corporation (Nilepet)",
@@ -3026,7 +3026,7 @@ export const COMPANY_SEED: CompanySeed[] = [
     logo: "",
     heroImage: "",
     linkedin: "",
-    categoryIds: ["storage-terminals", "captive-terminals"], isFeatured: false,
+    categoryIds: ["storage-terminals"], isFeatured: false,
   },
   {
     id: "ningbo-zhoushan-port-company-limited", slug: "ningbo-zhoushan-port-company-limited", name: "Ningbo Zhoushan Port Company Limited",
@@ -3035,7 +3035,7 @@ export const COMPANY_SEED: CompanySeed[] = [
     logo: "",
     heroImage: "",
     linkedin: "",
-    categoryIds: ["storage-terminals", "independent-terminals"], isFeatured: false,
+    categoryIds: ["storage-terminals"], isFeatured: false,
   },
   {
     id: "nitrogenmuvek-zrt", slug: "nitrogenmuvek-zrt", name: "Nitrogénművek Zrt.",
@@ -3053,7 +3053,7 @@ export const COMPANY_SEED: CompanySeed[] = [
     logo: "",
     heroImage: "",
     linkedin: "",
-    categoryIds: ["storage-terminals", "captive-terminals"], isFeatured: false,
+    categoryIds: ["storage-terminals"], isFeatured: false,
   },
   {
     id: "north-oil-company", slug: "north-oil-company", name: "North Oil Company",
@@ -3062,7 +3062,7 @@ export const COMPANY_SEED: CompanySeed[] = [
     logo: "",
     heroImage: "",
     linkedin: "",
-    categoryIds: ["storage-terminals", "captive-terminals"], isFeatured: false,
+    categoryIds: ["storage-terminals"], isFeatured: false,
   },
   {
     id: "north-refineries-company", slug: "north-refineries-company", name: "North Refineries Company",
@@ -3080,7 +3080,7 @@ export const COMPANY_SEED: CompanySeed[] = [
     logo: "",
     heroImage: "",
     linkedin: "",
-    categoryIds: ["storage-terminals", "captive-terminals"], isFeatured: false,
+    categoryIds: ["storage-terminals"], isFeatured: false,
   },
   {
     id: "notore-chemical-industries-plc", slug: "notore-chemical-industries-plc", name: "Notore Chemical Industries PLC",
@@ -3125,7 +3125,7 @@ export const COMPANY_SEED: CompanySeed[] = [
     logo: "",
     heroImage: "",
     linkedin: "",
-    categoryIds: ["storage-terminals", "captive-terminals"], isFeatured: false,
+    categoryIds: ["storage-terminals"], isFeatured: false,
   },
   {
     id: "oq", slug: "oq", name: "OQ",
@@ -3143,7 +3143,7 @@ export const COMPANY_SEED: CompanySeed[] = [
     logo: "",
     heroImage: "",
     linkedin: "",
-    categoryIds: ["storage-terminals", "captive-terminals"], isFeatured: false,
+    categoryIds: ["storage-terminals"], isFeatured: false,
   },
   {
     id: "oil-refineries-ltd-bazan-group", slug: "oil-refineries-ltd-bazan-group", name: "Oil Refineries Ltd (Bazan Group)",
@@ -3161,7 +3161,7 @@ export const COMPANY_SEED: CompanySeed[] = [
     logo: "",
     heroImage: "",
     linkedin: "",
-    categoryIds: ["storage-terminals", "independent-terminals"], isFeatured: false,
+    categoryIds: ["storage-terminals"], isFeatured: false,
   },
   {
     id: "open-joint-stock-company-mozyr-oil-refinery-ojsc-mozyr-oil-refinery", slug: "open-joint-stock-company-mozyr-oil-refinery-ojsc-mozyr-oil-refinery", name: "Open Joint Stock Company \"Mozyr Oil Refinery\" (OJSC Mozyr Oil Refinery)",
@@ -3179,7 +3179,7 @@ export const COMPANY_SEED: CompanySeed[] = [
     logo: "",
     heroImage: "",
     linkedin: "",
-    categoryIds: ["process-industries", "refineries", "captive-terminals"], isFeatured: false,
+    categoryIds: ["process-industries", "refineries", "storage-terminals"], isFeatured: false,
   },
   {
     id: "orlen-unipetrol", slug: "orlen-unipetrol", name: "Orlen Unipetrol",
@@ -3197,7 +3197,7 @@ export const COMPANY_SEED: CompanySeed[] = [
     logo: "",
     heroImage: "",
     linkedin: "",
-    categoryIds: ["storage-terminals", "captive-terminals"], isFeatured: false,
+    categoryIds: ["storage-terminals"], isFeatured: false,
   },
   {
     id: "pern-sa", slug: "pern-sa", name: "PERN S.A.",
@@ -3206,7 +3206,7 @@ export const COMPANY_SEED: CompanySeed[] = [
     logo: "",
     heroImage: "",
     linkedin: "",
-    categoryIds: ["storage-terminals", "independent-terminals"], isFeatured: false,
+    categoryIds: ["storage-terminals"], isFeatured: false,
   },
   {
     id: "pi-industries-limited", slug: "pi-industries-limited", name: "PI Industries Limited",
@@ -3242,7 +3242,7 @@ export const COMPANY_SEED: CompanySeed[] = [
     logo: "",
     heroImage: "",
     linkedin: "",
-    categoryIds: ["storage-terminals", "captive-terminals"], isFeatured: false,
+    categoryIds: ["storage-terminals"], isFeatured: false,
   },
   {
     id: "pjsc-lukoil-rpk-vysotsk-lukoil-ii", slug: "pjsc-lukoil-rpk-vysotsk-lukoil-ii", name: "PJSC Lukoil (RPK-Vysotsk-Lukoil-II)",
@@ -3251,7 +3251,7 @@ export const COMPANY_SEED: CompanySeed[] = [
     logo: "",
     heroImage: "",
     linkedin: "",
-    categoryIds: ["storage-terminals", "captive-terminals"], isFeatured: false,
+    categoryIds: ["storage-terminals"], isFeatured: false,
   },
   {
     id: "pjsc-nizhnekamskneftekhim", slug: "pjsc-nizhnekamskneftekhim", name: "PJSC Nizhnekamskneftekhim",
@@ -3278,7 +3278,7 @@ export const COMPANY_SEED: CompanySeed[] = [
     logo: "",
     heroImage: "",
     linkedin: "",
-    categoryIds: ["process-industries", "refineries", "captive-terminals"], isFeatured: false,
+    categoryIds: ["process-industries", "refineries", "storage-terminals"], isFeatured: false,
   },
   {
     id: "pjsc-uralkali", slug: "pjsc-uralkali", name: "PJSC Uralkali",
@@ -3350,7 +3350,7 @@ export const COMPANY_SEED: CompanySeed[] = [
     logo: "",
     heroImage: "",
     linkedin: "",
-    categoryIds: ["storage-terminals", "captive-terminals"], isFeatured: false,
+    categoryIds: ["storage-terminals"], isFeatured: false,
   },
   {
     id: "pak-arab-refinery-limited-parco", slug: "pak-arab-refinery-limited-parco", name: "Pak-Arab Refinery Limited (PARCO)",
@@ -3359,7 +3359,7 @@ export const COMPANY_SEED: CompanySeed[] = [
     logo: "",
     heroImage: "",
     linkedin: "",
-    categoryIds: ["storage-terminals", "captive-terminals"], isFeatured: false,
+    categoryIds: ["storage-terminals"], isFeatured: false,
   },
   {
     id: "paldiski", slug: "paldiski", name: "Paldiski",
@@ -3368,7 +3368,7 @@ export const COMPANY_SEED: CompanySeed[] = [
     logo: "",
     heroImage: "",
     linkedin: "",
-    categoryIds: ["storage-terminals", "independent-terminals"], isFeatured: false,
+    categoryIds: ["storage-terminals"], isFeatured: false,
   },
   {
     id: "paradeep-phosphates-limited", slug: "paradeep-phosphates-limited", name: "Paradeep Phosphates Limited",
@@ -3386,7 +3386,7 @@ export const COMPANY_SEED: CompanySeed[] = [
     logo: "",
     heroImage: "",
     linkedin: "",
-    categoryIds: ["storage-terminals", "captive-terminals"], isFeatured: false,
+    categoryIds: ["storage-terminals"], isFeatured: false,
   },
   {
     id: "pavlodar-oil-chemistry-refinery-llp", slug: "pavlodar-oil-chemistry-refinery-llp", name: "Pavlodar Oil Chemistry Refinery LLP",
@@ -3395,7 +3395,7 @@ export const COMPANY_SEED: CompanySeed[] = [
     logo: "",
     heroImage: "",
     linkedin: "",
-    categoryIds: ["storage-terminals", "captive-terminals"], isFeatured: false,
+    categoryIds: ["storage-terminals"], isFeatured: false,
   },
   {
     id: "petkim-petrokimya-holding-as", slug: "petkim-petrokimya-holding-as", name: "Petkim Petrokimya Holding A.Ş.",
@@ -3413,7 +3413,7 @@ export const COMPANY_SEED: CompanySeed[] = [
     logo: "",
     heroImage: "",
     linkedin: "",
-    categoryIds: ["storage-terminals", "captive-terminals"], isFeatured: false,
+    categoryIds: ["storage-terminals"], isFeatured: false,
   },
   {
     id: "petro-star-inc", slug: "petro-star-inc", name: "Petro Star Inc.",
@@ -3422,7 +3422,7 @@ export const COMPANY_SEED: CompanySeed[] = [
     logo: "",
     heroImage: "",
     linkedin: "",
-    categoryIds: ["storage-terminals", "independent-terminals"], isFeatured: false,
+    categoryIds: ["storage-terminals"], isFeatured: false,
   },
   {
     id: "petrokazakhstan-oil-products-llp", slug: "petrokazakhstan-oil-products-llp", name: "PetroKazakhstan Oil Products LLP",
@@ -3449,7 +3449,7 @@ export const COMPANY_SEED: CompanySeed[] = [
     logo: "",
     heroImage: "",
     linkedin: "",
-    categoryIds: ["storage-terminals", "captive-terminals"], isFeatured: false,
+    categoryIds: ["storage-terminals"], isFeatured: false,
   },
   {
     id: "petrobras", slug: "petrobras", name: "Petrobras",
@@ -3494,7 +3494,7 @@ export const COMPANY_SEED: CompanySeed[] = [
     logo: "",
     heroImage: "",
     linkedin: "",
-    categoryIds: ["storage-terminals", "captive-terminals"], isFeatured: false,
+    categoryIds: ["storage-terminals"], isFeatured: false,
   },
   {
     id: "petroleum-development-oman-llc", slug: "petroleum-development-oman-llc", name: "Petroleum Development Oman LLC",
@@ -3503,7 +3503,7 @@ export const COMPANY_SEED: CompanySeed[] = [
     logo: "",
     heroImage: "",
     linkedin: "",
-    categoryIds: ["storage-terminals", "captive-terminals"], isFeatured: false,
+    categoryIds: ["storage-terminals"], isFeatured: false,
   },
   {
     id: "petroleum-importers-ltd", slug: "petroleum-importers-ltd", name: "Petroleum Importers Ltd",
@@ -3512,7 +3512,7 @@ export const COMPANY_SEED: CompanySeed[] = [
     logo: "",
     heroImage: "",
     linkedin: "",
-    categoryIds: ["storage-terminals", "captive-terminals"], isFeatured: false,
+    categoryIds: ["storage-terminals"], isFeatured: false,
   },
   {
     id: "petrolifera-petroleum-limited", slug: "petrolifera-petroleum-limited", name: "Petrolifera Petroleum Limited",
@@ -3521,7 +3521,7 @@ export const COMPANY_SEED: CompanySeed[] = [
     logo: "",
     heroImage: "",
     linkedin: "",
-    categoryIds: ["storage-terminals", "captive-terminals"], isFeatured: false,
+    categoryIds: ["storage-terminals"], isFeatured: false,
   },
   {
     id: "petrolina-holdings-public-ltd", slug: "petrolina-holdings-public-ltd", name: "Petrolina (Holdings) Public Ltd",
@@ -3530,7 +3530,7 @@ export const COMPANY_SEED: CompanySeed[] = [
     logo: "",
     heroImage: "",
     linkedin: "",
-    categoryIds: ["storage-terminals", "captive-terminals"], isFeatured: false,
+    categoryIds: ["storage-terminals"], isFeatured: false,
   },
   {
     id: "petromar", slug: "petromar", name: "Petromar",
@@ -3539,7 +3539,7 @@ export const COMPANY_SEED: CompanySeed[] = [
     logo: "",
     heroImage: "",
     linkedin: "",
-    categoryIds: ["storage-terminals", "captive-terminals"], isFeatured: false,
+    categoryIds: ["storage-terminals"], isFeatured: false,
   },
   {
     id: "petron-malaysia-refining-and-marketing-bhd", slug: "petron-malaysia-refining-and-marketing-bhd", name: "Petron Malaysia Refining & Marketing Bhd",
@@ -3593,7 +3593,7 @@ export const COMPANY_SEED: CompanySeed[] = [
     logo: "",
     heroImage: "",
     linkedin: "",
-    categoryIds: ["storage-terminals", "captive-terminals"], isFeatured: false,
+    categoryIds: ["storage-terminals"], isFeatured: false,
   },
   {
     id: "petrotrade-private-limited", slug: "petrotrade-private-limited", name: "Petrotrade (Private) Limited",
@@ -3602,7 +3602,7 @@ export const COMPANY_SEED: CompanySeed[] = [
     logo: "",
     heroImage: "",
     linkedin: "",
-    categoryIds: ["storage-terminals", "captive-terminals"], isFeatured: false,
+    categoryIds: ["storage-terminals"], isFeatured: false,
   },
   {
     id: "petroleos-paraguayos-petropar", slug: "petroleos-paraguayos-petropar", name: "Petróleos Paraguayos (PETROPAR)",
@@ -3611,7 +3611,7 @@ export const COMPANY_SEED: CompanySeed[] = [
     logo: "",
     heroImage: "",
     linkedin: "",
-    categoryIds: ["storage-terminals", "captive-terminals"], isFeatured: false,
+    categoryIds: ["storage-terminals"], isFeatured: false,
   },
   {
     id: "petroleos-de-mocambique-sa-petromoc", slug: "petroleos-de-mocambique-sa-petromoc", name: "Petróleos de Moçambique, S.A. (Petromoc)",
@@ -3620,7 +3620,7 @@ export const COMPANY_SEED: CompanySeed[] = [
     logo: "",
     heroImage: "",
     linkedin: "",
-    categoryIds: ["storage-terminals", "captive-terminals"], isFeatured: false,
+    categoryIds: ["storage-terminals"], isFeatured: false,
   },
   {
     id: "petroleos-del-norte-sa", slug: "petroleos-del-norte-sa", name: "Petróleos del Norte, S.A.",
@@ -3638,7 +3638,7 @@ export const COMPANY_SEED: CompanySeed[] = [
     logo: "",
     heroImage: "",
     linkedin: "",
-    categoryIds: ["storage-terminals", "captive-terminals"], isFeatured: false,
+    categoryIds: ["storage-terminals"], isFeatured: false,
   },
   {
     id: "polski-koncern-naftowy-orlen-sa", slug: "polski-koncern-naftowy-orlen-sa", name: "Polski Koncern Naftowy ORLEN S.A.",
@@ -3656,7 +3656,7 @@ export const COMPANY_SEED: CompanySeed[] = [
     logo: "",
     heroImage: "",
     linkedin: "",
-    categoryIds: ["storage-terminals", "independent-terminals"], isFeatured: false,
+    categoryIds: ["storage-terminals"], isFeatured: false,
   },
   {
     id: "profertil-sa", slug: "profertil-sa", name: "Profertil S.A.",
@@ -3692,7 +3692,7 @@ export const COMPANY_SEED: CompanySeed[] = [
     logo: "",
     heroImage: "",
     linkedin: "",
-    categoryIds: ["storage-terminals", "captive-terminals"], isFeatured: false,
+    categoryIds: ["storage-terminals"], isFeatured: false,
   },
   {
     id: "qatar-fuel-company-qpsc", slug: "qatar-fuel-company-qpsc", name: "Qatar Fuel Company Q.P.S.C.",
@@ -3701,7 +3701,7 @@ export const COMPANY_SEED: CompanySeed[] = [
     logo: "",
     heroImage: "",
     linkedin: "",
-    categoryIds: ["storage-terminals", "captive-terminals"], isFeatured: false,
+    categoryIds: ["storage-terminals"], isFeatured: false,
   },
   {
     id: "qatar-petrochemical-company-qapco", slug: "qatar-petrochemical-company-qapco", name: "Qatar Petrochemical Company (QAPCO)",
@@ -3719,7 +3719,7 @@ export const COMPANY_SEED: CompanySeed[] = [
     logo: "",
     heroImage: "",
     linkedin: "",
-    categoryIds: ["storage-terminals", "independent-terminals"], isFeatured: false,
+    categoryIds: ["storage-terminals"], isFeatured: false,
   },
   {
     id: "rabigh-refining-and-petrochemical-company-petrorabigh", slug: "rabigh-refining-and-petrochemical-company-petrorabigh", name: "Rabigh Refining and Petrochemical Company (PetroRabigh)",
@@ -3737,7 +3737,7 @@ export const COMPANY_SEED: CompanySeed[] = [
     logo: "",
     heroImage: "",
     linkedin: "",
-    categoryIds: ["storage-terminals", "captive-terminals"], isFeatured: false,
+    categoryIds: ["storage-terminals"], isFeatured: false,
   },
   {
     id: "refinadora-costarricense-de-petroleo-sa-recope", slug: "refinadora-costarricense-de-petroleo-sa-recope", name: "Refinadora Costarricense de Petróleo, S.A. (RECOPE)",
@@ -3746,7 +3746,7 @@ export const COMPANY_SEED: CompanySeed[] = [
     logo: "",
     heroImage: "",
     linkedin: "",
-    categoryIds: ["storage-terminals", "captive-terminals"], isFeatured: false,
+    categoryIds: ["storage-terminals"], isFeatured: false,
   },
   {
     id: "refineria-dominicana-de-petroleo-pdv-sa-refidomsa", slug: "refineria-dominicana-de-petroleo-pdv-sa-refidomsa", name: "Refinería Dominicana de Petróleo, PDV, S.A. (REFIDOMSA)",
@@ -3755,7 +3755,7 @@ export const COMPANY_SEED: CompanySeed[] = [
     logo: "",
     heroImage: "",
     linkedin: "",
-    categoryIds: ["process-industries", "refineries", "captive-terminals"], isFeatured: false,
+    categoryIds: ["process-industries", "refineries", "storage-terminals"], isFeatured: false,
   },
   {
     id: "refineria-la-pampilla-saa", slug: "refineria-la-pampilla-saa", name: "Refinería La Pampilla S.A.A.",
@@ -3791,7 +3791,7 @@ export const COMPANY_SEED: CompanySeed[] = [
     logo: "",
     heroImage: "",
     linkedin: "",
-    categoryIds: ["storage-terminals", "captive-terminals"], isFeatured: false,
+    categoryIds: ["storage-terminals"], isFeatured: false,
   },
   {
     id: "rubis-energy-rwanda-ltd", slug: "rubis-energy-rwanda-ltd", name: "Rubis Energy Rwanda Ltd",
@@ -3800,7 +3800,7 @@ export const COMPANY_SEED: CompanySeed[] = [
     logo: "",
     heroImage: "",
     linkedin: "",
-    categoryIds: ["storage-terminals", "captive-terminals"], isFeatured: false,
+    categoryIds: ["storage-terminals"], isFeatured: false,
   },
   {
     id: "rubis-terminal-infra-sa", slug: "rubis-terminal-infra-sa", name: "Rubis Terminal Infra S.A.",
@@ -3809,7 +3809,7 @@ export const COMPANY_SEED: CompanySeed[] = [
     logo: "",
     heroImage: "",
     linkedin: "",
-    categoryIds: ["storage-terminals", "captive-terminals"], isFeatured: false,
+    categoryIds: ["storage-terminals"], isFeatured: false,
   },
   {
     id: "rubis-west-indies-limited", slug: "rubis-west-indies-limited", name: "Rubis West Indies Limited",
@@ -3818,7 +3818,7 @@ export const COMPANY_SEED: CompanySeed[] = [
     logo: "",
     heroImage: "",
     linkedin: "",
-    categoryIds: ["storage-terminals", "captive-terminals"], isFeatured: false,
+    categoryIds: ["storage-terminals"], isFeatured: false,
   },
   {
     id: "s-oil-corporation", slug: "s-oil-corporation", name: "S-Oil Corporation",
@@ -3845,7 +3845,7 @@ export const COMPANY_SEED: CompanySeed[] = [
     logo: "",
     heroImage: "",
     linkedin: "",
-    categoryIds: ["storage-terminals", "captive-terminals"], isFeatured: false,
+    categoryIds: ["storage-terminals"], isFeatured: false,
   },
   {
     id: "sgp", slug: "sgp", name: "SGP",
@@ -3854,7 +3854,7 @@ export const COMPANY_SEED: CompanySeed[] = [
     logo: "",
     heroImage: "",
     linkedin: "",
-    categoryIds: ["storage-terminals", "captive-terminals"], isFeatured: false,
+    categoryIds: ["storage-terminals"], isFeatured: false,
   },
   {
     id: "sk-energy", slug: "sk-energy", name: "SK Energy",
@@ -3881,7 +3881,7 @@ export const COMPANY_SEED: CompanySeed[] = [
     logo: "",
     heroImage: "",
     linkedin: "",
-    categoryIds: ["storage-terminals", "independent-terminals"], isFeatured: false,
+    categoryIds: ["storage-terminals"], isFeatured: false,
   },
   {
     id: "socar-georgia-petroleum", slug: "socar-georgia-petroleum", name: "SOCAR Georgia Petroleum",
@@ -3890,7 +3890,7 @@ export const COMPANY_SEED: CompanySeed[] = [
     logo: "",
     heroImage: "",
     linkedin: "",
-    categoryIds: ["storage-terminals", "captive-terminals"], isFeatured: false,
+    categoryIds: ["storage-terminals"], isFeatured: false,
   },
   {
     id: "soma-oil", slug: "soma-oil", name: "SOMA Oil",
@@ -3899,7 +3899,7 @@ export const COMPANY_SEED: CompanySeed[] = [
     logo: "",
     heroImage: "",
     linkedin: "",
-    categoryIds: ["storage-terminals", "captive-terminals"], isFeatured: false,
+    categoryIds: ["storage-terminals"], isFeatured: false,
   },
   {
     id: "srf-limited", slug: "srf-limited", name: "SRF Limited",
@@ -3962,7 +3962,7 @@ export const COMPANY_SEED: CompanySeed[] = [
     logo: "",
     heroImage: "",
     linkedin: "",
-    categoryIds: ["process-industries", "refineries", "captive-terminals"], isFeatured: false,
+    categoryIds: ["process-industries", "refineries", "storage-terminals"], isFeatured: false,
   },
   {
     id: "saudi-aramco-jubail-refinery-company", slug: "saudi-aramco-jubail-refinery-company", name: "Saudi Aramco Jubail Refinery Company",
@@ -3989,7 +3989,7 @@ export const COMPANY_SEED: CompanySeed[] = [
     logo: "",
     heroImage: "",
     linkedin: "",
-    categoryIds: ["storage-terminals", "captive-terminals"], isFeatured: false,
+    categoryIds: ["storage-terminals"], isFeatured: false,
   },
   {
     id: "shaanxi-yanchang-petroleum-group-co-ltd", slug: "shaanxi-yanchang-petroleum-group-co-ltd", name: "Shaanxi Yanchang Petroleum (Group) Co., Ltd.",
@@ -4025,7 +4025,7 @@ export const COMPANY_SEED: CompanySeed[] = [
     logo: "",
     heroImage: "",
     linkedin: "",
-    categoryIds: ["storage-terminals", "independent-terminals"], isFeatured: false,
+    categoryIds: ["storage-terminals"], isFeatured: false,
   },
   {
     id: "shell-deutschland-oil-gmbh", slug: "shell-deutschland-oil-gmbh", name: "Shell Deutschland Oil GmbH",
@@ -4079,7 +4079,7 @@ export const COMPANY_SEED: CompanySeed[] = [
     logo: "",
     heroImage: "",
     linkedin: "",
-    categoryIds: ["storage-terminals", "independent-terminals"], isFeatured: false,
+    categoryIds: ["storage-terminals"], isFeatured: false,
   },
   {
     id: "slavneft-yanos-jsc", slug: "slavneft-yanos-jsc", name: "Slavneft-YANOS JSC",
@@ -4097,7 +4097,7 @@ export const COMPANY_SEED: CompanySeed[] = [
     logo: "",
     heroImage: "",
     linkedin: "",
-    categoryIds: ["process-industries", "refineries", "captive-terminals"], isFeatured: false,
+    categoryIds: ["process-industries", "refineries", "storage-terminals"], isFeatured: false,
   },
   {
     id: "sociedad-quimica-y-minera-de-chile-sa-sqm", slug: "sociedad-quimica-y-minera-de-chile-sa-sqm", name: "Sociedad Química y Minera de Chile S.A. (SQM)",
@@ -4124,7 +4124,7 @@ export const COMPANY_SEED: CompanySeed[] = [
     logo: "",
     heroImage: "",
     linkedin: "",
-    categoryIds: ["process-industries", "refineries", "captive-terminals"], isFeatured: false,
+    categoryIds: ["process-industries", "refineries", "storage-terminals"], isFeatured: false,
   },
   {
     id: "societe-anonyme-marocaine-de-l-industrie-du-raffinage-samir", slug: "societe-anonyme-marocaine-de-l-industrie-du-raffinage-samir", name: "Société Anonyme Marocaine de l'Industrie du Raffinage (SAMIR)",
@@ -4133,7 +4133,7 @@ export const COMPANY_SEED: CompanySeed[] = [
     logo: "",
     heroImage: "",
     linkedin: "",
-    categoryIds: ["process-industries", "refineries", "captive-terminals"], isFeatured: false,
+    categoryIds: ["process-industries", "refineries", "storage-terminals"], isFeatured: false,
   },
   {
     id: "societe-camerounaise-des-depots-petroliers", slug: "societe-camerounaise-des-depots-petroliers", name: "Société Camerounaise des Dépôts Pétroliers",
@@ -4142,7 +4142,7 @@ export const COMPANY_SEED: CompanySeed[] = [
     logo: "",
     heroImage: "",
     linkedin: "",
-    categoryIds: ["storage-terminals", "captive-terminals"], isFeatured: false,
+    categoryIds: ["storage-terminals"], isFeatured: false,
   },
   {
     id: "societe-comorienne-des-hydrocarbures-sch", slug: "societe-comorienne-des-hydrocarbures-sch", name: "Société Comorienne des Hydrocarbures (SCH)",
@@ -4151,7 +4151,7 @@ export const COMPANY_SEED: CompanySeed[] = [
     logo: "",
     heroImage: "",
     linkedin: "",
-    categoryIds: ["storage-terminals", "captive-terminals"], isFeatured: false,
+    categoryIds: ["storage-terminals"], isFeatured: false,
   },
   {
     id: "societe-ivoirienne-de-raffinage-sir", slug: "societe-ivoirienne-de-raffinage-sir", name: "Société Ivoirienne de Raffinage (SIR)",
@@ -4169,7 +4169,7 @@ export const COMPANY_SEED: CompanySeed[] = [
     logo: "",
     heroImage: "",
     linkedin: "",
-    categoryIds: ["process-industries", "refineries", "captive-terminals"], isFeatured: false,
+    categoryIds: ["process-industries", "refineries", "storage-terminals"], isFeatured: false,
   },
   {
     id: "societe-nationale-burkinabe-d-hydrocarbures", slug: "societe-nationale-burkinabe-d-hydrocarbures", name: "Société Nationale Burkinabè d'Hydrocarbures",
@@ -4178,7 +4178,7 @@ export const COMPANY_SEED: CompanySeed[] = [
     logo: "",
     heroImage: "",
     linkedin: "",
-    categoryIds: ["storage-terminals", "captive-terminals"], isFeatured: false,
+    categoryIds: ["storage-terminals"], isFeatured: false,
   },
   {
     id: "societe-nationale-de-commercialisation-des-produits-petroliers", slug: "societe-nationale-de-commercialisation-des-produits-petroliers", name: "Société Nationale de Commercialisation des Produits Pétroliers",
@@ -4187,7 +4187,7 @@ export const COMPANY_SEED: CompanySeed[] = [
     logo: "",
     heroImage: "",
     linkedin: "",
-    categoryIds: ["storage-terminals", "captive-terminals"], isFeatured: false,
+    categoryIds: ["storage-terminals"], isFeatured: false,
   },
   {
     id: "societe-nigerienne-des-produits-petroliers", slug: "societe-nigerienne-des-produits-petroliers", name: "Société Nigérienne des Produits Pétroliers",
@@ -4196,7 +4196,7 @@ export const COMPANY_SEED: CompanySeed[] = [
     logo: "",
     heroImage: "",
     linkedin: "",
-    categoryIds: ["storage-terminals", "captive-terminals"], isFeatured: false,
+    categoryIds: ["storage-terminals"], isFeatured: false,
   },
   {
     id: "societe-togolaise-de-stockage-de-lome", slug: "societe-togolaise-de-stockage-de-lome", name: "Société Togolaise de Stockage de Lomé",
@@ -4205,7 +4205,7 @@ export const COMPANY_SEED: CompanySeed[] = [
     logo: "",
     heroImage: "",
     linkedin: "",
-    categoryIds: ["storage-terminals", "captive-terminals"], isFeatured: false,
+    categoryIds: ["storage-terminals"], isFeatured: false,
   },
   {
     id: "societe-tunisienne-des-industries-de-raffinage-stir", slug: "societe-tunisienne-des-industries-de-raffinage-stir", name: "Société Tunisienne des Industries de Raffinage (STIR)",
@@ -4223,7 +4223,7 @@ export const COMPANY_SEED: CompanySeed[] = [
     logo: "",
     heroImage: "",
     linkedin: "",
-    categoryIds: ["storage-terminals", "captive-terminals"], isFeatured: false,
+    categoryIds: ["storage-terminals"], isFeatured: false,
   },
   {
     id: "societe-du-terminal-de-la-skhira-trapsa", slug: "societe-du-terminal-de-la-skhira-trapsa", name: "Société du Terminal de La Skhira (TRAPSA)",
@@ -4232,7 +4232,7 @@ export const COMPANY_SEED: CompanySeed[] = [
     logo: "",
     heroImage: "",
     linkedin: "",
-    categoryIds: ["storage-terminals", "independent-terminals"], isFeatured: false,
+    categoryIds: ["storage-terminals"], isFeatured: false,
   },
   {
     id: "sokimex-investment-group", slug: "sokimex-investment-group", name: "Sokimex Investment Group",
@@ -4241,7 +4241,7 @@ export const COMPANY_SEED: CompanySeed[] = [
     logo: "",
     heroImage: "",
     linkedin: "",
-    categoryIds: ["storage-terminals", "captive-terminals"], isFeatured: false,
+    categoryIds: ["storage-terminals"], isFeatured: false,
   },
   {
     id: "sonatrach-raffineria-italiana-srl", slug: "sonatrach-raffineria-italiana-srl", name: "Sonatrach Raffineria Italiana S.R.L.",
@@ -4259,7 +4259,7 @@ export const COMPANY_SEED: CompanySeed[] = [
     logo: "",
     heroImage: "",
     linkedin: "",
-    categoryIds: ["storage-terminals", "captive-terminals"], isFeatured: false,
+    categoryIds: ["storage-terminals"], isFeatured: false,
   },
   {
     id: "sorfert-algerie-spa", slug: "sorfert-algerie-spa", name: "Sorfert Algérie SPA",
@@ -4295,7 +4295,7 @@ export const COMPANY_SEED: CompanySeed[] = [
     logo: "",
     heroImage: "",
     linkedin: "",
-    categoryIds: ["storage-terminals", "captive-terminals"], isFeatured: false,
+    categoryIds: ["storage-terminals"], isFeatured: false,
   },
   {
     id: "state-concern-turkmennebit", slug: "state-concern-turkmennebit", name: "State Concern Türkmennebit",
@@ -4313,7 +4313,7 @@ export const COMPANY_SEED: CompanySeed[] = [
     logo: "",
     heroImage: "",
     linkedin: "",
-    categoryIds: ["storage-terminals", "independent-terminals"], isFeatured: false,
+    categoryIds: ["storage-terminals"], isFeatured: false,
   },
   {
     id: "state-trading-corp", slug: "state-trading-corp", name: "State Trading Corp",
@@ -4322,7 +4322,7 @@ export const COMPANY_SEED: CompanySeed[] = [
     logo: "",
     heroImage: "",
     linkedin: "",
-    categoryIds: ["storage-terminals", "captive-terminals"], isFeatured: false,
+    categoryIds: ["storage-terminals"], isFeatured: false,
   },
   {
     id: "state-trading-organization-plc", slug: "state-trading-organization-plc", name: "State Trading Organization PLC",
@@ -4331,7 +4331,7 @@ export const COMPANY_SEED: CompanySeed[] = [
     logo: "",
     heroImage: "",
     linkedin: "",
-    categoryIds: ["storage-terminals", "captive-terminals"], isFeatured: false,
+    categoryIds: ["storage-terminals"], isFeatured: false,
   },
   {
     id: "sudan-petroleum-corporation-sudapet", slug: "sudan-petroleum-corporation-sudapet", name: "Sudan Petroleum Corporation (Sudapet)",
@@ -4340,7 +4340,7 @@ export const COMPANY_SEED: CompanySeed[] = [
     logo: "",
     heroImage: "",
     linkedin: "",
-    categoryIds: ["storage-terminals", "captive-terminals"], isFeatured: false,
+    categoryIds: ["storage-terminals"], isFeatured: false,
   },
   {
     id: "suez-oil-processing-company-sopc", slug: "suez-oil-processing-company-sopc", name: "Suez Oil Processing Company (SOPC)",
@@ -4349,7 +4349,7 @@ export const COMPANY_SEED: CompanySeed[] = [
     logo: "",
     heroImage: "",
     linkedin: "",
-    categoryIds: ["process-industries", "refineries", "captive-terminals"], isFeatured: false,
+    categoryIds: ["process-industries", "refineries", "storage-terminals"], isFeatured: false,
   },
   {
     id: "sumitomo-chemical-co-ltd", slug: "sumitomo-chemical-co-ltd", name: "Sumitomo Chemical Co., Ltd.",
@@ -4367,7 +4367,7 @@ export const COMPANY_SEED: CompanySeed[] = [
     logo: "",
     heroImage: "",
     linkedin: "",
-    categoryIds: ["storage-terminals", "captive-terminals"], isFeatured: false,
+    categoryIds: ["storage-terminals"], isFeatured: false,
   },
   {
     id: "syrian-company-for-oil-transport-and-storage-scots", slug: "syrian-company-for-oil-transport-and-storage-scots", name: "Syrian Company for Oil Transport and Storage (SCOTS)",
@@ -4376,7 +4376,7 @@ export const COMPANY_SEED: CompanySeed[] = [
     logo: "",
     heroImage: "",
     linkedin: "",
-    categoryIds: ["storage-terminals", "captive-terminals"], isFeatured: false,
+    categoryIds: ["storage-terminals"], isFeatured: false,
   },
   {
     id: "syrian-petroleum-company-spc", slug: "syrian-petroleum-company-spc", name: "Syrian Petroleum Company (SPC)",
@@ -4385,7 +4385,7 @@ export const COMPANY_SEED: CompanySeed[] = [
     logo: "",
     heroImage: "",
     linkedin: "",
-    categoryIds: ["storage-terminals", "captive-terminals"], isFeatured: false,
+    categoryIds: ["storage-terminals"], isFeatured: false,
   },
   {
     id: "taif-nk-jsc", slug: "taif-nk-jsc", name: "TAIF-NK JSC",
@@ -4403,7 +4403,7 @@ export const COMPANY_SEED: CompanySeed[] = [
     logo: "",
     heroImage: "",
     linkedin: "",
-    categoryIds: ["storage-terminals", "captive-terminals"], isFeatured: false,
+    categoryIds: ["storage-terminals"], isFeatured: false,
   },
   {
     id: "taman", slug: "taman", name: "Taman",
@@ -4412,7 +4412,7 @@ export const COMPANY_SEED: CompanySeed[] = [
     logo: "",
     heroImage: "",
     linkedin: "",
-    categoryIds: ["storage-terminals", "independent-terminals"], isFeatured: false,
+    categoryIds: ["storage-terminals"], isFeatured: false,
   },
   {
     id: "tedcastles-oil-products-ltd-top-oil", slug: "tedcastles-oil-products-ltd-top-oil", name: "Tedcastles Oil Products Ltd (Top Oil)",
@@ -4421,7 +4421,7 @@ export const COMPANY_SEED: CompanySeed[] = [
     logo: "",
     heroImage: "",
     linkedin: "",
-    categoryIds: ["storage-terminals", "captive-terminals"], isFeatured: false,
+    categoryIds: ["storage-terminals"], isFeatured: false,
   },
   {
     id: "tehran-oil-refining-company", slug: "tehran-oil-refining-company", name: "Tehran Oil Refining Company",
@@ -4448,7 +4448,7 @@ export const COMPANY_SEED: CompanySeed[] = [
     logo: "",
     heroImage: "",
     linkedin: "",
-    categoryIds: ["process-industries", "refineries", "captive-terminals"], isFeatured: false,
+    categoryIds: ["process-industries", "refineries", "storage-terminals"], isFeatured: false,
   },
   {
     id: "the-arab-petroleum-pipelines-company-sumed", slug: "the-arab-petroleum-pipelines-company-sumed", name: "The Arab Petroleum Pipelines Company (SUMED)",
@@ -4457,7 +4457,7 @@ export const COMPANY_SEED: CompanySeed[] = [
     logo: "",
     heroImage: "",
     linkedin: "",
-    categoryIds: ["storage-terminals", "independent-terminals"], isFeatured: false,
+    categoryIds: ["storage-terminals"], isFeatured: false,
   },
   {
     id: "toros-tarm-sanayi-ve-ticaret-as", slug: "toros-tarm-sanayi-ve-ticaret-as", name: "Toros Tarım Sanayi ve Ticaret A.Ş.",
@@ -4475,7 +4475,7 @@ export const COMPANY_SEED: CompanySeed[] = [
     logo: "",
     heroImage: "",
     linkedin: "",
-    categoryIds: ["storage-terminals", "captive-terminals"], isFeatured: false,
+    categoryIds: ["storage-terminals"], isFeatured: false,
   },
   {
     id: "totalenergies-ep-gabon", slug: "totalenergies-ep-gabon", name: "TotalEnergies EP Gabon",
@@ -4484,7 +4484,7 @@ export const COMPANY_SEED: CompanySeed[] = [
     logo: "",
     heroImage: "",
     linkedin: "",
-    categoryIds: ["storage-terminals", "captive-terminals"], isFeatured: false,
+    categoryIds: ["storage-terminals"], isFeatured: false,
   },
   {
     id: "totalenergies-marketing-centrafrique", slug: "totalenergies-marketing-centrafrique", name: "TotalEnergies Marketing Centrafrique",
@@ -4493,7 +4493,7 @@ export const COMPANY_SEED: CompanySeed[] = [
     logo: "",
     heroImage: "",
     linkedin: "",
-    categoryIds: ["storage-terminals", "captive-terminals"], isFeatured: false,
+    categoryIds: ["storage-terminals"], isFeatured: false,
   },
   {
     id: "totalenergies-petrochemicals-and-refining-antwerp-nv", slug: "totalenergies-petrochemicals-and-refining-antwerp-nv", name: "TotalEnergies Petrochemicals & Refining Antwerp N.V.",
@@ -4511,7 +4511,7 @@ export const COMPANY_SEED: CompanySeed[] = [
     logo: "",
     heroImage: "",
     linkedin: "",
-    categoryIds: ["storage-terminals", "independent-terminals"], isFeatured: false,
+    categoryIds: ["storage-terminals"], isFeatured: false,
   },
   {
     id: "transneft-port-kozmino-jsc", slug: "transneft-port-kozmino-jsc", name: "Transneft – Port Kozmino JSC",
@@ -4520,7 +4520,7 @@ export const COMPANY_SEED: CompanySeed[] = [
     logo: "",
     heroImage: "",
     linkedin: "",
-    categoryIds: ["storage-terminals", "independent-terminals"], isFeatured: false,
+    categoryIds: ["storage-terminals"], isFeatured: false,
   },
   {
     id: "tripoli-oil-installations", slug: "tripoli-oil-installations", name: "Tripoli Oil Installations",
@@ -4529,7 +4529,7 @@ export const COMPANY_SEED: CompanySeed[] = [
     logo: "",
     heroImage: "",
     linkedin: "",
-    categoryIds: ["storage-terminals", "captive-terminals"], isFeatured: false,
+    categoryIds: ["storage-terminals"], isFeatured: false,
   },
   {
     id: "turkmenbashi-complex-of-oil-refineries-tcor", slug: "turkmenbashi-complex-of-oil-refineries-tcor", name: "Turkmenbashi Complex of Oil Refineries (TCOR)",
@@ -4547,7 +4547,7 @@ export const COMPANY_SEED: CompanySeed[] = [
     logo: "",
     heroImage: "",
     linkedin: "",
-    categoryIds: ["process-industries", "refineries", "captive-terminals"], isFeatured: false,
+    categoryIds: ["process-industries", "refineries", "storage-terminals"], isFeatured: false,
   },
   {
     id: "vipl", slug: "vipl", name: "VIPL",
@@ -4556,7 +4556,7 @@ export const COMPANY_SEED: CompanySeed[] = [
     logo: "",
     heroImage: "",
     linkedin: "",
-    categoryIds: ["storage-terminals", "independent-terminals"], isFeatured: false,
+    categoryIds: ["storage-terminals"], isFeatured: false,
   },
   {
     id: "vpi-immingham-llp", slug: "vpi-immingham-llp", name: "VPI Immingham LLP",
@@ -4565,7 +4565,7 @@ export const COMPANY_SEED: CompanySeed[] = [
     logo: "",
     heroImage: "",
     linkedin: "",
-    categoryIds: ["storage-terminals", "independent-terminals"], isFeatured: false,
+    categoryIds: ["storage-terminals"], isFeatured: false,
   },
   {
     id: "vale-fertilizantes-sa", slug: "vale-fertilizantes-sa", name: "Vale Fertilizantes S.A.",
@@ -4583,7 +4583,7 @@ export const COMPANY_SEED: CompanySeed[] = [
     logo: "",
     heroImage: "",
     linkedin: "",
-    categoryIds: ["storage-terminals", "captive-terminals"], isFeatured: false,
+    categoryIds: ["storage-terminals"], isFeatured: false,
   },
   {
     id: "vancouver-airport-fuel-facilities-corp", slug: "vancouver-airport-fuel-facilities-corp", name: "Vancouver Airport Fuel Facilities Corp",
@@ -4592,7 +4592,7 @@ export const COMPANY_SEED: CompanySeed[] = [
     logo: "",
     heroImage: "",
     linkedin: "",
-    categoryIds: ["storage-terminals", "independent-terminals"], isFeatured: false,
+    categoryIds: ["storage-terminals"], isFeatured: false,
   },
   {
     id: "vinati-organics-limited", slug: "vinati-organics-limited", name: "Vinati Organics Limited",
@@ -4619,7 +4619,7 @@ export const COMPANY_SEED: CompanySeed[] = [
     logo: "",
     heroImage: "",
     linkedin: "",
-    categoryIds: ["storage-terminals", "independent-terminals"], isFeatured: false,
+    categoryIds: ["storage-terminals"], isFeatured: false,
   },
   {
     id: "vopak-horizon-fujairah-limited", slug: "vopak-horizon-fujairah-limited", name: "Vopak Horizon Fujairah Limited",
@@ -4628,7 +4628,7 @@ export const COMPANY_SEED: CompanySeed[] = [
     logo: "",
     heroImage: "",
     linkedin: "",
-    categoryIds: ["storage-terminals", "independent-terminals"], isFeatured: false,
+    categoryIds: ["storage-terminals"], isFeatured: false,
   },
   {
     id: "waha", slug: "waha", name: "Waha",
@@ -4637,7 +4637,7 @@ export const COMPANY_SEED: CompanySeed[] = [
     logo: "",
     heroImage: "",
     linkedin: "",
-    categoryIds: ["storage-terminals", "captive-terminals"], isFeatured: false,
+    categoryIds: ["storage-terminals"], isFeatured: false,
   },
   {
     id: "wanhua-chemical-group-co-ltd", slug: "wanhua-chemical-group-co-ltd", name: "Wanhua Chemical Group Co., Ltd.",
@@ -4655,7 +4655,7 @@ export const COMPANY_SEED: CompanySeed[] = [
     logo: "",
     heroImage: "",
     linkedin: "",
-    categoryIds: ["storage-terminals", "independent-terminals"], isFeatured: false,
+    categoryIds: ["storage-terminals"], isFeatured: false,
   },
   {
     id: "yanbu-national-petrochemical-company-yansab", slug: "yanbu-national-petrochemical-company-yansab", name: "Yanbu National Petrochemical Company (Yansab)",
@@ -4772,7 +4772,7 @@ export const COMPANY_SEED: CompanySeed[] = [
     logo: "",
     heroImage: "",
     linkedin: "",
-    categoryIds: ["storage-terminals", "captive-terminals"], isFeatured: false,
+    categoryIds: ["storage-terminals"], isFeatured: false,
   },
   {
     id: "yunnan-yuntianhua-co-ltd", slug: "yunnan-yuntianhua-co-ltd", name: "Yunnan Yuntianhua Co., Ltd.",
@@ -4790,7 +4790,7 @@ export const COMPANY_SEED: CompanySeed[] = [
     logo: "",
     heroImage: "",
     linkedin: "",
-    categoryIds: ["storage-terminals", "captive-terminals"], isFeatured: false,
+    categoryIds: ["storage-terminals"], isFeatured: false,
   },
   {
     id: "zawiya-oil-refining-company", slug: "zawiya-oil-refining-company", name: "Zawiya Oil Refining Company",
@@ -4936,7 +4936,7 @@ export const COMPANY_SEED: CompanySeed[] = [
     logo: "",
     heroImage: "",
     linkedin: "",
-    categoryIds: ["esg-consulting", "consultancy-services"], isFeatured: false,
+    categoryIds: ["esg-consulting", "engineering-consultants"], isFeatured: false,
     externalDirectoryUrl: "https://tankworldindia.com/#/company/erm-india-private-limited", externalDirectoryName: "TankWorld India",
   },
   {
@@ -4946,7 +4946,7 @@ export const COMPANY_SEED: CompanySeed[] = [
     logo: "",
     heroImage: "",
     linkedin: "",
-    categoryIds: ["scada-systems", "tank-inventory-systems", "terminal-automation", "radar-level-gauges"], isFeatured: false,
+    categoryIds: ["plc-and-dcs", "tank-inventory-systems", "terminal-automation", "radar-level-gauges"], isFeatured: false,
     externalDirectoryUrl: "https://tankworldindia.com/#/company/emerson-electric-co", externalDirectoryName: "TankWorld India",
   },
   {
@@ -4966,7 +4966,7 @@ export const COMPANY_SEED: CompanySeed[] = [
     logo: "",
     heroImage: "",
     linkedin: "",
-    categoryIds: ["project-consultants", "engineering-consultants", "process-technology-licensors", "refining-process-technologies"], isFeatured: false,
+    categoryIds: ["owner-s-engineers", "engineering-consultants", "process-technology-licensors", "refining-process-technologies"], isFeatured: false,
     externalDirectoryUrl: "https://tankworldindia.com/#/company/engineers-india-limited", externalDirectoryName: "TankWorld India",
   },
   {
@@ -4976,7 +4976,7 @@ export const COMPANY_SEED: CompanySeed[] = [
     logo: "",
     heroImage: "",
     linkedin: "",
-    categoryIds: ["flame-arresters", "gauge-hatches", "strainers", "pressure-vacuum-vents"], isFeatured: false,
+    categoryIds: ["flame-arresters", "gauge-hatches", "strainers-and-line-protection", "pressure-vacuum-vents"], isFeatured: false,
     externalDirectoryUrl: "https://tankworldindia.com/#/company/fidicon-devices-india-private-limited", externalDirectoryName: "TankWorld India",
   },
   {
@@ -5026,7 +5026,7 @@ export const COMPANY_SEED: CompanySeed[] = [
     logo: "",
     heroImage: "",
     linkedin: "",
-    categoryIds: ["terminal-automation", "scada-systems", "plc-and-dcs"], isFeatured: false,
+    categoryIds: ["terminal-automation", "plc-and-dcs"], isFeatured: false,
     externalDirectoryUrl: "https://tankworldindia.com/#/company/honeywell-international-inc", externalDirectoryName: "TankWorld India",
   },
   {
@@ -5036,7 +5036,7 @@ export const COMPANY_SEED: CompanySeed[] = [
     logo: "",
     heroImage: "",
     linkedin: "",
-    categoryIds: ["professional-services", "engineering-consultants", "owner-s-engineers", "consultancy-services"], isFeatured: false,
+    categoryIds: ["professional-services", "engineering-consultants", "owner-s-engineers"], isFeatured: false,
     externalDirectoryUrl: "https://tankworldindia.com/#/company/john-wood-group-plc", externalDirectoryName: "TankWorld India",
   },
   {
@@ -5046,7 +5046,7 @@ export const COMPANY_SEED: CompanySeed[] = [
     logo: "",
     heroImage: "",
     linkedin: "",
-    categoryIds: ["electrical-contractors", "utility-contractors", "electrical-equipment-and-transformers"], isFeatured: false,
+    categoryIds: ["electrical-contractors", "wastewater-treatment", "electrical-equipment-and-transformers"], isFeatured: false,
     externalDirectoryUrl: "https://tankworldindia.com/#/company/kec-international-limited", externalDirectoryName: "TankWorld India",
   },
   {
@@ -5086,7 +5086,7 @@ export const COMPANY_SEED: CompanySeed[] = [
     logo: "",
     heroImage: "",
     linkedin: "",
-    categoryIds: ["insulation-contractors", "corrosion-protection", "pipeline-coatings-tapes-and-wraps", "insulation-materials"], isFeatured: false,
+    categoryIds: ["insulation-contractors", "corrosion-protection", "pipeline-coatings-tapes-and-wraps", "refractory-materials"], isFeatured: false,
     externalDirectoryUrl: "https://tankworldindia.com/#/company/lloyd-insulations-india-limited", externalDirectoryName: "TankWorld India",
   },
   {
@@ -5106,7 +5106,7 @@ export const COMPANY_SEED: CompanySeed[] = [
     logo: "",
     heroImage: "",
     linkedin: "",
-    categoryIds: ["tank-construction", "piping-contractors", "electrical-contractors", "mechanical-contractors", "equipment-erection-and-rigging"], isFeatured: false,
+    categoryIds: ["tank-construction", "piping-contractors", "electrical-contractors", "mechanical-contractors"], isFeatured: false,
     externalDirectoryUrl: "https://tankworldindia.com/#/company/offshore-infrastructures-limited", externalDirectoryName: "TankWorld India",
   },
   {
@@ -5207,9 +5207,7 @@ export const COMPANY_SEED: CompanySeed[] = [
 // company if/when available. isFeatured defaults to false.
 // externalDirectoryUrl points back to each company's live TWI profile page.
 //
-// Two known pre-existing gaps in TWI's own data, carried through as-is:
-//   - dkc-international-solutions-llp has categoryIds: [] (manufacturer's
-//     rep, intentionally uncategorized in TWI)
+// One known pre-existing gap in TWI's own data, carried through as-is:
 //   - koks-robotics has address: "" (no address on file in TWI)
 // ──────────────────────────────────────────────────────────────────────
   {
@@ -5227,7 +5225,7 @@ export const COMPANY_SEED: CompanySeed[] = [
     address: "Zinkstraat 2, 1500 Halle, Belgium", website: "",
     logo: "", heroImage: "",
     linkedin: "",
-    categoryIds: ["terminal-automation", "scada-systems", "plc-and-dcs"], isFeatured: false,
+    categoryIds: ["terminal-automation", "plc-and-dcs"], isFeatured: false,
     externalDirectoryUrl: "https://tankworldindia.com/#/company/agidens-process-automation-nv", externalDirectoryName: "TankWorld India",
   },
   {
@@ -5281,7 +5279,7 @@ export const COMPANY_SEED: CompanySeed[] = [
     address: "Bani ul. 110, 10010, Buzin, Croatia", website: "",
     logo: "", heroImage: "",
     linkedin: "",
-    categoryIds: ["terminal-automation", "scada-systems"], isFeatured: false,
+    categoryIds: ["terminal-automation", "plc-and-dcs"], isFeatured: false,
     externalDirectoryUrl: "https://tankworldindia.com/#/company/eccos-inzenjering-doo", externalDirectoryName: "TankWorld India",
   },
   {
@@ -5353,7 +5351,7 @@ export const COMPANY_SEED: CompanySeed[] = [
     address: "R. da Indústria 1, 7500-220 Santiago do Cacém, Portugal", website: "",
     logo: "", heroImage: "",
     linkedin: "",
-    categoryIds: ["terminal-automation", "scada-systems", "plc-and-dcs", "electrical-and-instrumentation"], isFeatured: false,
+    categoryIds: ["terminal-automation", "plc-and-dcs", "electrical-and-instrumentation"], isFeatured: false,
     externalDirectoryUrl: "https://tankworldindia.com/#/company/plexus-integracao-de-sistemas-lda", externalDirectoryName: "TankWorld India",
   },
   {
@@ -5398,7 +5396,7 @@ export const COMPANY_SEED: CompanySeed[] = [
     address: "Droogdokweg 71, 3089 JN Rotterdam, Netherlands", website: "",
     logo: "", heroImage: "",
     linkedin: "",
-    categoryIds: ["epc-contractors", "tank-construction", "mechanical-contractors", "shutdown-and-turnaround"], isFeatured: false,
+    categoryIds: ["epc-contractors", "tank-construction", "mechanical-contractors", "turnaround-and-shutdown-services"], isFeatured: false,
     externalDirectoryUrl: "https://tankworldindia.com/#/company/verwater-group-bv", externalDirectoryName: "TankWorld India",
   },
   {
@@ -5686,7 +5684,7 @@ export const COMPANY_SEED: CompanySeed[] = [
     address: "C/o SPOGL, Forbes Building, 2nd Floor, West Wing, Charanjit Rai Marg, Fort, Mumbai, Maharashtra 400001, India", website: "",
     logo: "", heroImage: "",
     linkedin: "",
-    categoryIds: ["offshore-floating-systems", "fsru-and-regasification-systems"], isFeatured: false,
+    categoryIds: ["offshore-floating-systems", "flng-systems"], isFeatured: false,
     externalDirectoryUrl: "https://tankworldindia.com/#/company/sp-armada-clean-energy-ventures-private-limited", externalDirectoryName: "TankWorld India",
   },
   {
@@ -5902,7 +5900,7 @@ export const COMPANY_SEED: CompanySeed[] = [
     address: "60-63, Por Industrial Park, Por, Vadodara, Gujarat 391243, India", website: "https://www.cryogenicogs.com",
     logo: "", heroImage: "",
     linkedin: "",
-    categoryIds: ["truck-loading-systems", "rail-loading-systems", "custody-transfer-metering", "flow-meters", "strainers-and-line-protection", "package-units-and-process-skids", "tank-gauging"], isFeatured: false,
+    categoryIds: ["truck-loading-systems", "custody-transfer-metering", "flow-meters", "strainers-and-line-protection", "package-units-and-process-skids", "tank-gauging"], isFeatured: false,
     externalDirectoryUrl: "https://tankworldindia.com/#/company/cryogenic-ogs-limited", externalDirectoryName: "TankWorld India",
   },
   {
@@ -6028,7 +6026,7 @@ export const COMPANY_SEED: CompanySeed[] = [
     address: "Mumbai, Maharashtra, India", website: "https://www.siemens.com/in",
     logo: "", heroImage: "",
     linkedin: "",
-    categoryIds: ["radar-level-gauges", "tank-gauging", "plc-and-dcs", "scada-systems", "terminal-automation", "gas-detection", "level-measurement"], isFeatured: false,
+    categoryIds: ["radar-level-gauges", "tank-gauging", "plc-and-dcs", "terminal-automation", "gas-detection", "level-measurement"], isFeatured: false,
     externalDirectoryUrl: "https://tankworldindia.com/#/company/siemens-limited", externalDirectoryName: "TankWorld India",
   },
   {
@@ -6199,7 +6197,7 @@ export const COMPANY_SEED: CompanySeed[] = [
     address: "Pod Vinicí 2028/20, 143 00, Praha 4, Czech Republic", website: "https://www.jettyrobot.com",
     logo: "", heroImage: "",
     linkedin: "",
-    categoryIds: ["inspection-drones-and-crawlers", "robotic-no-man-entry-cleaning"], isFeatured: false,
+    categoryIds: ["drone-and-robotic-inspection", "robotic-no-man-entry-cleaning"], isFeatured: false,
     externalDirectoryUrl: "https://tankworldindia.com/#/company/jettyrobot-sro", externalDirectoryName: "TankWorld India",
   },
   {
@@ -6253,7 +6251,7 @@ export const COMPANY_SEED: CompanySeed[] = [
     address: "Huifakkerstraat 22, 4815 PN Breda", website: "https://www.saval.nl",
     logo: "", heroImage: "",
     linkedin: "",
-    categoryIds: ["rim-seal-fire-protection", "rim-seal-detection-systems", "rim-seal-dry-chemical-systems"], isFeatured: false,
+    categoryIds: ["rim-seal-fire-protection", "rim-seal-detection-systems"], isFeatured: false,
     externalDirectoryUrl: "https://tankworldindia.com/#/company/saval", externalDirectoryName: "TankWorld India",
   },
   {
@@ -6262,7 +6260,7 @@ export const COMPANY_SEED: CompanySeed[] = [
     address: "Swansea/Maesteg, South Wales, United Kingdom", website: "https://www.nonentrysystemsltd.com",
     logo: "", heroImage: "",
     linkedin: "",
-    categoryIds: ["robotic-no-man-entry-cleaning", "sludge-recovery-units", "hydrocarbon-recovery"], isFeatured: false,
+    categoryIds: ["robotic-no-man-entry-cleaning", "sludge-recovery-units", "sludge-removal"], isFeatured: false,
     externalDirectoryUrl: "https://tankworldindia.com/#/company/non-entry-systems-ltd", externalDirectoryName: "TankWorld India",
   },
   {
@@ -6289,7 +6287,7 @@ export const COMPANY_SEED: CompanySeed[] = [
     address: "Dapodi, Pune, Maharashtra", website: "https://www.alfalaval.in",
     logo: "", heroImage: "",
     linkedin: "",
-    categoryIds: ["robotic-no-man-entry-cleaning", "hydrocarbon-recovery", "pumps", "centrifugal-pumps"], isFeatured: false,
+    categoryIds: ["robotic-no-man-entry-cleaning", "sludge-removal", "pumps", "centrifugal-pumps"], isFeatured: false,
     externalDirectoryUrl: "https://tankworldindia.com/#/company/alfa-laval-india-private-limited", externalDirectoryName: "TankWorld India",
   },
   {
@@ -6325,7 +6323,7 @@ export const COMPANY_SEED: CompanySeed[] = [
     address: "A-102, New India Chambers, Cross Road A, Off MIDC, Behind Onida House, Andheri-East, Mumbai 400093 (workshop: GIDC Manjusar, Savli, Vadodara, Gujarat)", website: "https://www.petronefteng.com",
     logo: "", heroImage: "",
     linkedin: "",
-    categoryIds: ["robotic-no-man-entry-cleaning", "hydrocarbon-recovery", "catalyst-handling", "tank-inspection"], isFeatured: false,
+    categoryIds: ["robotic-no-man-entry-cleaning", "sludge-removal", "catalyst-handling", "tank-inspection"], isFeatured: false,
     externalDirectoryUrl: "https://tankworldindia.com/#/company/petroneft-non-entry-engineering-solutions-private-limited", externalDirectoryName: "TankWorld India",
   },
   {
@@ -6381,15 +6379,6 @@ export const COMPANY_SEED: CompanySeed[] = [
     linkedin: "",
     categoryIds: ["loading-arms", "marine-loading-arms", "hose-type-roof-drains"], isFeatured: false,
     externalDirectoryUrl: "https://tankworldindia.com/#/company/jre-private-limited", externalDirectoryName: "TankWorld India",
-  },
-  {
-    id: "dkc-international-solutions-llp", slug: "dkc-international-solutions-llp", name: "DKC International Solutions LLP",
-    description: "Manufacturers' representative for Kanon Loading Equipment BV (Netherlands) in India; part of the Podar Group. Does not manufacture loading arms itself, hence no category tags.", aboutUs: "",
-    address: "4a/5, Bhartiya Kreeda Mandir, 57 Naigaum Cross Road, Wadala, Mumbai - 400031", website: "",
-    logo: "", heroImage: "",
-    linkedin: "",
-    categoryIds: [], isFeatured: false,
-    externalDirectoryUrl: "https://tankworldindia.com/#/company/dkc-international-solutions-llp", externalDirectoryName: "TankWorld India",
   },
   {
     id: "kanon-loading-equipment-bv", slug: "kanon-loading-equipment-bv", name: "Kanon Loading Equipment B.V.",
@@ -6487,7 +6476,7 @@ export const COMPANY_SEED: CompanySeed[] = [
     address: "V Plaza, No. 1018/A, 24th Main, 1st Sector, HSR Layout, Bangalore, Karnataka 560102, India", website: "https://www.xboom.in",
     logo: "", heroImage: "",
     linkedin: "",
-    categoryIds: ["drone-and-robotic-inspection", "inspection-drones-and-crawlers", "rov-services"], isFeatured: false,
+    categoryIds: ["drone-and-robotic-inspection", "rov-services"], isFeatured: false,
     externalDirectoryUrl: "https://tankworldindia.com/#/company/xboom-utilities-private-limited", externalDirectoryName: "TankWorld India",
   },
   {
@@ -6559,7 +6548,7 @@ export const COMPANY_SEED: CompanySeed[] = [
     address: "JSW Centre, Bandra Kurla Complex, Bandra (East), Mumbai, Maharashtra 400051, India", website: "https://www.jswsteel.in",
     logo: "", heroImage: "",
     linkedin: "",
-    categoryIds: ["steel-manufacturers", "structural-steel"], isFeatured: false,
+    categoryIds: ["steel-manufacturers", "plates-and-sheets"], isFeatured: false,
     externalDirectoryUrl: "https://tankworldindia.com/#/company/jsw-steel-limited", externalDirectoryName: "TankWorld India",
   },
   {
@@ -6586,7 +6575,7 @@ export const COMPANY_SEED: CompanySeed[] = [
     address: "Ispat Bhawan, Lodhi Road, New Delhi 110003, India", website: "https://www.sail.co.in",
     logo: "", heroImage: "",
     linkedin: "",
-    categoryIds: ["steel-manufacturers", "heavy-engineering-and-fabrication", "structural-steel", "plates-and-sheets"], isFeatured: false,
+    categoryIds: ["steel-manufacturers", "heavy-engineering-and-fabrication", "plates-and-sheets"], isFeatured: false,
     externalDirectoryUrl: "https://tankworldindia.com/#/company/steel-authority-of-india-limited", externalDirectoryName: "TankWorld India",
   },
   {
@@ -6640,7 +6629,7 @@ export const COMPANY_SEED: CompanySeed[] = [
     address: "IMFA Building, Bomikhal, Rasulgarh, Bhubaneswar, Odisha 751010, India", website: "https://www.imfa.in",
     logo: "", heroImage: "",
     linkedin: "",
-    categoryIds: ["alloy-steel", "stainless-steel", "power-generation"], isFeatured: false,
+    categoryIds: ["stainless-steel", "power-generation"], isFeatured: false,
     externalDirectoryUrl: "https://tankworldindia.com/#/company/indian-metals-and-ferro-alloys-limited", externalDirectoryName: "TankWorld India",
   },
   {
@@ -6658,7 +6647,7 @@ export const COMPANY_SEED: CompanySeed[] = [
     address: "A-1, UPSIDC Industrial Area, Nandgaon Road, Kosi Kalan, District Mathura, Uttar Pradesh 281403, India", website: "https://jindalsaw.com",
     logo: "", heroImage: "",
     linkedin: "",
-    categoryIds: ["pipes-and-tubes", "stainless-steel", "alloy-steel"], isFeatured: false,
+    categoryIds: ["pipes-and-tubes", "stainless-steel"], isFeatured: false,
     externalDirectoryUrl: "https://tankworldindia.com/#/company/jindal-saw-limited", externalDirectoryName: "TankWorld India",
   },
   {
@@ -6694,7 +6683,7 @@ export const COMPANY_SEED: CompanySeed[] = [
     address: "37, Hargobind Enclave, Vikas Marg, Delhi 110092, India", website: "https://aplapollo.com",
     logo: "", heroImage: "",
     linkedin: "",
-    categoryIds: ["pipes-and-tubes", "structural-steel"], isFeatured: false,
+    categoryIds: ["pipes-and-tubes", "plates-and-sheets"], isFeatured: false,
     externalDirectoryUrl: "https://tankworldindia.com/#/company/apl-apollo-tubes-limited", externalDirectoryName: "TankWorld India",
   },
   {
@@ -6766,7 +6755,7 @@ export const COMPANY_SEED: CompanySeed[] = [
     address: "Ruvapari Road, Bhavnagar, Gujarat 364005, India", website: "https://steelcast.net",
     logo: "", heroImage: "",
     linkedin: "",
-    categoryIds: ["castings", "pumps", "valves", "alloy-steel"], isFeatured: false,
+    categoryIds: ["forgings", "pumps", "valves", "stainless-steel"], isFeatured: false,
     externalDirectoryUrl: "https://tankworldindia.com/#/company/steelcast-limited", externalDirectoryName: "TankWorld India",
   },
   {
@@ -6775,7 +6764,7 @@ export const COMPANY_SEED: CompanySeed[] = [
     address: "202, 2nd Floor, A-Wing, Building No.3, Sir M.V. Road, Rahul Mittal Industrial Estate, Andheri East, Mumbai, Maharashtra 400059, India", website: "https://www.nitincastings.com",
     logo: "", heroImage: "",
     linkedin: "",
-    categoryIds: ["castings", "alloy-steel", "smr-and-reformer-equipment"], isFeatured: false,
+    categoryIds: ["forgings", "stainless-steel", "smr-and-reformer-equipment"], isFeatured: false,
     externalDirectoryUrl: "https://tankworldindia.com/#/company/nitin-castings-limited", externalDirectoryName: "TankWorld India",
   },
   {
@@ -6784,7 +6773,7 @@ export const COMPANY_SEED: CompanySeed[] = [
     address: "7th Floor, Thane One Corporate IT Park, DIL Complex, Ghodbunder Road, Thane West, Maharashtra 400610, India", website: "https://www.rdc.in",
     logo: "", heroImage: "",
     linkedin: "",
-    categoryIds: ["ready-mix-concrete"], isFeatured: false,
+    categoryIds: ["cement-and-aggregates"], isFeatured: false,
     externalDirectoryUrl: "https://tankworldindia.com/#/company/rdc-concrete-india-limited", externalDirectoryName: "TankWorld India",
   },
   {
@@ -6793,7 +6782,7 @@ export const COMPANY_SEED: CompanySeed[] = [
     address: "2nd Floor, 214, Mindspace, Yeyyadi, Opposite Volkswagen Showroom, Mangaluru, Dakshina Kannada, Karnataka 575008, India", website: "https://qcreteindia.com",
     logo: "", heroImage: "",
     linkedin: "",
-    categoryIds: ["ready-mix-concrete"], isFeatured: false,
+    categoryIds: ["cement-and-aggregates"], isFeatured: false,
     externalDirectoryUrl: "https://tankworldindia.com/#/company/qcrete-readymix-india-private-limited", externalDirectoryName: "TankWorld India",
   },
   {
@@ -6802,7 +6791,7 @@ export const COMPANY_SEED: CompanySeed[] = [
     address: "305, Laxmi Niwas Apartments, Ameerpet, Hyderabad, Telangana 500016, India", website: "https://www.rmcindia.com",
     logo: "", heroImage: "",
     linkedin: "",
-    categoryIds: ["ready-mix-concrete", "cement-and-aggregates"], isFeatured: false,
+    categoryIds: ["cement-and-aggregates"], isFeatured: false,
     externalDirectoryUrl: "https://tankworldindia.com/#/company/prism-johnson-limited", externalDirectoryName: "TankWorld India",
   },
   {
@@ -6811,7 +6800,7 @@ export const COMPANY_SEED: CompanySeed[] = [
     address: "217, Kartik Complex, New Link Road, Andheri West, Mumbai, Maharashtra 400053, India", website: "https://www.skywaybuildtech.com",
     logo: "", heroImage: "",
     linkedin: "",
-    categoryIds: ["ready-mix-concrete"], isFeatured: false,
+    categoryIds: ["cement-and-aggregates"], isFeatured: false,
     externalDirectoryUrl: "https://tankworldindia.com/#/company/skyway-rmc-plants-private-limited", externalDirectoryName: "TankWorld India",
   },
   {
@@ -6820,7 +6809,7 @@ export const COMPANY_SEED: CompanySeed[] = [
     address: "Ahura Centre, B Wing, 2nd Floor, Mahakali Caves Road, Andheri East, Mumbai, Maharashtra 400093, India", website: "https://www.ultratechcement.com",
     logo: "", heroImage: "",
     linkedin: "",
-    categoryIds: ["cement-and-aggregates", "ready-mix-concrete"], isFeatured: false,
+    categoryIds: ["cement-and-aggregates"], isFeatured: false,
     externalDirectoryUrl: "https://tankworldindia.com/#/company/ultratech-cement-limited", externalDirectoryName: "TankWorld India",
   },
   {
@@ -6838,7 +6827,7 @@ export const COMPANY_SEED: CompanySeed[] = [
     address: "Office No. 1, 2, 3, Satyam Solaris, Off B.K.S.D. Marg, Deonar, Chembur, Mumbai, Maharashtra 400088, India", website: "https://www.cppiping.com",
     logo: "", heroImage: "",
     linkedin: "",
-    categoryIds: ["frp-products", "desalination"], isFeatured: false,
+    categoryIds: ["frp-products", "industrial-water-systems"], isFeatured: false,
     externalDirectoryUrl: "https://tankworldindia.com/#/company/chemical-process-piping-private-limited", externalDirectoryName: "TankWorld India",
   },
   {
@@ -6847,7 +6836,7 @@ export const COMPANY_SEED: CompanySeed[] = [
     address: "612, Raheja Chambers, Nariman Point, Mumbai, Maharashtra 400021, India", website: "https://www.supreme.co.in",
     logo: "", heroImage: "",
     linkedin: "",
-    categoryIds: ["hdpe-products", "tank-construction", "valves"], isFeatured: false,
+    categoryIds: ["frp-products", "tank-construction", "valves"], isFeatured: false,
     externalDirectoryUrl: "https://tankworldindia.com/#/company/supreme-industries-limited", externalDirectoryName: "TankWorld India",
   },
   {
@@ -6856,7 +6845,7 @@ export const COMPANY_SEED: CompanySeed[] = [
     address: "Plot No.1, Honda Industrial Estate, Phase II, Honda Sattari, Honda, Goa 403530, India", website: "https://www.princepipes.com",
     logo: "", heroImage: "",
     linkedin: "",
-    categoryIds: ["hdpe-products"], isFeatured: false,
+    categoryIds: ["frp-products"], isFeatured: false,
     externalDirectoryUrl: "https://tankworldindia.com/#/company/prince-pipes-and-fittings-limited", externalDirectoryName: "TankWorld India",
   },
   {
@@ -6910,7 +6899,7 @@ export const COMPANY_SEED: CompanySeed[] = [
     address: "Sigapi Achi Building, 7th Floor, 18/3, Rukmini Lakshmipathy Road, Egmore, Chennai, Tamil Nadu 600008, India", website: "https://www.insulation-india.saint-gobain.com",
     logo: "", heroImage: "",
     linkedin: "",
-    categoryIds: ["insulation-materials", "heavy-engineering-and-fabrication"], isFeatured: false,
+    categoryIds: ["refractory-materials", "heavy-engineering-and-fabrication"], isFeatured: false,
     externalDirectoryUrl: "https://tankworldindia.com/#/company/saint-gobain-india-private-limited", externalDirectoryName: "TankWorld India",
   },
   {
@@ -6928,7 +6917,7 @@ export const COMPANY_SEED: CompanySeed[] = [
     address: "Cement House, 121, Maharshi Karve Road, Mumbai, Maharashtra 400020, India", website: "https://www.acclimited.com",
     logo: "", heroImage: "",
     linkedin: "",
-    categoryIds: ["cement-and-aggregates", "ready-mix-concrete"], isFeatured: false,
+    categoryIds: ["cement-and-aggregates"], isFeatured: false,
     externalDirectoryUrl: "https://tankworldindia.com/#/company/acc-limited", externalDirectoryName: "TankWorld India",
   },
   {
@@ -6937,7 +6926,7 @@ export const COMPANY_SEED: CompanySeed[] = [
     address: "Wabag House, No.17, 200 Feet Thoraipakkam-Pallavaram Main Road, Sunnambu Kolathur, Chennai, Tamil Nadu 600117, India", website: "https://www.wabag.com",
     logo: "", heroImage: "",
     linkedin: "",
-    categoryIds: ["industrial-water-systems", "wastewater-treatment", "desalination"], isFeatured: false,
+    categoryIds: ["industrial-water-systems", "wastewater-treatment"], isFeatured: false,
     externalDirectoryUrl: "https://tankworldindia.com/#/company/va-tech-wabag-limited", externalDirectoryName: "TankWorld India",
   },
   {
@@ -6973,7 +6962,7 @@ export const COMPANY_SEED: CompanySeed[] = [
     address: "C-56, Mayapuri Industrial Area, Phase-II, New Delhi 110064, India", website: "https://www.se.com/in",
     logo: "", heroImage: "",
     linkedin: "",
-    categoryIds: ["ups-systems", "power-distribution-equipment", "electrical-equipment-and-transformers"], isFeatured: false,
+    categoryIds: ["ups-systems", "electrical-equipment-and-transformers"], isFeatured: false,
     externalDirectoryUrl: "https://tankworldindia.com/#/company/schneider-electric-india-private-limited", externalDirectoryName: "TankWorld India",
   },
   {
@@ -6982,7 +6971,7 @@ export const COMPANY_SEED: CompanySeed[] = [
     address: "Disha, 3rd Floor, Plot No. 5 & 6, 2nd Stage, Peenya Industrial Area IV, Peenya, Bengaluru, Karnataka 560058, India", website: "https://www.abb.com/in",
     logo: "", heroImage: "",
     linkedin: "",
-    categoryIds: ["power-distribution-equipment", "marine-and-port-equipment", "power-generation"], isFeatured: false,
+    categoryIds: ["electrical-equipment-and-transformers", "marine-and-port-equipment", "power-generation"], isFeatured: false,
     externalDirectoryUrl: "https://tankworldindia.com/#/company/abb-india-limited", externalDirectoryName: "TankWorld India",
   },
   {
@@ -7027,7 +7016,7 @@ export const COMPANY_SEED: CompanySeed[] = [
     address: "B-9, Qutab Institutional Area, Katwaria Sarai, New Delhi 110016, India", website: "https://www.powergrid.in",
     logo: "", heroImage: "",
     linkedin: "",
-    categoryIds: ["hydrogen-infrastructure", "power-distribution-equipment"], isFeatured: false,
+    categoryIds: ["hydrogen-infrastructure", "electrical-equipment-and-transformers"], isFeatured: false,
     externalDirectoryUrl: "https://tankworldindia.com/#/company/power-grid-corporation-of-india-limited", externalDirectoryName: "TankWorld India",
   },
   {
@@ -7063,7 +7052,7 @@ export const COMPANY_SEED: CompanySeed[] = [
     address: "Oxygen House, P43, Taratala Road, Kolkata, West Bengal 700088, India", website: "https://www.linde.in",
     logo: "", heroImage: "",
     linkedin: "",
-    categoryIds: ["hydrogen-infrastructure", "hydrogen-storage-and-handling"], isFeatured: false,
+    categoryIds: ["hydrogen-infrastructure"], isFeatured: false,
     externalDirectoryUrl: "https://tankworldindia.com/#/company/linde-india-limited", externalDirectoryName: "TankWorld India",
   },
   {
@@ -7117,7 +7106,7 @@ export const COMPANY_SEED: CompanySeed[] = [
     address: "Plot No. F-46 & F-47, Bible College Road, 8th Main Road 3rd Cross, SIPCOT Industrial Park, Irungattukottai, Sriperumbudur, Tamil Nadu 602105, India", website: "https://petronashengineering.com",
     logo: "", heroImage: "",
     linkedin: "",
-    categoryIds: ["emergency-shutdown-systems", "electrical-and-instrumentation"], isFeatured: false,
+    categoryIds: ["functional-safety", "electrical-and-instrumentation"], isFeatured: false,
     externalDirectoryUrl: "https://tankworldindia.com/#/company/petronash-engineering-services-private-limited", externalDirectoryName: "TankWorld India",
   },
   {
@@ -7162,7 +7151,7 @@ export const COMPANY_SEED: CompanySeed[] = [
     address: "72, Business Park, Ground Floor, Marol Industrial Area, Cross Road C, MIDC, Andheri East, Mumbai, Maharashtra 400093, India", website: "https://www.bureauveritas.co.in",
     logo: "", heroImage: "",
     linkedin: "",
-    categoryIds: ["hazop-and-risk-assessment", "functional-safety", "process-safety", "regulatory-compliance"], isFeatured: false,
+    categoryIds: ["hazop-and-risk-assessment", "functional-safety", "process-safety"], isFeatured: false,
     externalDirectoryUrl: "https://tankworldindia.com/#/company/bureau-veritas-india-private-limited", externalDirectoryName: "TankWorld India",
   },
   {
@@ -7189,7 +7178,7 @@ export const COMPANY_SEED: CompanySeed[] = [
     address: "Band Box House, 4th Floor, 254D, Dr. Annie Besant Road, Worli, Mumbai, Maharashtra 400030, India", website: "https://www.bluestar-ee.com",
     logo: "", heroImage: "",
     linkedin: "",
-    categoryIds: ["ultrasonic-flaw-detectors", "thickness-gauges", "phased-array-and-tofd", "radiographic-equipment", "weld-inspection-equipment", "borescopes-and-visual-inspection"], isFeatured: false,
+    categoryIds: ["ndt-equipment", "radiographic-equipment", "weld-inspection-equipment", "borescopes-and-visual-inspection"], isFeatured: false,
     externalDirectoryUrl: "https://tankworldindia.com/#/company/blue-star-engineering-and-electronics-limited", externalDirectoryName: "TankWorld India",
   },
   {
@@ -7216,7 +7205,7 @@ export const COMPANY_SEED: CompanySeed[] = [
     address: "612, Chiranjiv Tower, Nehru Place, New Delhi 110019, India", website: "https://ircengg.com",
     logo: "", heroImage: "",
     linkedin: "",
-    categoryIds: ["fitness-for-service", "life-extension"], isFeatured: false,
+    categoryIds: ["fitness-for-service"], isFeatured: false,
     externalDirectoryUrl: "https://tankworldindia.com/#/company/irc-engineering-services-india-private-limited", externalDirectoryName: "TankWorld India",
   },
   {
@@ -7252,7 +7241,7 @@ export const COMPANY_SEED: CompanySeed[] = [
     address: "A4-G, A Wing, Shivsrushti CHS, Building No. 64 and 76, Opposite Old Police Station, Vikhroli East, Kannamwar Nagar, Mumbai, Maharashtra 400083, India", website: "https://www.aegisscaffolding.com",
     logo: "", heroImage: "",
     linkedin: "",
-    categoryIds: ["scaffolding-services", "painting-and-coating-contractors", "industrial-flooring"], isFeatured: false,
+    categoryIds: ["scaffolding-services", "painting-and-coating-contractors"], isFeatured: false,
     externalDirectoryUrl: "https://tankworldindia.com/#/company/aegis-scaffolding-services-private-limited", externalDirectoryName: "TankWorld India",
   },
   {
@@ -7270,7 +7259,7 @@ export const COMPANY_SEED: CompanySeed[] = [
     address: "Ganesh Towers, Door No. B1, 1st Floor, 1st Avenue, Ashok Nagar, Chennai, Tamil Nadu 600083, India", website: "https://www.tremcocpg-india.in",
     logo: "", heroImage: "",
     linkedin: "",
-    categoryIds: ["industrial-flooring", "roofing-systems", "painting-and-coating-contractors"], isFeatured: false,
+    categoryIds: ["painting-and-coating-contractors", "roofing-systems"], isFeatured: false,
     externalDirectoryUrl: "https://tankworldindia.com/#/company/tremco-cpg-india-private-limited", externalDirectoryName: "TankWorld India",
   },
   {
@@ -7297,7 +7286,7 @@ export const COMPANY_SEED: CompanySeed[] = [
     address: "Praj Tower, 274 & 275/2, Bhumkar Chowk, Hinjewadi Road, Hinjewadi, Pune, Maharashtra 411057, India", website: "https://www.praj.net",
     logo: "", heroImage: "",
     linkedin: "",
-    categoryIds: ["biofuel-and-ethanol-storage-systems", "cbg-and-biogas-infrastructure", "biofuels-and-bioenergy"], isFeatured: false,
+    categoryIds: ["biofuel-and-ethanol-storage-systems", "cbg-and-biogas-infrastructure"], isFeatured: false,
     externalDirectoryUrl: "https://tankworldindia.com/#/company/praj-industries-limited", externalDirectoryName: "TankWorld India",
   },
   {
@@ -7306,7 +7295,7 @@ export const COMPANY_SEED: CompanySeed[] = [
     address: "Bengaluru, Karnataka, India", website: "",
     logo: "", heroImage: "",
     linkedin: "",
-    categoryIds: ["biofuel-and-ethanol-storage-systems", "cbg-and-biogas-infrastructure", "biofuels-and-bioenergy"], isFeatured: false,
+    categoryIds: ["biofuel-and-ethanol-storage-systems", "cbg-and-biogas-infrastructure"], isFeatured: false,
     externalDirectoryUrl: "https://tankworldindia.com/#/company/trualt-bioenergy-limited", externalDirectoryName: "TankWorld India",
   },
   {
@@ -7396,17 +7385,8 @@ export const COMPANY_SEED: CompanySeed[] = [
     address: "'Saurabh', Harsulia Mod, P.O. Harsulia, Diggi-Malpura Road, Phagi, Jaipur, Rajasthan 303904, India", website: "https://www.gravitaindia.com",
     logo: "", heroImage: "",
     linkedin: "",
-    categoryIds: ["secondary-metals-and-recycling", "aluminium-products"], isFeatured: false,
+    categoryIds: ["aluminium-products"], isFeatured: false,
     externalDirectoryUrl: "https://tankworldindia.com/#/company/gravita-india-limited", externalDirectoryName: "TankWorld India",
-  },
-  {
-    id: "pondy-oxides-and-chemicals-limited", slug: "pondy-oxides-and-chemicals-limited", name: "Pondy Oxides and Chemicals Limited",
-    description: "Publicly listed (BSE: 532626) leading Indian metallic oxides and plastic additives producer founded 1995; recycles used lead-acid batteries and metal scrap into refined lead, lead alloys, lead oxides, litharge, red lead and PVC stabilizers, supplying the battery and chemical industries.", aboutUs: "",
-    address: "KRM Centre, 4th Floor, No. 2, Harrington Road, Chetpet, Chennai, Tamil Nadu 600031, India", website: "https://www.pocl.com",
-    logo: "", heroImage: "",
-    linkedin: "",
-    categoryIds: ["secondary-metals-and-recycling"], isFeatured: false,
-    externalDirectoryUrl: "https://tankworldindia.com/#/company/pondy-oxides-and-chemicals-limited", externalDirectoryName: "TankWorld India",
   },
   {
     id: "jain-resource-recycling-limited", slug: "jain-resource-recycling-limited", name: "Jain Resource Recycling Limited",
@@ -7414,7 +7394,7 @@ export const COMPANY_SEED: CompanySeed[] = [
     address: "The Lattice, Old No. 7/1, New No. 20, 4th Floor, Bishop Ezra Sargunam Road, Kilpauk, Chennai, Tamil Nadu 600010, India", website: "https://www.jainmetalgroup.com",
     logo: "", heroImage: "",
     linkedin: "",
-    categoryIds: ["secondary-metals-and-recycling", "aluminium-products"], isFeatured: false,
+    categoryIds: ["aluminium-products"], isFeatured: false,
     externalDirectoryUrl: "https://tankworldindia.com/#/company/jain-resource-recycling-limited", externalDirectoryName: "TankWorld India",
   },
   {
@@ -7450,7 +7430,7 @@ export const COMPANY_SEED: CompanySeed[] = [
     address: "208, Devshruti Complex, Opp. Medisurge Hospital, Nr. Mithakhali Cross Road, Ellisbridge, Ahmedabad, Gujarat 380006, India", website: "https://www.felixindustries.co",
     logo: "", heroImage: "",
     linkedin: "",
-    categoryIds: ["wastewater-treatment", "hydrocarbon-recovery"], isFeatured: false,
+    categoryIds: ["wastewater-treatment", "sludge-removal"], isFeatured: false,
     externalDirectoryUrl: "https://tankworldindia.com/#/company/felix-industries-limited", externalDirectoryName: "TankWorld India",
   },
   {
@@ -7567,7 +7547,7 @@ export const COMPANY_SEED: CompanySeed[] = [
     address: "Shipping House, 245, Madame Cama Road, Mumbai, Maharashtra 400021, India", website: "https://www.shipindia.com",
     logo: "", heroImage: "",
     linkedin: "",
-    categoryIds: ["shipping-companies", "consultancy-services", "offshore-support-vessels", "shipbuilding"], isFeatured: false,
+    categoryIds: ["marine-logistics", "engineering-consultants", "offshore-support-vessels", "shipbuilding"], isFeatured: false,
     externalDirectoryUrl: "https://tankworldindia.com/#/company/shipping-corporation-of-india-limited", externalDirectoryName: "TankWorld India",
   },
   {
@@ -7594,7 +7574,7 @@ export const COMPANY_SEED: CompanySeed[] = [
     address: "Godrej Coliseum, Office No.801, C-Wing, Behind Everard Nagar, Off Somaiya Hospital Road, Sion East, Mumbai, Maharashtra 400022, India", website: "https://www.jmbaxi.com",
     logo: "", heroImage: "",
     linkedin: "",
-    categoryIds: ["customs-and-port-services", "marine-and-port-equipment"], isFeatured: false,
+    categoryIds: ["freight-forwarding", "marine-and-port-equipment"], isFeatured: false,
     externalDirectoryUrl: "https://tankworldindia.com/#/company/jm-baxi-ports-and-logistics-private-limited", externalDirectoryName: "TankWorld India",
   },
   {
@@ -7612,7 +7592,7 @@ export const COMPANY_SEED: CompanySeed[] = [
     address: "Plot No. M-8, Taloja Industrial Area, MIDC, Raigad, Navi Mumbai, Maharashtra 410206, India", website: "https://www.snowman.in",
     logo: "", heroImage: "",
     linkedin: "",
-    categoryIds: ["cold-storage"], isFeatured: false,
+    categoryIds: ["warehouse-operators"], isFeatured: false,
     externalDirectoryUrl: "https://tankworldindia.com/#/company/snowman-logistics-limited", externalDirectoryName: "TankWorld India",
   },
   {
@@ -7675,7 +7655,7 @@ export const COMPANY_SEED: CompanySeed[] = [
     address: "Unit No. 2702, 27th Floor, Rupa Renaissance, Plot D-33/D-207, Juinagar, MIDC TTC Industrial Area, Turbhe, Navi Mumbai, Maharashtra 400705, India", website: "https://assystem-india.com",
     logo: "", heroImage: "",
     linkedin: "",
-    categoryIds: ["owner-s-engineers", "consultancy-services"], isFeatured: false,
+    categoryIds: ["owner-s-engineers", "engineering-consultants"], isFeatured: false,
     externalDirectoryUrl: "https://tankworldindia.com/#/company/stup-consultants-private-limited", externalDirectoryName: "TankWorld India",
   },
   {
@@ -7684,7 +7664,7 @@ export const COMPANY_SEED: CompanySeed[] = [
     address: "3rd Floor, 304 - Radha Soami Sukun, Near APC Circle, Anand, Gujarat 388001, India", website: "https://qqec.in",
     logo: "", heroImage: "",
     linkedin: "",
-    categoryIds: ["owner-s-engineers", "consultancy-services", "solar-power-systems"], isFeatured: false,
+    categoryIds: ["owner-s-engineers", "engineering-consultants", "solar-power-systems"], isFeatured: false,
     externalDirectoryUrl: "https://tankworldindia.com/#/company/qq-engineering-and-consulting", externalDirectoryName: "TankWorld India",
   },
   {
@@ -7702,7 +7682,7 @@ export const COMPANY_SEED: CompanySeed[] = [
     address: "Hytera Tower, Shenzhen Hi-Tech Industrial Park North, Beihuan Road 9108, Nanshan District, Shenzhen, Guangdong 518057, China", website: "https://www.hytera.com",
     logo: "", heroImage: "",
     linkedin: "",
-    categoryIds: ["site-communication-systems", "hazardous-area-equipment"], isFeatured: false,
+    categoryIds: ["industrial-networking", "hazardous-area-equipment"], isFeatured: false,
     externalDirectoryUrl: "https://tankworldindia.com/#/company/hytera-communications-corporation-limited", externalDirectoryName: "TankWorld India",
   },
   {
@@ -7711,7 +7691,7 @@ export const COMPANY_SEED: CompanySeed[] = [
     address: "NFL Building, 5th & 6th Floor, Core-III, SCOPE Complex, Lodhi Road, New Delhi 110003, India", website: "https://eeslindia.org",
     logo: "", heroImage: "",
     linkedin: "",
-    categoryIds: ["energy-efficiency-systems", "consultancy-services"], isFeatured: false,
+    categoryIds: ["energy-efficiency-systems", "engineering-consultants"], isFeatured: false,
     externalDirectoryUrl: "https://tankworldindia.com/#/company/energy-efficiency-services-limited", externalDirectoryName: "TankWorld India",
   },
   {
@@ -7720,7 +7700,7 @@ export const COMPANY_SEED: CompanySeed[] = [
     address: "1st Floor, 10, Elphinstone Building, Veer Nariman Road, Horniman Circle, Fort, Mumbai, Maharashtra 400001, India", website: "https://www.tce.co.in",
     logo: "", heroImage: "",
     linkedin: "",
-    categoryIds: ["consultancy-services"], isFeatured: false,
+    categoryIds: ["engineering-consultants"], isFeatured: false,
     externalDirectoryUrl: "https://tankworldindia.com/#/company/tata-consulting-engineers-limited", externalDirectoryName: "TankWorld India",
   },
   {
@@ -7738,7 +7718,7 @@ export const COMPANY_SEED: CompanySeed[] = [
     address: "Uhde House, L.B.S. Marg, Vikhroli West, Mumbai, Maharashtra 400083, India", website: "https://www.thyssenkrupp-uhde.com/india",
     logo: "", heroImage: "",
     linkedin: "",
-    categoryIds: ["ammonia-storage-and-handling", "amine-and-gas-treating-systems", "hydrogen-generation", "psa-and-gas-purification", "sulphur-recovery-units"], isFeatured: false,
+    categoryIds: ["ammonia-storage-and-handling", "amine-and-gas-treating-systems", "hydrogen-generation", "psa-and-gas-purification"], isFeatured: false,
     externalDirectoryUrl: "https://tankworldindia.com/#/company/thyssenkrupp-industrial-solutions-india-private-limited", externalDirectoryName: "TankWorld India",
   },
   {

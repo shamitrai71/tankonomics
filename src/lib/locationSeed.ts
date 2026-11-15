@@ -2644,9 +2644,6 @@ export const LOCATION_SEED: Record<string, SeedLocation[]> = {
   "jre-private-limited": [
     { name: "Registered Office", type: "registered office", city: "", country: "India", externalUrl: "", facilityClass: [], processType: [], primaryClass: "", googlePlaceId: "" }
   ],
-  "dkc-international-solutions-llp": [
-    { name: "Registered Office", type: "registered office", city: "", country: "India", externalUrl: "", facilityClass: [], processType: [], primaryClass: "", googlePlaceId: "ChIJSV_XxR_P5zsRKx3abzzHJx0" }
-  ],
   "kanon-loading-equipment-bv": [
     { name: "Registered Office", type: "registered office", city: "", country: "Netherlands", externalUrl: "", facilityClass: [], processType: [], primaryClass: "", googlePlaceId: "ChIJjcZSgoIwxkcR7KX9C-A-gnQ" }
   ],
@@ -2982,9 +2979,6 @@ export const LOCATION_SEED: Record<string, SeedLocation[]> = {
   ],
   "gravita-india-limited": [
     { name: "Registered Office", type: "registered office", city: "Jaipur", country: "India", externalUrl: "", facilityClass: [], processType: [], primaryClass: "", googlePlaceId: "ChIJgR8mtpK2bTkRUoYVmBpJbfE" }
-  ],
-  "pondy-oxides-and-chemicals-limited": [
-    { name: "Registered Office", type: "registered office", city: "Chennai", country: "India", externalUrl: "", facilityClass: [], processType: [], primaryClass: "", googlePlaceId: "ChIJpyE7gmRmUjoRyw-UGJ4g8p0" }
   ],
   "jain-resource-recycling-limited": [
     { name: "Registered Office", type: "registered office", city: "Chennai", country: "India", externalUrl: "", facilityClass: [], processType: [], primaryClass: "", googlePlaceId: "ChIJG4qHKgBnUjoR4S6g377Bhls" }
