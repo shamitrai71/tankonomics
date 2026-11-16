@@ -38,8 +38,7 @@ import {
 } from "lucide-react";
 import axios from "axios";
 import { createDocument, useCollection, removeDocument, updateDocument, setDocument } from "../hooks/useFirestore";
-import { PAGE_COPY_DEFAULTS, PAGE_COPY_KEYS } from "../lib/pageCopy";
-import { useAuth, useTheme } from "../App";
+import { useAuth } from "../App";
 import { orderBy, serverTimestamp, doc, getDoc, getDocs, collection, setDoc, deleteDoc, deleteField } from "firebase/firestore";
 import { db, auth } from "../firebase";
 import { format, subDays, isWithinInterval, startOfDay, endOfDay } from "date-fns";
@@ -62,7 +61,7 @@ import {
   Area
 } from "recharts";
 
-type Tab ="analytics" |"news" |"forums" |"events" |"surveys" |"members" |"theme" |"moderation" |"companies" |"resumes" |"groups" |"jobs" |"taxonomy" |"pageCopy" |"batchLogos";
+type Tab ="analytics" |"news" |"forums" |"events" |"surveys" |"members" |"theme" |"moderation" |"companies" |"resumes" |"groups" |"jobs" |"taxonomy" |"batchLogos";
 
 import { CategorySelector } from "../components/CategorySelector";
 import BatchLogoUploader from "../components/BatchLogoUploader";
@@ -120,17 +119,7 @@ export default function Admin() {
   // Ctrl+F, which doesn't scope to just this list or work across the
   // masonry column layout reliably.
   const [companySearch, setCompanySearch] = useState("");
-  // Local edits for the Page Copy tab: keyed by page key, only populated once
-  // the admin actually types in a field. Read via effectivePageCopy() below,
-  // which falls back to the live Firestore doc, then the shipped default —
-  // never blank, so the form always shows real text to edit against.
-  const [copyDrafts, setCopyDrafts] = useState<Record<string, { eyebrow: string; title: string; subtitle: string }>>({});
-  const [savingCopyKey, setSavingCopyKey] = useState<string | null>(null);
   const { user } = useAuth();
-  // Dark/light mode is a user preference now controlled from Profile > Appearance,
-  // not from here — this page only needs isDark to keep the live theme-color
-  // preview (below) from stomping dark-mode colors with light-mode ones.
-  const { isDark } = useTheme();
 
   // Theme State
   const [matchWeights, setMatchWeights] = useState<MatchWeights>(DEFAULT_WEIGHTS);
@@ -259,7 +248,6 @@ export default function Admin() {
   const { data: jobMatches, loading: loadingJobMatches } = useCollection<any>("job_matches", [orderBy("createdAt", "desc")], activeTab === "jobs");
   // Taxonomy tab: all nodes in one subscription (~455 docs), sorted client-side.
   const { data: taxonomyNodes, loading: loadingTaxonomy } = useCollection<any>("taxonomy", [], activeTab === "taxonomy" || activeTab === "resumes");
-  const { data: pageCopyDocs, loading: loadingPageCopy } = useCollection<any>("pageCopy", [], activeTab === "pageCopy");
 
   const [newCategory, setNewCategory] = useState({ name:"", parentId:"", level: 1 });
   const [newLocation, setNewLocation] = useState({ name: "", type: "", city: "", country: "", externalUrl: "", facilityClass: [] as string[], processType: [] as string[], primaryClass: "", googlePlaceId: "" });
@@ -298,37 +286,6 @@ export default function Admin() {
     fetchTheme();
   }, []);
 
-  // Live preview of CSS variables in Admin panel.
-  //
-  // GUARDED ON isDark — this is the same bug App.tsx's own theme-color effect
-  // was already fixed for (see the comment there): inline styles set via
-  // .style.setProperty() outrank the .dark class's CSS variable rules, so an
-  // unconditional write here silently forces the ENTIRE app back to light-mode
-  // colors the instant this page mounts, regardless of the person's actual
-  // dark/light preference — which is exactly the "reverts to light mode when
-  // I open the admin panel" symptom. Skip the preview writes while dark mode
-  // is active (previewing the light theme while looking at dark mode makes
-  // little sense anyway), and clear any stale inline overrides on the way
-  // into dark mode so the .dark class rules can take over cleanly.
-  useEffect(() => {
-    const root = document.documentElement;
-    if (isDark) {
-      const props = ["--primary-brand","--secondary-brand","--accent-brand","--bg-main",
-        "--text-heading","--text-body","--bg-card","--border-main","--sidebar-focus","--sidebar-focus-text"];
-      for (const p of props) root.style.removeProperty(p);
-      return;
-    }
-    root.style.setProperty("--primary-brand", themeData.primaryColor);
-    root.style.setProperty("--secondary-brand", themeData.secondaryColor);
-    root.style.setProperty("--accent-brand", themeData.accentColor);
-    root.style.setProperty("--bg-main", themeData.backgroundColor);
-    root.style.setProperty("--text-heading", themeData.headingColor);
-    root.style.setProperty("--text-body", themeData.bodyTextColor);
-    root.style.setProperty("--bg-card", themeData.cardBackgroundColor);
-    root.style.setProperty("--border-main", themeData.borderColor);
-    root.style.setProperty("--sidebar-focus", themeData.sidebarFocusColor);
-    root.style.setProperty("--sidebar-focus-text", themeData.sidebarFocusTextColor);
-  }, [themeData, isDark]);
 
   const handleSaveTheme = async () => {
     setSavingTheme(true);
@@ -1323,7 +1280,6 @@ const handleEditCompany = async (company: any) => {
     { id:"groups", label:"Groups", icon: Users },
     { id:"jobs", label:"Jobs", icon: Briefcase },
     { id:"taxonomy", label:"Taxonomy", icon: Layers },
-    { id:"pageCopy", label:"Page Copy", icon: Edit },
     { id:"batchLogos", label:"Batch Logos", icon: ImagePlus },
     { id:"moderation", label:"Moderation", icon: Shield },
     { id:"theme", label:"Branding", icon: Palette },
@@ -2581,194 +2537,11 @@ const handleEditCompany = async (company: any) => {
         {activeTab === "theme" && (
           <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -10 }} key="theme" className="max-w-4xl mx-auto">
             <div className="bg-bg-card p-8 rounded-2xl border border-border-main shadow-sm overflow-hidden relative">
-              <div className="absolute top-0 left-0 w-full h-2 bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500"></div>
               <h2 className="text-2xl font-medium text-text-heading mb-8 flex items-center gap-3">
                 <Palette className="w-6 h-6 text-accent" /> Visual Identity
               </h2>
               
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-10">
-                <div className="space-y-6">
-                  <div>
-                    <label className="eyebrow tabular text-text-body/55 mb-2 block">Primary Brand Color</label>
-                    <div className="flex items-center gap-4">
-                      <input 
-                        type="color" 
-                        value={themeData.primaryColor} 
-                        onChange={(e) => setThemeData({...themeData, primaryColor: e.target.value})}
-                        className="w-16 h-16 rounded-2xl cursor-pointer border-4 border-slate-50 shadow-inner"
-                      />
-                      <input 
-                        type="text" 
-                        value={themeData.primaryColor} 
-                        onChange={(e) => setThemeData({...themeData, primaryColor: e.target.value})}
-                        className="flex-1 bg-bg-main border border-border-main rounded-xl px-4 py-3 font-mono text-sm focus:border-text-heading outline-none"
-                      />
-                    </div>
-                  </div>
-
-                  <div>
-                    <label className="eyebrow tabular text-text-body/55 mb-2 block">Secondary UI Color</label>
-                    <div className="flex items-center gap-4">
-                      <input 
-                        type="color" 
-                        value={themeData.secondaryColor} 
-                        onChange={(e) => setThemeData({...themeData, secondaryColor: e.target.value})}
-                        className="w-16 h-16 rounded-2xl cursor-pointer border-4 border-slate-50 shadow-inner"
-                      />
-                      <input 
-                        type="text" 
-                        value={themeData.secondaryColor} 
-                        onChange={(e) => setThemeData({...themeData, secondaryColor: e.target.value})}
-                        className="flex-1 bg-bg-main border border-border-main rounded-xl px-4 py-3 font-mono text-sm focus:border-text-heading outline-none"
-                      />
-                    </div>
-                  </div>
-
-                  <div>
-                    <label className="eyebrow tabular text-text-body/55 mb-2 block">Accent Color</label>
-                    <div className="flex items-center gap-4">
-                      <input 
-                        type="color" 
-                        value={themeData.accentColor} 
-                        onChange={(e) => setThemeData({...themeData, accentColor: e.target.value})}
-                        className="w-16 h-16 rounded-2xl cursor-pointer border-4 border-slate-50 shadow-inner"
-                      />
-                      <input 
-                        type="text" 
-                        value={themeData.accentColor} 
-                        onChange={(e) => setThemeData({...themeData, accentColor: e.target.value})}
-                        className="flex-1 bg-bg-main border border-border-main rounded-xl px-4 py-3 font-mono text-sm"
-                      />
-                    </div>
-                  </div>
-
-                  <div>
-                    <label className="eyebrow tabular text-text-body/55 mb-2 block">Interface Background</label>
-                    <div className="flex items-center gap-4">
-                      <input 
-                        type="color" 
-                        value={themeData.backgroundColor} 
-                        onChange={(e) => setThemeData({...themeData, backgroundColor: e.target.value})}
-                        className="w-16 h-16 rounded-2xl cursor-pointer border-4 border-slate-50 shadow-inner"
-                      />
-                      <input 
-                        type="text" 
-                        value={themeData.backgroundColor} 
-                        onChange={(e) => setThemeData({...themeData, backgroundColor: e.target.value})}
-                        className="flex-1 bg-bg-main border border-border-main rounded-xl px-4 py-3 font-mono text-sm"
-                      />
-                    </div>
-                  </div>
-
-                  <div>
-                    <label className="eyebrow tabular text-text-body/55 mb-2 block">Heading Text</label>
-                    <div className="flex items-center gap-4">
-                      <input 
-                        type="color" 
-                        value={themeData.headingColor} 
-                        onChange={(e) => setThemeData({...themeData, headingColor: e.target.value})}
-                        className="w-16 h-16 rounded-2xl cursor-pointer border-4 border-slate-50 shadow-inner"
-                      />
-                      <input 
-                        type="text" 
-                        value={themeData.headingColor} 
-                        onChange={(e) => setThemeData({...themeData, headingColor: e.target.value})}
-                        className="flex-1 bg-bg-main border border-border-main rounded-xl px-4 py-3 font-mono text-sm"
-                      />
-                    </div>
-                  </div>
-
-                  <div>
-                    <label className="eyebrow tabular text-text-body/55 mb-2 block">Body Text Color</label>
-                    <div className="flex items-center gap-4">
-                      <input 
-                        type="color" 
-                        value={themeData.bodyTextColor} 
-                        onChange={(e) => setThemeData({...themeData, bodyTextColor: e.target.value})}
-                        className="w-16 h-16 rounded-2xl cursor-pointer border-4 border-slate-50 shadow-inner"
-                      />
-                      <input 
-                        type="text" 
-                        value={themeData.bodyTextColor} 
-                        onChange={(e) => setThemeData({...themeData, bodyTextColor: e.target.value})}
-                        className="flex-1 bg-bg-main border border-border-main rounded-xl px-4 py-3 font-mono text-sm"
-                      />
-                    </div>
-                  </div>
-
-                  <div>
-                    <label className="eyebrow tabular text-text-body/55 mb-2 block">Surface/Card Color</label>
-                    <div className="flex items-center gap-4">
-                      <input 
-                        type="color" 
-                        value={themeData.cardBackgroundColor} 
-                        onChange={(e) => setThemeData({...themeData, cardBackgroundColor: e.target.value})}
-                        className="w-16 h-16 rounded-2xl cursor-pointer border-4 border-slate-50 shadow-inner"
-                      />
-                      <input 
-                        type="text" 
-                        value={themeData.cardBackgroundColor} 
-                        onChange={(e) => setThemeData({...themeData, cardBackgroundColor: e.target.value})}
-                        className="flex-1 bg-bg-main border border-border-main rounded-xl px-4 py-3 font-mono text-sm"
-                      />
-                    </div>
-                  </div>
-
-                  <div>
-                    <label className="eyebrow tabular text-text-body/55 mb-2 block">Global Border Color</label>
-                    <div className="flex items-center gap-4">
-                      <input 
-                        type="color" 
-                        value={themeData.borderColor} 
-                        onChange={(e) => setThemeData({...themeData, borderColor: e.target.value})}
-                        className="w-16 h-16 rounded-2xl cursor-pointer border-4 border-slate-50 shadow-inner"
-                      />
-                      <input 
-                        type="text" 
-                        value={themeData.borderColor} 
-                        onChange={(e) => setThemeData({...themeData, borderColor: e.target.value})}
-                        className="flex-1 bg-bg-main border border-border-main rounded-xl px-4 py-3 font-mono text-sm"
-                      />
-                    </div>
-                  </div>
-
-                  <div>
-                    <label className="eyebrow tabular text-text-body/55 mb-2 block">Sidebar Focus/Promo color</label>
-                    <div className="flex items-center gap-4">
-                      <input 
-                        type="color" 
-                        value={themeData.sidebarFocusColor ||"#0f172a"} 
-                        onChange={(e) => setThemeData({...themeData, sidebarFocusColor: e.target.value})}
-                        className="w-16 h-16 rounded-2xl cursor-pointer border-4 border-slate-50 shadow-inner"
-                      />
-                      <input 
-                        type="text" 
-                        value={themeData.sidebarFocusColor ||"#0f172a"} 
-                        onChange={(e) => setThemeData({...themeData, sidebarFocusColor: e.target.value})}
-                        className="flex-1 bg-bg-main border border-border-main rounded-xl px-4 py-3 font-mono text-sm"
-                      />
-                    </div>
-                  </div>
-
-                  <div>
-                    <label className="eyebrow tabular text-text-body/55 mb-2 block">Sidebar Focus Text</label>
-                    <div className="flex items-center gap-4">
-                      <input 
-                        type="color" 
-                        value={themeData.sidebarFocusTextColor ||"#ffffff"} 
-                        onChange={(e) => setThemeData({...themeData, sidebarFocusTextColor: e.target.value})}
-                        className="w-16 h-16 rounded-2xl cursor-pointer border-4 border-slate-50 shadow-inner"
-                      />
-                      <input 
-                        type="text" 
-                        value={themeData.sidebarFocusTextColor ||"#ffffff"} 
-                        onChange={(e) => setThemeData({...themeData, sidebarFocusTextColor: e.target.value})}
-                        className="flex-1 bg-bg-main border border-border-main rounded-xl px-4 py-3 font-mono text-sm"
-                      />
-                    </div>
-                  </div>
-                </div>
-
+              <div className="max-w-xl">
                 <div className="space-y-6">
                   <div>
                     <div className="flex items-center justify-between mb-2">
@@ -4072,125 +3845,6 @@ const handleEditCompany = async (company: any) => {
                   })()}
                 </div>
               )}
-            </div>
-          </motion.div>
-        )}
-
-        {activeTab === "pageCopy" && (
-          <motion.div key="pageCopy" initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -10 }} className="space-y-6">
-            <div>
-              <h2 className="font-display text-2xl text-text-heading">Page Copy</h2>
-              <p className="text-xs text-text-body/55 mt-1 font-medium">
-                The eyebrow, headline and subtitle shown at the top of each public page.
-                Changes go live immediately — no deploy required. Leave a field blank and it
-                falls back to the shipped default rather than disappearing.
-              </p>
-            </div>
-
-            <div className="grid gap-4">
-              {PAGE_COPY_KEYS.map((key) => {
-                const liveDoc = pageCopyDocs.find((d: any) => d.id === key);
-                const fallback = PAGE_COPY_DEFAULTS[key];
-                const draft = copyDrafts[key];
-                const effective = {
-                  eyebrow: draft?.eyebrow ?? liveDoc?.eyebrow ?? fallback.eyebrow,
-                  title: draft?.title ?? liveDoc?.title ?? fallback.title,
-                  subtitle: draft?.subtitle ?? liveDoc?.subtitle ?? fallback.subtitle,
-                };
-                const isCustomized = !!(liveDoc?.eyebrow || liveDoc?.title || liveDoc?.subtitle);
-                const isDirty = !!draft;
-
-                const setField = (field: "eyebrow" | "title" | "subtitle", value: string) => {
-                  setCopyDrafts((prev) => ({ ...prev, [key]: { ...effective, ...prev[key], [field]: value } }));
-                };
-
-                const save = async () => {
-                  setSavingCopyKey(key);
-                  try {
-                    await setDocument("pageCopy", key, effective);
-                    setCopyDrafts((prev) => { const next = { ...prev }; delete next[key]; return next; });
-                  } finally {
-                    setSavingCopyKey(null);
-                  }
-                };
-
-                const resetToDefault = async () => {
-                  setSavingCopyKey(key);
-                  try {
-                    await setDocument("pageCopy", key, fallback);
-                    setCopyDrafts((prev) => { const next = { ...prev }; delete next[key]; return next; });
-                  } finally {
-                    setSavingCopyKey(null);
-                  }
-                };
-
-                return (
-                  <div key={key} className="bg-bg-card border border-border-main rounded-2xl p-5">
-                    <div className="flex items-center justify-between mb-4">
-                      <div className="flex items-center gap-2">
-                        <p className="font-display text-lg text-text-heading capitalize">{key}</p>
-                        {isCustomized ? (
-                          <span className="eyebrow tabular text-[10px] px-2 py-0.5 rounded-full bg-accent/10 text-accent">Customized</span>
-                        ) : (
-                          <span className="eyebrow tabular text-[10px] px-2 py-0.5 rounded-full bg-text-body/10 text-text-body/55">Default</span>
-                        )}
-                        {isDirty && (
-                          <span className="eyebrow tabular text-[10px] px-2 py-0.5 rounded-full bg-yellow-500/10 text-yellow-600">Unsaved</span>
-                        )}
-                      </div>
-                      <div className="flex items-center gap-2">
-                        {isCustomized && (
-                          <button
-                            onClick={resetToDefault}
-                            disabled={savingCopyKey === key}
-                            className="text-xs px-3 py-1.5 rounded-lg border border-border-main text-text-body/70 hover:text-text-heading hover:border-text-heading transition-all disabled:opacity-50"
-                          >
-                            Reset to default
-                          </button>
-                        )}
-                        <button
-                          onClick={save}
-                          disabled={savingCopyKey === key || !isDirty}
-                          className="text-xs px-3 py-1.5 rounded-lg bg-text-heading text-bg-card hover:brightness-110 transition-all disabled:opacity-40 flex items-center gap-1.5"
-                        >
-                          {savingCopyKey === key ? <Loader2 className="w-3 h-3 animate-spin" /> : <Save className="w-3 h-3" />}
-                          Save
-                        </button>
-                      </div>
-                    </div>
-
-                    <div className="grid gap-3">
-                      <div>
-                        <label className="text-[11px] font-medium text-text-body/55 mb-1 block">Eyebrow (small label above the headline)</label>
-                        <input
-                          type="text"
-                          value={effective.eyebrow}
-                          onChange={(e) => setField("eyebrow", e.target.value)}
-                          className="w-full px-3 py-2 rounded-lg border border-border-main bg-bg-main text-sm text-text-heading focus:outline-none focus:border-accent"
-                        />
-                      </div>
-                      <div>
-                        <label className="text-[11px] font-medium text-text-body/55 mb-1 block">Headline</label>
-                        <input
-                          type="text"
-                          value={effective.title}
-                          onChange={(e) => setField("title", e.target.value)}
-                          className="w-full px-3 py-2 rounded-lg border border-border-main bg-bg-main text-sm text-text-heading font-display focus:outline-none focus:border-accent"
-                        />
-                      </div>
-                      <div>
-                        <label className="text-[11px] font-medium text-text-body/55 mb-1 block">Subtitle</label>
-                        <textarea
-                          value={effective.subtitle}
-                          onChange={(e) => setField("subtitle", e.target.value)}
-                          rows={2}
-                          className="w-full px-3 py-2 rounded-lg border border-border-main bg-bg-main text-sm text-text-body resize-none focus:outline-none focus:border-accent"
-                        />
-                      </div>
-                    </div>
-                  </div>
-                );
-              })}
             </div>
           </motion.div>
         )}

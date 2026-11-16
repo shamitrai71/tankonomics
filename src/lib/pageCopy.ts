@@ -1,12 +1,5 @@
-import { useDocument } from "../hooks/useFirestore";
-
-// Each entry's `eyebrow`/`title`/`subtitle` are the FALLBACK values shown until
-// an admin edits that page's copy in Firestore (collection "pageCopy", doc id
-// = the key below). Editing in the admin panel never requires a code deploy.
-//
-// Defaults are kept deliberately factual — no invented claims about features
-// that don't exist ("verified", "partner", etc.). Anyone editing a page's
-// live copy should hold the same bar.
+// Page titles and descriptions, fixed in code. Keep them factual: no claims
+// about features that do not exist ("verified", "partner" and so on).
 export interface PageCopy {
   eyebrow: string;
   title: string;
@@ -14,56 +7,53 @@ export interface PageCopy {
 }
 
 export const PAGE_COPY_DEFAULTS: Record<string, PageCopy> = {
+  feed: {
+    eyebrow: "",
+    title: "Feed",
+    subtitle: "Updates and discussion from members and companies in the tank and terminal industry.",
+  },
   events: {
-    eyebrow: "TECHNICAL CALENDAR",
-    title: "Industry events.",
-    subtitle: "Conferences, training programs and technical exchanges for the tank & terminal industry.",
+    eyebrow: "",
+    title: "Events",
+    subtitle: "Conferences, training programmes and technical meetings for the tank and terminal industry.",
   },
   forums: {
-    eyebrow: "TECHNICAL EXCHANGE",
-    title: "Technical discussion.",
-    subtitle: "Tank construction, terminal automation, inspection findings and integrity — discussed by working professionals.",
+    eyebrow: "",
+    title: "Forums",
+    subtitle: "Technical discussion on tank construction, terminal automation, inspection and integrity.",
   },
   surveys: {
-    eyebrow: "INDUSTRY PULSE",
-    title: "Pulse checks on the market.",
-    subtitle: "Real-time surveys and sentiment data from the global tank & terminal community.",
+    eyebrow: "",
+    title: "Surveys",
+    subtitle: "Short polls answered by members of the tank and terminal community.",
   },
   groups: {
-    eyebrow: "COMMUNITY GROUPS",
-    title: "Specialist networks.",
-    subtitle: "Focused networks for tank-storage specialists — join an existing one or propose a new group.",
+    eyebrow: "",
+    title: "Groups",
+    subtitle: "Specialist groups for tank and terminal professionals. Join one or propose a new group.",
   },
   jobs: {
-    eyebrow: "TECHNICAL ROLES",
-    title: "Roles in tank & terminal.",
-    subtitle: "Openings across operators, EPCs, OEMs and inspection consultancies in the tank & terminal sector.",
+    eyebrow: "",
+    title: "Industry jobs",
+    subtitle: "Openings at operators, EPC contractors, equipment makers and inspection firms.",
   },
   companies: {
-    eyebrow: "INDEXED DIRECTORY",
-    title: "The company registry.",
-    subtitle: "Storage operators, EPC contractors, OEMs, inspectors and service providers — indexed for the tank & terminal sector.",
+    eyebrow: "",
+    title: "Companies",
+    subtitle: "Storage operators, EPC contractors, equipment makers, inspectors and service providers in the tank and terminal sector.",
   },
   news: {
-    eyebrow: "GLOBAL HEADLINES",
-    title: "Industry news, indexed.",
-    subtitle: "Curated headlines covering tank storage, terminals, refineries and energy logistics — refreshed as the wire moves.",
+    eyebrow: "",
+    title: "Industry news",
+    subtitle: "Headlines on tank storage, terminals, refineries and energy logistics, linked to their publishers.",
   },
 };
 
-export const PAGE_COPY_KEYS = Object.keys(PAGE_COPY_DEFAULTS);
-
 /**
- * Live page copy with automatic fallback. Falls back FIELD BY FIELD, not just
- * whole-document — an admin who has only edited the title still sees the
- * correct default eyebrow and subtitle, rather than blanks.
+ * Page titles and descriptions. These are fixed in code: the Admin "Page Copy"
+ * editor was removed in the November 2026 redesign, and any older edits saved
+ * in the Firestore "pageCopy" collection are no longer read.
  */
 export function usePageCopy(pageKey: string): PageCopy {
-  const { data } = useDocument<Partial<PageCopy>>("pageCopy", pageKey);
-  const fallback = PAGE_COPY_DEFAULTS[pageKey] || { eyebrow: "", title: "", subtitle: "" };
-  return {
-    eyebrow: data?.eyebrow || fallback.eyebrow,
-    title: data?.title || fallback.title,
-    subtitle: data?.subtitle || fallback.subtitle,
-  };
+  return PAGE_COPY_DEFAULTS[pageKey] || { eyebrow: "", title: "", subtitle: "" };
 }

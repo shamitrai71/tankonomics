@@ -115,10 +115,6 @@ export default function Groups() {
           <div className="relative">
             <div className="absolute -top-4 -left-4 right-0 h-24 bp-grid-paper opacity-50 pointer-events-none" />
             <div className="relative">
-              <div className="eyebrow tabular text-accent inline-flex items-center gap-2 mb-3">
-                <span className="inline-block w-1.5 h-1.5 rounded-full bg-accent soft-pulse" />
-                {copy.eyebrow}
-              </div>
               <h1 className="font-display text-[clamp(2.25rem,5vw,4rem)] text-text-heading leading-[0.98]">
                 {copy.title}
               </h1>

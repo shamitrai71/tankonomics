@@ -647,13 +647,9 @@ export default function Home() {
       {/* Page heading */}
       {(
         <div className="mb-8 md:mb-10">
-          <div className="eyebrow tabular text-accent inline-flex items-center gap-2 mb-3">
-            <span className="inline-block w-1.5 h-1.5 rounded-full bg-accent soft-pulse" />
-            OPERATIONS FEED · LIVE
-          </div>
-          <h1 className="font-display text-4xl md:text-5xl text-text-heading leading-[1.0]">The industry feed.</h1>
+          <h1 className="font-display text-4xl md:text-5xl text-text-heading leading-[1.0]">Feed</h1>
           <p className="text-text-body text-[14px] mt-3 max-w-md">
-            Technical updates, sector news and peer insights — moderated for verified members.
+            Updates and discussion from members and companies in the tank and terminal industry.
           </p>
         </div>
       )}

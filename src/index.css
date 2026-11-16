@@ -1,17 +1,26 @@
-@import url('https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Geist:wght@300;400;500;600;700;800;900&family=Geist+Mono:wght@400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
 @import "tailwindcss";
 
-@theme {
-  --font-sans: "Geist", ui-sans-serif, system-ui, sans-serif;
-  --font-display: "Instrument Serif", ui-serif, Georgia, serif;
-  --font-mono: "Geist Mono", ui-monospace, SFMono-Regular, monospace;
+/* ============================================================
+   Tankonomics theme — light only (November 2026 redesign).
+   All colours and fonts are defined here. The Admin colour
+   overrides are no longer applied; dark mode has been removed.
+   ============================================================ */
 
-  --tracking-tightest: -0.05em;
-  --tracking-display: -0.04em;
+@theme {
+  --font-sans: "Inter", ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  /* Headings and labels use the same family as body text. The names are
+     kept so existing font-display / font-mono classes keep working. */
+  --font-display: "Inter", ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  --font-mono: "Inter", ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+
+  --tracking-tightest: -0.02em;
+  --tracking-display: -0.01em;
 
   --color-primary: var(--primary-brand);
   --color-secondary: var(--secondary-brand);
   --color-accent: var(--accent-brand);
+  --color-highlight: var(--highlight);
   --color-bg-main: var(--bg-main);
   --color-text-heading: var(--text-heading);
   --color-text-body: var(--text-body);
@@ -28,136 +37,88 @@
 
 @layer base {
   :root {
-    /* Core brand — refined deep-petrol palette */
-    --primary-brand: #0b1b2b;         /* Deep petroleum — hero surfaces */
-    --secondary-brand: #1e4a72;       /* Industrial steel-blue */
-    --accent-brand: #ea7317;          /* Safety-signage orange (hi-vis) */
+    color-scheme: light;
 
-    /* Backgrounds & text */
-    --bg-main: #f5f3ef;               /* Warm off-white, paper-like */
+    --primary-brand: #174a73;         /* Navy — navigation and primary actions */
+    --secondary-brand: #174a73;
+    --accent-brand: #087f8c;          /* Teal — restrained accent */
+    --highlight: #ea7317;             /* Orange — selective highlights only */
+
+    --bg-main: #f5f7fa;
     --bg-card: #ffffff;
-    --text-heading: #0b1b2b;
-    --text-body: #4a5a6a;
-    --border-main: #e3dfd6;           /* Warm border that matches paper */
+    --text-heading: #172b4d;
+    --text-body: #526173;
+    --border-main: #dfe5ec;
 
-    --sidebar-focus: #0b1b2b;
+    --sidebar-focus: #174a73;
     --sidebar-focus-text: #ffffff;
 
-    /* Extended industrial palette */
-    --ink: #06121d;                   /* Near-black for deep type */
-    --blueprint: #173a5e;             /* Blueprint mid-blue */
-    --rust: #b14a14;                  /* Oxidized accent */
-    --steel: #94a3b8;                 /* Cool steel grey */
+    --ink: #172b4d;
+    --blueprint: #174a73;
+    --rust: #b45309;                  /* Amber-brown for warnings and "unclaimed" */
+    --steel: #94a3b8;
   }
 
-  .dark {
-    --primary-brand: #f0a868;
-    --secondary-brand: #6ba4d4;
-    --accent-brand: #ea7317;
-    --bg-main: #06121d;
-    --bg-card: #0b1b2b;
-    --text-heading: #f5f3ef;
-    --text-body: #a8b5c2;
-    --border-main: #1a2f44;
-    --sidebar-focus: #173a5e;
-    --sidebar-focus-text: #f5f3ef;
-
-    --ink: #f5f3ef;
-    --blueprint: #6ba4d4;
-    --rust: #ea7317;
-    --steel: #64748b;
-  }
+  html { font-size: 16px; }
 
   body {
     background-color: var(--bg-main);
     color: var(--text-body);
-    font-feature-settings: "ss01", "cv11";
+    font-family: var(--font-sans);
+    font-size: 15px;
+    line-height: 1.55;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
-    @apply transition-colors duration-500 ease-in-out;
-  }
-
-  div, nav, aside, section, header, footer, button, input {
-    @apply transition-colors duration-500 ease-in-out;
   }
 
   h1, h2, h3, h4, h5, h6 {
     color: var(--text-heading);
+    letter-spacing: -0.01em;
+  }
+
+  /* Visible keyboard focus on every interactive element */
+  :where(a, button, input, select, textarea, [role="button"], [tabindex]):focus-visible {
+    outline: 2px solid var(--primary-brand);
+    outline-offset: 2px;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after {
+      animation-duration: 0.01ms !important;
+      transition-duration: 0.01ms !important;
+    }
   }
 }
 
-/* ============================================================
-   Industrial design utilities — used by Splash, AuthPanel, and
-   any future hero surfaces.
-   ============================================================ */
-
 @layer utilities {
-  /* Blueprint coordinate grid — subtle technical-drawing texture */
-  .bp-grid {
-    background-image:
-      linear-gradient(rgba(255, 255, 255, 0.045) 1px, transparent 1px),
-      linear-gradient(90deg, rgba(255, 255, 255, 0.045) 1px, transparent 1px),
-      linear-gradient(rgba(255, 255, 255, 0.022) 1px, transparent 1px),
-      linear-gradient(90deg, rgba(255, 255, 255, 0.022) 1px, transparent 1px);
-    background-size: 96px 96px, 96px 96px, 24px 24px, 24px 24px;
-  }
+  /* Decorative textures were removed in the redesign. The class names stay
+     so older markup does not break; they now draw nothing. */
+  .bp-grid, .bp-grid-paper { background-image: none; }
+  .grain::after { content: none; }
+  .hazard-stripes { background-image: none; background-color: var(--border-main); }
 
-  /* Light-mode (paper) blueprint grid */
-  .bp-grid-paper {
-    background-image:
-      linear-gradient(rgba(11, 27, 43, 0.06) 1px, transparent 1px),
-      linear-gradient(90deg, rgba(11, 27, 43, 0.06) 1px, transparent 1px),
-      linear-gradient(rgba(11, 27, 43, 0.03) 1px, transparent 1px),
-      linear-gradient(90deg, rgba(11, 27, 43, 0.03) 1px, transparent 1px);
-    background-size: 96px 96px, 96px 96px, 24px 24px, 24px 24px;
-  }
-
-  /* Diagonal hazard stripes — used in narrow accent bars */
-  .hazard-stripes {
-    background-image: repeating-linear-gradient(
-      45deg,
-      var(--accent-brand) 0,
-      var(--accent-brand) 8px,
-      var(--ink) 8px,
-      var(--ink) 16px
-    );
-  }
-
-  /* Subtle film grain — adds tactility to dark hero surfaces */
-  .grain::after {
-    content: "";
-    position: absolute;
-    inset: 0;
-    pointer-events: none;
-    opacity: 0.28;
-    mix-blend-mode: overlay;
-    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0 0 0 0.5 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
-  }
-
-  /* Display heading — Instrument Serif, slight optical tightening */
+  /* Headings — same family as body, semibold, normal spacing */
   .font-display {
     font-family: var(--font-display);
-    font-feature-settings: "liga", "calt", "ss01";
-    letter-spacing: var(--tracking-display);
+    font-weight: 600;
+    letter-spacing: -0.01em;
   }
 
-  .font-mono {
-    font-family: var(--font-mono);
-  }
+  .font-mono { font-family: var(--font-mono); }
 
-  /* Technical eyebrow / data label */
+  /* Small label. Was 10px mono capitals with wide spacing; now a plain
+     readable label in sentence case as written in the markup. */
   .eyebrow {
-    font-family: var(--font-mono);
-    font-size: 10px;
+    font-family: var(--font-sans);
+    font-size: 12px;
+    line-height: 1.4;
     font-weight: 500;
-    letter-spacing: 0.18em;
-    text-transform: uppercase;
+    letter-spacing: 0;
+    text-transform: none;
   }
 
-  /* Tabular numerals everywhere we show data */
   .tabular { font-variant-numeric: tabular-nums; }
 
-  /* Custom scrollbar — slim, on-brand */
   .custom-scrollbar::-webkit-scrollbar { width: 6px; height: 6px; }
   .custom-scrollbar::-webkit-scrollbar-track { background: transparent; }
   .custom-scrollbar::-webkit-scrollbar-thumb {
@@ -166,34 +127,29 @@
   }
   .custom-scrollbar::-webkit-scrollbar-thumb:hover { background: var(--steel); }
 
-  /* Gauge sweep — used by the splash progress indicator */
+  /* Loading ring on the splash screen */
   @keyframes gauge-sweep {
     0%   { stroke-dashoffset: 360; }
     50%  { stroke-dashoffset: 90;  }
     100% { stroke-dashoffset: 360; }
   }
-  .gauge-sweep {
-    animation: gauge-sweep 2.4s cubic-bezier(0.65, 0, 0.35, 1) infinite;
-  }
+  .gauge-sweep { animation: gauge-sweep 2.4s cubic-bezier(0.65, 0, 0.35, 1) infinite; }
 
-  /* Slow drift used by background schematics */
-  @keyframes drift-y {
-    0%, 100% { transform: translateY(0); }
-    50%      { transform: translateY(-8px); }
-  }
-  .drift-y { animation: drift-y 6s ease-in-out infinite; }
+  /* Decorative motion removed: these classes are now static. */
+  .drift-y, .soft-pulse { animation: none; }
 
-  /* Marquee for the rolling industry strip */
   @keyframes marquee {
     0%   { transform: translateX(0); }
     100% { transform: translateX(-50%); }
   }
   .marquee { animation: marquee 38s linear infinite; }
-
-  /* Soft pulse for live indicators */
-  @keyframes soft-pulse {
-    0%, 100% { opacity: 0.9; transform: scale(1); }
-    50%      { opacity: 0.4; transform: scale(0.92); }
-  }
-  .soft-pulse { animation: soft-pulse 2s ease-in-out infinite; }
 }
+
+/* Page titles: the old markup sets very large serif sizes inline
+   (up to 64px). Cap every page title at a normal product size until
+   each page moves to the shared PageHeader. */
+h1.font-display {
+  font-size: clamp(1.5rem, 1.2rem + 1vw, 1.75rem) !important;
+  line-height: 1.25 !important;
+}
+h2.font-display, h3.font-display { line-height: 1.3; }

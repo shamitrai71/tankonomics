@@ -144,29 +144,11 @@ export const useAuth = () => {
   return context;
 };
 
-// --- Theme Context ---
-
-type ThemeMode = 'light' | 'dark' | 'system';
-
-interface ThemeContextType {
-  mode: ThemeMode;
-  setMode: (mode: ThemeMode) => void;
-  isDark: boolean;
-}
-
-const ThemeContext = createContext<ThemeContextType | undefined>(undefined);
-
-export const useTheme = () => {
-  const context = useContext(ThemeContext);
-  if (!context) throw new Error("useTheme must be used within ThemeProvider");
-  return context;
-};
-
 // --- Components ---
 
 function Navbar({ onMenuToggle, theme }: { onMenuToggle: () => void, theme: any }) {
   const { user, profile } = useAuth();
-  const { isDark, setMode } = useTheme();
+  const isDark = false; // light theme only
   const location = useLocation();
   const navigate = useNavigate();
   const [showNotifications, setShowNotifications] = useState(false);
@@ -694,7 +676,7 @@ function Navbar({ onMenuToggle, theme }: { onMenuToggle: () => void, theme: any 
 
 function Sidebar({ isOpen, onClose, theme }: { isOpen: boolean; onClose: () => void, theme: any }) {
   const { user, isAdmin, logout } = useAuth();
-  const { isDark } = useTheme();
+  const isDark = false; // light theme only
   const location = useLocation();
 
   const navItems = [
@@ -1304,44 +1286,11 @@ export default function App() {
   const [theme, setTheme] = useState<any>(null);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
-  // User Theme Preference
-  const [mode, setMode] = useState<ThemeMode>(() => {
-    const saved = localStorage.getItem('theme-mode');
-    return (saved as ThemeMode) || 'system';
-  });
-
-  const [isDark, setIsDark] = useState(false);
-
+  // Light theme only. Clear any dark-mode state a browser saved earlier.
   useEffect(() => {
-    const root = window.document.documentElement;
-    
-    const applyTheme = (themeMode: ThemeMode) => {
-      let resolvedMode = themeMode;
-      if (themeMode === 'system') {
-        resolvedMode = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
-      }
-      
-      const isActuallyDark = resolvedMode === 'dark';
-      setIsDark(isActuallyDark);
-      
-      if (isActuallyDark) {
-        root.classList.add('dark');
-      } else {
-        root.classList.remove('dark');
-      }
-      
-      localStorage.setItem('theme-mode', themeMode);
-    };
-
-    applyTheme(mode);
-
-    if (mode === 'system') {
-      const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
-      const handleChange = () => applyTheme('system');
-      mediaQuery.addEventListener('change', handleChange);
-      return () => mediaQuery.removeEventListener('change', handleChange);
-    }
-  }, [mode]);
+    document.documentElement.classList.remove('dark');
+    try { localStorage.removeItem('theme-mode'); } catch {}
+  }, []);
 
   useEffect(() => {
     // Fetch theme from settings
@@ -1383,30 +1332,6 @@ export default function App() {
     };
   }, []);
 
-  // Apply the site's custom colors as inline CSS variables in LIGHT mode only.
-  // In DARK mode we clear them so the `.dark` rules in index.css win (inline
-  // styles outrank a class selector). Keyed on [isDark, theme] so it re-runs on
-  // every toggle — this is what makes the dark-mode switch actually take effect.
-  useEffect(() => {
-    const root = document.documentElement;
-    const CUSTOM: Record<string, string | undefined> = theme ? {
-      "--primary-brand": theme.primaryColor,
-      "--secondary-brand": theme.secondaryColor,
-      "--accent-brand": theme.accentColor,
-      "--bg-main": theme.backgroundColor,
-      "--text-heading": theme.headingColor,
-      "--text-body": theme.bodyTextColor,
-      "--bg-card": theme.cardBackgroundColor,
-      "--border-main": theme.borderColor,
-      "--sidebar-focus": theme.sidebarFocusColor,
-      "--sidebar-focus-text": theme.sidebarFocusTextColor,
-    } : {};
-    for (const key of Object.keys(CUSTOM)) {
-      const value = CUSTOM[key];
-      if (!isDark && value) root.style.setProperty(key, value);
-      else root.style.removeProperty(key);
-    }
-  }, [isDark, theme]);
 
   useEffect(() => {
     if (!user) {
@@ -1660,9 +1585,8 @@ export default function App() {
       signIn, 
       logout 
     }}>
-      <ThemeContext.Provider value={{ mode, setMode, isDark }}>
         <Router>
-          <div className="min-h-screen bg-bg-main text-text-body font-sans transition-colors duration-500">
+          <div className="min-h-screen bg-bg-main text-text-body font-sans">
           {!user ? (
             <AuthPanel onSignIn={signIn} theme={theme} />
           ) : REQUIRE_APPROVAL_TO_VIEW && !isAdmin && profile?.status === "rejected" ? (
@@ -1713,7 +1637,6 @@ export default function App() {
           )}
         </div>
       </Router>
-      </ThemeContext.Provider>
     </AuthContext.Provider>
   );
 }
