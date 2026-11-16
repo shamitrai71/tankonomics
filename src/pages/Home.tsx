@@ -17,7 +17,10 @@
  */
 
 import { PageHeader } from "../components/PageHeader";
-import { useState, ChangeEvent, useMemo, useEffect } from "react";
+import { SafeImage } from "../components/SafeImage";
+import { FeedSidebar } from "../components/FeedSidebar";
+import { publisherName } from "./News";
+import { useState, ChangeEvent, useMemo, useEffect, useRef } from "react";
 import { Link } from "react-router-dom";
 import { useAuth } from "../App";
 import { TierGate } from "../components/TierGate";
@@ -415,9 +418,16 @@ function ReactionPicker({ post }: { post: any }) {
 
   return (
     <div className="relative" onMouseEnter={() => setShowPicker(true)} onMouseLeave={() => setShowPicker(false)}>
-      <button className="flex items-center gap-2 text-text-body/65 hover:text-text-heading transition-colors py-1">
+      <button
+        type="button"
+        onClick={() => setShowPicker((v) => !v)}
+        aria-haspopup="true"
+        aria-expanded={showPicker}
+        className="flex items-center gap-2 text-[14px] text-text-body hover:text-text-heading py-1"
+      >
         <Heart className="w-4 h-4" strokeWidth={1.75} />
-        <span className="eyebrow tabular">{totalReactions}</span>
+        <span>Like</span>
+        {totalReactions > 0 && <span className="tabular">{totalReactions}</span>}
       </button>
       <AnimatePresence>
         {showPicker && (
@@ -437,6 +447,7 @@ function ReactionPicker({ post }: { post: any }) {
                 onClick={() => handleReact(r.type)}
                 className="hover:scale-125 transition-transform text-lg"
                 title={r.label}
+                aria-label={r.label}
               >
                 {r.emoji}
               </button>
@@ -458,6 +469,13 @@ export default function Home() {
   const [postImage, setPostImage] = useState<string | null>(null);
   const [postImageFile, setPostImageFile] = useState<File | null>(null);
   const [isPosting, setIsPosting] = useState(false);
+  const [composerOpen, setComposerOpen] = useState(false);
+  const [postError, setPostError] = useState("");
+  const composerRef = useRef<HTMLTextAreaElement>(null);
+  const openComposer = () => {
+    setComposerOpen(true);
+    setTimeout(() => composerRef.current?.focus(), 0);
+  };
   const [postAsCompanyId, setPostAsCompanyId] = useState<string | null>(null);
   const [sharingPost, setSharingPost] = useState<any>(null);
   const [viewingCommentsPost, setViewingCommentsPost] = useState<any>(null);
@@ -500,12 +518,13 @@ export default function Home() {
   const handleImageUpload = (e: ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
+    setPostError("");
     if (!file.type.startsWith("image/")) {
-      alert("Please pick an image file.");
+      setPostError("Please pick an image file.");
       return;
     }
     if (file.size > 10 * 1024 * 1024) {
-      alert(`Image is too large (${(file.size / 1024 / 1024).toFixed(1)} MB). Maximum is 10 MB.`);
+      setPostError(`Image is too large (${(file.size / 1024 / 1024).toFixed(1)} MB). Maximum is 10 MB.`);
       return;
     }
     if (postImage && postImage.startsWith("blob:")) URL.revokeObjectURL(postImage);
@@ -522,6 +541,7 @@ export default function Home() {
   const handlePost = async () => {
     if ((!newPost.trim() && !postImageFile) || isPosting) return;
     setIsPosting(true);
+    setPostError("");
     const videoInfo = getVideoInfo(newPost);
     const selectedCompany = ownedCompanies.find((c) => c.id === postAsCompanyId);
 
@@ -587,11 +607,12 @@ export default function Home() {
       if (!result) throw new Error("The server rejected the post. Please check your profile is complete and try again.");
       setNewPost("");
       clearPostImage();
+      setComposerOpen(false);
     } catch (error: any) {
       console.error("Post creation failed:", error);
       const msg = error?.message || "Unknown error";
       const isPermissionError = msg.includes("PERMISSION_DENIED") || msg.includes("insufficient permissions");
-      alert(isPermissionError ? "Permission denied. Please ensure your profile is fully set up." : `Failed to share post: ${msg}`);
+      setPostError(isPermissionError ? "Permission denied. Please ensure your profile is fully set up." : `Failed to share post: ${msg}`);
     } finally {
       setIsPosting(false);
     }
@@ -599,17 +620,18 @@ export default function Home() {
 
   const handleTechnicalTip = async () => {
     if (!newPost.trim() || isGeneratingTip) return;
+    setPostError("");
     const isCompanyUser = !!profile?.companyId;
     const canUseAI = profile?.isPro || isCompanyUser || isAdmin;
     if (!canUseAI) {
-      alert("Technical Insight is a premium feature available for Pro members and Verified Company profiles.");
+      setPostError("Technical Insight is a premium feature available for Pro members and Verified Company profiles.");
       return;
     }
     const currentMonth = format(new Date(), "yyyy-MM");
     const usage = profile?.aiUsage?.month === currentMonth ? profile?.aiUsage?.count : 0;
     const MAX_FREE_TIPS = isAdmin ? 9999 : 10;
     if (usage >= MAX_FREE_TIPS) {
-      alert(`Monthly limit reached (${MAX_FREE_TIPS} insights). Pro limits reset at the start of next month.`);
+      setPostError(`Monthly limit reached (${MAX_FREE_TIPS} insights). Pro limits reset at the start of next month.`);
       return;
     }
     setIsGeneratingTip(true);
@@ -643,67 +665,84 @@ export default function Home() {
     ? ownedCompanies.find((c) => c.id === postAsCompanyId)?.name
     : profile?.displayName || user?.displayName;
 
+  const identityAvatar = currentIdentityLogo || `https://api.dicebear.com/7.x/initials/svg?seed=${currentIdentityName}`;
+
   return (
-    <div className="max-w-3xl mx-auto py-6 md:py-10 px-4">
+    <div className="page-frame py-6 md:py-8">
+    <div className="mx-auto max-w-3xl min-[1100px]:max-w-[1052px]">
       <PageHeader
         title="Feed"
         description="Updates and discussion from members and companies in the tank and terminal industry."
-      />
-
-      {/* Composer — participation requires B+ (verified member) */}
-      {(tier === "A") ? (
-        <div className="mb-8"><TierGate requiredTier="B" /></div>
-      ) : (
-      <div className="bg-bg-card border border-border-main rounded-2xl p-5 md:p-6 mb-8 transition-shadow focus-within:shadow-[0_8px_30px_-8px_rgba(11,27,43,0.12)]">
-        {/* Identity toggle (Individual / verified companies) */}
-        {(isAdmin || ownedCompanies.length > 0) && (
-          <div className="flex items-center gap-1 p-1 bg-bg-main rounded-xl border border-border-main w-fit mb-4">
-            <button
-              onClick={() => setPostAsCompanyId(null)}
-              className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg eyebrow tabular transition-all ${
-                !postAsCompanyId ? "bg-text-heading text-bg-card" : "text-text-body/55 hover:text-text-body"
-              }`}
-            >
-              <User className="w-3 h-3" strokeWidth={1.75} />
-              Individual
-            </button>
-            {ownedCompanies.map((co) => (
-              <button
-                key={co.id}
-                onClick={() => setPostAsCompanyId(co.id)}
-                className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg eyebrow tabular transition-all ${
-                  postAsCompanyId === co.id ? "bg-text-heading text-bg-card" : "text-text-body/55 hover:text-text-body"
-                }`}
-              >
-                {co.logo ? (
-                  <img src={co.logo} className="w-3 h-3 rounded-sm object-contain" alt="" />
-                ) : (
-                  <Building2 className="w-3 h-3" strokeWidth={1.75} />
-                )}
-                {co.name}
-              </button>
-            ))}
-          </div>
+      >
+        {tier !== "A" && (
+          <button
+            type="button"
+            onClick={openComposer}
+            className="inline-flex items-center justify-center gap-2 bg-primary text-white px-4 py-2.5 rounded-lg text-[14px] font-medium hover:brightness-110"
+          >
+            <Send className="w-4 h-4" strokeWidth={1.75} />
+            Create post
+          </button>
         )}
+      </PageHeader>
 
-        <div className="flex gap-3 md:gap-4">
-          <img
-            src={currentIdentityLogo || `https://api.dicebear.com/7.x/initials/svg?seed=${currentIdentityName}`}
-            className="w-10 h-10 md:w-12 md:h-12 rounded-xl border border-border-main object-cover shrink-0"
-            alt="Identity"
-          />
-          <div className="flex-1 space-y-2">
+      <div className="grid grid-cols-1 min-[1100px]:grid-cols-[minmax(0,720px)_300px] gap-8 items-start">
+      <div className="min-w-0">
+
+      {/* Composer — posting needs tier B or above, as before */}
+      {tier === "A" ? (
+        <div className="mb-6"><TierGate requiredTier="B" /></div>
+      ) : !composerOpen ? (
+        <div className="bg-bg-card border border-border-main rounded-lg p-4 mb-6 flex items-center gap-3">
+          <img src={identityAvatar} className="w-10 h-10 rounded-full border border-border-main object-cover shrink-0" alt="" />
+          <button
+            type="button"
+            onClick={openComposer}
+            className="flex-1 text-left bg-bg-main border border-border-main rounded-full px-4 py-2.5 text-[15px] text-text-body hover:border-text-body/40"
+          >
+            Share an update
+          </button>
+        </div>
+      ) : (
+      <div className="bg-bg-card border border-border-main rounded-lg p-4 md:p-5 mb-6">
+        {/* Posting identity */}
+        <div className="flex items-center gap-3 mb-3">
+          <img src={identityAvatar} className="w-10 h-10 rounded-full border border-border-main object-cover shrink-0" alt="" />
+          <div className="min-w-0">
+            <label htmlFor="posting-as" className="block text-[12px] text-text-body">Posting as</label>
+            {ownedCompanies.length > 0 ? (
+              <select
+                id="posting-as"
+                value={postAsCompanyId || ""}
+                onChange={(e) => setPostAsCompanyId(e.target.value || null)}
+                className="mt-0.5 bg-bg-card border border-border-main rounded-md px-2 py-1 text-[14px] font-medium text-text-heading max-w-full"
+              >
+                <option value="">{profile?.displayName || user?.displayName || "Yourself"} (you)</option>
+                {ownedCompanies.map((co) => (
+                  <option key={co.id} value={co.id}>{co.name} (company)</option>
+                ))}
+              </select>
+            ) : (
+              <p id="posting-as" className="text-[14px] font-medium text-text-heading truncate">{currentIdentityName}</p>
+            )}
+          </div>
+        </div>
+
+        <div className="space-y-2">
             <div className="relative">
               <textarea
+                ref={composerRef}
                 value={newPost}
                 onChange={(e) => setNewPost(e.target.value.slice(0, MAX_POST_CHARS))}
-                placeholder="Share a technical update…"
-                className="w-full bg-bg-main border border-border-main rounded-xl p-4 text-[14px] focus:bg-bg-card focus:border-text-heading outline-none transition-all resize-none h-24 md:h-32 placeholder:text-text-body/40 leading-relaxed"
+                placeholder="Share an update…"
+                aria-label="Post text"
+                className="w-full bg-bg-card border border-border-main rounded-lg p-3 pb-8 text-[15px] text-text-heading focus:border-primary outline-none resize-none h-28 md:h-32 placeholder:text-text-body/60"
               />
               <div
-                className={`absolute bottom-3 right-3 eyebrow tabular px-2 py-0.5 rounded ${
-                  newPost.length > MAX_POST_CHARS * 0.9 ? "bg-rust/10 text-rust" : "bg-bg-card text-text-body/45"
+                className={`absolute bottom-3 right-3 text-[12px] tabular px-1.5 rounded ${
+                  newPost.length > MAX_POST_CHARS * 0.9 ? "bg-rust/10 text-rust" : "text-text-body"
                 }`}
+                aria-label="Characters left"
               >
                 {MAX_POST_CHARS - newPost.length}
               </div>
@@ -722,8 +761,8 @@ export default function Home() {
                 ) : (
                   <iframe src={`https://player.vimeo.com/video/${videoPreview.id}?background=1`} width="100%" height="100%" frameBorder="0" className="pointer-events-none" />
                 )}
-                <div className="absolute top-2 left-2 px-2 py-1 bg-ink/85 rounded eyebrow tabular text-white z-20">
-                  {videoPreview.type} DETECTED
+                <div className="absolute top-2 left-2 px-2 py-1 bg-ink/85 rounded text-[12px] text-white z-20">
+                  {videoPreview.type === "youtube" ? "YouTube" : "Vimeo"} video
                 </div>
               </div>
             )}
@@ -741,33 +780,50 @@ export default function Home() {
                 </button>
               </div>
             )}
-          </div>
         </div>
 
+        {postError && (
+          <p role="alert" className="mt-3 text-[14px] text-rust bg-rust/5 border border-rust/20 rounded-md px-3 py-2">
+            {postError}
+          </p>
+        )}
+
         {/* Composer footer */}
-        <div className="flex items-center justify-between mt-5 pt-4 border-t border-border-main">
+        <div className="flex flex-wrap items-center justify-between gap-2 mt-4 pt-3 border-t border-border-main">
           <div className="flex items-center gap-1">
-            <label className="flex items-center gap-2 eyebrow tabular text-text-body/65 hover:text-text-heading px-2.5 py-2 hover:bg-bg-main rounded-lg cursor-pointer transition-all">
-              <ImageIcon className="w-4 h-4 text-accent" strokeWidth={1.75} />
-              <span>Media</span>
-              <input type="file" accept="image/*" className="hidden" onChange={handleImageUpload} />
+            <label className="flex items-center gap-2 text-[14px] text-text-body hover:text-text-heading px-2.5 py-2 hover:bg-bg-main rounded-md cursor-pointer">
+              <ImageIcon className="w-4 h-4" strokeWidth={1.75} />
+              <span>Photo</span>
+              <input type="file" accept="image/*" className="sr-only" onChange={handleImageUpload} />
             </label>
             <button
+              type="button"
               onClick={handleTechnicalTip}
               disabled={!newPost.trim() || isGeneratingTip}
-              className="flex items-center gap-2 eyebrow tabular text-text-body/65 hover:text-text-heading px-2.5 py-2 hover:bg-bg-main rounded-lg transition-all disabled:opacity-30 disabled:cursor-not-allowed"
+              title="Rewrites your draft with an added technical note, using AI"
+              className="flex items-center gap-2 text-[14px] text-text-body hover:text-text-heading px-2.5 py-2 hover:bg-bg-main rounded-md disabled:opacity-40 disabled:cursor-not-allowed"
             >
-              {isGeneratingTip ? <Loader2 className="w-4 h-4 animate-spin text-accent" /> : <Sparkles className="w-4 h-4 text-accent" strokeWidth={1.75} />}
-              <span>Technical Insight</span>
+              {isGeneratingTip ? <Loader2 className="w-4 h-4 animate-spin" /> : <Sparkles className="w-4 h-4" strokeWidth={1.75} />}
+              <span>Technical insight (AI)</span>
             </button>
           </div>
-          <button
-            onClick={handlePost}
-            disabled={(!newPost.trim() && !postImage) || isPosting}
-            className="inline-flex items-center gap-2 bg-text-heading text-bg-card px-5 py-2.5 rounded-xl text-[14px] font-medium hover:brightness-110 disabled:opacity-30 transition-all"
-          >
-            {isPosting ? <><Loader2 className="w-4 h-4 animate-spin" /> Sharing…</> : <>Share insight <Send className="w-4 h-4" strokeWidth={1.75} /></>}
-          </button>
+          <div className="flex items-center gap-2 ml-auto">
+            <button
+              type="button"
+              onClick={() => { setComposerOpen(false); setPostError(""); }}
+              className="px-3 py-2 rounded-lg text-[14px] font-medium text-text-body hover:bg-bg-main"
+            >
+              Cancel
+            </button>
+            <button
+              type="button"
+              onClick={handlePost}
+              disabled={(!newPost.trim() && !postImage) || isPosting}
+              className="inline-flex items-center gap-2 bg-primary text-white px-5 py-2 rounded-lg text-[14px] font-medium hover:brightness-110 disabled:opacity-40"
+            >
+              {isPosting ? <><Loader2 className="w-4 h-4 animate-spin" /> Posting…</> : <>Post</>}
+            </button>
+          </div>
         </div>
       </div>
       )}
@@ -793,48 +849,42 @@ export default function Home() {
             ))
           : combinedFeed.map((item: any) => {
               if (item.type === "news") {
+                const publisher = publisherName(item.source);
                 return (
-                  <motion.a
-                    key={item.id}
-                    href={item.url}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    initial={{ opacity: 0, y: 8 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    className="block group bg-bg-card border border-border-main rounded-2xl overflow-hidden hover:border-text-heading transition-all"
-                  >
-                    <div className="flex flex-col md:flex-row">
-                      {item.image && (
-                        <div className="md:w-1/3 aspect-video md:aspect-auto overflow-hidden bg-bg-main border-b md:border-b-0 md:border-r border-border-main">
-                          <img src={item.image} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" alt="" />
-                        </div>
-                      )}
-                      <div className={`p-5 flex-1 flex flex-col ${!item.image ? "md:p-6" : ""}`}>
-                        <div className="flex items-center gap-2 mb-3 flex-wrap">
-                          <span className="inline-flex items-center gap-1.5 bg-bg-main border border-border-main text-text-body px-2 py-0.5 rounded eyebrow tabular">
-                            <Newspaper className="w-3 h-3" strokeWidth={1.75} />
-                            {item.source || "News"}
-                          </span>
-                          <span className="inline-flex items-center gap-1.5 bg-accent/10 text-accent px-2 py-0.5 rounded eyebrow tabular border border-accent/20">
-                            Official update
-                          </span>
-                        </div>
-                        <h3 className="font-display text-xl text-text-heading mb-2 leading-tight group-hover:text-accent transition-colors">
-                          {item.title}
+                  <article key={item.id} className="bg-bg-card border border-border-main rounded-lg overflow-hidden">
+                    <p className="px-5 pt-4 flex flex-wrap items-center gap-x-2 text-[13px] text-text-body">
+                      <Newspaper className="w-4 h-4" strokeWidth={1.75} />
+                      <span className="font-medium text-text-heading">Industry news</span>
+                      {publisher && <><span aria-hidden="true">·</span><span>{publisher}</span></>}
+                      <span aria-hidden="true">·</span>
+                      <span>Added {item.createdAt?.seconds ? formatDistanceToNow(item.createdAt.seconds * 1000) + " ago" : "just now"}</span>
+                    </p>
+                    <div className="p-5 pt-3 flex flex-col sm:flex-row gap-4">
+                      <SafeImage
+                        src={item.image}
+                        className="w-full sm:w-52 aspect-video rounded-md border border-border-main object-cover shrink-0 self-start"
+                        fallback={<Newspaper className="w-7 h-7" strokeWidth={1.5} />}
+                      />
+                      <div className="min-w-0 flex-1">
+                        <h3 className="text-[17px] font-semibold leading-snug">
+                          <a href={item.url} target="_blank" rel="noopener noreferrer" className="text-text-heading hover:underline">
+                            {item.title}
+                          </a>
                         </h3>
-                        <p className="text-[14px] text-text-body/85 line-clamp-3 mb-5 leading-relaxed">{item.description}</p>
-                        <div className="mt-auto flex items-center justify-between">
-                          <span className="eyebrow tabular text-text-body/50 flex items-center gap-1.5">
-                            <Clock className="w-3 h-3" strokeWidth={1.75} />
-                            {item.createdAt?.seconds ? formatDistanceToNow(item.createdAt.seconds * 1000) + " ago" : "Just now"}
-                          </span>
-                          <span className="eyebrow tabular text-text-heading flex items-center gap-1.5 group-hover:text-accent transition-colors">
-                            Read more <ExternalLink className="w-3 h-3" strokeWidth={1.75} />
-                          </span>
-                        </div>
+                        {item.description && <p className="text-[14px] text-text-body line-clamp-2 mt-1.5">{item.description}</p>}
+                        <a
+                          href={item.url}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="inline-flex items-center gap-1.5 mt-3 text-[14px] font-medium text-primary hover:underline"
+                        >
+                          Read article{publisher ? ` at ${publisher}` : ""}
+                          <ExternalLink className="w-3.5 h-3.5" strokeWidth={1.75} />
+                          <span className="sr-only">(opens the publisher's site in a new tab)</span>
+                        </a>
                       </div>
                     </div>
-                  </motion.a>
+                  </article>
                 );
               }
 
@@ -844,14 +894,14 @@ export default function Home() {
                   initial={{ opacity: 0, y: 8 }}
                   animate={{ opacity: 1, y: 0 }}
                   key={item.id}
-                  className="group bg-bg-card border border-border-main rounded-2xl overflow-hidden hover:border-text-heading transition-all"
+                  className="bg-bg-card border border-border-main rounded-lg overflow-hidden"
                 >
                   {/* Card header */}
                   <div className="px-5 py-4 flex items-center justify-between">
                     <Link to={`/profile/${item.authorUid}`} className="flex items-center gap-3 min-w-0 group/author">
                       <img
                         src={item.authorPhoto || `https://api.dicebear.com/7.x/initials/svg?seed=${item.authorName}`}
-                        className="w-11 h-11 rounded-xl border border-border-main object-cover shrink-0"
+                        className="w-11 h-11 rounded-full border border-border-main object-cover shrink-0"
                         alt=""
                       />
                       <div className="min-w-0">
@@ -860,24 +910,24 @@ export default function Home() {
                             {item.authorName}
                           </h3>
                           {item.companyId && (
-                            <span className="inline-flex items-center gap-1 eyebrow tabular bg-accent/10 text-accent border border-accent/20 px-1.5 py-0.5 rounded">
-                              <ShieldCheck className="w-2.5 h-2.5" strokeWidth={2} />
-                              Verified
+                            <span className="inline-flex items-center gap-1 text-[12px] bg-bg-main border border-border-main text-text-body px-1.5 py-0.5 rounded">
+                              <Building2 className="w-3 h-3" strokeWidth={1.75} />
+                              Company
                             </span>
                           )}
                           {item.isRepost && (
-                            <span className="inline-flex items-center gap-1 eyebrow tabular bg-bg-main border border-border-main text-text-body/60 px-1.5 py-0.5 rounded">
-                              <Repeat2 className="w-2.5 h-2.5" strokeWidth={1.75} />
-                              from {item.originalAuthor}
+                            <span className="inline-flex items-center gap-1 text-[12px] bg-bg-main border border-border-main text-text-body px-1.5 py-0.5 rounded">
+                              <Repeat2 className="w-3 h-3" strokeWidth={1.75} />
+                              Shared from {item.originalAuthor}
                             </span>
                           )}
                         </div>
-                        <div className="flex items-center gap-2 mt-1">
+                        <div className="flex items-center gap-2 mt-0.5 text-[13px] text-text-body min-w-0">
                           {item.authorJobTitle && (
-                            <p className="eyebrow tabular text-text-body/65">{item.authorJobTitle}</p>
+                            <p className="truncate">{item.authorJobTitle}</p>
                           )}
-                          <span className="eyebrow tabular text-text-body/40">·</span>
-                          <p className="eyebrow tabular text-text-body/45">
+                          {item.authorJobTitle && <span aria-hidden="true">·</span>}
+                          <p className="shrink-0">
                             {item.createdAt?.seconds ? formatDistanceToNow(item.createdAt.seconds * 1000) + " ago" : "Just now"}
                           </p>
                         </div>
@@ -937,7 +987,7 @@ export default function Home() {
 
                   {/* Body */}
                   <div className="px-5 pb-4">
-                    <p className="text-[15px] text-text-body whitespace-pre-wrap leading-relaxed">{item.content}</p>
+                    <p className="text-[15px] text-text-heading whitespace-pre-wrap leading-relaxed">{item.content}</p>
 
                     {item.video && (
                       <div className="mt-4 rounded-xl overflow-hidden aspect-video bg-bg-main border border-border-main">
@@ -950,14 +1000,16 @@ export default function Home() {
                     )}
 
                     {item.image && (
-                      <div className="mt-4 rounded-xl overflow-hidden border border-border-main bg-bg-main">
-                        <img src={item.image} className="w-full object-cover max-h-[500px]" alt="Insight attachment" referrerPolicy="no-referrer" />
-                      </div>
+                      <SafeImage
+                        src={item.image}
+                        alt="Image attached to this post"
+                        className="mt-4 w-full aspect-video rounded-md border border-border-main bg-bg-main object-contain"
+                      />
                     )}
                   </div>
 
                   {/* Footer */}
-                  <div className="px-5 py-3 border-t border-border-main bg-bg-main/40 flex flex-col gap-2">
+                  <div className="px-5 py-2.5 border-t border-border-main flex flex-col gap-2">
                     {item.reactions && Object.values(item.reactions).some((v) => (v as number) > 0) && (
                       <div className="flex items-center gap-2">
                         <div className="flex -space-x-1.5">
@@ -965,7 +1017,7 @@ export default function Home() {
                           {item.reactions.celebrate > 0 && <span className="bg-bg-card border border-border-main rounded-full px-1 py-0.5 text-[10px] z-[5]">🎉</span>}
                           {item.reactions.insightful > 0 && <span className="bg-bg-card border border-border-main rounded-full px-1 py-0.5 text-[10px]">💡</span>}
                         </div>
-                        <p className="eyebrow tabular text-text-body/60">
+                        <p className="text-[13px] text-text-body">
                           {Object.entries(item.reactions)
                             .filter(([, count]) => (count as number) > 0)
                             .map(([type, count]) => `${count} ${type}${(count as number) > 1 ? "s" : ""}`)
@@ -978,25 +1030,39 @@ export default function Home() {
                       <div className="flex items-center gap-6">
                         <ReactionPicker post={item} />
                         <button
+                          type="button"
                           onClick={() => setViewingCommentsPost(item)}
-                          className="flex items-center gap-2 text-text-body/65 hover:text-text-heading transition-colors"
+                          className="flex items-center gap-2 text-[14px] text-text-body hover:text-text-heading py-1"
                         >
                           <MessageCircle className="w-4 h-4" strokeWidth={1.75} />
-                          <span className="eyebrow tabular">{item.commentsCount || 0}</span>
+                          <span>Comment</span>
+                          {(item.commentsCount || 0) > 0 && <span className="tabular">{item.commentsCount}</span>}
                         </button>
                       </div>
                       <button
                         onClick={() => setSharingPost(item)}
-                        className="flex items-center gap-2 text-text-body/45 hover:text-text-heading transition-colors"
-                        title="Share"
+                        type="button"
+                        className="flex items-center gap-2 text-[14px] text-text-body hover:text-text-heading py-1"
                       >
                         <Share2 className="w-4 h-4" strokeWidth={1.75} />
+                        <span>Share</span>
                       </button>
                     </div>
                   </div>
                 </motion.div>
               );
             })}
+
+        {!loading && combinedFeed.length === 0 && (
+          <div className="bg-bg-card border border-border-main rounded-lg px-5 py-6">
+            <p className="text-[15px] font-medium text-text-heading">No posts yet</p>
+            <p className="text-[14px] text-text-body mt-0.5">Posts from members and companies will appear here.</p>
+          </div>
+        )}
+      </div>
+
+      </div>
+      <FeedSidebar />
       </div>
 
       <AnimatePresence>
@@ -1004,6 +1070,7 @@ export default function Home() {
         {viewingCommentsPost && <CommentsModal post={viewingCommentsPost} onClose={() => setViewingCommentsPost(null)} setReportingItem={setReportingItem} />}
         {reportingItem && <ReportModal item={reportingItem.item} type={reportingItem.type} path={reportingItem.path} onClose={() => setReportingItem(null)} />}
       </AnimatePresence>
+    </div>
     </div>
   );
 }
