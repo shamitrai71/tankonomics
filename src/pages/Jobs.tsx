@@ -8,6 +8,7 @@
  *   - handleApply POSTs to /api/job-apply + creates notification
  */
 
+import { PageHeader } from "../components/PageHeader";
 import { useState, useEffect } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import { useCollection, createDocument, updateDocument } from "../hooks/useFirestore";
@@ -285,30 +286,19 @@ export default function Jobs() {
 
   return (
     <div className="min-h-screen bg-bg-main">
-      <div className="max-w-7xl mx-auto py-8 md:py-12 px-4 md:px-6">
+      <div className="page-frame py-6 md:py-8">
         {/* Heading */}
-        <header className="mb-10 md:mb-12 relative flex flex-col md:flex-row md:items-end md:justify-between gap-6">
-          <div className="relative">
-            <div className="absolute -top-4 -left-4 right-0 h-24 bp-grid-paper opacity-50 pointer-events-none" />
-            <div className="relative">
-              <h1 className="font-display text-[clamp(2.25rem,5vw,4rem)] text-text-heading leading-[0.98]">
-                {copy.title}
-              </h1>
-              <p className="text-text-body text-[15px] mt-3 max-w-xl">
-                {copy.subtitle}
-              </p>
-            </div>
-          </div>
+        <PageHeader title={copy.title} description={copy.subtitle}>
           {(isAdmin || ownedCompanies.some((c: any) => c.status === "approved")) && (
             <button
               onClick={() => setShowPostModal(true)}
-              className="inline-flex items-center justify-center gap-2 bg-text-heading text-bg-card px-5 py-3 rounded-xl text-[14px] font-medium hover:brightness-110 transition-all shrink-0"
+              className="inline-flex items-center justify-center gap-2 bg-primary text-white px-5 py-3 rounded-xl text-[14px] font-medium hover:brightness-110 transition-all shrink-0"
             >
               <Plus className="w-4 h-4" strokeWidth={1.75} />
-              Post opportunity
+              Post a job
             </button>
           )}
-        </header>
+        </PageHeader>
 
         <div className="grid grid-cols-1 lg:grid-cols-[280px_1fr] gap-8 lg:gap-10">
           {/* Sidebar — filters */}
@@ -383,10 +373,10 @@ export default function Jobs() {
                 <div className="w-10 h-10 rounded-xl bg-accent/15 border border-accent/30 flex items-center justify-center text-accent mb-4">
                   <Briefcase className="w-5 h-5" strokeWidth={1.75} />
                 </div>
-                <p className="eyebrow tabular text-accent mb-2">FOR EMPLOYERS</p>
+                <p className="eyebrow text-white/70 mb-2">For employers</p>
                 <h3 className="font-display text-xl leading-tight mb-2">Hiring?</h3>
-                <p className="text-white/65 text-[13px] leading-relaxed mb-5">
-                  Reach 10,000+ verified industry professionals directly.
+                <p className="text-white/80 text-[13px] leading-relaxed mb-5">
+                  Post openings to members of the tank and terminal industry.
                 </p>
                 <button
                   onClick={() => setShowPostModal(true)}

@@ -42,7 +42,8 @@ import {
   MessageSquare, 
   Calendar, 
   BarChart3, 
-  User as UserIcon, 
+  User as UserIcon,
+  ChevronDown,
   Settings, 
   LogOut,
   Bell,
@@ -144,14 +145,39 @@ export const useAuth = () => {
   return context;
 };
 
+// --- Navigation ---
+// One list drives the desktop section row and the phone drawer. Paths are
+// unchanged from before the redesign; only the labels are new.
+const MAIN_SECTIONS = [
+  { name: "Feed", icon: LayoutDashboard, path: "/" },
+  { name: "News", icon: Newspaper, path: "/news" },
+  { name: "Jobs", icon: Briefcase, path: "/jobs" },
+  { name: "Surveys", icon: BarChart3, path: "/surveys" },
+  { name: "Groups", icon: UserIcon, path: "/groups" },
+  { name: "Companies", icon: Building2, path: "/directory" },
+];
+const MORE_SECTIONS = [
+  { name: "Forums", icon: MessageSquare, path: "/forums" },
+  { name: "Events", icon: Calendar, path: "/events" },
+];
+function isSectionActive(path: string, pathname: string) {
+  if (path === "/") return pathname === "/" || pathname.startsWith("/post/");
+  if (path === "/directory") return pathname.startsWith("/directory") || pathname.startsWith("/business/");
+  return pathname === path || pathname.startsWith(path + "/");
+}
+
 // --- Components ---
 
 function Navbar({ onMenuToggle, theme }: { onMenuToggle: () => void, theme: any }) {
-  const { user, profile } = useAuth();
+  const { user, profile, isAdmin, logout } = useAuth();
   const isDark = false; // light theme only
   const location = useLocation();
   const navigate = useNavigate();
   const [showNotifications, setShowNotifications] = useState(false);
+  const [showAccount, setShowAccount] = useState(false);
+  const [showMore, setShowMore] = useState(false);
+  const moreActive = MORE_SECTIONS.some((m) => isSectionActive(m.path, location.pathname));
+  useEffect(() => { setShowAccount(false); setShowMore(false); }, [location.pathname]);
   const [showNewChat, setShowNewChat] = useState(false);
   const { data: notifications } = useCollection<any>(
     "notifications",
@@ -310,14 +336,13 @@ function Navbar({ onMenuToggle, theme }: { onMenuToggle: () => void, theme: any 
 
   return (
     <>
-    <nav className="h-20 border-b border-border-main bg-bg-card/85 backdrop-blur-md sticky top-0 z-[60] px-2 sm:px-4 md:px-8 flex items-center justify-between">
-      {/* Hairline accent — a thin orange stripe at the very top, like a status bar */}
-      <span className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-accent/60 to-transparent" />
+    <header className="sticky top-0 z-[60] bg-bg-card border-b border-border-main">
+    <div className="page-frame h-16 flex items-center justify-between gap-3">
 
-      <div className="flex items-center gap-2 sm:gap-4 md:gap-8">
+      <div className="flex items-center gap-2 sm:gap-4 md:gap-6 min-w-0 flex-1">
         <button
           onClick={onMenuToggle}
-          className="p-2 text-text-body hover:bg-bg-main rounded-xl transition-colors"
+          className="lg:hidden p-2 -ml-2 text-text-body hover:bg-bg-main rounded-lg transition-colors"
           id="hamburger-menu-button"
           aria-label="Open menu"
         >
@@ -335,30 +360,30 @@ function Navbar({ onMenuToggle, theme }: { onMenuToggle: () => void, theme: any 
             // strokes that would disappear.
             const activeLogo = isDark ? (theme?.logoUrlDark || theme?.logoUrl) : theme?.logoUrl;
             return (
-              <div className={`flex items-center justify-center transition-all shrink-0 overflow-hidden ${activeLogo ? "rounded-lg w-8 h-8 md:w-[50px] md:h-[50px]" : "w-9 h-9 md:w-11 md:h-11"}`}>
+              <div className={`flex items-center justify-center transition-all shrink-0 overflow-hidden ${activeLogo ? "rounded-lg w-8 h-8 md:w-10 md:h-10" : "w-9 h-9 md:w-10 md:h-10"}`}>
                  {activeLogo ? (
                    <img
                      src={activeLogo}
-                     className="w-full h-full object-contain transition-transform group-hover:scale-105"
+                     className="w-full h-full object-contain"
                      alt="Logo"
                      onError={(e) => {
                        (e.target as HTMLImageElement).style.display = 'none';
                      }}
                    />
                  ) : (
-                   <BrandMark size={44} tone={isDark ? "light" : "dark"} className="transition-transform group-hover:scale-105" />
+                   <BrandMark size={40} tone="dark" />
                  )}
               </div>
             );
           })()}
           {theme?.displayMode !== 'image_only' && (
             <div className="flex flex-col">
-              <span className="font-display text-[22px] sm:text-2xl md:text-[28px] tracking-tight text-text-heading line-clamp-1 whitespace-nowrap leading-none transition-colors group-hover:text-primary">
+              <span className="font-display text-xl md:text-[22px] text-text-heading line-clamp-1 whitespace-nowrap leading-none transition-colors group-hover:text-primary">
                 {theme?.siteName || "Tankonomics"}
               </span>
               {theme?.displayMode === 'both' && (
                 <span className="eyebrow tabular text-text-body/55 mt-1 md:block hidden">
-                  {theme?.siteTagline || "Verified network identity"}
+                  {theme?.siteTagline || "Tanks & Terminals Network"}
                 </span>
               )}
             </div>
@@ -366,13 +391,14 @@ function Navbar({ onMenuToggle, theme }: { onMenuToggle: () => void, theme: any 
         </Link>
 
         {/* Search — refined with mono placeholder + kbd hint */}
-        <div ref={searchRef} className="hidden md:block relative w-80">
+        <div ref={searchRef} className="hidden md:block relative w-full max-w-md">
           <div className="flex items-center gap-2.5 bg-bg-main rounded-xl pl-4 pr-2 py-2 w-full border border-border-main focus-within:bg-bg-card focus-within:ring-4 focus-within:ring-text-heading/5 focus-within:border-text-heading transition-all">
             <Search className="w-4 h-4 text-text-body/50 shrink-0" />
             <input
               ref={searchInputRef}
               type="text"
-              placeholder="Search forums, events, surveys, groups…"
+              placeholder="Search companies, jobs, news, groups…"
+              aria-label="Search Tankonomics"
               value={searchTerm}
               onChange={(e) => { setSearchTerm(e.target.value); setSearchOpen(true); }}
               onFocus={() => setSearchOpen(true)}
@@ -461,6 +487,15 @@ function Navbar({ onMenuToggle, theme }: { onMenuToggle: () => void, theme: any 
               )}
             </button>
 
+            <Link
+              to="/messages"
+              className={`p-2 sm:p-2.5 rounded-xl transition-all ${location.pathname.startsWith("/messages") ? "bg-bg-main text-text-heading" : "text-text-body hover:bg-bg-main hover:text-text-heading"}`}
+              aria-label="Messages"
+              title="Messages"
+            >
+              <MessageSquare className="w-4 h-4 sm:w-5 sm:h-5" strokeWidth={1.75} />
+            </Link>
+
             <button
               id="messages-nav-link"
               onClick={() => setShowNewChat(true)}
@@ -469,7 +504,7 @@ function Navbar({ onMenuToggle, theme }: { onMenuToggle: () => void, theme: any 
               title="New message"
             >
               <Plus className="w-4 h-4" strokeWidth={2} />
-              <span className="hidden lg:inline text-[13px] font-medium">New</span>
+              <span className="hidden xl:inline text-[13px] font-medium">New message</span>
             </button>
 
             <AnimatePresence>
@@ -568,22 +603,55 @@ function Navbar({ onMenuToggle, theme }: { onMenuToggle: () => void, theme: any 
               )}
             </AnimatePresence>
 
-            {/* Profile chip — refined to a flat editorial style */}
-            <Link to="/profile" className="flex items-center gap-3 group pl-2 pr-1 sm:pr-2 py-1 rounded-xl hover:bg-bg-main transition-all ml-1">
-              <div className="text-right hidden md:block">
-                <p className="text-[13px] font-medium text-text-heading leading-tight">{profile?.displayName || user.displayName}</p>
-                <p className="eyebrow tabular text-text-body/60 mt-0.5">{profile?.jobTitle || "Member"}</p>
-              </div>
-              <div className="relative">
+            {/* Account menu */}
+            <div className="relative ml-1">
+              <button
+                type="button"
+                onClick={() => setShowAccount(!showAccount)}
+                aria-haspopup="menu"
+                aria-expanded={showAccount}
+                aria-label="Account menu"
+                className="flex items-center gap-2.5 pl-2 pr-1 sm:pr-2 py-1 rounded-xl hover:bg-bg-main transition-all"
+              >
+                <div className="text-right hidden xl:block">
+                  <p className="text-[13px] font-medium text-text-heading leading-tight">{profile?.displayName || user.displayName}</p>
+                  <p className="text-[12px] text-text-body mt-0.5">{profile?.jobTitle || "Member"}</p>
+                </div>
                 <img
                   src={user.photoURL || `https://api.dicebear.com/7.x/initials/svg?seed=${user.displayName}`}
-                  alt="Profile"
-                  className="w-9 h-9 sm:w-10 sm:h-10 rounded-xl border border-border-main group-hover:border-text-heading transition-all object-cover"
+                  alt=""
+                  className="w-9 h-9 rounded-full border border-border-main object-cover"
                 />
-                {/* Verified-status dot — small accent in the corner */}
-                <span className="absolute -bottom-0.5 -right-0.5 w-3 h-3 rounded-full bg-accent border-2 border-bg-card" title="Verified member" />
-              </div>
-            </Link>
+                <ChevronDown className="w-4 h-4 text-text-body hidden sm:block" strokeWidth={1.75} />
+              </button>
+              {showAccount && (
+                <>
+                  <div className="fixed inset-0 z-[60]" onClick={() => setShowAccount(false)} />
+                  <div role="menu" className="absolute right-0 top-full mt-2 w-60 bg-bg-card border border-border-main rounded-lg shadow-lg z-[70] py-1.5">
+                    <div className="px-4 py-2.5 border-b border-border-main mb-1">
+                      <p className="text-[14px] font-medium text-text-heading truncate">{profile?.displayName || user.displayName}</p>
+                      <p className="text-[12px] text-text-body truncate">{user.email}</p>
+                    </div>
+                    <Link role="menuitem" to="/profile" onClick={() => setShowAccount(false)} className="flex items-center gap-2.5 px-4 py-2 text-[14px] text-text-heading hover:bg-bg-main">
+                      <UserIcon className="w-4 h-4 text-text-body" strokeWidth={1.75} /> Your profile
+                    </Link>
+                    {isAdmin && (
+                      <Link role="menuitem" to="/admin" onClick={() => setShowAccount(false)} className="flex items-center gap-2.5 px-4 py-2 text-[14px] text-text-heading hover:bg-bg-main">
+                        <Settings className="w-4 h-4 text-text-body" strokeWidth={1.75} /> Admin panel
+                      </Link>
+                    )}
+                    <button
+                      role="menuitem"
+                      type="button"
+                      onClick={async () => { setShowAccount(false); try { await logout(); } catch (err) { console.error("Sign out failed:", err); } }}
+                      className="w-full flex items-center gap-2.5 px-4 py-2 text-[14px] text-text-heading hover:bg-bg-main text-left"
+                    >
+                      <LogOut className="w-4 h-4 text-text-body" strokeWidth={1.75} /> Sign out
+                    </button>
+                  </div>
+                </>
+              )}
+            </div>
           </div>
         ) : (
           <button
@@ -594,7 +662,60 @@ function Navbar({ onMenuToggle, theme }: { onMenuToggle: () => void, theme: any 
           </button>
         )}
       </div>
-    </nav>
+    </div>
+
+    {/* Section links — desktop only; phones use the drawer */}
+    {user && (
+      <nav aria-label="Sections" className="hidden lg:block border-t border-border-main">
+        <div className="page-frame flex items-center gap-1 h-11">
+          {MAIN_SECTIONS.map((item) => {
+            const active = isSectionActive(item.path, location.pathname);
+            return (
+              <Link
+                key={item.path}
+                to={item.path}
+                aria-current={active ? "page" : undefined}
+                className={`relative h-11 px-3.5 flex items-center text-[14px] transition-colors ${active ? "text-primary font-semibold" : "text-text-body font-medium hover:text-text-heading"}`}
+              >
+                {item.name}
+                {active && <span className="absolute left-2 right-2 bottom-0 h-0.5 bg-primary rounded-full" />}
+              </Link>
+            );
+          })}
+          <div className="relative">
+            <button
+              type="button"
+              onClick={() => setShowMore(!showMore)}
+              aria-haspopup="menu"
+              aria-expanded={showMore}
+              className={`relative h-11 px-3.5 flex items-center gap-1 text-[14px] transition-colors ${moreActive ? "text-primary font-semibold" : "text-text-body font-medium hover:text-text-heading"}`}
+            >
+              More <ChevronDown className="w-4 h-4" strokeWidth={1.75} />
+              {moreActive && <span className="absolute left-2 right-2 bottom-0 h-0.5 bg-primary rounded-full" />}
+            </button>
+            {showMore && (
+              <>
+                <div className="fixed inset-0 z-[60]" onClick={() => setShowMore(false)} />
+                <div role="menu" className="absolute left-0 top-full mt-1 w-44 bg-bg-card border border-border-main rounded-lg shadow-lg z-[70] py-1.5">
+                  {MORE_SECTIONS.map((item) => (
+                    <Link
+                      key={item.path}
+                      role="menuitem"
+                      to={item.path}
+                      onClick={() => setShowMore(false)}
+                      className={`flex items-center gap-2.5 px-4 py-2 text-[14px] hover:bg-bg-main ${isSectionActive(item.path, location.pathname) ? "text-primary font-semibold" : "text-text-heading"}`}
+                    >
+                      <item.icon className="w-4 h-4 text-text-body" strokeWidth={1.75} /> {item.name}
+                    </Link>
+                  ))}
+                </div>
+              </>
+            )}
+          </div>
+        </div>
+      </nav>
+    )}
+    </header>
 
     {/* Mobile search overlay — md:hidden trigger above opens this; reuses the
         same searchTerm/searchResults/goToResult as the desktop dropdown. */}
@@ -611,7 +732,8 @@ function Navbar({ onMenuToggle, theme }: { onMenuToggle: () => void, theme: any 
             <input
               ref={mobileSearchInputRef}
               type="text"
-              placeholder="Search companies, jobs, forums…"
+              placeholder="Search companies, jobs, news, groups…"
+              aria-label="Search Tankonomics"
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
               className="bg-transparent border-none flex-1 text-[15px] text-text-heading placeholder:text-text-body/45 outline-none"
@@ -680,19 +802,14 @@ function Sidebar({ isOpen, onClose, theme }: { isOpen: boolean; onClose: () => v
   const location = useLocation();
 
   const navItems = [
-    { name: "Home", icon: LayoutDashboard, path: "/" },
-    { name: "Global News", icon: Newspaper, path: "/news" },
-    { name: "Directory", icon: Building2, path: "/directory" },
-    { name: "Jobs", icon: Briefcase, path: "/jobs" },
-    { name: "Forums", icon: MessageSquare, path: "/forums" },
-    { name: "Events", icon: Calendar, path: "/events" },
-    { name: "Surveys", icon: BarChart3, path: "/surveys" },
-    { name: "Groups", icon: UserIcon, path: "/groups" },
+    ...MAIN_SECTIONS,
+    ...MORE_SECTIONS,
     { name: "Messages", icon: MessageSquare, path: "/messages" },
+    { name: "Your profile", icon: UserIcon, path: "/profile" },
   ];
 
   if (isAdmin) {
-    navItems.push({ name: "Admin Panel", icon: Settings, path: "/admin" });
+    navItems.push({ name: "Admin panel", icon: Settings, path: "/admin" });
   }
 
   return (
@@ -704,7 +821,7 @@ function Sidebar({ isOpen, onClose, theme }: { isOpen: boolean; onClose: () => v
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             onClick={onClose}
-            className="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-[70]"
+            className="fixed inset-0 bg-slate-900/40 z-[70] lg:hidden"
           />
         )}
       </AnimatePresence>
@@ -716,11 +833,8 @@ function Sidebar({ isOpen, onClose, theme }: { isOpen: boolean; onClose: () => v
           opacity: isOpen ? 1 : 0
         }}
         transition={{ type: "spring", damping: 30, stiffness: 300 }}
-        className="w-72 fixed left-0 top-0 bottom-0 bg-bg-card z-[80] shadow-2xl border-r border-border-main flex flex-col"
+        className="w-72 fixed left-0 top-0 bottom-0 bg-bg-card z-[80] shadow-xl border-r border-border-main flex flex-col lg:hidden"
       >
-        {/* Top accent hairline */}
-        <span className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-accent/0 via-accent/60 to-accent/0" />
-
         <div className="flex items-center justify-between px-6 pt-6 pb-8">
           <Link to="/" onClick={onClose} className="flex items-center gap-3">
              {theme?.displayMode !== 'text_only' && (() => {
@@ -753,10 +867,10 @@ function Sidebar({ isOpen, onClose, theme }: { isOpen: boolean; onClose: () => v
         </div>
 
         <div className="flex-1 overflow-y-auto px-3 custom-scrollbar">
-          <p className="px-4 eyebrow tabular text-text-body/45 mb-3">Core navigation</p>
+          <p className="px-4 eyebrow text-text-body mb-2">Sections</p>
           <div className="space-y-0.5">
             {navItems.map((item) => {
-              const active = location.pathname === item.path;
+              const active = isSectionActive(item.path, location.pathname);
               return (
                 <Link
                   key={item.path}
@@ -770,7 +884,7 @@ function Sidebar({ isOpen, onClose, theme }: { isOpen: boolean; onClose: () => v
                 >
                   {/* Vertical accent bar when active — like a control-panel indicator */}
                   {active && (
-                    <span className="absolute left-0 top-1.5 bottom-1.5 w-0.5 rounded-full bg-accent" />
+                    <span className="absolute left-0 top-1.5 bottom-1.5 w-0.5 rounded-full bg-primary" />
                   )}
                   <item.icon
                     className={`w-[18px] h-[18px] shrink-0 ${active ? "text-text-heading" : "text-text-body/65 group-hover:text-text-heading"}`}
@@ -963,111 +1077,46 @@ function AuthPanel({ onSignIn, theme }: { onSignIn: (provider: string) => Promis
 
   return (
     <div className="min-h-screen w-full grid lg:grid-cols-[1.05fr_1fr] bg-bg-main">
-      {/* ============ LEFT — editorial hero panel ============ */}
-      <aside className="relative hidden lg:flex flex-col justify-between text-white p-12 xl:p-16 bg-primary overflow-hidden grain">
-        {/* Blueprint grid background */}
-        <div className="absolute inset-0 bp-grid pointer-events-none" />
-        {/* Atmospheric wash */}
-        <div
-          className="absolute inset-0 pointer-events-none opacity-90"
-          style={{
-            background:
-              "radial-gradient(ellipse at 15% 10%, rgba(30,74,114,0.55) 0%, rgba(11,27,43,0) 60%)",
-          }}
-        />
+      {/* ============ LEFT — what the site is ============ */}
+      <aside className="hidden lg:flex flex-col justify-between text-white p-12 xl:p-16 bg-primary">
+        <Link to="/" className="flex items-center gap-3">
+          {theme?.logoUrlDark || theme?.logoUrl ? (
+            <img src={theme.logoUrlDark || theme.logoUrl} className="h-11 w-auto" alt="" />
+          ) : (
+            <BrandMark size={44} tone="light" />
+          )}
+          <span className="text-2xl font-semibold leading-none">{siteName}</span>
+        </Link>
 
-        {/* Top row: logo + locator */}
-        <div className="relative flex items-start justify-between">
-          <Link to="/" className="flex items-center gap-3">
-            {theme?.logoUrlDark || theme?.logoUrl ? (
-              <img src={theme.logoUrlDark || theme.logoUrl} className="h-12 w-auto" alt={siteName} />
-            ) : (
-              <BrandMark size={48} tone="light" />
-            )}
-            <div className="font-display text-3xl leading-none">{siteName}</div>
-          </Link>
-          <div className="eyebrow tabular text-white/55 text-right">
-            <div className="text-white/80">EST. 2026</div>
-            <div>N 19.07° · E 72.88°</div>
-          </div>
-        </div>
-
-        {/* Centre: editorial statement */}
-        <div className="relative max-w-xl">
-          <div className="flex items-center gap-3 eyebrow tabular text-accent mb-6">
-            <span className="inline-block w-1.5 h-1.5 rounded-full bg-accent soft-pulse" />
-            VERIFIED INDUSTRY NETWORK
-          </div>
-          <h2 className="font-display text-[clamp(2.5rem,4.2vw,4.5rem)] leading-[0.98] text-white">
-            Where the storage tank industry meets,{" "}
-            <em className="italic text-accent">
-              quietly.
-            </em>
+        <div className="max-w-lg">
+          <h2 className="text-[clamp(1.75rem,2.6vw,2.5rem)] font-semibold leading-tight text-white">
+            The professional network for the tank and terminal industry
           </h2>
-          <p className="mt-8 text-white/65 text-base leading-relaxed max-w-md">
-            Connect with vetted operators, EPCs, OEMs and inspectors. Read sector reports,
-            post technical questions, and discover work — without the noise of a public feed.
+          <p className="mt-5 text-white/75 text-base leading-relaxed">
+            For terminal operators, storage companies, engineers, equipment suppliers,
+            contractors and industry executives.
           </p>
-
-          {/* Three small data plinths */}
-          <div className="mt-12 grid grid-cols-3 gap-px bg-white/10 border border-white/10 max-w-md">
+          <ul className="mt-8 space-y-3 text-[15px] text-white/90">
             {[
-              { kpi: "1,200+", label: "Verified members" },
-              { kpi: "180", label: "Companies indexed" },
-              { kpi: "42", label: "Countries" },
-            ].map((s) => (
-              <div key={s.label} className="bg-primary/80 p-4">
-                <div className="font-display text-3xl text-white tabular">{s.kpi}</div>
-                <div className="eyebrow tabular text-white/45 mt-1">{s.label}</div>
-              </div>
+              "A feed of updates from members and companies",
+              "Industry news, linked to its publishers",
+              "Jobs across the sector",
+              "A directory of companies, with pages their representatives can claim",
+              "Groups and surveys for specialist topics",
+            ].map((line) => (
+              <li key={line} className="flex items-start gap-3">
+                <span className="mt-2 w-1.5 h-1.5 rounded-full bg-white/60 shrink-0" />
+                <span>{line}</span>
+              </li>
             ))}
-          </div>
+          </ul>
         </div>
 
-        {/* Bottom: rolling industry strip */}
-        <div className="relative -mx-12 xl:-mx-16">
-          <div className="flex items-center gap-3 eyebrow tabular text-white/40 px-12 xl:px-16 mb-3">
-            <span className="h-px flex-1 bg-white/15" />
-            INDEXED SECTORS
-            <span className="h-px flex-1 bg-white/15" />
-          </div>
-          <div className="overflow-hidden mask-fade-x">
-            <div className="marquee flex gap-12 whitespace-nowrap w-max">
-              {[...Array(2)].flatMap((_, k) =>
-                [
-                  "Crude oil storage",
-                  "Refined products",
-                  "Chemicals · Petrochem",
-                  "LNG · LPG",
-                  "Biofuels",
-                  "Vegetable oils",
-                  "Inspection & integrity",
-                  "Cleaning & maintenance",
-                  "Terminal automation",
-                  "EPC · Engineering",
-                ].map((s, i) => (
-                  <span
-                    key={`${k}-${i}`}
-                    className="eyebrow tabular text-white/55 flex items-center gap-3"
-                  >
-                    <span className="text-accent">◆</span>
-                    {s}
-                  </span>
-                )),
-              )}
-            </div>
-          </div>
-        </div>
-
-        {/* Corner registration ticks */}
-        <span className="absolute top-8 left-8 w-4 h-4 border-t border-l border-white/30" />
-        <span className="absolute top-8 right-8 w-4 h-4 border-t border-r border-white/30" />
-        <span className="absolute bottom-8 left-8 w-4 h-4 border-b border-l border-white/30" />
-        <span className="absolute bottom-8 right-8 w-4 h-4 border-b border-r border-white/30" />
+        <p className="text-[13px] text-white/55">© 2026 {siteName}</p>
       </aside>
 
       {/* ============ RIGHT — sign-in form ============ */}
-      <section className="relative flex flex-col justify-center p-6 sm:p-10 lg:p-16 bg-bg-main min-w-0 overflow-hidden">
+      <section className="relative flex flex-col justify-center p-6 sm:p-10 lg:p-16 bg-bg-main min-w-0">
         {/* Mobile-only header (since the left panel is hidden on mobile) */}
         <div className="lg:hidden flex items-center justify-between mb-10">
           <div className="flex items-center gap-3">
@@ -1078,26 +1127,21 @@ function AuthPanel({ onSignIn, theme }: { onSignIn: (provider: string) => Promis
             )}
             <span className="font-display text-2xl text-text-heading leading-none">{siteName}</span>
           </div>
-          <span className="eyebrow tabular text-text-body/50">EST. 2026</span>
         </div>
 
         <motion.div
           initial={{ opacity: 0, y: 16 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
+          transition={{ duration: 0.2 }}
           className="w-full max-w-md mx-auto"
         >
-          {/* Eyebrow + heading */}
-          <div className="eyebrow tabular text-accent mb-3">
-            {isRegistering ? "01 / CREATE ACCOUNT" : "01 / SIGN IN"}
-          </div>
-          <h1 className="font-display text-5xl sm:text-6xl text-text-heading leading-[0.95] mb-3">
-            {isRegistering ? "Join the index." : "Welcome back."}
+          <h1 className="text-[28px] font-semibold text-text-heading leading-tight mb-2">
+            {isRegistering ? "Create your account" : "Sign in"}
           </h1>
           <p className="text-text-body text-base leading-relaxed mb-10 lg:hidden">{siteTagline}</p>
           <p className="text-text-body text-base leading-relaxed mb-10 hidden lg:block">
             {isRegistering
-              ? "Set up credentials. You can complete your industry profile after sign-in."
+              ? "Set an email and password. You can complete your profile after signing in."
               : "Sign in to your account to continue."}
           </p>
 
@@ -1219,34 +1263,7 @@ function AuthPanel({ onSignIn, theme }: { onSignIn: (provider: string) => Promis
             verification is required for full member access.
           </p>
         </motion.div>
-
-        {/* Mobile sector marquee — gives mobile a hint of the industrial feel */}
-        <div className="lg:hidden mt-12 -mx-6 sm:-mx-10 overflow-hidden mask-fade-x">
-          <div className="marquee flex gap-8 whitespace-nowrap w-max">
-            {[...Array(2)].flatMap((_, k) =>
-              ["Crude oil", "Refined products", "Chemicals", "LNG · LPG", "Biofuels", "Inspection", "EPC"].map(
-                (s, i) => (
-                  <span
-                    key={`${k}-${i}`}
-                    className="eyebrow tabular text-text-body/40 flex items-center gap-2"
-                  >
-                    <span className="text-accent">◆</span>
-                    {s}
-                  </span>
-                ),
-              ),
-            )}
-          </div>
-        </div>
       </section>
-
-      {/* Mask-fade utility for marquee edges */}
-      <style>{`
-        .mask-fade-x {
-          mask-image: linear-gradient(90deg, transparent, #000 8%, #000 92%, transparent);
-          -webkit-mask-image: linear-gradient(90deg, transparent, #000 8%, #000 92%, transparent);
-        }
-      `}</style>
     </div>
   );
 }

@@ -8,6 +8,7 @@
  *   - Company posting context preserved
  */
 
+import { PageHeader } from "../components/PageHeader";
 import { useState, useEffect } from "react";
 import { useLocation } from "react-router-dom";
 import { useAuth } from "../App";
@@ -141,30 +142,19 @@ export default function Surveys() {
 
   return (
     <div className="min-h-screen bg-bg-main">
-      <div className="max-w-5xl mx-auto py-8 md:py-12 px-4 md:px-6">
+      <div className="page-frame py-6 md:py-8">
         {/* Heading */}
-        <header className="mb-10 md:mb-12 relative flex flex-col md:flex-row md:items-end md:justify-between gap-6">
-          <div className="relative">
-            <div className="absolute -top-4 -left-4 right-0 h-24 bp-grid-paper opacity-50 pointer-events-none" />
-            <div className="relative">
-              <h1 className="font-display text-[clamp(2.25rem,5vw,4rem)] text-text-heading leading-[0.98]">
-                {copy.title}
-              </h1>
-              <p className="text-text-body text-[15px] mt-3 max-w-xl">
-                {copy.subtitle}
-              </p>
-            </div>
-          </div>
+        <PageHeader title={copy.title} description={copy.subtitle}>
           {(isAdmin || isCompanyOwner) && (
             <button
               onClick={() => setIsCreating(true)}
-              className="inline-flex items-center justify-center gap-2 bg-text-heading text-bg-card px-5 py-3 rounded-xl text-[14px] font-medium hover:brightness-110 transition-all shrink-0"
+              className="inline-flex items-center justify-center gap-2 bg-primary text-white px-5 py-3 rounded-xl text-[14px] font-medium hover:brightness-110 transition-all shrink-0"
             >
               <Plus className="w-4 h-4" strokeWidth={1.75} />
-              Create pulse check
+              Create survey
             </button>
           )}
-        </header>
+        </PageHeader>
 
         {/* Create modal */}
         <AnimatePresence>

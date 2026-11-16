@@ -9,6 +9,7 @@
  *   - Event detail modal preserved (restyled)
  */
 
+import { PageHeader } from "../components/PageHeader";
 import { useCollection, createDocument, removeDocument } from "../hooks/useFirestore";
 import { useAuth } from "../App";
 import { usePageCopy } from "../lib/pageCopy";
@@ -254,20 +255,9 @@ export default function Events() {
 
   return (
     <div className="min-h-screen bg-bg-main">
-      <div className="max-w-7xl mx-auto py-8 md:py-12 px-4 md:px-6">
+      <div className="page-frame py-6 md:py-8">
         {/* Heading */}
-        <header className="mb-10 md:mb-12 relative flex flex-col md:flex-row md:items-end md:justify-between gap-6">
-          <div className="relative">
-            <div className="absolute -top-4 -left-4 right-0 h-24 bp-grid-paper opacity-50 pointer-events-none" />
-            <div className="relative">
-              <h1 className="font-display text-[clamp(2.25rem,5vw,4rem)] text-text-heading leading-[0.98]">
-                {copy.title}
-              </h1>
-              <p className="text-text-body text-[15px] mt-3 max-w-xl">
-                {copy.subtitle}
-              </p>
-            </div>
-          </div>
+        <PageHeader title={copy.title} description={copy.subtitle}>
 
           <div className="flex items-center gap-3 shrink-0">
             <div className="flex bg-bg-card border border-border-main rounded-xl p-1">
@@ -276,7 +266,7 @@ export default function Events() {
                   key={v}
                   onClick={() => setView(v)}
                   className={`px-4 py-2 rounded-lg eyebrow tabular transition-all ${
-                    view === v ? "bg-text-heading text-bg-card" : "text-text-body/55 hover:text-text-body"
+                    view === v ? "bg-primary text-white" : "text-text-body/55 hover:text-text-body"
                   }`}
                 >
                   {v === "list" ? "List" : "Calendar"}
@@ -286,14 +276,14 @@ export default function Events() {
             {(isAdmin || isCompanyOwner) && (
               <button
                 onClick={() => setIsCreating(true)}
-                className="inline-flex items-center justify-center gap-2 bg-text-heading text-bg-card px-4 py-2.5 rounded-xl text-[13px] font-medium hover:brightness-110 transition-all"
+                className="inline-flex items-center justify-center gap-2 bg-primary text-white px-4 py-2.5 rounded-xl text-[13px] font-medium hover:brightness-110 transition-all"
               >
                 <Plus className="w-4 h-4" strokeWidth={1.75} />
                 <span className="hidden sm:inline">New session</span>
               </button>
             )}
           </div>
-        </header>
+        </PageHeader>
 
         <div className="grid grid-cols-1 lg:grid-cols-[1fr_280px] gap-8 lg:gap-10">
           {/* Main column */}

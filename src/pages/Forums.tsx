@@ -7,6 +7,7 @@
  *   - Owned-company posting context, multi-category selector
  */
 
+import { PageHeader } from "../components/PageHeader";
 import { useState, useEffect } from "react";
 import { useAuth } from "../App";
 import { usePageCopy } from "../lib/pageCopy";
@@ -93,19 +94,9 @@ export default function Forums() {
 
   return (
     <div className="min-h-screen bg-bg-main">
-      <div className="max-w-7xl mx-auto py-8 md:py-12 px-4 md:px-6">
+      <div className="page-frame py-6 md:py-8">
         {/* Heading */}
-        <header className="mb-10 md:mb-12 relative">
-          <div className="absolute inset-x-0 top-0 h-28 bp-grid-paper opacity-50 pointer-events-none" />
-          <div className="relative">
-            <h1 className="font-display text-[clamp(2.25rem,5vw,4rem)] text-text-heading leading-[0.98]">
-              {copy.title}
-            </h1>
-            <p className="text-text-body text-[15px] mt-3 max-w-xl">
-              {copy.subtitle}
-            </p>
-          </div>
-        </header>
+        <PageHeader title={copy.title} description={copy.subtitle} />
 
         <div className="grid grid-cols-1 lg:grid-cols-[280px_1fr] gap-8 lg:gap-10">
           {/* Sidebar */}

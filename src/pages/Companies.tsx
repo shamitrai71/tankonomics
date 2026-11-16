@@ -12,6 +12,7 @@
  * the previous version.
  */
 
+import { PageHeader } from "../components/PageHeader";
 import { useState, useEffect, useCallback } from "react";
 import { useCollection } from "../hooks/useFirestore";
 import { usePageCopy } from "../lib/pageCopy";
@@ -224,19 +225,9 @@ export default function Companies() {
 
   return (
     <div className="min-h-screen bg-bg-main">
-      <div className="max-w-7xl mx-auto py-8 md:py-12 px-4 md:px-8">
+      <div className="page-frame py-6 md:py-8">
         {/* Page heading */}
-        <header className="mb-10 md:mb-14 relative">
-          <div className="absolute inset-x-0 top-0 h-32 bp-grid-paper opacity-50 pointer-events-none" />
-          <div className="relative">
-            <h1 className="font-display text-[clamp(2.25rem,5vw,4rem)] text-text-heading leading-[0.98]">
-              {copy.title}
-            </h1>
-            <p className="text-text-body text-[15px] mt-3 max-w-xl">
-              {copy.subtitle}
-            </p>
-          </div>
-        </header>
+        <PageHeader title={copy.title} description={copy.subtitle} />
 
         <div className="flex flex-col lg:flex-row gap-8 lg:gap-10">
           {/* Mobile filter toggle */}

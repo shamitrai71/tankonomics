@@ -16,6 +16,7 @@
  *     reaction picker, comment threading, report flow
  */
 
+import { PageHeader } from "../components/PageHeader";
 import { useState, ChangeEvent, useMemo, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { useAuth } from "../App";
@@ -644,15 +645,10 @@ export default function Home() {
 
   return (
     <div className="max-w-3xl mx-auto py-6 md:py-10 px-4">
-      {/* Page heading */}
-      {(
-        <div className="mb-8 md:mb-10">
-          <h1 className="font-display text-4xl md:text-5xl text-text-heading leading-[1.0]">Feed</h1>
-          <p className="text-text-body text-[14px] mt-3 max-w-md">
-            Updates and discussion from members and companies in the tank and terminal industry.
-          </p>
-        </div>
-      )}
+      <PageHeader
+        title="Feed"
+        description="Updates and discussion from members and companies in the tank and terminal industry."
+      />
 
       {/* Composer — participation requires B+ (verified member) */}
       {(tier === "A") ? (
