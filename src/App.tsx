@@ -1298,6 +1298,9 @@ export default function App() {
   const [profile, setProfile] = useState<any | null>(null);
   const [loading, setLoading] = useState(true);
   const [isAdmin, setIsAdmin] = useState(false);
+  // True once the admin check for the signed-in user has finished, so admin-only
+  // routes opened directly (/admin, /directory) wait instead of redirecting.
+  const [adminChecked, setAdminChecked] = useState(false);
   const [ownedCompanies, setOwnedCompanies] = useState<any[]>([]);
   const [hasBlueprint, setHasBlueprint] = useState(false);
   const [theme, setTheme] = useState<any>(null);
@@ -1355,9 +1358,11 @@ export default function App() {
       setProfile(null);
       setHasBlueprint(false);
       setIsAdmin(false);
+      setAdminChecked(false);
       setOwnedCompanies([]);
       return;
     }
+    setAdminChecked(false);
 
     // Track unsubscribers so we can clean up when the effect re-runs or the
     // user signs out. Declared at function scope (not inside try) so the
@@ -1479,6 +1484,7 @@ export default function App() {
           }
         }
         setIsAdmin(adminSnap.exists() || isSuperAdminEmail);
+        setAdminChecked(true);
 
         // Owned-companies live listener. Safe to start at any time.
         companiesUnsub = onSnapshot(
@@ -1500,6 +1506,7 @@ export default function App() {
         // Bootstrap failures are now surfaced instead of swallowed.
         // Common causes: rule rejection on user create, transient network.
         console.error("User bootstrap failed:", error);
+        setAdminChecked(true);
       }
     };
 
@@ -1635,8 +1642,8 @@ export default function App() {
                       <Route path="/profile" element={<Profile />} />
                       <Route path="/profile/:id" element={<Profile />} />
                       <Route path="/create-resume" element={<CreateResume />} />
-                      <Route path="/admin" element={isAdmin ? <Admin /> : <Navigate to="/" />} />
-                      <Route path="/directory" element={isAdmin ? <Companies /> : <Navigate to="/" replace />} />
+                      <Route path="/admin" element={!adminChecked ? null : isAdmin ? <Admin /> : <Navigate to="/" replace />} />
+                      <Route path="/directory" element={!adminChecked ? null : isAdmin ? <Companies /> : <Navigate to="/" replace />} />
                       <Route path="/jobs" element={<Jobs />} />
                       <Route path="/messages" element={<Messages />} />
                       <Route path="/messages/:chatId" element={<Messages />} />
