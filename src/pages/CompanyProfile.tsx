@@ -179,7 +179,10 @@ function ClaimModal({ company, onClose }: { company: any; onClose: () => void })
    ============================================================ */
 export default function CompanyProfile() {
   const { id } = useParams();
-  const { user } = useAuth();
+  const { user, isAdmin } = useAuth();
+  // The directory is admin-only; members reach company pages through search.
+  const backTo = isAdmin ? "/directory" : "/";
+  const backLabel = isAdmin ? "Directory" : "Feed";
   const [isClaiming, setIsClaiming] = useState(false);
   const [activeTab, setActiveTab] = useState<"about" | "products" | "locations" | "feed" | "team">("about");
   const [locationSearch, setLocationSearch] = useState("");
@@ -316,9 +319,9 @@ export default function CompanyProfile() {
           <p className="eyebrow tabular text-text-body/55 mb-2">Not found</p>
           <h2 className="font-display text-3xl text-text-heading mb-2">Business not found</h2>
           <p className="text-text-body mb-6 text-[14px]">This profile doesn't exist or has been removed.</p>
-          <Link to="/directory" className="inline-flex items-center gap-2 bg-text-heading text-bg-card px-5 py-3 rounded-xl text-[14px] font-medium">
+          <Link to={backTo} className="inline-flex items-center gap-2 bg-text-heading text-bg-card px-5 py-3 rounded-xl text-[14px] font-medium">
             <ArrowLeft className="w-4 h-4" />
-            Back to directory
+            Back to {backLabel.toLowerCase()}
           </Link>
         </div>
       </div>
@@ -345,11 +348,11 @@ export default function CompanyProfile() {
         {/* Back to directory pill */}
         <div className="absolute top-6 left-4 md:left-8 z-10">
           <Link
-            to="/directory"
+            to={backTo}
             className="inline-flex items-center gap-2 px-3.5 py-2 bg-bg-card/10 backdrop-blur-md border border-white/20 rounded-xl eyebrow tabular text-white hover:bg-bg-card/20 transition-all"
           >
             <ArrowLeft className="w-3.5 h-3.5" strokeWidth={1.75} />
-            Directory
+            {backLabel}
           </Link>
         </div>
 

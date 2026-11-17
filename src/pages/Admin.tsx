@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { SafeImage } from "../components/SafeImage";
+import { CompanyDataTools } from "../components/CompanyDataTools";
 import { Link } from "react-router-dom";
 import { 
   Plus, 
@@ -1709,6 +1710,7 @@ const handleEditCompany = async (company: any) => {
 
         {activeTab === "companies" && (
           <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -10 }} key="companies" className="space-y-10">
+            <CompanyDataTools />
             {/* Category Manager */}
             <div className="bg-bg-card p-8 rounded-2xl border border-border-main shadow-sm">
               <div className="flex items-center justify-between mb-6 gap-4 flex-wrap">
@@ -3146,7 +3148,7 @@ const handleEditCompany = async (company: any) => {
                         </td>
                         <td className="px-6 py-4">
                            <p className="font-bold text-slate-700 flex items-center gap-1.5"><Briefcase className="w-3 h-3 text-text-body/55" /> {member.jobTitle ||"-"}</p>
-                           <p className="text-xs text-text-body/55 flex items-center gap-1.5"><Building2 className="w-3 h-3 text-text-body/55" /> {member.company ||"-"}</p>
+                           <p className="text-xs text-text-body/55 flex items-center gap-1.5"><Building2 className="w-3 h-3 text-text-body/55" /> {member.company ||"-"}{member.company && !member.companyId ? " (not listed)" : ""}</p>
                         </td>
                         <td className="px-6 py-4">
                            <span className="px-2 py-1 bg-bg-main text-text-body rounded-md eyebrow tabular">

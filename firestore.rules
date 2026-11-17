@@ -596,6 +596,14 @@ service cloud.firestore {
       allow write: if isAdmin();
     }
 
+    // Sign-up company list (17 Nov 2026): pending members pick their company
+    // from it before approval, so any signed-in user can read it. Built by an
+    // admin from the companies collection; holds only id, name and city.
+    match /companyPicker/{docId} {
+      allow read: if isSignedIn();
+      allow write: if isAdmin();
+    }
+
     match /company_categories/{categoryId} {
       allow read: if isApprovedUser();
       allow write: if isAdmin();
@@ -634,7 +642,10 @@ service cloud.firestore {
 
     match /users/{userId} {
       allow read: if isSignedIn();
-      allow create: if isOwner(userId) && isValidId(userId);
+      // A new account is always created as pending; approval is an admin update
+      // (17 Nov 2026 — previously a member could create their own doc as approved).
+      allow create: if isOwner(userId) && isValidId(userId) &&
+                    isValidUser(incoming()) && incoming().status == 'pending';
       allow update: if isValidId(userId) && (
                     (isOwner(userId) && 
                       isValidUser(incoming()) && 

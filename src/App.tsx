@@ -155,7 +155,7 @@ const MAIN_SECTIONS = [
   { name: "Jobs", icon: Briefcase, path: "/jobs" },
   { name: "Surveys", icon: BarChart3, path: "/surveys" },
   { name: "Groups", icon: UserIcon, path: "/groups" },
-  { name: "Companies", icon: Building2, path: "/directory" },
+  { name: "Companies", icon: Building2, path: "/directory", adminOnly: true },
 ];
 const MORE_SECTIONS = [
   { name: "Forums", icon: MessageSquare, path: "/forums" },
@@ -668,7 +668,7 @@ function Navbar({ onMenuToggle, theme }: { onMenuToggle: () => void, theme: any 
     {user && (
       <nav aria-label="Sections" className="hidden lg:block border-t border-border-main">
         <div className="page-frame flex items-center gap-1 h-11">
-          {MAIN_SECTIONS.map((item) => {
+          {MAIN_SECTIONS.filter((item: any) => !item.adminOnly || isAdmin).map((item) => {
             const active = isSectionActive(item.path, location.pathname);
             return (
               <Link
@@ -802,7 +802,7 @@ function Sidebar({ isOpen, onClose, theme }: { isOpen: boolean; onClose: () => v
   const location = useLocation();
 
   const navItems = [
-    ...MAIN_SECTIONS,
+    ...MAIN_SECTIONS.filter((item: any) => !item.adminOnly || isAdmin),
     ...MORE_SECTIONS,
     { name: "Messages", icon: MessageSquare, path: "/messages" },
     { name: "Your profile", icon: UserIcon, path: "/profile" },
@@ -1617,7 +1617,7 @@ export default function App() {
             // are held for review. To require re-approval of existing
             // accounts too, change this to check `!== "approved"` instead.
             profile?.status === "pending" ? (
-            <ApprovalGate status="pending" email={user.email} onSignOut={logout} />
+            <ApprovalGate status="pending" email={user.email} onSignOut={logout} uid={user.uid} profile={profile} />
           ) : (
             <>
               <Sidebar isOpen={isMenuOpen} onClose={() => setIsMenuOpen(false)} theme={theme} />
@@ -1636,7 +1636,7 @@ export default function App() {
                       <Route path="/profile/:id" element={<Profile />} />
                       <Route path="/create-resume" element={<CreateResume />} />
                       <Route path="/admin" element={isAdmin ? <Admin /> : <Navigate to="/" />} />
-                      <Route path="/directory" element={<Companies />} />
+                      <Route path="/directory" element={isAdmin ? <Companies /> : <Navigate to="/" replace />} />
                       <Route path="/jobs" element={<Jobs />} />
                       <Route path="/messages" element={<Messages />} />
                       <Route path="/messages/:chatId" element={<Messages />} />
