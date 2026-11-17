@@ -1,15 +1,16 @@
 /**
- * Groups — micro-communities of verified members.
+ * Groups — specialist groups for members.
  *
- * Restyled. All data wiring preserved verbatim:
- *   - useCollection groups
- *   - handleCreateGroup (creates with pending status, auto-joins creator)
- *   - Verification gate: must be connected to a verified company
- *   - Search + public/private filter
+ * Each card: name, description, member count, Public or Private, and one
+ * action that reflects the member's own state (Join / Request to join /
+ * Requested / View group / Awaiting approval). Members must be connected to
+ * a company to join or create; the card says so in one line.
  */
 
 import { PageHeader } from "../components/PageHeader";
 import { useState } from "react";
+import { joinGroup } from "../lib/groupJoin";
+import { where } from "firebase/firestore";
 import { Link } from "react-router-dom";
 import {
   Users,
@@ -28,11 +29,39 @@ import { usePageCopy } from "../lib/pageCopy";
 import { useCollection } from "../hooks/useFirestore";
 import { db } from "../firebase";
 import { collection, addDoc, serverTimestamp, setDoc, doc } from "firebase/firestore";
+import { toast } from "../lib/dialogs";
 
 export default function Groups() {
   const copy = usePageCopy("groups");
   const { user, profile, isAdmin } = useAuth();
   const { data: groups, loading } = useCollection<any>("groups");
+  // The member's own memberships: one query, so each card can show its state.
+  const { data: myMemberships } = useCollection<any>("group_members", [where("userUid", "==", user?.uid || "__none__")], !!user);
+  const [joiningId, setJoiningId] = useState<string | null>(null);
+  const [justJoined, setJustJoined] = useState<Record<string, "joined" | "requested">>({});
+  const stateOf = (g: any): "creator-pending" | "joined" | "requested" | "none" => {
+    if (g.status === "pending" && g.creatorUid === user?.uid) return "creator-pending";
+    if (justJoined[g.id]) return justJoined[g.id];
+    const m = myMemberships.find((x: any) => x.groupId === g.id);
+    if (!m) return "none";
+    return m.status === "pending" || m.role === "pending" ? "requested" : "joined";
+  };
+  const canJoin = isAdmin || !!profile?.companyId;
+  const handleJoin = async (e: React.MouseEvent, g: any) => {
+    e.preventDefault(); e.stopPropagation();
+    if (!user || !canJoin || joiningId) return;
+    setJoiningId(g.id);
+    try {
+      const r = await joinGroup(g, user, profile, isAdmin);
+      setJustJoined((prev) => ({ ...prev, [g.id]: r }));
+      toast(r === "joined" ? `You joined ${g.name}.` : `Request sent. The group's admins will review it.`, "success");
+    } catch (err) {
+      console.error("Error joining group:", err);
+      toast("Could not join the group. Please try again.", "error");
+    } finally {
+      setJoiningId(null);
+    }
+  };
   const [searchTerm, setSearchTerm] = useState("");
   const [filterStatus, setFilterStatus] = useState<"all" | "public" | "private">("all");
   const [showCreateModal, setShowCreateModal] = useState(false);
@@ -81,9 +110,9 @@ export default function Groups() {
 
       setShowCreateModal(false);
       setNewGroup({ name: "", description: "", isPrivate: false, iconUrl: "", coverUrl: "" });
-      alert(isAdmin
+      toast(isAdmin
         ? "Group created and published."
-        : "Group creation initiated. An administrator will review your request shortly.");
+        : "Group submitted. An administrator will review it before it is listed.", "success");
     } catch (err) {
       console.error("Error creating group:", err);
     } finally {
@@ -130,7 +159,7 @@ export default function Groups() {
               <button
                 key={status}
                 onClick={() => setFilterStatus(status)}
-                className={`px-4 py-1.5 rounded-lg eyebrow tabular transition-all ${
+                className={`px-4 py-1.5 rounded-lg text-[13px] font-medium capitalize transition-all ${
                   filterStatus === status ? "bg-text-heading text-bg-card" : "text-text-body/55 hover:text-text-body"
                 }`}
               >
@@ -160,110 +189,80 @@ export default function Groups() {
         </div>
 
         {/* Group grid */}
+        {!canJoin && user && (
+          <p className="text-[13px] text-text-body mb-4">Connect your profile to a company to join or create groups. <Link to="/profile" className="text-primary font-medium hover:underline">Update profile</Link></p>
+        )}
         {loading ? (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-            {[1, 2, 3].map((i) => <div key={i} className="h-64 bg-bg-card border border-border-main rounded-2xl animate-pulse" />)}
+            {[1, 2, 3].map((i) => <div key={i} className="h-56 bg-bg-card border border-border-main rounded-xl animate-pulse" />)}
           </div>
         ) : filteredGroups.length === 0 ? (
-          <div className="text-center py-20 bg-bg-card border border-dashed border-border-main rounded-2xl">
-            {filterStatus === "all" ? (
-              <Users className="w-12 h-12 text-text-body/25 mx-auto mb-4" strokeWidth={1.5} />
-            ) : filterStatus === "private" ? (
-              <Lock className="w-12 h-12 text-text-body/25 mx-auto mb-4" strokeWidth={1.5} />
+          <div className="text-center py-10 bg-bg-card border border-dashed border-border-main rounded-xl">
+            {groups.length === 0 ? (
+              <p className="text-[15px] font-medium text-text-heading">No groups have been created yet.</p>
             ) : (
-              <Globe className="w-12 h-12 text-text-body/25 mx-auto mb-4" strokeWidth={1.5} />
-            )}
-            <p className="eyebrow tabular text-text-body/55 mb-1">NO MATCH</p>
-            <h3 className="font-display text-2xl text-text-heading mb-2">
-              No {filterStatus !== "all" ? `${filterStatus} ` : ""}groups found
-            </h3>
-            <p className="text-text-body text-[14px]">Try adjusting your search or filter.</p>
-            {(searchTerm || filterStatus !== "all") && (
-              <button
-                onClick={() => {
-                  setSearchTerm("");
-                  setFilterStatus("all");
-                }}
-                className="mt-5 inline-flex items-center gap-2 px-4 py-2 bg-text-heading text-bg-card rounded-xl text-[13px] font-medium"
-              >
-                Reset filters
-                <ArrowRight className="w-3.5 h-3.5" />
-              </button>
+              <>
+                <p className="text-[15px] font-medium text-text-heading">No {filterStatus !== "all" ? `${filterStatus} ` : ""}groups match.</p>
+                <button
+                  onClick={() => { setSearchTerm(""); setFilterStatus("all"); }}
+                  className="mt-4 px-4 py-2 bg-primary text-white rounded-lg text-[13px] font-medium"
+                >
+                  Clear all
+                </button>
+              </>
             )}
           </div>
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-            {filteredGroups.map((group) => (
-              <Link
-                key={group.id}
-                to={`/groups/${group.id}`}
-                className="group bg-bg-card border border-border-main rounded-2xl hover:border-text-heading transition-all overflow-hidden flex flex-col"
-              >
-                {/* Cover */}
-                <div className="h-28 bg-bg-main relative border-b border-border-main">
-                  {group.coverUrl ? (
-                    <img src={group.coverUrl} className="w-full h-full object-cover" alt="" />
-                  ) : (
-                    <div className="w-full h-full bp-grid-paper opacity-70" />
-                  )}
-                  <div className="absolute -bottom-5 left-5 w-12 h-12 bg-bg-card rounded-xl border border-border-main flex items-center justify-center overflow-hidden p-1.5 shadow-md">
-                    {group.iconUrl ? (
-                      <img src={group.iconUrl} className="w-full h-full object-contain" alt="" />
-                    ) : (
-                      <Users className="w-5 h-5 text-text-body/40" strokeWidth={1.5} />
-                    )}
-                  </div>
-                </div>
-
-                <div className="p-5 pt-7 flex-1 flex flex-col">
-                  <div className="flex items-start justify-between gap-2 mb-2 flex-wrap">
-                    <h3 className="font-display text-lg text-text-heading leading-tight line-clamp-1 group-hover:text-accent transition-colors flex-1 min-w-0">
-                      {group.name}
-                    </h3>
-                    <div className="flex items-center gap-1.5 shrink-0">
-                      {group.isPrivate ? (
-                        <span className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded eyebrow tabular bg-bg-main border border-border-main text-text-body/60">
-                          <Lock className="w-2.5 h-2.5" strokeWidth={2} />
-                          Private
-                        </span>
+            {filteredGroups.map((group) => {
+              const st = stateOf(group);
+              const n = group.memberCount || 1;
+              return (
+                <article key={group.id} className="bg-bg-card border border-border-main rounded-xl hover:border-text-heading transition-colors flex flex-col overflow-hidden">
+                  {group.coverUrl && <img src={group.coverUrl} className="w-full h-24 object-cover border-b border-border-main" alt="" />}
+                  <div className="p-5 flex-1 flex flex-col">
+                    <div className="flex items-start gap-3">
+                      <div className="w-11 h-11 bg-bg-main rounded-lg border border-border-main flex items-center justify-center overflow-hidden shrink-0">
+                        {group.iconUrl ? <img src={group.iconUrl} className="w-full h-full object-contain p-1" alt="" /> : <Users className="w-5 h-5 text-text-body/50" strokeWidth={1.5} />}
+                      </div>
+                      <div className="min-w-0 flex-1">
+                        <h3 className="text-[16px] font-semibold text-text-heading leading-snug">
+                          <Link to={`/groups/${group.id}`} className="hover:text-primary">{group.name}</Link>
+                        </h3>
+                        <p className="text-[12px] text-text-body mt-0.5 inline-flex items-center gap-1.5">
+                          {group.isPrivate ? <><Lock className="w-3 h-3" strokeWidth={2} /> Private</> : <><Globe className="w-3 h-3" strokeWidth={2} /> Public</>}
+                          <span aria-hidden="true">·</span>
+                          {n} {n === 1 ? "member" : "members"}
+                        </p>
+                      </div>
+                    </div>
+                    <p className="text-[13px] text-text-body line-clamp-2 mt-3 flex-1 leading-relaxed">
+                      {group.description || "No description yet."}
+                    </p>
+                    <div className="pt-4 mt-4 border-t border-border-main">
+                      {st === "creator-pending" ? (
+                        <span className="inline-flex px-3 py-2 rounded-lg text-[13px] font-medium bg-rust/10 text-rust">Awaiting admin approval</span>
+                      ) : st === "joined" ? (
+                        <Link to={`/groups/${group.id}`} className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-lg text-[13px] font-medium border border-border-main text-text-heading hover:border-text-heading">
+                          View group <ChevronRight className="w-3.5 h-3.5" strokeWidth={1.75} />
+                        </Link>
+                      ) : st === "requested" ? (
+                        <span className="inline-flex px-3 py-2 rounded-lg text-[13px] font-medium bg-bg-main text-text-body">Requested</span>
                       ) : (
-                        <span className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded eyebrow tabular bg-accent/10 text-accent border border-accent/20">
-                          <Globe className="w-2.5 h-2.5" strokeWidth={2} />
-                          Public
-                        </span>
+                        <button
+                          onClick={(e) => handleJoin(e, group)}
+                          disabled={!user || !canJoin || joiningId === group.id}
+                          title={!canJoin ? "Connect your profile to a company to join groups" : undefined}
+                          className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-lg text-[13px] font-medium bg-primary text-white hover:brightness-110 disabled:opacity-50 disabled:cursor-not-allowed"
+                        >
+                          {joiningId === group.id ? "Joining…" : group.isPrivate ? "Request to join" : "Join"}
+                        </button>
                       )}
                     </div>
                   </div>
-
-                  <div className="flex items-center gap-1.5 mb-3 flex-wrap">
-                    {group.status === "pending" && (
-                      <span className="eyebrow tabular px-1.5 py-0.5 rounded bg-rust/10 text-rust border border-rust/20">
-                        Pending approval
-                      </span>
-                    )}
-                    {group.creatorUid === user?.uid && (
-                      <span className="eyebrow tabular px-1.5 py-0.5 rounded bg-text-heading text-bg-card">
-                        Creator
-                      </span>
-                    )}
-                  </div>
-
-                  <p className="text-[13px] text-text-body line-clamp-2 mb-5 flex-1 leading-relaxed">
-                    {group.description || "No description provided."}
-                  </p>
-
-                  <div className="flex items-center justify-between pt-4 border-t border-border-main">
-                    <span className="eyebrow tabular text-text-body/55 flex items-center gap-1.5">
-                      <Users className="w-3 h-3" strokeWidth={1.75} />
-                      {group.memberCount || 1} {(group.memberCount || 1) === 1 ? "MEMBER" : "MEMBERS"}
-                    </span>
-                    <div className="w-8 h-8 rounded-lg bg-bg-main border border-border-main flex items-center justify-center text-text-body/50 group-hover:bg-text-heading group-hover:border-text-heading group-hover:text-bg-card group-hover:translate-x-0.5 transition-all">
-                      <ChevronRight className="w-4 h-4" strokeWidth={1.75} />
-                    </div>
-                  </div>
-                </div>
-              </Link>
-            ))}
+                </article>
+              );
+            })}
           </div>
         )}
       </div>
@@ -281,8 +280,7 @@ export default function Groups() {
             >
               <div className="px-6 py-5 border-b border-border-main flex items-baseline justify-between shrink-0">
                 <div>
-                  <p className="eyebrow tabular text-accent">NEW GROUP</p>
-                  <h2 className="font-display text-2xl text-text-heading mt-1">Create a group</h2>
+                  <h2 className="font-display text-xl text-text-heading">Create a group</h2>
                 </div>
                 <button onClick={() => setShowCreateModal(false)} className="p-2 hover:bg-bg-main rounded-lg transition-colors text-text-body/60">
                   <X className="w-4 h-4" />
@@ -295,10 +293,9 @@ export default function Groups() {
                     <div className="w-12 h-12 bg-bg-card border border-border-main rounded-xl flex items-center justify-center mb-4 text-rust">
                       <ShieldCheck className="w-5 h-5" strokeWidth={1.75} />
                     </div>
-                    <p className="eyebrow tabular text-rust mb-2">COMPANY LINK REQUIRED</p>
-                    <h3 className="font-display text-xl text-text-heading mb-3">Connect your profile to a verified company first</h3>
+                    <h3 className="font-display text-lg text-text-heading mb-2">Connect your profile to a company first</h3>
                     <p className="text-[13px] text-text-body leading-relaxed mb-5 max-w-sm">
-                      To maintain the professional integrity of groups, you must be connected to a verified company before creating or joining one.
+                      Groups are open to members connected to a company on Tankonomics.
                     </p>
                     <Link
                       to="/profile"

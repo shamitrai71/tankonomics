@@ -75,7 +75,7 @@ export default function ReportModal({ item, type, path, onClose }: ReportModalPr
               <div className="w-14 h-14 bg-accent/10 text-accent rounded-full flex items-center justify-center mx-auto mb-4 border border-accent/20">
                 <Check className="w-6 h-6" strokeWidth={2} />
               </div>
-              <p className="eyebrow tabular text-accent mb-2">REPORT QUEUED</p>
+              <p className="eyebrow tabular text-accent mb-2">Report queued</p>
               <h3 className="font-display text-2xl text-text-heading mb-2">Report received</h3>
               <p className="text-[14px] text-text-body">Our moderators will review this content shortly.</p>
             </div>

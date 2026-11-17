@@ -24,6 +24,7 @@
  *     the surface, not the engine.
  */
 
+import { SafeImage } from "../components/SafeImage";
 import { useState, useEffect, useRef } from "react";
 import { Link, useParams } from "react-router-dom";
 import { useAuth } from "../App";
@@ -79,6 +80,7 @@ import * as XLSX from "xlsx";
 import { jsPDF } from "jspdf";
 import { collection, query, getDocs, addDoc } from "firebase/firestore";
 import { useNotifications } from "../hooks/useNotifications";
+import { toast } from "../lib/dialogs";
 
 /* ============================================================
    Small shared building blocks — reused across both view & edit
@@ -331,7 +333,7 @@ function UpcomingEvents({ profile }: { profile: any }) {
                   </span>
                 </div>
               </div>
-              <Bell className="w-4 h-4 text-accent soft-pulse shrink-0" strokeWidth={1.75} />
+              <Bell className="w-4 h-4 text-accent shrink-0" strokeWidth={1.75} />
             </div>
           </div>
         ))}
@@ -423,11 +425,7 @@ function SavedJobs({ profile, isOwner }: { profile: any; isOwner: boolean }) {
             className="bg-bg-card border border-border-main p-4 rounded-2xl hover:border-text-heading transition-all flex items-center gap-3 group"
           >
             <div className="w-11 h-11 bg-bg-main rounded-lg flex items-center justify-center border border-border-main overflow-hidden shrink-0">
-              <img
-                src={job.companyLogo || "https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?auto=format&fit=crop&q=80&w=200"}
-                className="w-full h-full object-contain p-1.5"
-                alt=""
-              />
+              <SafeImage src={job.companyLogo} className="w-full h-full object-contain p-1.5" fallback={<Building2 className="w-5 h-5" strokeWidth={1.5} />} />
             </div>
             <div className="flex-1 overflow-hidden">
               <h4 className="text-[14px] font-medium text-text-heading line-clamp-1">{job.title}</h4>
@@ -608,11 +606,11 @@ export default function Profile() {
           company: ld.company !== "Imported from LinkedIn" ? ld.company : prev.company,
           socialLinks: { ...prev.socialLinks, linkedin: `https://www.linkedin.com/in/${ld.linkedinId}/` },
         }));
-        alert("LinkedIn profile data imported. Review and save to apply.");
+        toast("LinkedIn profile data imported. Review and save to apply.");
       }
       if (event.data?.type === "OAUTH_AUTH_ERROR") {
         setImportingLinkedin(false);
-        alert(`LinkedIn Import Error: ${event.data.error}`);
+        toast(`LinkedIn Import Error: ${event.data.error}`);
       }
     };
     window.addEventListener("message", handleMessage);
@@ -729,11 +727,11 @@ export default function Profile() {
     const file = e.target.files?.[0];
     if (!file) return;
     if (!file.type.startsWith("image/")) {
-      alert("Please choose an image file.");
+      toast("Please choose an image file.");
       return;
     }
     if (file.size > 10 * 1024 * 1024) {
-      alert("Image is too large (max 10 MB).");
+      toast("Image is too large (max 10 MB).");
       return;
     }
     setUploadingPhoto(true);
@@ -741,7 +739,7 @@ export default function Profile() {
       const url = await uploadImage(file, { folder: "profile" });
       setFormData((prev: any) => ({ ...prev, photoURL: url }));
     } catch (err: any) {
-      alert(`Photo upload failed: ${err?.message || err}`);
+      toast(`Photo upload failed: ${err?.message || err}`);
     } finally {
       setUploadingPhoto(false);
       e.target.value = "";
@@ -750,7 +748,7 @@ export default function Profile() {
 
   const handleSave = async () => {
     if (!user?.uid) {
-      alert("You must be signed in to update your profile.");
+      toast("You must be signed in to update your profile.");
       return;
     }
     if (saving) return;
@@ -798,7 +796,7 @@ export default function Profile() {
       setTimeout(() => setShowToast(false), 3000);
     } catch (err: any) {
       console.error("Error saving profile:", err);
-      alert(`Profile save failed: ${err?.message || "Unknown error"}`);
+      toast(`Profile save failed: ${err?.message || "Unknown error"}`);
     } finally {
       setSaving(false);
     }
@@ -890,7 +888,7 @@ export default function Profile() {
     // Messaging is open to connections OR a matched company↔candidate pair
     // (a job_match/application linking the two users unlocks the channel).
     if (!isConnected && !hasMatchWith) {
-      alert("You can message your connections. Messaging also opens once you're matched with a candidate or company through a job.");
+      toast("You can message your connections. Messaging also opens once you're matched with a candidate or company through a job.");
       return;
     }
     setMessageLoading(true);
@@ -966,7 +964,7 @@ export default function Profile() {
           <div className="w-16 h-16 bg-bg-card border border-border-main rounded-2xl flex items-center justify-center mx-auto mb-6 text-text-heading">
             <Lock className="w-7 h-7" strokeWidth={1.75} />
           </div>
-          <div className="eyebrow tabular text-accent mb-2">403 · PRIVATE PROFILE</div>
+          <div className="eyebrow tabular text-accent mb-2">Private profile</div>
           <h2 className="font-display text-4xl text-text-heading mb-3">Not visible</h2>
           <p className="text-text-body mb-8">This profile is set to private and is only visible to its owner or platform administrators.</p>
           <Link to="/" className="inline-flex items-center gap-2 bg-text-heading text-bg-card px-5 py-3 rounded-xl text-[14px] font-medium hover:brightness-110 transition-all">
@@ -1053,7 +1051,6 @@ export default function Profile() {
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 pt-8 lg:pt-12">
         {/* ======================= HEADER ======================= */}
         <header className="relative">
-          <div className="absolute inset-x-0 top-0 h-44 bp-grid-paper opacity-70 pointer-events-none" />
 
           <div className="relative flex flex-col sm:flex-row gap-6 sm:gap-10 items-center sm:items-end">
             {/* Avatar */}
@@ -1082,14 +1079,12 @@ export default function Profile() {
                   )}
                 </button>
               )}
-              <span className="absolute -top-1 -right-1 w-4 h-4 rounded-full bg-accent border-2 border-bg-main" title="Verified" />
             </div>
 
             {/* Name + role chips + counters */}
             <div className="flex-1 w-full text-center sm:text-left">
               <div className="eyebrow tabular text-accent mb-2 inline-flex items-center gap-2">
-                <span className="inline-block w-1.5 h-1.5 rounded-full bg-accent soft-pulse" />
-                {isOwner ? "YOUR PROFILE" : `MEMBER #${(targetId || "").slice(0, 6).toUpperCase()}`}
+                {isOwner ? "Your profile" : "Member profile"}
               </div>
               <h1 className="font-display text-[clamp(2.25rem,4.5vw,3.5rem)] text-text-heading leading-[0.98] mb-3">
                 {profile?.displayName || "Unnamed Member"}
@@ -1225,7 +1220,7 @@ export default function Profile() {
               )}
               {!isOwner && degree && (
                 <p className="eyebrow tabular text-text-body/55 text-center mt-1">
-                  {degree === 1 ? "1ST · DIRECT" : degree === 2 ? `2ND · ${mutualConnections.length} MUTUAL` : "3RD+"}
+                  {degree === 1 ? "Direct connection" : degree === 2 ? `2nd connection · ${mutualConnections.length} mutual` : "3rd+ connection"}
                 </p>
               )}
             </div>
@@ -1242,7 +1237,7 @@ export default function Profile() {
               <div className="flex items-center justify-between gap-3 mb-4">
                 <div>
                   <p className="eyebrow tabular text-accent mb-1 flex items-center gap-1.5">
-                    <Eye className="w-3.5 h-3.5" strokeWidth={1.75} /> PROFILE VIEWS
+                    <Eye className="w-3.5 h-3.5" strokeWidth={1.75} /> Profile views
                   </p>
                   <h3 className="font-display text-xl text-text-heading leading-tight">Who viewed your profile</h3>
                 </div>
@@ -1300,7 +1295,7 @@ export default function Profile() {
               <div className="bg-bg-card border border-border-main rounded-2xl px-6">
                 <div className="py-6 border-b border-border-main flex items-baseline justify-between">
                   <div>
-                    <p className="eyebrow tabular text-accent">EDIT MODE</p>
+                    <p className="eyebrow tabular text-accent">Edit mode</p>
                     <h2 className="font-display text-3xl text-text-heading mt-1">Refine your profile</h2>
                   </div>
                   <button onClick={() => setEditing(false)} className="text-[13px] text-text-body hover:text-text-heading transition-colors">
@@ -1314,7 +1309,7 @@ export default function Profile() {
                   <FieldInput label="Industry segment" value={formData.industrySegment} onChange={(v) => setFormData({ ...formData, industrySegment: v })} placeholder="e.g. LNG · Crude oil · Chemicals" icon={Globe2} />
                   <FieldInput label="Company name" value={formData.company} onChange={(v) => setFormData({ ...formData, company: v })} placeholder="Free-text company name" icon={Building2} />
                   <label className="block">
-                    <span className="eyebrow tabular text-text-body/60 mb-2 block">Verified business (optional)</span>
+                    <span className="eyebrow tabular text-text-body/60 mb-2 block">Company on Tankonomics (optional)</span>
                     <select
                       value={formData.companyId || ""}
                       onChange={(e) => {
@@ -1415,7 +1410,7 @@ export default function Profile() {
             ) : (
               <>
                 <section className="bg-bg-card border border-border-main rounded-2xl p-8">
-                  <SectionHeading icon={FileText} eyebrow="01 · ABOUT" title={profile?.profileLabels?.summaryHeading || "Professional Summary"} />
+                  <SectionHeading icon={FileText} eyebrow="About" title={profile?.profileLabels?.summaryHeading || "Professional Summary"} />
                   {profile?.bio ? (
                     <p className="text-[15px] text-text-body leading-relaxed whitespace-pre-wrap">{profile.bio}</p>
                   ) : (
@@ -1424,7 +1419,7 @@ export default function Profile() {
                 </section>
 
                 <section className="mt-8 bg-bg-card border border-border-main rounded-2xl p-8">
-                  <SectionHeading icon={Sparkles} eyebrow="02 · SKILLS" title={profile?.profileLabels?.skillsHeading || "Industry Skills & Endorsements"} />
+                  <SectionHeading icon={Sparkles} eyebrow="Skills" title={profile?.profileLabels?.skillsHeading || "Industry Skills & Endorsements"} />
                   {(profile?.skills || []).length === 0 ? (
                     <p className="text-[14px] text-text-body/50 italic">No skills listed yet.</p>
                   ) : (
@@ -1457,7 +1452,7 @@ export default function Profile() {
 
                 {(profile?.badges || []).length > 0 && (
                   <section className="mt-8 bg-bg-card border border-border-main rounded-2xl p-8">
-                    <SectionHeading icon={Award} eyebrow="03 · CERTIFICATIONS" title={profile?.profileLabels?.badgesHeading || "Industry Certification & Badges"} />
+                    <SectionHeading icon={Award} eyebrow="Certifications" title={profile?.profileLabels?.badgesHeading || "Industry Certification & Badges"} />
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                       {profile.badges.map((b: any, i: number) => (
                         <div key={i} className="flex items-center gap-3 p-4 bg-bg-main border border-border-main rounded-xl">
@@ -1478,7 +1473,7 @@ export default function Profile() {
                 )}
 
                 <section className="mt-8 bg-bg-card border border-border-main rounded-2xl p-8">
-                  <SectionHeading icon={MessageCircle} eyebrow="04 · RECOGNITION" title={profile?.profileLabels?.recommendationsHeading || "Professional Recommendations"} />
+                  <SectionHeading icon={MessageCircle} eyebrow="Recognition" title={profile?.profileLabels?.recommendationsHeading || "Professional Recommendations"} />
                   {recommendations.length === 0 ? (
                     <p className="text-[14px] text-text-body/50 italic">No recommendations yet.</p>
                   ) : (
@@ -1552,23 +1547,6 @@ export default function Profile() {
               <p className="eyebrow tabular text-text-body/55 mb-4">{profile?.profileLabels?.activityHeading || "Network Activity"}</p>
               <NetworkActivityPanel targetUid={targetId || ""} />
             </div>
-
-            {isOwner && (
-              <div className="bg-bg-card border border-border-main rounded-2xl p-6">
-                <p className="eyebrow tabular text-text-body/55 mb-3 flex items-center gap-2">
-                  <Sparkles className="w-3.5 h-3.5 text-accent" strokeWidth={1.75} />
-                  Technical Usage
-                </p>
-                <div className="flex items-baseline gap-2 mb-2">
-                  <span className="font-display text-3xl text-text-heading tabular">{profile?.aiUsage?.monthly || 0}</span>
-                  <span className="eyebrow tabular text-text-body/55">/ 10 monthly tokens</span>
-                </div>
-                <div className="w-full h-1.5 bg-bg-main rounded-full overflow-hidden">
-                  <div className="h-full bg-accent rounded-full transition-all" style={{ width: `${Math.min(100, ((profile?.aiUsage?.monthly || 0) / 10) * 100)}%` }} />
-                </div>
-                <p className="eyebrow tabular text-text-body/45 mt-3">Limits reset monthly</p>
-              </div>
-            )}
 
             {/* Career Blueprint — the entry point into CreateResume */}
             {isOwner && (

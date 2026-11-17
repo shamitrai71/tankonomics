@@ -54,6 +54,7 @@ import { useState, useMemo, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { CategorySelector } from "../components/CategorySelector";
 import { formatEventRange } from "../lib/eventDates";
+import { toast } from "../lib/dialogs";
 
 /**
  * Events — technical calendar.
@@ -99,7 +100,7 @@ export default function Events() {
     if (!newEvent.title.trim() || !newEvent.date) return;
 
     if (newEvent.endDate && newEvent.endDate < newEvent.date) {
-      alert("End date cannot be earlier than the start date.");
+      toast("End date cannot be earlier than the start date.");
       return;
     }
 
@@ -145,7 +146,7 @@ export default function Events() {
       setIsCreating(false);
     } catch (err: any) {
       console.error("Event create failed:", err);
-      alert(
+      toast(
         `Failed to save event: ${err?.message || "unknown error"}.\n\n` +
         `If this is a permissions error, the Firestore rules likely haven't been deployed. ` +
         `Run \`firebase deploy --only firestore:rules\` from the project root.`
@@ -299,7 +300,7 @@ export default function Events() {
                 >
                   <div className="px-6 py-5 border-b border-border-main flex items-baseline justify-between">
                     <div>
-                      <p className="eyebrow tabular text-accent">NEW SESSION</p>
+                      <p className="eyebrow tabular text-accent">New session</p>
                       <h3 className="font-display text-2xl text-text-heading mt-1">Schedule a session</h3>
                     </div>
                     <button onClick={() => setIsCreating(false)} className="p-2 hover:bg-bg-main rounded-lg transition-colors text-text-body/60">
@@ -499,7 +500,7 @@ export default function Events() {
               ) : filteredEvents.length === 0 ? (
                 <div className="bg-bg-card border border-dashed border-border-main rounded-2xl py-20 text-center">
                   <CalendarIcon className="w-12 h-12 text-text-body/25 mx-auto mb-4" strokeWidth={1.5} />
-                  <p className="eyebrow tabular text-text-body/55 mb-1">NO SESSIONS</p>
+                  <p className="eyebrow tabular text-text-body/55 mb-1">No sessions</p>
                   <h3 className="font-display text-2xl text-text-heading mb-2">No sessions in this range</h3>
                   <p className="text-text-body text-[14px]">Try adjusting your date filters or check back later.</p>
                 </div>
@@ -721,19 +722,18 @@ export default function Events() {
             </div>
 
             {/* My schedule card — deep petrol */}
-            <div className="bg-primary text-white rounded-2xl p-6 grain relative overflow-hidden">
-              <div className="absolute inset-0 bp-grid pointer-events-none opacity-40" />
+            <div className="bg-primary text-white rounded-2xl p-6 relative overflow-hidden">
               <div className="relative">
                 <div className="w-10 h-10 rounded-xl bg-accent/15 border border-accent/30 flex items-center justify-center text-accent mb-4">
                   <Bell className="w-5 h-5" strokeWidth={1.75} />
                 </div>
-                <p className="eyebrow tabular text-accent mb-2">SYNCHRONISED</p>
+                <p className="eyebrow tabular text-accent mb-2">Synchronised</p>
                 <h3 className="font-display text-xl leading-tight mb-2">My reminders</h3>
                 <p className="text-white/65 text-[13px] leading-relaxed mb-5">
                   Tracking {userReminders.length} {userReminders.length === 1 ? "session" : "sessions"} — email briefs sent 24 hours before each.
                 </p>
                 {userReminders.length === 0 && (
-                  <p className="eyebrow tabular text-white/45">SET A REMINDER ON ANY SESSION</p>
+                  <p className="eyebrow tabular text-white/45">Set a reminder on any session</p>
                 )}
               </div>
             </div>

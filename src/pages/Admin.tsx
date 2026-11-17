@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { SafeImage } from "../components/SafeImage";
 import { Link } from "react-router-dom";
 import { 
   Plus, 
@@ -73,6 +74,7 @@ import { COMPANY_SEED } from "../lib/companySeed";
 import { LOCATION_SEED } from "../lib/locationSeed";
 import { stableLocationDocId, tbIdFromUrl, resolveTbId, tbUrl } from "../lib/tbLocationId";
 import { Layers } from "lucide-react";
+import { toast, confirmDialog } from "../lib/dialogs";
 
 // Case-insensitive match on name or id/slug — id === slug for every company
 // in this app, so one check covers searching by either.
@@ -137,7 +139,7 @@ export default function Admin() {
       setWeightsSaved(true);
       setTimeout(() => setWeightsSaved(false), 2500);
     } catch (err: any) {
-      alert(`Failed to save weights: ${err?.code ? err.code + ": " : ""}${err?.message || err}`);
+      toast(`Failed to save weights: ${err?.code ? err.code + ": " : ""}${err?.message || err}`);
     } finally {
       setSavingWeights(false);
     }
@@ -325,12 +327,12 @@ export default function Admin() {
   const handleCreateNews = async () => {
     if (!preview) return;
     try {
-      await createDocument("news", { ...preview, authorUid: user?.uid });
+      await createDocument("news", { ...preview, isOfficial: !!preview.isOfficial, authorUid: user?.uid });
       setPreview(null);
       setUrl("");
     } catch (error: any) {
       console.error("News creation failed:", error);
-      alert("Failed to publish news. Please ensure you are logged in correctly and have admin permissions.");
+      toast("Failed to publish news. Please ensure you are logged in correctly and have admin permissions.");
     }
   };
 
@@ -348,7 +350,7 @@ export default function Admin() {
       setForumCategoryIds([]);
     } catch (err: any) {
       console.error("Forum topic creation failed:", err);
-      alert(`Failed to create topic: ${err?.message || "Unknown error"}`);
+      toast(`Failed to create topic: ${err?.message || "Unknown error"}`);
     }
   };
 
@@ -387,13 +389,13 @@ export default function Admin() {
     // stale). Abort clearly if there's no signed-in user.
     const uid = auth.currentUser?.uid;
     if (!uid) {
-      alert("Your session has expired. Please reload the page and sign in again.");
+      toast("Your session has expired. Please reload the page and sign in again.");
       return;
     }
 
     // Reject inverted ranges before sending.
     if (eventData.endDate && eventData.endDate < eventData.date) {
-      alert("End date cannot be earlier than the start date.");
+      toast("End date cannot be earlier than the start date.");
       return;
     }
 
@@ -427,7 +429,7 @@ export default function Admin() {
       if (editingEventId) {
         // UPDATE existing event. updateDocument injects updatedAt.
         await updateDocument("events", editingEventId, fields);
-        alert("Event updated successfully.");
+        toast("Event updated successfully.");
       } else {
         // CREATE new event.
         const payload: any = {
@@ -441,13 +443,13 @@ export default function Admin() {
           if (k === "categoryIds" && payload[k]?.length === 0) delete payload[k];
         });
         await createDocument("events", payload);
-        alert("Event saved successfully.");
+        toast("Event saved successfully.");
       }
 
       cancelEditEvent();
     } catch (err: any) {
       console.error("Event save failed:", err);
-      alert(
+      toast(
         `Failed to save event: ${err?.message || "unknown error"}.\n\n` +
         `If this is a permissions error, confirm the Firestore rules are deployed ` +
         `(Firebase Console → Firestore → Rules → Publish).`
@@ -468,7 +470,7 @@ export default function Admin() {
       setSurveyOptions(["", ""]);
     } catch (err: any) {
       console.error("Survey creation failed:", err);
-      alert(`Failed to create survey: ${err?.message || "Unknown error"}`);
+      toast(`Failed to create survey: ${err?.message || "Unknown error"}`);
     }
   };
 
@@ -481,7 +483,7 @@ export default function Admin() {
   const handleSeedLocations = async () => {
     const slugs = Object.keys(LOCATION_SEED);
     const total = Object.values(LOCATION_SEED).reduce((n, a) => n + a.length, 0);
-    if (!window.confirm(
+    if (!await confirmDialog(
       `Seed locations for ${slugs.length} compan${slugs.length === 1 ? "y" : "ies"} (${total} locations)?\n\n` +
       `Locations now live as their own documents under companies/{slug}/locations/{id} ` +
       `(see docs/LOCATION_CLAIMING_DRAFT.md), not as an array field. This writes/updates the ` +
@@ -557,7 +559,7 @@ export default function Admin() {
       if (failures.length > 0) {
         console.error("Location seed failures:", failures);
       }
-      alert(
+      toast(
         `Seeded locations: ${done} of ${total} (${created} created, ${updated} updated).` +
         (failures.length > 0
           ? `\n\n${failures.length} failed:\n` + failures.slice(0, 10).map(f => `${f.slug} / ${f.location}: ${f.reason}`).join("\n") +
@@ -566,7 +568,7 @@ export default function Admin() {
       );
     } catch (err: any) {
       console.error("Location seed failed:", err);
-      alert(`Location seeding failed: ${err?.message || "Unknown error"}`);
+      toast(`Location seeding failed: ${err?.message || "Unknown error"}`);
     } finally {
       setIsSeedingLocations(false);
     }
@@ -584,7 +586,7 @@ export default function Admin() {
   //  - Documents whose TankBazaar id is not in the seed are reported, never deleted.
   //  - Apply mode first downloads a JSON backup of every location document.
   const handleMigrateLocationIds = async (dryRun: boolean) => {
-    if (!window.confirm(
+    if (!await confirmDialog(
       (dryRun ? "DRY RUN: " : "APPLY: ") +
       "migrate location document ids to tb-<TankBazaar id> for every company?\n\n" +
       (dryRun ? "Nothing is written; a report is shown." : "A JSON backup of all location documents downloads first, then documents are rewritten and the old ids deleted.")
@@ -647,7 +649,7 @@ export default function Admin() {
         (orphans.length ? `\n\nNot in the current seed (${orphans.length}, not deleted):\n` + orphans.slice(0, 10).join("\n") : "");
       console.log("Location id migration plan", plan, { conflicts, orphans });
 
-      if (dryRun) { alert(report + "\n\n(Full plan in the browser console.)"); return; }
+      if (dryRun) { toast(report + "\n\n(Full plan in the browser console.)"); return; }
 
       const blob = new Blob([JSON.stringify(backup, toJson, 1)], { type: "application/json" });
       const a = document.createElement("a");
@@ -659,17 +661,17 @@ export default function Admin() {
       for (const w of work) {
         try { await w(); done++; } catch (err: any) { failures.push(err?.message || String(err)); }
       }
-      alert(report + `\n\nApplied ${done} of ${work.length} groups.` + (failures.length ? `\n${failures.length} failed: ${failures.slice(0, 5).join("; ")}` : "") + "\n\nNow run Seed locations.");
+      toast(report + `\n\nApplied ${done} of ${work.length} groups.` + (failures.length ? `\n${failures.length} failed: ${failures.slice(0, 5).join("; ")}` : "") + "\n\nNow run Seed locations.");
     } catch (err: any) {
       console.error("Location id migration failed:", err);
-      alert(`Migration failed: ${err?.message || "Unknown error"}`);
+      toast(`Migration failed: ${err?.message || "Unknown error"}`);
     } finally {
       setIsMigratingLocations(false);
     }
   };
 
   const handleSeedCompanies = async () => {
-    if (!window.confirm(
+    if (!await confirmDialog(
       `Seed the ${COMPANY_SEED.length} launch companies?\n\n` +
       `Each is written with its slug as the document id (the shared cross-app identity key). ` +
       `Safe to re-run — existing companies are updated in place, and their locations, ` +
@@ -732,7 +734,7 @@ export default function Admin() {
       if (failures.length > 0) {
         console.error("Company seed failures:", failures);
       }
-      alert(
+      toast(
         `Seeded companies — ${created} created, ${updated} updated (of ${COMPANY_SEED.length}).` +
         (failures.length > 0
           ? `\n\n${failures.length} failed:\n` + failures.slice(0, 10).map(f => `${f.id}: ${f.reason}`).join("\n") +
@@ -741,14 +743,14 @@ export default function Admin() {
       );
     } catch (err: any) {
       console.error("Company seed failed:", err);
-      alert(`Company seeding failed: ${err?.message || "Unknown error"}`);
+      toast(`Company seeding failed: ${err?.message || "Unknown error"}`);
     } finally {
       setIsSeedingCompanies(false);
     }
   };
 
   const handleSeedCategories = async () => {
-    if (!window.confirm(
+    if (!await confirmDialog(
       `Replace ALL company categories with the ${CATEGORY_SEED.length}-node master tree?\n\n` +
       `This deletes every existing category (including any that resisted manual deletion) and reseeds ` +
       `with stable slug IDs. Companies keep their categoryIds but must be re-tagged against the new tree.`
@@ -783,7 +785,7 @@ export default function Admin() {
       if (failures.length > 0) {
         console.error("Category seed failures:", failures);
       }
-      alert(
+      toast(
         `Cleared ${cleared} old categor${cleared === 1 ? "y" : "ies"}, seeded ${done} from the master tree.` +
         (failures.length > 0
           ? `\n\n${failures.length} failed:\n` + failures.slice(0, 10).map(f => `${f.id}: ${f.reason}`).join("\n") +
@@ -792,7 +794,7 @@ export default function Admin() {
       );
     } catch (err: any) {
       console.error("Category seed failed:", err);
-      alert(`Category seeding failed: ${err?.message || "Unknown error"}`);
+      toast(`Category seeding failed: ${err?.message || "Unknown error"}`);
     } finally {
       setIsSeedingCats(false);
     }
@@ -809,7 +811,7 @@ export default function Admin() {
       setNewCategory({ ...newCategory, name:"" });
     } catch (err: any) {
       console.error("Category creation failed:", err);
-      alert(`Failed to create category: ${err?.message || "Unknown error"}`);
+      toast(`Failed to create category: ${err?.message || "Unknown error"}`);
     }
   };
 
@@ -849,11 +851,11 @@ export default function Admin() {
     const file = e.target.files?.[0];
     if (!file) return;
     if (!file.type.startsWith("image/")) {
-      alert("Please select an image file.");
+      toast("Please select an image file.");
       return;
     }
     if (file.size > 10 * 1024 * 1024) {
-      alert(`Image is too large (${(file.size / 1024 / 1024).toFixed(1)} MB). Maximum is 10 MB.`);
+      toast(`Image is too large (${(file.size / 1024 / 1024).toFixed(1)} MB). Maximum is 10 MB.`);
       return;
     }
     // Upload to Firebase Storage and store only the download URL in Firestore.
@@ -879,7 +881,7 @@ export default function Admin() {
       }
     } catch (err: any) {
       console.error("Image upload error:", err);
-      alert(`Failed to upload image: ${err?.message || err}`);
+      toast(`Failed to upload image: ${err?.message || err}`);
     } finally {
       if (field === "themeLogo" || field === "themeLogoDark") setIsLogoUploading(false);
       if (field === "eventImage") setIsEventUploading(false);
@@ -888,7 +890,7 @@ export default function Admin() {
 
   const handleCreateCompany = async () => {
     if (!newCompany.name.trim() || newCompany.categoryIds.length === 0) {
-      alert("Company name and at least one category are required.");
+      toast("Company name and at least one category are required.");
       return;
     }
 
@@ -993,7 +995,7 @@ export default function Admin() {
       });
     } catch (err: any) {
       console.error("Company save failed:", err);
-      alert(`Company save failed: ${err?.message ||"Unknown error"}`);
+      toast(`Company save failed: ${err?.message ||"Unknown error"}`);
     }
   };
 
@@ -1044,7 +1046,7 @@ const handleEditCompany = async (company: any) => {
       }
     } catch (err: any) {
       console.error("Claim resolution failed:", err);
-      alert(`Failed to ${approve ? "approve" : "reject"} claim: ${err?.message || "Unknown error"}`);
+      toast(`Failed to ${approve ? "approve" : "reject"} claim: ${err?.message || "Unknown error"}`);
     }
   };
 
@@ -1055,18 +1057,18 @@ const handleEditCompany = async (company: any) => {
       await updateDocument("jobs", job.id, { status: newStatus, updatedAt: serverTimestamp() });
     } catch (err: any) {
       console.error("Job status update failed:", err);
-      alert(`Failed to update job status: ${err?.message || "Unknown error"}`);
+      toast(`Failed to update job status: ${err?.message || "Unknown error"}`);
     }
   };
 
   const handleDeleteJob = async (job: any) => {
-    if (!window.confirm(`Delete "${job.title}" from ${job.companyName}? This cannot be undone.`)) return;
+    if (!await confirmDialog(`Delete "${job.title}" from ${job.companyName}? This cannot be undone.`)) return;
     try {
       await removeDocument("jobs", job.id);
       if (matchingJob?.id === job.id) setMatchingJob(null);
     } catch (err: any) {
       console.error("Job delete failed:", err);
-      alert(`Failed to delete job: ${err?.message || "Unknown error"}`);
+      toast(`Failed to delete job: ${err?.message || "Unknown error"}`);
     }
   };
 
@@ -1108,19 +1110,19 @@ const handleEditCompany = async (company: any) => {
       setMatchNote("");
     } catch (err: any) {
       console.error("Match creation failed:", err);
-      alert(`Failed to create match: ${err?.message || "Unknown error"}`);
+      toast(`Failed to create match: ${err?.message || "Unknown error"}`);
     } finally {
       setIsCreatingMatch(false);
     }
   };
 
   const handleRemoveMatch = async (matchId: string) => {
-    if (!window.confirm("Remove this match suggestion?")) return;
+    if (!await confirmDialog("Remove this match suggestion?")) return;
     try {
       await removeDocument("job_matches", matchId);
     } catch (err: any) {
       console.error("Match removal failed:", err);
-      alert(`Failed to remove match: ${err?.message || "Unknown error"}`);
+      toast(`Failed to remove match: ${err?.message || "Unknown error"}`);
     }
   };
 
@@ -1128,7 +1130,7 @@ const handleEditCompany = async (company: any) => {
   const TAX_PREFIX: Record<string, string> = { industry: "ind", vertical: "vert", domain: "dom", family: "fam", role: "role", standard: "std", competency: "comp", certification: "cert", equipment: "equip" };
 
   const handleSeedTaxonomy = async () => {
-    if (!window.confirm(`Upload ${TAXONOMY_SEED.length} taxonomy nodes from the bundled seed?\n\nNodes with matching IDs are overwritten to the seed version; nodes you added yourself are untouched.`)) return;
+    if (!await confirmDialog(`Upload ${TAXONOMY_SEED.length} taxonomy nodes from the bundled seed?\n\nNodes with matching IDs are overwritten to the seed version; nodes you added yourself are untouched.`)) return;
     setIsSeedingTax(true);
     try {
       // Individual setDoc calls (not writeBatch): batched writes share a hard
@@ -1152,7 +1154,7 @@ const handleEditCompany = async (company: any) => {
       if (failures.length > 0) {
         console.error("Taxonomy seed failures:", failures);
       }
-      alert(
+      toast(
         `Seeded ${done} taxonomy nodes.` +
         (failures.length > 0
           ? `\n\n${failures.length} failed:\n` + failures.slice(0, 10).map(f => `${f.id}: ${f.reason}`).join("\n") +
@@ -1161,7 +1163,7 @@ const handleEditCompany = async (company: any) => {
       );
     } catch (err: any) {
       console.error("Taxonomy seed failed:", err);
-      alert(`Seeding failed: ${err?.message || "Unknown error"}`);
+      toast(`Seeding failed: ${err?.message || "Unknown error"}`);
     } finally {
       setIsSeedingTax(false);
     }
@@ -1188,7 +1190,7 @@ const handleEditCompany = async (company: any) => {
       setNewTaxNode({ name: "", parentId: "", aliases: "" });
     } catch (err: any) {
       console.error("Taxonomy node create failed:", err);
-      alert(`Failed to add node: ${err?.message || "Unknown error"}`);
+      toast(`Failed to add node: ${err?.message || "Unknown error"}`);
     }
   };
 
@@ -1205,22 +1207,22 @@ const handleEditCompany = async (company: any) => {
       setEditingTaxNode(null);
     } catch (err: any) {
       console.error("Taxonomy node update failed:", err);
-      alert(`Failed to save node: ${err?.message || "Unknown error"}`);
+      toast(`Failed to save node: ${err?.message || "Unknown error"}`);
     }
   };
 
   const handleDeleteTaxNode = async (node: any) => {
     const children = taxonomyNodes.filter((n: any) => n.parentId === node.id);
     if (children.length > 0) {
-      alert(`"${node.name}" has ${children.length} child node${children.length > 1 ? "s" : ""}. Delete or re-parent them first.`);
+      toast(`"${node.name}" has ${children.length} child node${children.length > 1 ? "s" : ""}. Delete or re-parent them first.`);
       return;
     }
-    if (!window.confirm(`Delete "${node.name}" (${node.id})?\n\nAny resumes or jobs referencing this ID will lose the label. Renaming is usually safer than deleting.`)) return;
+    if (!await confirmDialog(`Delete "${node.name}" (${node.id})?\n\nAny resumes or jobs referencing this ID will lose the label. Renaming is usually safer than deleting.`)) return;
     try {
       await deleteDoc(doc(db, "taxonomy", node.id));
     } catch (err: any) {
       console.error("Taxonomy node delete failed:", err);
-      alert(`Failed to delete node: ${err?.message || "Unknown error"}`);
+      toast(`Failed to delete node: ${err?.message || "Unknown error"}`);
     }
   };
 
@@ -1290,7 +1292,6 @@ const handleEditCompany = async (company: any) => {
       <div className="max-w-7xl mx-auto py-8 md:py-12 px-4 md:px-6">
         {/* Page heading */}
         <header className="mb-10 md:mb-12 relative">
-          <div className="absolute inset-x-0 top-0 h-28 bp-grid-paper opacity-50 pointer-events-none" />
           <div className="relative flex flex-col md:flex-row md:items-end md:justify-between gap-6">
             <div>
               <div className="eyebrow tabular text-accent inline-flex items-center gap-2 mb-3">
@@ -1679,11 +1680,11 @@ const handleEditCompany = async (company: any) => {
                                  <td className="px-6 py-4 text-right">
                                     <button 
                                       onClick={async () => {
-                                        if (!window.confirm("Delete this resume?")) return;
+                                        if (!await confirmDialog("Delete this resume?")) return;
                                         try {
                                           await removeDocument("resumes", resume.id);
                                         } catch (err: any) {
-                                          alert(`Failed to delete resume: ${err?.message || "Unknown error"}`);
+                                          toast(`Failed to delete resume: ${err?.message || "Unknown error"}`);
                                         }
                                       }}
                                       className="p-2 text-text-body/30 hover:text-rust transition-colors"
@@ -2268,11 +2269,8 @@ const handleEditCompany = async (company: any) => {
                         <div className={`w-14 h-14 rounded-2xl border flex items-center justify-center overflow-hidden p-2 ${
                           company.isFeatured ? "bg-bg-card/10 border-white/20" : "bg-bg-main border-border-main"
                         }`}>
-                          <img 
-                            src={company.logo ||"https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?auto=format&fit=crop&q=80&w=200"} 
-                            className={`w-full h-full object-contain ${company.isFeatured ? "brightness-0 invert" : ""}`}
-                            alt={company.name} 
-                          />
+                          <SafeImage src={company.logo} alt={company.name}
+                            className={`w-full h-full object-contain ${company.isFeatured ? "brightness-0 invert" : ""}`} />
                         </div>
                         <div className="flex items-center gap-2">
                           <button 
@@ -2286,11 +2284,11 @@ const handleEditCompany = async (company: any) => {
                           </button>
                           <button 
                             onClick={async () => {
-                              if (!window.confirm(`Delete "${company.name}"? This cannot be undone.`)) return;
+                              if (!await confirmDialog(`Delete "${company.name}"? This cannot be undone.`)) return;
                               try {
                                 await removeDocument("companies", company.id);
                               } catch (err: any) {
-                                alert(`Failed to delete company: ${err?.message || "Unknown error"}`);
+                                toast(`Failed to delete company: ${err?.message || "Unknown error"}`);
                               }
                             }}
                             className={`p-2 rounded-xl transition-all ${
@@ -2323,7 +2321,7 @@ const handleEditCompany = async (company: any) => {
                               ? (company.isFeatured ? "bg-accent/20 border-emerald-400/30 text-emerald-200" : "bg-accent/10 border-emerald-100 text-accent")
                               : (company.isFeatured ? "bg-bg-card/10 border-white/20 text-white/60" : "bg-bg-main border-border-main text-text-body/55")
                           }`}>
-                            {company.isClaimed ? "Claimed" : "Unclaimed"}
+                            {company.isClaimed ? "Managed by the company" : "Unclaimed page"}
                           </span>
                           {company.isFeatured && (
                             <span className="px-3 py-1 bg-bg-card/20 border border-white/30 rounded-full eyebrow tabular text-white">
@@ -2342,7 +2340,7 @@ const handleEditCompany = async (company: any) => {
                                   planSince: makePremium ? serverTimestamp() : null,
                                 });
                               } catch (err: any) {
-                                alert(`Failed to update plan: ${err?.code ? err.code + ": " : ""}${err?.message || err}`);
+                                toast(`Failed to update plan: ${err?.code ? err.code + ": " : ""}${err?.message || err}`);
                               }
                             }}
                             title={company.plan === "premium" ? "Click to revoke premium" : "Click to grant premium"}
@@ -2471,7 +2469,7 @@ const handleEditCompany = async (company: any) => {
                                  try {
                                    await updateDocument("reports", report.id, { status:"dismissed", updatedAt: serverTimestamp() });
                                  } catch (err: any) {
-                                   alert(`Failed to dismiss report: ${err?.message || "Unknown error"}`);
+                                   toast(`Failed to dismiss report: ${err?.message || "Unknown error"}`);
                                  }
                                }}
                                className="p-2 text-text-body/55 hover:text-text-body hover:bg-bg-main rounded-lg transition-all"
@@ -2481,7 +2479,7 @@ const handleEditCompany = async (company: any) => {
                              </button>
                              <button 
                                onClick={async () => {
-                                 if (window.confirm("Are you sure you want to delete this content? ")) {
+                                 if (await confirmDialog("Are you sure you want to delete this content? ")) {
                                    try {
                                      await removeDocument(report.targetPath.split('/')[0], report.targetId);
                                      await updateDocument("reports", report.id, { status:"resolved", updatedAt: serverTimestamp() });
@@ -2505,11 +2503,11 @@ const handleEditCompany = async (company: any) => {
                         {report.status !== 'pending' && (
                            <button 
                               onClick={async () => {
-                                if (!window.confirm("Delete this report?")) return;
+                                if (!await confirmDialog("Delete this report?")) return;
                                 try {
                                   await removeDocument("reports", report.id);
                                 } catch (err: any) {
-                                  alert(`Failed to delete report: ${err?.message || "Unknown error"}`);
+                                  toast(`Failed to delete report: ${err?.message || "Unknown error"}`);
                                 }
                               }}
                               className="p-2 text-text-body/30 hover:text-rust transition-all"
@@ -2777,6 +2775,10 @@ const handleEditCompany = async (company: any) => {
                     <div className="pt-4 border-t border-border-main space-y-4">
                        <input type="text" value={preview.title} onChange={(e) => setPreview({...preview, title: e.target.value})} className="w-full p-3 bg-bg-main border border-border-main rounded-xl text-sm" />
                        <textarea value={preview.description} onChange={(e) => setPreview({...preview, description: e.target.value})} className="w-full p-3 bg-bg-main border border-border-main rounded-xl text-sm h-24 resize-none" />
+                       <label className="flex items-start gap-2 text-[13px] text-text-body">
+                         <input type="checkbox" className="mt-0.5" checked={!!preview.isOfficial} onChange={(e) => setPreview({ ...preview, isOfficial: e.target.checked })} />
+                         <span>First-party: published by the company or body the story is about. The story then shows "Official update".</span>
+                       </label>
                        <button onClick={handleCreateNews} className="w-full bg-indigo-600 text-white py-3 rounded-xl hover:bg-indigo-700 shadow-lg shadow-indigo-100 italic">Publish News</button>
                     </div>
                   )}
@@ -2794,15 +2796,16 @@ const handleEditCompany = async (company: any) => {
                         </div>
                         <div>
                           <p className="font-bold text-text-heading text-sm line-clamp-1">{item.title}</p>
+                          {item.isOfficial && <p className="text-[11px] font-medium text-accent">Official update</p>}
                           <p className="text-[10px] text-text-body/55 uppercase">{item.source}</p>
                         </div>
                       </div>
                       <button onClick={async () => {
-                        if (!window.confirm(`Delete "${item.title}"?`)) return;
+                        if (!await confirmDialog(`Delete "${item.title}"?`)) return;
                         try {
                           await removeDocument("news", item.id);
                         } catch (err: any) {
-                          alert(`Failed to delete news item: ${err?.message || "Unknown error"}`);
+                          toast(`Failed to delete news item: ${err?.message || "Unknown error"}`);
                         }
                       }} className="p-2 text-text-body/40 hover:text-rust transition-colors">
                         <Trash2 className="w-4 h-4" />
@@ -2837,11 +2840,11 @@ const handleEditCompany = async (company: any) => {
                     <p className="text-[10px] text-text-body/55">{topic.category}</p>
                   </div>
                   <button onClick={async () => {
-                        if (!window.confirm(`Delete "${topic.title}"? Note: existing replies are not deleted and will become orphaned.`)) return;
+                        if (!await confirmDialog(`Delete "${topic.title}"? Note: existing replies are not deleted and will become orphaned.`)) return;
                         try {
                           await removeDocument("forum_topics", topic.id);
                         } catch (err: any) {
-                          alert(`Failed to delete topic: ${err?.message || "Unknown error"}`);
+                          toast(`Failed to delete topic: ${err?.message || "Unknown error"}`);
                         }
                       }} className="p-2 text-text-body/40 hover:text-rust transition-colors">
                     <Trash2 className="w-4 h-4" />
@@ -2995,11 +2998,11 @@ const handleEditCompany = async (company: any) => {
                         <Edit className="w-4 h-4" />
                       </button>
                       <button onClick={async () => {
-                      if (!window.confirm(`Delete "${event.title}"? This cannot be undone.`)) return;
+                      if (!await confirmDialog(`Delete "${event.title}"? This cannot be undone.`)) return;
                       try {
                         await removeDocument("events", event.id);
                       } catch (err: any) {
-                        alert(`Failed to delete event: ${err?.message || "Unknown error"}`);
+                        toast(`Failed to delete event: ${err?.message || "Unknown error"}`);
                       }
                     }} className="p-2 text-text-body/40 hover:text-rust transition-colors" title="Delete event">
                         <Trash2 className="w-4 h-4" />
@@ -3051,11 +3054,11 @@ const handleEditCompany = async (company: any) => {
                        </p>
                      </div>
                      <button onClick={async () => {
-                     if (!window.confirm(`Delete "${survey.question}"? Note: existing votes are not deleted and will become orphaned.`)) return;
+                     if (!await confirmDialog(`Delete "${survey.question}"? Note: existing votes are not deleted and will become orphaned.`)) return;
                      try {
                        await removeDocument("surveys", survey.id);
                      } catch (err: any) {
-                       alert(`Failed to delete survey: ${err?.message || "Unknown error"}`);
+                       toast(`Failed to delete survey: ${err?.message || "Unknown error"}`);
                      }
                    }} className="p-2 text-text-body/40 hover:text-rust transition-colors">
                        <Trash2 className="w-4 h-4" />
@@ -3174,7 +3177,7 @@ const handleEditCompany = async (company: any) => {
                                          status: "approved", updatedAt: serverTimestamp(),
                                        });
                                      } catch (err: any) {
-                                       alert(`Failed to approve: ${err?.message || "Unknown error"}`);
+                                       toast(`Failed to approve: ${err?.message || "Unknown error"}`);
                                      }
                                    }}
                                    className="eyebrow tabular px-2.5 py-1 rounded-full border bg-emerald-50 text-emerald-700 border-emerald-200 hover:bg-emerald-100 transition-all"
@@ -3183,13 +3186,13 @@ const handleEditCompany = async (company: any) => {
                                  </button>
                                  <button
                                    onClick={async () => {
-                                     if (!window.confirm(`Reject access for ${member.displayName || member.email}?`)) return;
+                                     if (!await confirmDialog(`Reject access for ${member.displayName || member.email}?`)) return;
                                      try {
                                        await updateDocument("users", member.id, {
                                          status: "rejected", updatedAt: serverTimestamp(),
                                        });
                                      } catch (err: any) {
-                                       alert(`Failed to reject: ${err?.message || "Unknown error"}`);
+                                       toast(`Failed to reject: ${err?.message || "Unknown error"}`);
                                      }
                                    }}
                                    className="eyebrow tabular px-2.5 py-1 rounded-full border bg-bg-main text-rust border-rust/30 hover:bg-rust/10 transition-all"
@@ -3203,13 +3206,13 @@ const handleEditCompany = async (company: any) => {
                                onClick={async () => {
                                  const revoke = (member.status ?? "approved") !== "rejected";
                                  const label = revoke ? "reject" : "re-approve";
-                                 if (!window.confirm(`Click to ${label} access for ${member.displayName || member.email}?`)) return;
+                                 if (!await confirmDialog(`Click to ${label} access for ${member.displayName || member.email}?`)) return;
                                  try {
                                    await updateDocument("users", member.id, {
                                      status: revoke ? "rejected" : "approved", updatedAt: serverTimestamp(),
                                    });
                                  } catch (err: any) {
-                                   alert(`Failed to update access: ${err?.message || "Unknown error"}`);
+                                   toast(`Failed to update access: ${err?.message || "Unknown error"}`);
                                  }
                                }}
                                className={`eyebrow tabular px-2.5 py-1 rounded-full border transition-all ${
@@ -3227,11 +3230,11 @@ const handleEditCompany = async (company: any) => {
                            <button
                              onClick={async () => {
                                const grant = !member.isPro;
-                               if (!window.confirm(`${grant ? "Grant" : "Revoke"} Pro for ${member.displayName || member.email}?`)) return;
+                               if (!await confirmDialog(`${grant ? "Grant" : "Revoke"} Pro for ${member.displayName || member.email}?`)) return;
                                try {
                                  await updateDocument("users", member.id, { isPro: grant, updatedAt: serverTimestamp() });
                                } catch (err: any) {
-                                 alert(`Failed to update Pro status: ${err?.message || "Unknown error"}`);
+                                 toast(`Failed to update Pro status: ${err?.message || "Unknown error"}`);
                                }
                              }}
                              className={`eyebrow tabular px-2.5 py-1 rounded-full border transition-all ${
@@ -3249,7 +3252,7 @@ const handleEditCompany = async (company: any) => {
                            <button
                              onClick={async () => {
                                const grant = !member.isFounder;
-                               if (!window.confirm(`${grant ? "Grant" : "Revoke"} Founder status for ${member.displayName || member.email}?\n\nFounders get company-premium-equivalent privileges.`)) return;
+                               if (!await confirmDialog(`${grant ? "Grant" : "Revoke"} Founder status for ${member.displayName || member.email}?\n\nFounders get company-premium-equivalent privileges.`)) return;
                                try {
                                  await updateDocument("users", member.id, {
                                    isFounder: grant,
@@ -3257,7 +3260,7 @@ const handleEditCompany = async (company: any) => {
                                    updatedAt: serverTimestamp(),
                                  });
                                } catch (err: any) {
-                                 alert(`Failed to update Founder status: ${err?.message || "Unknown error"}`);
+                                 toast(`Failed to update Founder status: ${err?.message || "Unknown error"}`);
                                }
                              }}
                              className={`eyebrow tabular px-2.5 py-1 rounded-full border transition-all ml-1.5 ${
@@ -3361,7 +3364,7 @@ const handleEditCompany = async (company: any) => {
                                      try {
                                        await updateDocument("groups", group.id, { status:"approved" });
                                      } catch (err: any) {
-                                       alert(`Failed to approve group: ${err?.message || "Unknown error"}`);
+                                       toast(`Failed to approve group: ${err?.message || "Unknown error"}`);
                                      }
                                    }}
                                    className="p-2 bg-accent/10 text-accent hover:bg-emerald-600 hover:text-white rounded-xl transition-all"
@@ -3372,11 +3375,11 @@ const handleEditCompany = async (company: any) => {
                                )}
                                <button 
                                  onClick={async () => {
-                                   if (!window.confirm(`Delete "${group.name}"? Note: existing posts and comments are not deleted and will become orphaned.`)) return;
+                                   if (!await confirmDialog(`Delete "${group.name}"? Note: existing posts and comments are not deleted and will become orphaned.`)) return;
                                    try {
                                      await removeDocument("groups", group.id);
                                    } catch (err: any) {
-                                     alert(`Failed to delete group: ${err?.message || "Unknown error"}`);
+                                     toast(`Failed to delete group: ${err?.message || "Unknown error"}`);
                                    }
                                  }}
                                  className="p-2 bg-rust/5 text-rust hover:bg-rust hover:text-white rounded-xl transition-all"

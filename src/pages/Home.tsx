@@ -56,6 +56,7 @@ import {
 import { formatDistanceToNow, format } from "date-fns";
 import { motion, AnimatePresence } from "framer-motion";
 import axios from "axios";
+import { toast, confirmDialog } from "../lib/dialogs";
 
 const getVideoInfo = (content: string) => {
   const youtubeRegex = /(?:https?:\/\/)?(?:www\.)?(?:youtube\.com\/(?:[^\/\n\s]+\/\S+\/|(?:v|e(?:mbed)?)\/|\S*?[?&]v=)|youtu\.be\/)([a-zA-Z0-9_-]{11})/;
@@ -160,7 +161,7 @@ function CommentsModal({ post, onClose, setReportingItem }: { post: any; onClose
 
           {/* Comments */}
           {loading ? (
-            <p className="text-center py-10 eyebrow tabular text-text-body/40 animate-pulse">LOADING CONTRIBUTIONS…</p>
+            <p className="text-center py-10 eyebrow tabular text-text-body/40 animate-pulse">Loading contributions…</p>
           ) : comments.length === 0 ? (
             <div className="text-center py-10">
               <MessageCircle className="w-8 h-8 text-text-body/25 mx-auto mb-3" strokeWidth={1.5} />
@@ -274,7 +275,7 @@ function RepostModal({ post, onClose }: { post: any; onClose: () => void }) {
       onClose();
     } catch (err: any) {
       console.error("Repost error:", err);
-      alert("Failed to repost. Please check your permissions and try again.");
+      toast("Failed to repost. Please check your permissions and try again.");
     } finally {
       setIsReposting(false);
     }
@@ -624,7 +625,7 @@ export default function Home() {
     const isCompanyUser = !!profile?.companyId;
     const canUseAI = profile?.isPro || isCompanyUser || isAdmin;
     if (!canUseAI) {
-      setPostError("Technical Insight is a premium feature available for Pro members and Verified Company profiles.");
+      setPostError("Technical Insight is a premium feature for Pro members and companies managed on Tankonomics.");
       return;
     }
     const currentMonth = format(new Date(), "yyyy-MM");
@@ -858,6 +859,7 @@ export default function Home() {
                       {publisher && <><span aria-hidden="true">·</span><span>{publisher}</span></>}
                       <span aria-hidden="true">·</span>
                       <span>Added {item.createdAt?.seconds ? formatDistanceToNow(item.createdAt.seconds * 1000) + " ago" : "just now"}</span>
+                      {item.isOfficial && <span className="inline-flex px-1.5 py-0.5 rounded bg-accent/10 text-accent text-[12px] font-medium">Official update</span>}
                     </p>
                     <div className="p-5 pt-3 flex flex-col sm:flex-row gap-4">
                       <SafeImage
@@ -964,7 +966,7 @@ export default function Home() {
                               {(user?.uid === item.authorUid || isAdmin) && (
                                 <button
                                   onClick={async () => {
-                                    if (window.confirm("Remove this post?")) {
+                                    if (await confirmDialog("Remove this post?")) {
                                       try {
                                         await removeDocument("posts", item.id);
                                       } catch (err) {

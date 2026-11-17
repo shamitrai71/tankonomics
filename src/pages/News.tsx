@@ -57,6 +57,7 @@ export default function News() {
                       {publisher && <span className="font-medium text-text-heading">{publisher}</span>}
                       {publisher && added && <span aria-hidden="true"> · </span>}
                       {added && <span>Added {added}</span>}
+                      {item.isOfficial && <span className="ml-2 inline-flex px-1.5 py-0.5 rounded bg-accent/10 text-accent text-[12px] font-medium">Official update</span>}
                     </p>
                     <h2 className="text-[18px] font-semibold leading-snug mt-1">
                       <a href={item.url} target="_blank" rel="noopener noreferrer" className="text-text-heading hover:underline">

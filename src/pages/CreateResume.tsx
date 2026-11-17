@@ -53,6 +53,7 @@ import { differenceInYears } from "date-fns";
 import { serverTimestamp, where } from "firebase/firestore";
 import { LOCATION_SUGGESTIONS, EDUCATION_LEVELS } from "../lib/matchScore";
 import { TaxonomyMultiSelect } from "../components/TaxonomyMultiSelect";
+import { toast } from "../lib/dialogs";
 const SENIORITY = ["Trainee","Junior","Mid-level","Senior","Lead","Manager","Senior Manager","Head / Director"];
 
 export default function CreateResume() {
@@ -175,7 +176,7 @@ export default function CreateResume() {
 
   const handleSave = async () => {
     if (!formData.taxIndustryIds?.length || !formData.taxDomainId || !formData.taxRole) {
-      alert("Please select at least one Industry, a Functional domain, and a Role — these are required so employers can match you.");
+      toast("Please select at least one Industry, a Functional domain, and a Role — these are required so employers can match you.");
       return;
     }
 
@@ -204,7 +205,7 @@ export default function CreateResume() {
       setTimeout(() => setSavedToast(false), 3000);
     } catch (err) {
       console.error(err);
-      alert("Failed to save resume. Please try again.");
+      toast("Failed to save resume. Please try again.");
     } finally {
       setIsSubmitting(false);
     }
@@ -275,11 +276,9 @@ export default function CreateResume() {
 
         {/* Hero strip */}
         <header className="relative mb-10">
-          <div className="absolute inset-x-0 top-0 h-32 bp-grid-paper opacity-50 pointer-events-none" />
           <div className="relative">
             <div className="eyebrow tabular text-accent inline-flex items-center gap-2 mb-3">
-              <span className="inline-block w-1.5 h-1.5 rounded-full bg-accent soft-pulse" />
-              {existingResumes.length > 0 ? "UPDATE YOUR RECORD" : "CAREER BLUEPRINT"}
+              {existingResumes.length > 0 ? "Update your record" : "Career blueprint"}
             </div>
             <h1 className="font-display text-[clamp(2.25rem,5vw,4rem)] text-text-heading leading-[0.98]">
               {existingResumes.length > 0 ? "Refine your blueprint." : "Build your career blueprint."}
@@ -301,7 +300,7 @@ export default function CreateResume() {
                 <span className="w-1.5 h-1.5 rounded-full bg-white" />
                 Required
               </span>
-              <p className="eyebrow tabular text-accent">DOMAIN EXPERIENCE</p>
+              <p className="eyebrow tabular text-accent">Domain experience</p>
             </div>
             <h3 className="font-display text-2xl text-text-heading mb-2 leading-tight">Domain experience</h3>
             <p className="text-[13px] text-text-body mb-6 max-w-xl leading-relaxed">
@@ -394,7 +393,7 @@ export default function CreateResume() {
         {/* Technical Profile — optional multi-selects that improve match score */}
         <section className="bg-bg-card border border-border-main rounded-2xl p-6 md:p-7 mb-8">
           <div className="mb-6">
-            <p className="eyebrow tabular text-accent mb-2">TECHNICAL PROFILE</p>
+            <p className="eyebrow tabular text-accent mb-2">Technical profile</p>
             <h3 className="font-display text-2xl text-text-heading mb-2 leading-tight">Standards, skills & equipment</h3>
             <p className="text-[13px] text-text-body max-w-xl leading-relaxed">
               Optional, but every item you add sharpens your job matches. Employers search on these directly.
@@ -440,7 +439,7 @@ export default function CreateResume() {
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
           {/* Personal Foundation */}
           <section className="bg-bg-card border border-border-main rounded-2xl p-6 md:p-7">
-            <SectionHeading icon={User} eyebrow="01 · IDENTITY" title="Personal foundation" />
+            <SectionHeading icon={User} eyebrow="Identity" title="Personal foundation" />
 
             <div className="space-y-4">
               <TextField label="Full name" value={formData.fullName} onChange={(v) => setFormData({ ...formData, fullName: v })} placeholder="As shown on credentials" />
@@ -530,7 +529,7 @@ export default function CreateResume() {
 
           {/* Professional Trajectory */}
           <section className="bg-bg-card border border-border-main rounded-2xl p-6 md:p-7">
-            <SectionHeading icon={Briefcase} eyebrow="02 · PROFILE" title="Professional trajectory" />
+            <SectionHeading icon={Briefcase} eyebrow="Profile" title="Professional trajectory" />
 
             <div className="space-y-4">
               <label className="block">
@@ -607,7 +606,7 @@ export default function CreateResume() {
         <section className="bg-bg-card border border-border-main rounded-2xl p-6 md:p-7 mb-8">
           <SectionHeading
             icon={Award}
-            eyebrow="03 · EXPERIENCE"
+            eyebrow="Experience"
             title="Career milestones"
             action={
               <button
@@ -622,12 +621,10 @@ export default function CreateResume() {
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             {/* Active */}
-            <div className="bg-primary text-white rounded-2xl p-5 grain relative overflow-hidden">
-              <div className="absolute inset-0 bp-grid pointer-events-none opacity-30" />
+            <div className="bg-primary text-white rounded-2xl p-5 relative overflow-hidden">
               <div className="relative space-y-3">
                 <div className="flex items-center gap-2 mb-1">
-                  <span className="inline-flex w-1.5 h-1.5 rounded-full bg-accent soft-pulse" />
-                  <p className="eyebrow tabular text-accent">CURRENT ENGAGEMENT</p>
+                  <p className="eyebrow tabular text-accent">Current engagement</p>
                 </div>
                 <input
                   placeholder="Job title"
@@ -714,7 +711,7 @@ export default function CreateResume() {
 
         {/* Credentials */}
         <section className="bg-bg-card border border-border-main rounded-2xl p-6 md:p-7 mb-8">
-          <SectionHeading icon={GraduationCap} eyebrow="04 · CREDENTIALS" title="Education &amp; certifications" />
+          <SectionHeading icon={GraduationCap} eyebrow="Credentials" title="Education &amp; certifications" />
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             {/* Academic */}
@@ -826,7 +823,7 @@ export default function CreateResume() {
 
         {/* Lifestyle — travel + hobbies */}
         <section className="bg-bg-card border border-border-main rounded-2xl p-6 md:p-7 mb-8">
-          <SectionHeading icon={Globe} eyebrow="05 · CONTEXT" title="Global footprint &amp; interests" />
+          <SectionHeading icon={Globe} eyebrow="Context" title="Global footprint &amp; interests" />
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
             {/* Travel */}

@@ -64,6 +64,7 @@ import { formatDistanceToNow } from "date-fns";
 import { GoogleGenAI } from "@google/genai";
 import GroupPostCard from "../components/GroupPostCard";
 import { uploadImage, isInlineImage, migrateDataUrlToStorage } from "../lib/uploadImage";
+import { toast } from "../lib/dialogs";
 
 export default function GroupDetail() {
   const { groupId } = useParams<{ groupId: string }>();
@@ -113,11 +114,11 @@ export default function GroupDetail() {
     const file = e.target.files?.[0];
     if (!file) return;
     if (!file.type.startsWith("image/")) {
-      alert("Please pick an image file.");
+      toast("Please pick an image file.");
       return;
     }
     if (file.size > 10 * 1024 * 1024) {
-      alert(`Image is too large (${(file.size / 1024 / 1024).toFixed(1)} MB). Maximum is 10 MB.`);
+      toast(`Image is too large (${(file.size / 1024 / 1024).toFixed(1)} MB). Maximum is 10 MB.`);
       return;
     }
     if (postImage && postImage.startsWith("blob:")) URL.revokeObjectURL(postImage);
@@ -201,7 +202,7 @@ export default function GroupDetail() {
     if (!user || !groupId) return;
     // Platform admins can join without a verified company; everyone else needs one.
     if (!isPlatformAdmin && !profile?.companyId) {
-      alert("Connect your profile to a verified company before joining a group.");
+      toast("Connect your profile to a verified company before joining a group.");
       return;
     }
     setJoining(true);
@@ -223,7 +224,7 @@ export default function GroupDetail() {
       if (autoApprove) {
         await updateDoc(doc(db, "groups", groupId), { memberCount: increment(1) });
       } else {
-        alert("Your request to join this private group has been sent to the administrators.");
+        toast("Your request to join this private group has been sent to the administrators.");
       }
     } catch (err) {
       console.error("Error joining group:", err);
@@ -294,7 +295,7 @@ export default function GroupDetail() {
         authorUid: user.uid,
         authorName: selectedCompany ? selectedCompany.name : profile?.displayName || user.displayName || "Anonymous",
         authorPhoto: authorPhotoSafe,
-        authorJobTitle: selectedCompany ? "Verified Company" : profile?.jobTitle || "Network Peer",
+        authorJobTitle: selectedCompany ? "Company" : profile?.jobTitle || "Network Peer",
         createdAt: serverTimestamp(),
         likesCount: 0,
         commentsCount: 0,
@@ -317,7 +318,7 @@ export default function GroupDetail() {
     } catch (error: any) {
       console.error("Group post creation failed:", error);
       const isPermissionError = error.message?.includes("PERMISSION_DENIED") || error.message?.includes("insufficient permissions");
-      alert(isPermissionError ? "Permission denied. You must be a member of this group to post updates." : `Failed to post: ${error.message || "Unknown error"}`);
+      toast(isPermissionError ? "Permission denied. You must be a member of this group to post updates." : `Failed to post: ${error.message || "Unknown error"}`);
     } finally {
       setPosting(false);
     }
@@ -460,7 +461,6 @@ export default function GroupDetail() {
         )}
         {/* Fixed near-black scrim — see CompanyProfile.tsx for why not `primary`. */}
         <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/50 to-transparent" />
-        <div className="absolute inset-0 bp-grid opacity-25 pointer-events-none" />
 
         {/* Back to groups */}
         <div className="absolute top-6 left-4 md:left-8 z-10">
@@ -528,8 +528,7 @@ export default function GroupDetail() {
             {/* Name + description */}
             <div className="flex-1 min-w-0">
               <div className="eyebrow tabular text-accent mb-1 inline-flex items-center gap-2">
-                <span className="inline-block w-1.5 h-1.5 rounded-full bg-accent soft-pulse" />
-                COMMUNITY GROUP
+                Community group
               </div>
               <h1 className="font-display text-[clamp(1.875rem,4vw,3rem)] text-text-heading leading-[1.0]">{group.name}</h1>
               {group.description && (
@@ -537,7 +536,7 @@ export default function GroupDetail() {
               )}
               <p className="eyebrow tabular text-text-body/55 mt-3 inline-flex items-center gap-1.5">
                 <Users className="w-3 h-3" strokeWidth={1.75} />
-                {approvedMembers.length} {approvedMembers.length === 1 ? "MEMBER" : "MEMBERS"}
+                {approvedMembers.length} {approvedMembers.length === 1 ? "member" : "members"}
               </p>
             </div>
 
@@ -740,7 +739,7 @@ export default function GroupDetail() {
                 ) : posts.length === 0 ? (
                   <div className="text-center py-16 bg-bg-card border border-dashed border-border-main rounded-2xl">
                     <Building2 className="w-10 h-10 text-text-body/25 mx-auto mb-4" strokeWidth={1.5} />
-                    <p className="eyebrow tabular text-text-body/55 mb-1">QUIET CHANNEL</p>
+                    <p className="eyebrow tabular text-text-body/55 mb-1">Quiet channel</p>
                     <p className="text-text-body text-[14px]">No posts in this group yet.</p>
                   </div>
                 ) : (
@@ -819,7 +818,7 @@ export default function GroupDetail() {
                 <section>
                   <div className="flex items-baseline justify-between mb-4">
                     <div>
-                      <p className="eyebrow tabular text-accent">REVIEW PENDING</p>
+                      <p className="eyebrow tabular text-accent">Review pending</p>
                       <h2 className="font-display text-2xl text-text-heading mt-1">{pendingRequests.length} {pendingRequests.length === 1 ? "request" : "requests"} awaiting approval</h2>
                     </div>
                   </div>
@@ -834,7 +833,7 @@ export default function GroupDetail() {
               <section>
                 <div className="flex items-baseline justify-between mb-4">
                   <div>
-                    <p className="eyebrow tabular text-text-body/55">{approvedMembers.length} {approvedMembers.length === 1 ? "MEMBER" : "MEMBERS"}</p>
+                    <p className="eyebrow tabular text-text-body/55">{approvedMembers.length} {approvedMembers.length === 1 ? "member" : "members"}</p>
                     <h2 className="font-display text-2xl text-text-heading mt-1">Group roster</h2>
                   </div>
                 </div>
@@ -862,7 +861,7 @@ export default function GroupDetail() {
             <motion.div key="settings" initial={{ opacity: 0, y: 6 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -6 }} className="max-w-2xl">
               <div className="bg-bg-card border border-border-main rounded-2xl overflow-hidden">
                 <div className="px-6 py-5 border-b border-border-main">
-                  <p className="eyebrow tabular text-accent">GROUP SETTINGS</p>
+                  <p className="eyebrow tabular text-accent">Group settings</p>
                   <h2 className="font-display text-2xl text-text-heading mt-1">Configure this group</h2>
                 </div>
                 <form onSubmit={handleSaveSettings} className="p-6 space-y-5">
@@ -977,7 +976,7 @@ export default function GroupDetail() {
               <form onSubmit={handleReport}>
                 <div className="px-6 py-5 border-b border-border-main flex items-baseline justify-between">
                   <div>
-                    <p className="eyebrow tabular text-rust">FLAG CONTENT</p>
+                    <p className="eyebrow tabular text-rust">Flag content</p>
                     <h2 className="font-display text-2xl text-text-heading mt-1">Report this post</h2>
                   </div>
                   <button type="button" onClick={() => setReportModalOpen(false)} className="p-2 hover:bg-bg-main rounded-lg transition-colors text-text-body/60">

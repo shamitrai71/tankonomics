@@ -167,7 +167,6 @@ export default function EventDetail() {
         )}
         {/* Fixed near-black scrim — see CompanyProfile.tsx for why not `primary`. */}
         <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/45 to-black/10" />
-        <div className="absolute inset-0 bp-grid opacity-20 pointer-events-none" />
 
         <div className="absolute top-6 left-0 right-0">
           <div className="max-w-4xl mx-auto px-6">
@@ -185,7 +184,7 @@ export default function EventDetail() {
           <div className="max-w-4xl mx-auto px-6">
             <p className="eyebrow tabular text-accent mb-2 flex items-center gap-2">
               <Mic className="w-3 h-3" strokeWidth={1.75} />
-              TECHNICAL SESSION
+              Technical session
             </p>
             <h1 className="font-display text-[clamp(2rem,5vw,3.5rem)] text-white leading-[1.0] max-w-3xl">
               {event.title}

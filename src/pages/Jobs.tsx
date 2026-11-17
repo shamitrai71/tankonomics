@@ -15,6 +15,12 @@ import { useCollection, createDocument, updateDocument } from "../hooks/useFires
 import { orderBy, serverTimestamp, where } from "firebase/firestore";
 import { TaxonomyMultiSelect } from "../components/TaxonomyMultiSelect";
 import { EDUCATION_LEVELS } from "../lib/matchScore";
+const EXPERIENCE_BANDS = [
+  { key: "0-2", label: "0 to 2 years", min: 0, max: 2 },
+  { key: "3-5", label: "3 to 5 years", min: 3, max: 5 },
+  { key: "6-10", label: "6 to 10 years", min: 6, max: 10 },
+  { key: "10+", label: "More than 10 years", min: 11, max: 100 },
+];
 const JOB_SENIORITY = ["Trainee","Junior","Mid-level","Senior","Lead","Manager","Senior Manager","Head / Director"];
 import {
   Briefcase,
@@ -41,6 +47,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { useAuth } from "../App";
 import { usePageCopy } from "../lib/pageCopy";
 import { formatDistanceToNow } from "date-fns";
+import { toast } from "../lib/dialogs";
 
 export default function Jobs() {
   const copy = usePageCopy("jobs");
@@ -50,6 +57,8 @@ export default function Jobs() {
   const [searchTerm, setSearchTerm] = useState("");
   const [typeFilter, setTypeFilter] = useState("all");
   const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
+  const [locationFilter, setLocationFilter] = useState("");
+  const [expFilter, setExpFilter] = useState("any");
   const [showPostModal, setShowPostModal] = useState(false);
   const [showFilters, setShowFilters] = useState(false);
   const [showApplyModal, setShowApplyModal] = useState(false);
@@ -197,7 +206,7 @@ export default function Jobs() {
       });
     } catch (err: any) {
       console.error("Error posting job:", err);
-      alert(`Failed to post job: ${err?.message || "Unknown error"}`);
+      toast(`Failed to post job: ${err?.message || "Unknown error"}`);
     } finally {
       setIsPosting(false);
     }
@@ -207,7 +216,7 @@ export default function Jobs() {
     if (!selectedJob) return;
     // Blueprint-required: an application attaches the candidate's structured resume.
     if (!myResume) {
-      alert("Please create your Blueprint (professional resume) before applying — employers review your structured profile, not a plain message.");
+      toast("Please create your Blueprint (professional resume) before applying — employers review your structured profile, not a plain message.");
       return;
     }
     setApplyingJobId(selectedJob.id);
@@ -249,7 +258,7 @@ export default function Jobs() {
       });
     } catch (err: any) {
       console.error("Error applying for job:", err);
-      alert(`Failed to submit application: ${err?.code ? `${err.code}: ` : ""}${err?.message || "Unknown error"}`);
+      toast(`Failed to submit application: ${err?.code ? `${err.code}: ` : ""}${err?.message || "Unknown error"}`);
     } finally {
       setApplyingJobId(null);
     }
@@ -260,7 +269,7 @@ export default function Jobs() {
       await updateDocument("job_matches", matchId, { status, updatedAt: serverTimestamp() });
     } catch (err: any) {
       console.error("Match response failed:", err);
-      alert(`Failed to update match: ${err?.message || "Unknown error"}`);
+      toast(`Failed to update match: ${err?.message || "Unknown error"}`);
     }
   };
 
@@ -274,8 +283,27 @@ export default function Jobs() {
       selectedCategories.length === 0 ||
       (job.taxDomainId && selectedCategories.includes(job.taxDomainId)) ||
       (job.categoryIds && job.categoryIds.some((id: string) => selectedCategories.includes(id)));
-    return matchesSearch && matchesType && matchesCategory;
+    const matchesLocation =
+      !locationFilter.trim() || (job.location || "").toLowerCase().includes(locationFilter.trim().toLowerCase());
+    const yrs = parseFloat(job.minYearsExperience);
+    const matchesExp =
+      expFilter === "any" ||
+      (!isNaN(yrs) && (() => {
+        const b = EXPERIENCE_BANDS.find((x) => x.key === expFilter);
+        return !!b && yrs >= b.min && yrs <= b.max;
+      })());
+    return matchesSearch && matchesType && matchesCategory && matchesLocation && matchesExp;
   });
+
+  const hasFilters = typeFilter !== "all" || selectedCategories.length > 0 || !!locationFilter.trim() || expFilter !== "any" || !!searchTerm;
+  const clearAll = () => {
+    setSearchTerm("");
+    setTypeFilter("all");
+    setSelectedCategories([]);
+    setLocationFilter("");
+    setExpFilter("any");
+  };
+  const domainName = (id: string) => taxonomy.find((n: any) => n.id === id)?.name || id;
 
   const toggleCategory = (id: string) => {
     setSelectedCategories((prev) => (prev.includes(id) ? prev.filter((c) => c !== id) : [...prev, id]));
@@ -307,7 +335,7 @@ export default function Jobs() {
             <div className="bg-bg-card border border-border-main rounded-2xl p-5">
               <p className="eyebrow tabular text-text-body/55 mb-4 flex items-center gap-2">
                 <Filter className="w-3.5 h-3.5 text-accent" strokeWidth={1.75} />
-                Employment type
+                <span className="text-[14px] font-semibold text-text-heading">Employment type</span>
               </p>
               <div className="space-y-0.5">
                 <button
@@ -337,7 +365,7 @@ export default function Jobs() {
             {/* Sectors */}
             <div className="bg-bg-card border border-border-main rounded-2xl p-5">
               <div className="flex items-center justify-between mb-4">
-                <p className="eyebrow tabular text-text-body/55">Domain Experience</p>
+                <p className="text-[14px] font-semibold text-text-heading">Job function</p>
                 {selectedCategories.length > 0 && (
                   <button
                     onClick={() => setSelectedCategories([])}
@@ -366,25 +394,36 @@ export default function Jobs() {
               </div>
             </div>
 
-            {/* Hiring CTA — deep petrol */}
-            <div className="bg-primary text-white rounded-2xl p-6 grain relative overflow-hidden">
-              <div className="absolute inset-0 bp-grid pointer-events-none opacity-40" />
-              <div className="relative">
-                <div className="w-10 h-10 rounded-xl bg-accent/15 border border-accent/30 flex items-center justify-center text-accent mb-4">
-                  <Briefcase className="w-5 h-5" strokeWidth={1.75} />
-                </div>
-                <p className="eyebrow text-white/70 mb-2">For employers</p>
-                <h3 className="font-display text-xl leading-tight mb-2">Hiring?</h3>
-                <p className="text-white/80 text-[13px] leading-relaxed mb-5">
-                  Post openings to members of the tank and terminal industry.
-                </p>
-                <button
-                  onClick={() => setShowPostModal(true)}
-                  className="w-full inline-flex items-center justify-center gap-2 bg-accent text-white py-2.5 rounded-xl text-[13px] font-medium hover:brightness-110 transition-all"
-                >
-                  Start posting
-                  <ChevronRight className="w-4 h-4" strokeWidth={1.75} />
-                </button>
+            {/* Location */}
+            <div className="bg-bg-card border border-border-main rounded-2xl p-5">
+              <label htmlFor="job-location" className="block text-[14px] font-semibold text-text-heading mb-3">Location</label>
+              <input
+                id="job-location"
+                type="text"
+                value={locationFilter}
+                onChange={(e) => setLocationFilter(e.target.value)}
+                placeholder="City, state or country"
+                className="w-full px-3 py-2.5 bg-bg-main border border-border-main rounded-xl text-[13px] text-text-heading placeholder:text-text-body/50 outline-none focus:border-text-heading transition-all"
+              />
+            </div>
+
+            {/* Experience */}
+            <div className="bg-bg-card border border-border-main rounded-2xl p-5">
+              <p className="text-[14px] font-semibold text-text-heading mb-3">Experience required</p>
+              <div className="space-y-0.5">
+                {[{ key: "any", label: "Any" }, ...EXPERIENCE_BANDS].map((b) => (
+                  <button
+                    key={b.key}
+                    onClick={() => setExpFilter(b.key)}
+                    aria-pressed={expFilter === b.key}
+                    className={`w-full text-left px-3 py-2 rounded-lg text-[13px] transition-all flex items-center justify-between ${
+                      expFilter === b.key ? "bg-accent/10 text-accent" : "text-text-body hover:bg-bg-main"
+                    }`}
+                  >
+                    <span>{b.label}</span>
+                    {expFilter === b.key && <span className="w-1.5 h-1.5 rounded-full bg-accent" />}
+                  </button>
+                ))}
               </div>
             </div>
           </aside>
@@ -396,7 +435,7 @@ export default function Jobs() {
               <div className="bg-primary/5 border border-primary/20 rounded-2xl p-5">
                 <div className="flex items-center gap-2 mb-4">
                   <Sparkles className="w-4 h-4 text-accent" strokeWidth={1.75} />
-                  <p className="eyebrow tabular text-accent">SUGGESTED FOR YOU</p>
+                  <p className="eyebrow text-accent font-medium">Suggested for you</p>
                 </div>
                 <div className="space-y-3">
                   {myMatches.filter((m: any) => m.status === "suggested" || m.status === "accepted").map((match: any) => (
@@ -468,34 +507,60 @@ export default function Jobs() {
               </div>
             </div>
 
-            <p className="eyebrow tabular text-text-body/55">
-              {filteredJobs.length} {filteredJobs.length === 1 ? "OPENING" : "OPENINGS"}
-              {(typeFilter !== "all" || selectedCategories.length > 0) && " · FILTERS ACTIVE"}
-            </p>
+            <div className="flex flex-wrap items-center gap-2">
+              <p className="text-[13px] text-text-body mr-1">
+                {filteredJobs.length} {filteredJobs.length === 1 ? "job" : "jobs"}
+              </p>
+              {typeFilter !== "all" && (
+                <button onClick={() => setTypeFilter("all")} aria-label={`Remove filter ${typeFilter}`} className="inline-flex items-center gap-1.5 pl-2.5 pr-1.5 py-1 bg-accent/10 text-accent rounded-full text-[12px] font-medium">
+                  {typeFilter}<X className="w-3 h-3" />
+                </button>
+              )}
+              {selectedCategories.map((id) => (
+                <button key={id} onClick={() => toggleCategory(id)} aria-label={`Remove filter ${domainName(id)}`} className="inline-flex items-center gap-1.5 pl-2.5 pr-1.5 py-1 bg-accent/10 text-accent rounded-full text-[12px] font-medium">
+                  {domainName(id)}<X className="w-3 h-3" />
+                </button>
+              ))}
+              {locationFilter.trim() && (
+                <button onClick={() => setLocationFilter("")} aria-label="Remove location filter" className="inline-flex items-center gap-1.5 pl-2.5 pr-1.5 py-1 bg-accent/10 text-accent rounded-full text-[12px] font-medium">
+                  {locationFilter.trim()}<X className="w-3 h-3" />
+                </button>
+              )}
+              {expFilter !== "any" && (
+                <button onClick={() => setExpFilter("any")} aria-label="Remove experience filter" className="inline-flex items-center gap-1.5 pl-2.5 pr-1.5 py-1 bg-accent/10 text-accent rounded-full text-[12px] font-medium">
+                  {EXPERIENCE_BANDS.find((x) => x.key === expFilter)?.label}<X className="w-3 h-3" />
+                </button>
+              )}
+              {hasFilters && (
+                <button onClick={clearAll} className="text-[12px] text-text-body hover:text-text-heading underline">Clear all</button>
+              )}
+            </div>
 
             {/* Jobs grid */}
             {loadingJobs ? (
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 {[1, 2, 3, 4].map((i) => <div key={i} className="h-56 bg-bg-card border border-border-main rounded-2xl animate-pulse" />)}
               </div>
-            ) : filteredJobs.length === 0 ? (
-              <div className="text-center py-20 bg-bg-card border border-dashed border-border-main rounded-2xl">
-                <Briefcase className="w-12 h-12 text-text-body/25 mx-auto mb-4" strokeWidth={1.5} />
-                <p className="eyebrow tabular text-text-body/55 mb-1">NO RESULTS</p>
-                <h3 className="font-display text-2xl text-text-heading mb-2">No open roles match.</h3>
-                <p className="text-text-body text-[14px]">Try adjusting your filters or search keywords.</p>
-                {(searchTerm || typeFilter !== "all" || selectedCategories.length > 0) && (
+            ) : jobs.length === 0 ? (
+              <div className="text-center py-12 bg-bg-card border border-dashed border-border-main rounded-2xl">
+                <p className="text-[15px] font-medium text-text-heading">No jobs have been posted yet.</p>
+                {(isAdmin || ownedCompanies.some((c: any) => c.status === "approved")) ? (
                   <button
-                    onClick={() => {
-                      setSearchTerm("");
-                      setTypeFilter("all");
-                      setSelectedCategories([]);
-                    }}
-                    className="mt-5 inline-flex items-center gap-2 px-4 py-2 bg-text-heading text-bg-card rounded-xl text-[13px] font-medium"
+                    onClick={() => setShowPostModal(true)}
+                    className="mt-4 inline-flex items-center gap-2 px-4 py-2 bg-primary text-white rounded-lg text-[13px] font-medium"
                   >
-                    Reset filters
+                    <Plus className="w-4 h-4" strokeWidth={1.75} /> Post a job
                   </button>
+                ) : (
+                  <p className="text-text-body text-[13px] mt-1">Companies managed on Tankonomics can post openings here.</p>
                 )}
+              </div>
+            ) : filteredJobs.length === 0 ? (
+              <div className="text-center py-12 bg-bg-card border border-dashed border-border-main rounded-2xl">
+                <p className="text-[15px] font-medium text-text-heading">No jobs match your filters.</p>
+                <button onClick={clearAll} className="mt-4 px-4 py-2 bg-primary text-white rounded-lg text-[13px] font-medium">
+                  Clear all
+                </button>
               </div>
             ) : (
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -641,7 +706,7 @@ export default function Jobs() {
             >
               <div className="px-6 py-5 border-b border-border-main flex items-baseline justify-between shrink-0">
                 <div>
-                  <p className="eyebrow tabular text-accent">POST A ROLE</p>
+                  <p className="eyebrow tabular text-accent">Post a role</p>
                   <h2 className="font-display text-2xl text-text-heading mt-1">Post an opportunity</h2>
                 </div>
                 <button onClick={() => setShowPostModal(false)} className="p-2 hover:bg-bg-main rounded-lg transition-colors text-text-body/60">
@@ -952,7 +1017,7 @@ export default function Jobs() {
               <div className="p-6 space-y-5 overflow-y-auto custom-scrollbar">
                 {selectedJob.description && (
                   <div>
-                    <p className="eyebrow tabular text-text-body/55 mb-2">DESCRIPTION</p>
+                    <p className="eyebrow tabular text-text-body/55 mb-2">Description</p>
                     <p className="text-[14px] text-text-body leading-relaxed whitespace-pre-wrap">{selectedJob.description}</p>
                   </div>
                 )}
@@ -961,10 +1026,10 @@ export default function Jobs() {
                 {(selectedJob.minEducation || selectedJob.minYearsExperience != null) && (
                   <div className="flex flex-wrap gap-4">
                     {selectedJob.minEducation && (
-                      <div><p className="eyebrow tabular text-text-body/55 mb-1">MIN. EDUCATION</p><p className="text-[14px] text-text-heading font-medium">{selectedJob.minEducation}</p></div>
+                      <div><p className="eyebrow tabular text-text-body/55 mb-1">Min. education</p><p className="text-[14px] text-text-heading font-medium">{selectedJob.minEducation}</p></div>
                     )}
                     {selectedJob.minYearsExperience != null && (
-                      <div><p className="eyebrow tabular text-text-body/55 mb-1">MIN. EXPERIENCE</p><p className="text-[14px] text-text-heading font-medium">{selectedJob.minYearsExperience}+ years</p></div>
+                      <div><p className="eyebrow tabular text-text-body/55 mb-1">Min. experience</p><p className="text-[14px] text-text-heading font-medium">{selectedJob.minYearsExperience}+ years</p></div>
                     )}
                   </div>
                 )}
@@ -985,8 +1050,8 @@ export default function Jobs() {
                     <div className="space-y-4">
                       {(selectedJob.taxRole || selectedJob.taxDomainId) && (
                         <div className="flex flex-wrap gap-4">
-                          {selectedJob.taxDomainId && <div><p className="eyebrow tabular text-text-body/55 mb-1">DOMAIN</p><p className="text-[14px] text-text-heading font-medium">{nameOf(selectedJob.taxDomainId)}</p></div>}
-                          {selectedJob.taxRole && <div><p className="eyebrow tabular text-text-body/55 mb-1">ROLE</p><p className="text-[14px] text-text-heading font-medium">{nameOf(selectedJob.taxRole)}</p></div>}
+                          {selectedJob.taxDomainId && <div><p className="eyebrow tabular text-text-body/55 mb-1">Domain</p><p className="text-[14px] text-text-heading font-medium">{nameOf(selectedJob.taxDomainId)}</p></div>}
+                          {selectedJob.taxRole && <div><p className="eyebrow tabular text-text-body/55 mb-1">Role</p><p className="text-[14px] text-text-heading font-medium">{nameOf(selectedJob.taxRole)}</p></div>}
                         </div>
                       )}
                       {groups.map((g) => (
@@ -1037,7 +1102,7 @@ export default function Jobs() {
             >
               <div className="px-6 py-5 border-b border-border-main flex items-baseline justify-between">
                 <div>
-                  <p className="eyebrow tabular text-accent">APPLICATION</p>
+                  <p className="eyebrow tabular text-accent">Application</p>
                   <h2 className="font-display text-2xl text-text-heading mt-1 leading-tight">{selectedJob.title}</h2>
                   <p className="eyebrow tabular text-text-body/55 mt-1">{selectedJob.companyName}</p>
                 </div>

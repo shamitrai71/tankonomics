@@ -87,6 +87,7 @@ import Groups from "./pages/Groups";
 import GroupDetail from "./pages/GroupDetail";
 import PostDetail from "./pages/PostDetail";
 import { ApprovalGate } from "./components/ApprovalGate";
+import { toast, DialogHost } from "./lib/dialogs";
 
 // --- Context & Types ---
 
@@ -524,7 +525,6 @@ function Navbar({ onMenuToggle, theme }: { onMenuToggle: () => void, theme: any 
                     {/* Header */}
                     <div className="px-4 py-3 border-b border-border-main flex items-center justify-between bg-bg-main/40">
                       <div className="flex items-center gap-2">
-                        <span className="inline-block w-1.5 h-1.5 rounded-full bg-accent soft-pulse" />
                         <h3 className="eyebrow tabular text-text-heading">Notifications</h3>
                       </div>
                       {notifications.length > 0 && (
@@ -1549,7 +1549,7 @@ export default function App() {
       // When the user returns, the useEffect above picks up the credential.
     } catch (error) {
       console.error("Sign in error:", error);
-      alert("Social Sign-in failed. Please ensure the provider is configured in Firebase Console.");
+      toast("Social Sign-in failed. Please ensure the provider is configured in Firebase Console.");
     }
   };
 
@@ -1654,6 +1654,7 @@ export default function App() {
           )}
         </div>
       </Router>
+      <DialogHost />
     </AuthContext.Provider>
   );
 }

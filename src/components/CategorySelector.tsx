@@ -111,7 +111,7 @@ export const CategorySelector = ({ categories, selectedIds, onChange }: Category
         ))}
         {level1.length === 0 && (
           <p className="eyebrow tabular text-text-body/40 italic py-4 text-center col-span-full">
-            NO CATEGORIES AVAILABLE
+            No categories available
           </p>
         )}
       </div>

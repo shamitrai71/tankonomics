@@ -150,8 +150,8 @@ export default function Forums() {
           <div className="space-y-6">
             <div className="flex items-center justify-between gap-4 flex-wrap">
               <p className="eyebrow tabular text-text-body/55">
-                {filteredTopics.length} {filteredTopics.length === 1 ? "DISCUSSION" : "DISCUSSIONS"}
-                {activeCategory !== "all" && ` · 1 SECTOR FILTER`}
+                {filteredTopics.length} {filteredTopics.length === 1 ? "discussion" : "discussions"}
+                {activeCategory !== "all" && ` · 1 sector filter`}
               </p>
               <div className="relative w-full sm:w-72">
                 <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-text-body/40" strokeWidth={1.75} />
@@ -184,7 +184,7 @@ export default function Forums() {
                 >
                   <div className="px-6 py-5 border-b border-border-main flex items-baseline justify-between">
                     <div>
-                      <p className="eyebrow tabular text-accent">NEW TOPIC</p>
+                      <p className="eyebrow tabular text-accent">New topic</p>
                       <h3 className="font-display text-2xl text-text-heading mt-1">Post a topic</h3>
                     </div>
                     <button onClick={() => setIsCreating(false)} className="text-[13px] text-text-body hover:text-text-heading">
@@ -298,7 +298,7 @@ export default function Forums() {
             ) : filteredTopics.length === 0 ? (
               <div className="py-20 text-center bg-bg-card border border-dashed border-border-main rounded-2xl">
                 <MessageSquare className="w-12 h-12 text-text-body/25 mx-auto mb-4" strokeWidth={1.5} />
-                <p className="eyebrow tabular text-text-body/55 mb-1">NO TOPICS</p>
+                <p className="eyebrow tabular text-text-body/55 mb-1">No topics</p>
                 <h3 className="font-display text-2xl text-text-heading mb-2">No discussions yet.</h3>
                 <p className="text-text-body text-[14px]">
                   {searchTerm || activeCategory !== "all"
@@ -336,11 +336,11 @@ export default function Forums() {
                         <div className="flex items-center gap-4 mt-3 flex-wrap">
                           <span className="eyebrow tabular text-text-body/55 flex items-center gap-1.5">
                             <MessageCircle className="w-3 h-3" strokeWidth={1.75} />
-                            {topic.replyCount || 0} {(topic.replyCount || 0) === 1 ? "REPLY" : "REPLIES"}
+                            {topic.replyCount || 0} {(topic.replyCount || 0) === 1 ? "reply" : "replies"}
                           </span>
                           <span className="eyebrow tabular text-text-body/45 flex items-center gap-1.5">
                             <Tag className="w-3 h-3" strokeWidth={1.75} />
-                            INDUSTRY INSIGHT
+                            Industry insight
                           </span>
                         </div>
                       </div>

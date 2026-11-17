@@ -39,6 +39,7 @@ import {
 import { useAuth } from "../App";
 import { useCollection } from "../hooks/useFirestore";
 import ShareModal from "./ShareModal";
+import { confirmDialog } from "../lib/dialogs";
 
 interface GroupPostCardProps {
   post: any;
@@ -81,7 +82,7 @@ export default function GroupPostCard({ post, groupId, isAdmin, onCommentsToggle
   };
 
   const handleDelete = async () => {
-    if (!window.confirm("Are you sure you want to delete this post?")) return;
+    if (!await confirmDialog("Are you sure you want to delete this post?")) return;
     try {
       await deleteDoc(doc(db, `groups/${groupId}/posts`, post.id));
     } catch (err) {
@@ -128,9 +129,8 @@ export default function GroupPostCard({ post, groupId, isAdmin, onCommentsToggle
             <div className="flex items-center gap-2 flex-wrap">
               <h3 className="font-medium text-[15px] text-text-heading leading-tight truncate">{post.authorName}</h3>
               {post.companyId && (
-                <span className="inline-flex items-center gap-1 eyebrow tabular bg-accent/10 text-accent border border-accent/20 px-1.5 py-0.5 rounded">
-                  <ShieldCheck className="w-2.5 h-2.5" strokeWidth={2} />
-                  Verified
+                <span className="inline-flex items-center eyebrow bg-accent/10 text-accent px-1.5 py-0.5 rounded">
+                  Company
                 </span>
               )}
             </div>
@@ -252,7 +252,7 @@ export default function GroupPostCard({ post, groupId, isAdmin, onCommentsToggle
             >
               <div className="mt-4 pt-4 border-t border-border-main space-y-3">
                 {loadingComments ? (
-                  <p className="py-3 text-center eyebrow tabular text-text-body/40 animate-pulse">LOADING THREAD…</p>
+                  <p className="py-3 text-center eyebrow tabular text-text-body/40 animate-pulse">Loading thread…</p>
                 ) : comments?.length === 0 ? (
                   <p className="py-3 text-center text-[13px] text-text-body/50 italic">No contributions yet — start the thread.</p>
                 ) : (

@@ -139,7 +139,7 @@ export default function Messages() {
   const pendingRequests = myConnections.filter((c) => c.status === "pending" && c.requesterId !== user?.uid);
 
   return (
-    <div className="flex h-[calc(100vh-80px)] overflow-hidden bg-bg-main">
+    <div className="flex h-[calc(100vh-64px)] lg:h-[calc(100vh-108px)] overflow-hidden bg-bg-main">
       {/* Sidebar — chat list */}
       <aside className={`w-full md:w-96 border-r border-border-main flex flex-col bg-bg-card transition-all ${chatId ? "hidden md:flex" : "flex"}`}>
         <div className="px-6 py-5 border-b border-border-main">
@@ -197,11 +197,11 @@ export default function Messages() {
           )}
 
           {loadingChats ? (
-            <div className="p-8 text-center eyebrow tabular text-text-body/40 animate-pulse">LOADING CHANNELS…</div>
+            <div className="p-8 text-center eyebrow tabular text-text-body/40 animate-pulse">Loading channels…</div>
           ) : filteredChats.length === 0 ? (
             <div className="p-12 text-center">
               <MessageSquare className="w-10 h-10 text-text-body/25 mx-auto mb-3" strokeWidth={1.5} />
-              <p className="eyebrow tabular text-text-body/55 mb-1">NO CONVERSATIONS</p>
+              <p className="eyebrow tabular text-text-body/55 mb-1">No conversations</p>
               <p className="text-[13px] text-text-body/65">
                 {searchTerm ? "No results match your search." : "Connect with members to start messaging."}
               </p>
@@ -262,7 +262,7 @@ export default function Messages() {
             <div className="w-16 h-16 bg-bg-card border border-border-main rounded-2xl flex items-center justify-center mx-auto mb-5">
               <ShieldCheck className="w-7 h-7 text-text-heading" strokeWidth={1.75} />
             </div>
-            <p className="eyebrow tabular text-accent mb-2">SECURE COMMS</p>
+            <p className="eyebrow tabular text-accent mb-2">Secure comms</p>
             <h2 className="font-display text-3xl text-text-heading mb-3">Select a conversation</h2>
             <p className="text-[14px] text-text-body leading-relaxed">
               Choose a connection from the inbox to open a direct, end-to-end channel.
@@ -286,8 +286,7 @@ export default function Messages() {
                 <div className="min-w-0">
                   <h2 className="text-[15px] font-medium text-text-heading leading-tight truncate">{otherUser?.displayName || "Loading…"}</h2>
                   <div className="flex items-center gap-1.5 mt-1">
-                    <span className="w-1.5 h-1.5 bg-accent rounded-full soft-pulse" />
-                    <span className="eyebrow tabular text-text-body/55">DIRECT CHANNEL</span>
+                    <span className="eyebrow tabular text-text-body/55">Direct channel</span>
                   </div>
                 </div>
               </div>
@@ -332,7 +331,7 @@ export default function Messages() {
             <div className="flex-1 overflow-y-auto p-6 space-y-4 custom-scrollbar">
               <div className="flex flex-col items-center mb-6">
                 <div className="px-3 py-1 bg-bg-card border border-border-main rounded-full">
-                  <span className="eyebrow tabular text-text-body/45">CONVERSATION OPENED</span>
+                  <span className="eyebrow tabular text-text-body/45">Conversation opened</span>
                 </div>
               </div>
 

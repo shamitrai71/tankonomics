@@ -1,11 +1,10 @@
 /**
- * CompanyProfile — the verified-business surface.
+ * CompanyProfile — a company page.
  *
- * Restyled to match the rest of the app:
- *   - Industrial-editorial hero with deep-petrol overlay and blueprint grid
- *   - Instrument Serif display name, mono eyebrows everywhere
- *   - Safety-orange accent for the verified chip, active-tab marker, and key CTAs
- *   - Paper-warm canvas, paper-weight borders, no more `rounded-[2.5rem]` blobs
+ * Status wording is limited to what the system supports: "Unclaimed page",
+ * "Claim under review" (shown only to the claimant) and "Managed by the
+ * company". There is no "Verified" label until a separate verification step
+ * exists.
  *
  * What's preserved verbatim:
  *   - Every data hook (companies, categories, employees, posts, products,
@@ -17,6 +16,8 @@
  */
 
 import { useState } from "react";
+import { SafeImage } from "../components/SafeImage";
+import { companyInitials, companyLocation, companyStatus, STATUS_LABEL } from "../lib/companyDisplay";
 import { useParams, Link } from "react-router-dom";
 import { useCollection, createDocument, updateDocument } from "../hooks/useFirestore";
 import { useAuth } from "../App";
@@ -47,6 +48,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { serverTimestamp, where, orderBy } from "firebase/firestore";
 import { db } from "../firebase";
 import { formatDistanceToNow } from "date-fns";
+import { toast, confirmDialog } from "../lib/dialogs";
 
 // Company-level "all sites on TankBazaar" CTA. TankBazaar currently only
 // supports #terminal-<id> deep links, not ?operator= filtering — so this
@@ -62,6 +64,7 @@ function ClaimModal({ company, onClose }: { company: any; onClose: () => void })
   const [justification, setJustification] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitted, setSubmitted] = useState(false);
+  const [error, setError] = useState("");
 
   const handleSubmit = async () => {
     if (!justification.trim() || isSubmitting) return;
@@ -78,7 +81,7 @@ function ClaimModal({ company, onClose }: { company: any; onClose: () => void })
           !userDomain.toLowerCase().includes(companyDomain.toLowerCase()) &&
           !companyDomain.toLowerCase().includes(userDomain.toLowerCase())
         ) {
-          alert(`Verification Error: Please use your official ${company.name} email address (ending in @${companyDomain}) to claim this profile.`);
+          setError(`Please use your ${company.name} work email address (ending in @${companyDomain}) to submit a claim.`);
           return;
         }
       } catch (err) {
@@ -86,6 +89,7 @@ function ClaimModal({ company, onClose }: { company: any; onClose: () => void })
       }
     }
 
+    setError("");
     setIsSubmitting(true);
     try {
       await createDocument("company_claims", {
@@ -101,6 +105,7 @@ function ClaimModal({ company, onClose }: { company: any; onClose: () => void })
       setTimeout(onClose, 2000);
     } catch (err) {
       console.error(err);
+      setError("The claim could not be submitted. Please try again.");
     } finally {
       setIsSubmitting(false);
     }
@@ -124,29 +129,28 @@ function ClaimModal({ company, onClose }: { company: any; onClose: () => void })
             <div className="w-14 h-14 bg-accent/10 text-accent rounded-full flex items-center justify-center mx-auto mb-4 border border-accent/20">
               <Check className="w-6 h-6" strokeWidth={2} />
             </div>
-            <p className="eyebrow tabular text-accent mb-2">CLAIM UNDER REVIEW</p>
+            <p className="eyebrow text-accent mb-2">Claim under review</p>
             <h3 className="font-display text-2xl text-text-heading mb-2">Claim submitted</h3>
-            <p className="text-text-body text-[14px]">Our administrators will review your credentials shortly.</p>
+            <p className="text-text-body text-[14px]">An administrator will review it. You will get management access only after it is approved.</p>
           </div>
         ) : (
           <div className="space-y-5">
             <div>
-              <p className="eyebrow tabular text-text-body/55 mb-2">Verification</p>
-              <h2 className="font-display text-3xl text-text-heading mb-2 leading-tight">Claim this page</h2>
+              <h2 className="font-display text-2xl text-text-heading mb-2 leading-tight">Claim {company.name}</h2>
               <p className="text-text-body text-[14px]">
-                Verify ownership of <span className="text-text-heading font-medium">{company.name}</span> to manage this profile.
+                Claim this page if you represent the company and want to manage it.
               </p>
             </div>
 
-            <div className="p-4 bg-bg-main rounded-xl border border-border-main flex items-start gap-3">
-              <AlertCircle className="w-4 h-4 text-accent shrink-0 mt-0.5" strokeWidth={1.75} />
-              <p className="text-[13px] text-text-body leading-relaxed">
-                Provide proof of affiliation — a work email address or linked profile. Claims are reviewed within 24–48 hours.
-              </p>
-            </div>
+            <ol className="p-4 bg-bg-main rounded-xl border border-border-main text-[13px] text-text-body leading-relaxed space-y-1.5 list-decimal list-inside">
+              <li>You submit proof that you represent the company, such as your work email or a profile link.</li>
+              <li>An administrator reviews the claim.</li>
+              <li>Management access is given only after it is approved.</li>
+            </ol>
+            <p className="text-[12px] text-text-body/70 -mt-2">Your account email must match the company's website domain.</p>
 
             <label className="block">
-              <span className="eyebrow tabular text-text-body/60 mb-2 block">Justification &amp; credentials</span>
+              <span className="eyebrow text-text-body mb-2 block">Your role and proof of affiliation</span>
               <textarea
                 value={justification}
                 onChange={(e) => setJustification(e.target.value)}
@@ -154,13 +158,14 @@ function ClaimModal({ company, onClose }: { company: any; onClose: () => void })
                 className="w-full bg-bg-main border border-border-main rounded-xl p-4 text-[14px] focus:bg-bg-card focus:border-text-heading outline-none h-36 resize-none transition-all text-text-heading placeholder:text-text-body/40"
               />
             </label>
+            {error && <p role="alert" className="text-[13px] text-rust">{error}</p>}
 
             <button
               onClick={handleSubmit}
               disabled={!justification.trim() || isSubmitting}
               className="w-full inline-flex items-center justify-center gap-2 bg-text-heading text-bg-card py-3.5 rounded-xl text-[14px] font-medium hover:brightness-110 disabled:opacity-50 transition-all"
             >
-              {isSubmitting ? <><Loader2 className="w-4 h-4 animate-spin" /> Submitting…</> : <>Submit verification request <Send className="w-4 h-4" strokeWidth={1.75} /></>}
+              {isSubmitting ? <><Loader2 className="w-4 h-4 animate-spin" /> Submitting…</> : <>Submit claim <Send className="w-4 h-4" strokeWidth={1.75} /></>}
             </button>
           </div>
         )}
@@ -194,6 +199,14 @@ export default function CompanyProfile() {
   const { data: companyJobMatches } = useCollection<any>("job_matches", [where("companyOwnerUid", "==", user?.uid || "__none__")]);
   const { data: likes } = useCollection<any>("likes", [where("targetId", "==", id), where("targetType", "==", "company")]);
 
+  // The claimant's own claim for this company (the rules let a member read only their own).
+  const { data: myClaims } = useCollection<any>(
+    "company_claims",
+    [where("companyId", "==", id), where("userUid", "==", user?.uid || "__none__")],
+    !!user && !!id
+  );
+  const hasPendingClaim = myClaims.some((c: any) => c.status === "pending");
+
   const isFollowing = follows.some((f: any) => f.followerId === user?.uid);
   const isLiked = likes.some((l: any) => l.likerId === user?.uid);
 
@@ -201,7 +214,8 @@ export default function CompanyProfile() {
   const [engagementLoading, setEngagementLoading] = useState(false);
 
   const company = companies[0];
-  const isOwner = user?.uid === company?.ownerUid;
+  const isOwner = !!user && !!company?.ownerUid && user.uid === company.ownerUid;
+  const status = companyStatus(company, hasPendingClaim);
 
   const handleFollow = async () => {
     if (!user || !id || engagementLoading) return;
@@ -282,7 +296,7 @@ export default function CompanyProfile() {
         .catch(console.error);
     } else {
       navigator.clipboard.writeText(window.location.href);
-      alert("Link copied to clipboard!");
+      toast("Link copied to clipboard!");
     }
   };
 
@@ -299,7 +313,7 @@ export default function CompanyProfile() {
       <div className="min-h-screen bg-bg-main flex items-center justify-center p-6 text-center">
         <div>
           <Building2 className="w-12 h-12 text-text-body/30 mx-auto mb-4" strokeWidth={1.5} />
-          <p className="eyebrow tabular text-text-body/55 mb-2">404 · NOT FOUND</p>
+          <p className="eyebrow tabular text-text-body/55 mb-2">Not found</p>
           <h2 className="font-display text-3xl text-text-heading mb-2">Business not found</h2>
           <p className="text-text-body mb-6 text-[14px]">This profile doesn't exist or has been removed.</p>
           <Link to="/directory" className="inline-flex items-center gap-2 bg-text-heading text-bg-card px-5 py-3 rounded-xl text-[14px] font-medium">
@@ -316,18 +330,17 @@ export default function CompanyProfile() {
          HERO — full-bleed image with deep-petrol gradient overlay,
                  blueprint grid texture, identity card overlapping.
          ============================================================ */}
-      <div className="relative h-[360px] md:h-[440px] w-full overflow-hidden">
-        <img
-          src={company.heroImage || "https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?auto=format&fit=crop&q=80&w=2000"}
-          className="w-full h-full object-cover"
-          alt={`${company.name} hero`}
-        />
+      <div className={`relative w-full overflow-hidden ${company.heroImage ? "h-[360px] md:h-[440px]" : "h-[200px] md:h-[240px]"}`}>
+        {company.heroImage ? (
+          <img src={company.heroImage} className="w-full h-full object-cover" alt="" />
+        ) : (
+          <div className="w-full h-full bg-primary" />
+        )}
         {/* Fixed near-black scrim, not the theme's `primary` color — `primary`
             flips to a warm orange (#f0a868) in dark mode, which washed this
             gradient into a hazy orange fog instead of a clean vignette. A
             photo-legibility scrim should read the same in both themes. */}
         <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/50 to-transparent" />
-        <div className="absolute inset-0 bp-grid opacity-25 pointer-events-none" />
 
         {/* Back to directory pill */}
         <div className="absolute top-6 left-4 md:left-8 z-10">
@@ -340,17 +353,11 @@ export default function CompanyProfile() {
           </Link>
         </div>
 
-        {/* Industry chip + verification chip in the hero header strip */}
+        {/* Sector chip in the hero header strip */}
         <div className="absolute top-6 right-4 md:right-8 flex flex-wrap gap-2 justify-end z-10">
           {categories.find((c: any) => c.id === company.categoryId) && (
             <span className="px-3 py-1.5 bg-bg-card/10 backdrop-blur-md border border-white/20 rounded-xl eyebrow tabular text-white">
               {categories.find((c: any) => c.id === company.categoryId)?.name}
-            </span>
-          )}
-          {company.isClaimed && (
-            <span className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-accent text-white rounded-xl eyebrow tabular shadow-lg">
-              <ShieldCheck className="w-3 h-3" strokeWidth={2} />
-              Verified
             </span>
           )}
         </div>
@@ -363,40 +370,50 @@ export default function CompanyProfile() {
             {/* Logo */}
             <div className="relative shrink-0 -mt-14 md:-mt-12">
               <div className="w-24 h-24 md:w-28 md:h-28 bg-bg-main rounded-2xl border border-border-main p-3 flex items-center justify-center overflow-hidden shadow-lg">
-                <img
-                  src={company.logo || "https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?auto=format&fit=crop&q=80&w=200"}
+                <SafeImage
+                  src={company.logo}
+                  alt=""
                   className="max-w-full max-h-full object-contain"
-                  alt={company.name}
+                  fallback={<span className="text-2xl font-semibold text-text-body">{companyInitials(company.name)}</span>}
                 />
               </div>
-              {company.isClaimed && (
-                <div className="absolute -top-1 -right-1 w-7 h-7 bg-accent text-white rounded-full flex items-center justify-center border-2 border-bg-card" title="Verified Business">
-                  <Check className="w-3.5 h-3.5" strokeWidth={2.5} />
-                </div>
-              )}
             </div>
 
             {/* Name + address */}
             <div className="flex-1 min-w-0">
-              <div className="eyebrow tabular text-accent mb-1 inline-flex items-center gap-2">
-                <span className="inline-block w-1.5 h-1.5 rounded-full bg-accent soft-pulse" />
-                INDEXED ENTITY
-              </div>
+              <span className={`inline-flex items-center px-2.5 py-0.5 mb-2 rounded-full text-[12px] font-medium ${
+                status === "managed" ? "bg-accent/10 text-accent" : status === "under-review" ? "bg-primary/10 text-primary" : "bg-rust/10 text-rust"
+              }`}>
+                {STATUS_LABEL[status]}
+              </span>
               <div className="flex items-center gap-3 flex-wrap">
-                <h1 className="font-display text-[clamp(1.875rem,4vw,3rem)] text-text-heading leading-[1.0]">{company.name}</h1>
+                <h1 className="font-display text-[clamp(1.5rem,3.5vw,2.25rem)] text-text-heading leading-tight">{company.name}</h1>
                 {company.plan === "premium" && (
-                  <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-blueprint/10 border border-blueprint/30 text-blueprint eyebrow tabular text-[10px]">
-                    ★ PREMIUM
+                  <span className="inline-flex items-center px-2.5 py-1 rounded-full bg-blueprint/10 border border-blueprint/30 text-blueprint text-[12px] font-medium">
+                    Premium
                   </span>
                 )}
               </div>
               {company.address && (
-                <p className="eyebrow tabular text-text-body/55 mt-2">{company.address}</p>
+                <p className="text-[13px] text-text-body mt-2">{company.address}</p>
+              )}
+              {status === "unclaimed" && (
+                <p className="text-[13px] text-text-body mt-2 max-w-xl">
+                  This page was compiled from public sources. The company has not reviewed it.
+                </p>
               )}
             </div>
 
             {/* Action buttons */}
             <div className="flex flex-wrap items-center gap-2">
+              {status === "unclaimed" && (
+                <button
+                  onClick={() => setIsClaiming(true)}
+                  className="inline-flex items-center gap-2 px-4 py-2.5 bg-accent text-white rounded-xl text-[13px] font-medium hover:brightness-110 transition-all"
+                >
+                  Claim this company
+                </button>
+              )}
               <button
                 onClick={handleFollow}
                 disabled={engagementLoading || !user}
@@ -472,7 +489,7 @@ export default function CompanyProfile() {
               <div className="bg-bg-card border border-blueprint/30 rounded-2xl p-6">
                 <div className="flex items-center justify-between gap-3 mb-5">
                   <div>
-                    <p className="eyebrow tabular text-blueprint mb-1">★ PREMIUM · TALENT DASHBOARD</p>
+                    <p className="eyebrow tabular text-blueprint mb-1">Premium · talent dashboard</p>
                     <h3 className="font-display text-2xl text-text-heading leading-tight">Applications & matches</h3>
                   </div>
                   <div className="text-right">
@@ -510,7 +527,7 @@ export default function CompanyProfile() {
                                 <div key={m.id} className="flex items-center justify-between gap-2 py-1.5 px-2 rounded-lg bg-bg-main">
                                   <div className="flex items-center gap-2 min-w-0">
                                     <p className="text-[12px] text-text-heading truncate">{m.userName}</p>
-                                    {m.status === "applied" && <span className="eyebrow tabular text-[8px] text-blueprint shrink-0">★ APPLIED</span>}
+                                    {m.status === "applied" && <span className="eyebrow tabular text-[8px] text-blueprint shrink-0">Applied</span>}
                                   </div>
                                   <div className="flex items-center gap-2 shrink-0">
                                     {m.score != null && (
@@ -533,7 +550,7 @@ export default function CompanyProfile() {
               </div>
             ) : (
               <div className="bg-bg-card border border-border-main rounded-2xl p-6 text-center">
-                <p className="eyebrow tabular text-accent mb-2">TALENT DASHBOARD</p>
+                <p className="eyebrow tabular text-accent mb-2">Talent dashboard</p>
                 <h3 className="font-display text-xl text-text-heading mb-1">Unlock the talent dashboard</h3>
                 <p className="text-[13px] text-text-body/70 max-w-md mx-auto leading-relaxed">
                   Premium companies see every application and ranked match for their jobs in one place, with candidate match scores. Contact the platform team to enable premium.
@@ -632,14 +649,14 @@ export default function CompanyProfile() {
                     </div>
                     <div className="p-4 bg-bg-card border border-border-main rounded-xl">
                       <p className="eyebrow tabular text-text-body/55 mb-1">Status</p>
-                      <p className={`text-[14px] font-medium ${company.isClaimed ? "text-accent" : "text-rust"}`}>
-                        {company.isClaimed ? "Verified" : "Unclaimed"}
+                      <p className={`text-[14px] font-medium ${status === "managed" ? "text-accent" : status === "under-review" ? "text-primary" : "text-rust"}`}>
+                        {STATUS_LABEL[status]}
                       </p>
                     </div>
                     <div className="p-4 bg-bg-card border border-border-main rounded-xl">
                       <p className="eyebrow tabular text-text-body/55 mb-1">Location</p>
                       <p className="text-[14px] font-medium text-text-heading truncate">
-                        {company.address?.split(",")[0] || "Global"}
+                        {companyLocation(company.address) || "Not listed"}
                       </p>
                     </div>
                   </div>
@@ -656,11 +673,7 @@ export default function CompanyProfile() {
                     return (
                       <div key={i} className="bg-bg-card border border-border-main rounded-2xl overflow-hidden hover:border-text-heading transition-all flex flex-col">
                         <div className="h-44 bg-bg-main overflow-hidden relative">
-                          <img
-                            src={product.image || "https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?auto=format&fit=crop&q=80&w=800"}
-                            className="w-full h-full object-cover"
-                            alt={product.name}
-                          />
+                          <SafeImage src={product.image} alt={product.name} className="w-full h-full object-cover" />
                           <button
                             onClick={() => handleRecommendProduct(product.name)}
                             disabled={hasRecommended || !user}
@@ -942,7 +955,7 @@ export default function CompanyProfile() {
                             <div className="flex items-center gap-1.5">
                               <p className="text-[14px] font-medium text-text-heading truncate">{emp.displayName}</p>
                               {emp.isVerifiedByCompany && (
-                                <span className="shrink-0 w-4 h-4 rounded-full bg-accent text-white flex items-center justify-center" title="Verified by company">
+                                <span className="shrink-0 w-4 h-4 rounded-full bg-accent text-white flex items-center justify-center" title="Confirmed by the company">
                                   <Check className="w-2.5 h-2.5" strokeWidth={2.5} />
                                 </span>
                               )}
@@ -950,7 +963,7 @@ export default function CompanyProfile() {
                             <p className="eyebrow tabular text-text-body/55 truncate">{emp.jobTitle || "Technical specialist"}</p>
                             {emp.isVerifiedByCompany ? (
                               <p className="eyebrow tabular text-accent mt-0.5 inline-flex items-center gap-1">
-                                <ShieldCheck className="w-2.5 h-2.5" strokeWidth={2} /> Company verified
+                                <ShieldCheck className="w-2.5 h-2.5" strokeWidth={2} /> Confirmed by the company
                               </p>
                             ) : (
                               <p className="eyebrow tabular text-text-body/45 mt-0.5 inline-flex items-center gap-1">
@@ -963,7 +976,7 @@ export default function CompanyProfile() {
                         {isOwner && !emp.isVerifiedByCompany && (
                           <button
                             onClick={async () => {
-                              if (window.confirm(`Verify that ${emp.displayName} currently works at ${company.name}?`)) {
+                              if (await confirmDialog(`Confirm that ${emp.displayName} currently works at ${company.name}?`)) {
                                 try {
                                   await updateDocument("users", emp.id, {
                                     isVerifiedByCompany: true,
@@ -1015,14 +1028,14 @@ export default function CompanyProfile() {
                             className="ml-2 inline-flex items-center gap-1.5 px-3 py-1.5 bg-text-heading text-bg-card rounded-lg eyebrow tabular hover:brightness-110 transition-all shrink-0"
                           >
                             <ShieldCheck className="w-3 h-3" strokeWidth={1.75} />
-                            Verify
+                            Confirm
                           </button>
                         )}
 
                         {isOwner && emp.isVerifiedByCompany && emp.id !== user?.uid && (
                           <button
                             onClick={async () => {
-                              if (window.confirm(`Remove verification for ${emp.displayName}?`)) {
+                              if (await confirmDialog(`Remove the confirmation for ${emp.displayName}?`)) {
                                 try {
                                   await updateDocument("users", emp.id, {
                                     isVerifiedByCompany: false,
@@ -1035,7 +1048,7 @@ export default function CompanyProfile() {
                               }
                             }}
                             className="ml-2 w-8 h-8 rounded-lg hover:bg-rust/10 hover:text-rust flex items-center justify-center text-text-body/40 opacity-0 group-hover:opacity-100 transition-all"
-                            title="Revoke verification"
+                            title="Remove confirmation"
                           >
                             <X className="w-3.5 h-3.5" />
                           </button>
@@ -1052,37 +1065,35 @@ export default function CompanyProfile() {
           <aside className="space-y-6">
             {/* Claim or Manage card */}
             {!company.isClaimed ? (
-              <div className="bg-primary text-white rounded-2xl p-6 grain relative overflow-hidden">
-                <div className="absolute inset-0 bp-grid pointer-events-none opacity-40" />
-                <div className="relative">
-                  <div className="w-10 h-10 rounded-xl bg-accent/15 border border-accent/30 flex items-center justify-center text-accent mb-4">
-                    <ShieldCheck className="w-5 h-5" strokeWidth={1.75} />
-                  </div>
-                  <p className="eyebrow tabular text-accent mb-2">UNCLAIMED</p>
-                  <h3 className="font-display text-2xl mb-3 leading-tight">Is this your business?</h3>
-                  <p className="text-white/65 text-[13px] mb-5 leading-relaxed">
-                    Verified owners gain full control over their profile, direct inquiry management, and priority listing status.
-                  </p>
+              <div className="bg-bg-card border border-border-main rounded-2xl p-6">
+                <h3 className="font-display text-xl text-text-heading mb-2 leading-tight">
+                  {hasPendingClaim ? "Claim under review" : "Is this your company?"}
+                </h3>
+                <p className="text-text-body text-[13px] mb-5 leading-relaxed">
+                  {hasPendingClaim
+                    ? "An administrator is reviewing your claim. You will get management access only after it is approved."
+                    : "Submit proof that you represent the company. An administrator reviews it, and management access is given only after approval."}
+                </p>
+                {!hasPendingClaim && (
                   <button
                     onClick={() => setIsClaiming(true)}
                     className="w-full inline-flex items-center justify-center gap-2 bg-accent text-white py-3 rounded-xl text-[14px] font-medium hover:brightness-110 transition-all"
                   >
-                    Claim this page
+                    Claim this company
                     <ChevronRight className="w-4 h-4" strokeWidth={1.75} />
                   </button>
-                </div>
+                )}
               </div>
             ) : (
               <div className="bg-bg-card border border-border-main rounded-2xl p-6">
                 <div className="w-10 h-10 rounded-xl bg-accent/10 border border-accent/30 flex items-center justify-center text-accent mb-4">
                   <ShieldCheck className="w-5 h-5" strokeWidth={1.75} />
                 </div>
-                <p className="eyebrow tabular text-accent mb-2">VERIFIED</p>
-                <h3 className="font-display text-2xl text-text-heading mb-2 leading-tight">Trusted profile</h3>
+                <h3 className="font-display text-xl text-text-heading mb-2 leading-tight">Managed by the company</h3>
                 <p className="text-text-body text-[13px] mb-5 leading-relaxed">
-                  This organisation has completed verification and is part of the trusted member network.
+                  The company has claimed this page and manages its details.
                 </p>
-                {user?.uid === company.ownerUid && (
+                {isOwner && (
                   <Link to="/admin" className="inline-flex items-center justify-center gap-2 w-full bg-text-heading text-bg-card py-2.5 rounded-xl text-[13px] font-medium hover:brightness-110 transition-all">
                     Admin dashboard
                     <ChevronRight className="w-4 h-4" strokeWidth={1.75} />

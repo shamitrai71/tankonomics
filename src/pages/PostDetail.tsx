@@ -127,7 +127,7 @@ export default function PostDetail() {
         <div className="w-16 h-16 bg-bg-card border border-border-main rounded-2xl flex items-center justify-center mb-6 text-text-heading">
           <FileQuestion className="w-7 h-7" strokeWidth={1.75} />
         </div>
-        <p className="eyebrow tabular text-accent mb-2">404 · NOT FOUND</p>
+        <p className="eyebrow tabular text-accent mb-2">Not found</p>
         <h2 className="font-display text-3xl text-text-heading mb-2">Content not found</h2>
         <p className="text-text-body mb-6 text-[14px]">This post may have been archived or removed.</p>
         <button
@@ -216,7 +216,7 @@ export default function PostDetail() {
                 </button>
                 <div className="inline-flex items-center gap-2 text-text-body/55">
                   <MessageCircle className="w-4 h-4" strokeWidth={1.75} />
-                  <span className="eyebrow tabular">{comments.length} {comments.length === 1 ? "REPLY" : "REPLIES"}</span>
+                  <span className="eyebrow tabular">{comments.length} {comments.length === 1 ? "reply" : "replies"}</span>
                 </div>
               </div>
               <button
@@ -235,7 +235,7 @@ export default function PostDetail() {
 
             <div className="space-y-3 mb-6">
               {loadingComments ? (
-                <div className="py-12 text-center eyebrow tabular text-text-body/40 animate-pulse">LOADING THREAD…</div>
+                <div className="py-12 text-center eyebrow tabular text-text-body/40 animate-pulse">Loading thread…</div>
               ) : comments.length === 0 ? (
                 <div className="py-10 text-center bg-bg-card rounded-2xl border border-dashed border-border-main">
                   <MessageCircle className="w-8 h-8 text-text-body/25 mx-auto mb-3" strokeWidth={1.5} />

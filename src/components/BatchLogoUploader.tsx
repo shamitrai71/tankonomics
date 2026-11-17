@@ -1,6 +1,7 @@
 import { useState, useMemo, useCallback, memo } from "react";
 import { uploadImage } from "../lib/uploadImage";
 import { updateDocument } from "../hooks/useFirestore";
+import { toast, confirmDialog } from "../lib/dialogs";
 
 /**
  * Batch logo uploader for the Tankonomics admin panel.
@@ -205,11 +206,11 @@ export default function BatchLogoUploader({ companies }: { companies: Company[] 
   async function runUpload() {
     const assignable = rows.filter((r) => r.status === "pending" && r.matchedId);
     if (assignable.length === 0) {
-      alert("Nothing assigned to upload yet.");
+      toast("Nothing assigned to upload yet.");
       return;
     }
     if (
-      !confirm(
+      !await confirmDialog(
         `Upload ${assignable.length} logo${assignable.length === 1 ? "" : "s"}? Each replaces that company's current logo, if any.`,
       )
     )
