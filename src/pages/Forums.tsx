@@ -317,12 +317,13 @@ export default function Forums() {
                     <div className="flex items-start justify-between gap-4">
                       <div className="flex-1 min-w-0">
                         <div className="flex flex-wrap items-center gap-1.5 mb-2">
-                          {topic.categoryIds?.map((cid: string) => (
-                            <span key={cid} className="inline-flex items-center px-1.5 py-0.5 rounded bg-accent/10 text-accent eyebrow tabular border border-accent/20">
-                              {categories.find((c) => c.id === cid)?.name || cid}
+                          {/* Only categories that still exist; a deleted one used to show as a raw id. */}
+                          {(topic.categoryIds || []).filter((cid: string) => categories.some((c) => c.id === cid)).map((cid: string) => (
+                            <span key={cid} className="inline-flex items-center px-1.5 py-0.5 rounded bg-accent/10 text-accent eyebrow border border-accent/20">
+                              {categories.find((c) => c.id === cid)?.name}
                             </span>
                           ))}
-                          {(!topic.categoryIds || topic.categoryIds.length === 0) && (
+                          {!(topic.categoryIds || []).some((cid: string) => categories.some((c) => c.id === cid)) && (
                             <span className="inline-flex items-center px-1.5 py-0.5 rounded bg-bg-main border border-border-main text-text-body/60 eyebrow tabular">
                               {topic.category || "General"}
                             </span>

@@ -56,7 +56,7 @@ export function TierGate({
     return box(
       <Lock className="w-5 h-5" strokeWidth={1.75} />,
       "Company members only",
-      "Creating this requires a verified company on Tankonomics. Claim your company to unlock company features."
+      "Creating this requires a company page you manage on Tankonomics. Claim your company page to unlock company features."
     );
   }
 

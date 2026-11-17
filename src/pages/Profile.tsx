@@ -343,7 +343,7 @@ function UpcomingEvents({ profile }: { profile: any }) {
           <Bell className="w-4 h-4 text-text-heading" strokeWidth={1.75} />
         </div>
         <p className="text-[13px] text-text-body leading-relaxed">
-          Email reminders are synchronised — you'll receive a technical brief 24 hours before each session.
+          Sessions you set a reminder for are listed here.
         </p>
       </div>
     </section>

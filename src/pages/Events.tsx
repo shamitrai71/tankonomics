@@ -730,7 +730,7 @@ export default function Events() {
                 <p className="eyebrow tabular text-accent mb-2">Synchronised</p>
                 <h3 className="font-display text-xl leading-tight mb-2">My reminders</h3>
                 <p className="text-white/65 text-[13px] leading-relaxed mb-5">
-                  Tracking {userReminders.length} {userReminders.length === 1 ? "session" : "sessions"} — email briefs sent 24 hours before each.
+                  Tracking {userReminders.length} {userReminders.length === 1 ? "session" : "sessions"}.
                 </p>
                 {userReminders.length === 0 && (
                   <p className="eyebrow tabular text-white/45">Set a reminder on any session</p>

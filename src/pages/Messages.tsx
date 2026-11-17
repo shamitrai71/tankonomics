@@ -262,10 +262,9 @@ export default function Messages() {
             <div className="w-16 h-16 bg-bg-card border border-border-main rounded-2xl flex items-center justify-center mx-auto mb-5">
               <ShieldCheck className="w-7 h-7 text-text-heading" strokeWidth={1.75} />
             </div>
-            <p className="eyebrow tabular text-accent mb-2">Secure comms</p>
             <h2 className="font-display text-3xl text-text-heading mb-3">Select a conversation</h2>
             <p className="text-[14px] text-text-body leading-relaxed">
-              Choose a connection from the inbox to open a direct, end-to-end channel.
+              Choose a conversation from the inbox, or start one with a connection.
             </p>
           </div>
         ) : (
